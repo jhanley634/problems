@@ -4,14 +4,15 @@
 ACTIVATE = source activate problems
 
 OUT = \
-  cluster/jutland/out/x \
+  jutland/out/x \
 
 all: $(OUT)
 
 SPATIAL=3D_spatial_network.txt
 JUTLAND_IN = https://archive.ics.uci.edu/ml/machine-learning-databases/00246/$(SPATIAL)
 
-cluster/jutland/out/x: /tmp/$(SPATIAL)
+jutland/out/x: /tmp/$(SPATIAL)
+	jutland/bin/report.py
 
 /tmp/$(SPATIAL):
 	cd /tmp && wget $(JUTLAND_IN)
