@@ -5,16 +5,20 @@ channels:
 - conda-forge
 
 dependencies:
+- ConfigSpace < 0.5
+- catboost >= 0.0.1
 - cython >= 0.29.24
+- dask >= 0.0.1
 - fasteners >= 0.16
 - flake8 >= 4.0.1
 - geopandas >= 0.10.2
 - geopy >= 2.2.0
 - hpbandster >= 0.7.4
 - imbalanced-learn >= 0.8.1
+- imgaug >= 0.0.1
 - isort >= 5.9.3
 - netifaces >= 0.10.9
-- openml>= 0.12.2
+- openml >= 0.12.2
 - palettable >= 3.3.0
 - pandas >= 1.2.5
 - pandas-profiling >= 3.1.0
@@ -23,10 +27,13 @@ dependencies:
 - pyarrow >= 5.0.0
 - pydeck >= 0.7.0
 - pynisher >= 0.6.4
-- python >= 3.9.7
-- pytorch >= 1.9.1
+- pyrfr < 0.9
+- python < 3.9
+- pytorch < 1.8
 - ruamel.yaml >= 0.17.16
-- scikit-learn < 1.0
+- scikit-learn < 0.24.0
+- scipy < 1.7.0
+- smac < 0.14
 - streamlit >= 1.0.0
 - torchvision >= 0.10.1
 - pip:
