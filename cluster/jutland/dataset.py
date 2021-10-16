@@ -15,7 +15,7 @@ class Dataset:
     SPATIAL = TMP / '3D_spatial_network.txt'
 
     @classmethod
-    def get_df(cls):
+    def get_df(cls) -> pd.DataFrame:
         """Densifies (filters) the somewhat sparse UCI roadway dataset."""
         base = re.sub(r'\.txt$', '', f'{cls.SPATIAL}')
         cache = Path(f'{base}.parquet')

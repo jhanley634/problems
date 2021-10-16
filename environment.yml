@@ -8,7 +8,7 @@ dependencies:
 - cython >= 0.29.24
 - fasteners >= 0.16
 - flake8 >= 4.0.1
-- geopandas >= 0.10.1
+- geopandas >= 0.10.2
 - geopy >= 2.2.0
 - hpbandster >= 0.7.4
 - imbalanced-learn >= 0.8.1
