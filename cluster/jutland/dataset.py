@@ -26,7 +26,8 @@ class Dataset:
             assert 434874 == len(df), len(df)
 
             df = cls.filter_short_segments(df)
-            assert 287331 == len(df), len(df)
+            assert 55972 == len(df), len(df)
+            # assert 287331 == len(df), len(df)
 
             cls.profile(df, Path(f'{base}.html'))
             pq.write_table(pa.Table.from_pandas(df), cache)
@@ -34,7 +35,7 @@ class Dataset:
         return pq.read_table(cache).to_pandas()  # Elapsed time is less than two seconds.
 
     @staticmethod
-    def filter_short_segments(df: pd.DataFrame, k=10):
+    def filter_short_segments(df: pd.DataFrame, k=50):
         """Demands that a given osm_id shall have at least K segments.
 
         So e.g. singleton "roads", containing just a single point, are discarded.

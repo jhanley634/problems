@@ -15,4 +15,4 @@ jutland/out/x: /tmp/$(SPATIAL)
 	jutland/bin/report.py
 
 /tmp/$(SPATIAL):
-	cd /tmp && wget $(JUTLAND_IN)
+	cd /tmp && wget -q $(JUTLAND_IN)
