@@ -30,15 +30,15 @@ def _get_points(only_show_favorites=False):
     return df
 
 
-COPENHAGEN = (55.676, 12.568)
+AALBORG = (57.050, 9.917)
 
 
 def column_layer(df):
     st.pydeck_chart(pdk.Deck(
         map_style='mapbox://styles/mapbox/light-v9',
         initial_view_state=pdk.ViewState(
-            latitude=COPENHAGEN[0],
-            longitude=COPENHAGEN[1],
+            latitude=AALBORG[0],
+            longitude=AALBORG[1],
             zoom=9,
             pitch=30,
         ),
