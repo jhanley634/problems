@@ -42,4 +42,6 @@ class Perc:
         for x, y in self._get_initial_nodes():
             node_a = self.node_num(x, y)
             for node_b in self._nbrhd(x, y):
-                g.addEdge(node_a, node_b)  # We add each edge twice, but that's OK.
+                if not g.hasEdge(node_a, node_b):
+                    g.addEdge(node_a, node_b)
+        return g
