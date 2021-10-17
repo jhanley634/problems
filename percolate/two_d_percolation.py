@@ -14,7 +14,7 @@ class Perc:
     def node_num(self, x, y):
         if (0 <= x < self.width
                 and 0 <= y < self.height):
-            return self.height * y + x
+            return self.width * y + x
         raise ValueError(f'({x}, {y}) is out of bounds')
 
     # https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
