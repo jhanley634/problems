@@ -1,4 +1,5 @@
 
+import matplotlib.pyplot as plt
 import networkit as nk
 
 
@@ -45,3 +46,6 @@ class Perc:
                 if not g.hasEdge(node_a, node_b):
                     g.addEdge(node_a, node_b)
         return g
+
+    def plot(self):
+        fig, ax = plt.subplots()
