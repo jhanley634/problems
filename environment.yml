@@ -7,7 +7,7 @@ channels:
 dependencies:
 - catboost >= 0.26.1
 - cython >= 0.29.24
-- dask >= 2021.9.1
+- dask >= 2021.10.0
 - fasteners >= 0.16.3
 - flake8 >= 4.0.1
 - geopandas >= 0.10.2
@@ -21,18 +21,18 @@ dependencies:
 - palettable >= 3.3.0
 - pandas >= 1.2.5
 - pandas-profiling >= 3.1.0
-- pip >= 21.3
+- pip >= 21.3.1
 - psutil >= 5.8.0
 - pyarrow >= 5.0.0
-- pydeck >= 0.7.0
+- pydeck >= 0.7.1
 - pynisher >= 0.6.4
 - pyrfr == 0.8.2
 - python >= 3.9.7
 - pytorch == 1.6.0
 - ruamel.yaml >= 0.17.16
-- scikit-learn >= 0.22.0
+- scikit-learn >= 1.0.1
 - scipy >= 1.7.1
-- streamlit >= 1.0.0
+- streamlit >= 1.1.0
 - torchvision >= 0.10.1
 - pip:
   - autopytorch >= 0.0.2
