@@ -16,6 +16,7 @@ dependencies:
 - imbalanced-learn >= 0.8.1
 - isort >= 5.9.3
 - netifaces >= 0.10.9
+- networkit >= 9.0
 - openml >= 0.12.2
 - palettable >= 3.3.0
 - pandas >= 1.2.5
