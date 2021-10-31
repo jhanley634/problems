@@ -1,4 +1,5 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
+# Copyright 2021 John Hanley. MIT licensed.
 import networkit as nk
 import streamlit as st
 

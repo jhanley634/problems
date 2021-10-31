@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2021 John Hanley. MIT licensed.
 from autoPyTorch import AutoNetClassification
 from jutland.dataset import Dataset
 from numpy import nan

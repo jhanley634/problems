@@ -1,4 +1,5 @@
 
+# Copyright 2021 John Hanley. MIT licensed.
 from collections import Counter
 from pathlib import Path
 import re

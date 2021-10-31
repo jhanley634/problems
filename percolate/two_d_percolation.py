@@ -1,4 +1,5 @@
 
+# Copyright 2021 John Hanley. MIT licensed.
 import matplotlib.pyplot as plt
 import networkit as nk
 import numpy as np
