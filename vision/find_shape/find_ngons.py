@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2021 John Hanley. MIT licensed.
-from os.path import expanduser
+from hashlib import sha3_224
 from pathlib import Path
 
 import cv2
@@ -11,7 +11,8 @@ class WebImage:
 
     def __init__(self, url, fname='shapes.jpg', temp=Path('/tmp')):
         self.url = url
-        self.fspec = temp / fname
+        pfx = 'img' + sha3_224(url.encode()).hexdigest()[:4]
+        self.fspec = temp / f'{pfx}_{fname}'
 
     def image(self):
         if not self.fspec.exists():
@@ -35,9 +36,9 @@ def find_ngons(web_img, font=cv2.FONT_HERSHEY_SIMPLEX):
     cyan = (255, 255, 0)  # BGR
     purple = (128, 0, 128)
     img = cv2.imread(web_img.image())
-    blur = cv2.GaussianBlur(img, ksize=(7, 7), sigmaX=30)
+    blur = cv2.GaussianBlur(img, ksize=(9, 9), sigmaX=30)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
-    _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+    _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_OTSU)
 
     contours, _ = cv2.findContours(
         threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -58,6 +59,16 @@ def find_ngons(web_img, font=cv2.FONT_HERSHEY_SIMPLEX):
     cv2.destroyAllWindows()
 
 
+urls = [
+    'https://i.ytimg.com/vi/Cb2h2-lkJq0/maxresdefault.jpg',
+    'http://cdn.ecommercedns.uk/files/8/204798/2/1949692/x-1922-set-of-9-shapes-standard-01.jpg',
+    'https://www.oysterenglish.com/images/shapes-vocabulary.jpg',
+    'https://nurseryrhymesforbabies.com/wp-content/uploads/2018/03/shapes-learn-kids-school-1461236929n4W.jpg',
+    'https://1.bp.blogspot.com/-dp3CzgO2G6g/UEZf__CeUzI/AAAAAAAADE8/IbPWGpNDRJk/s1600/Geo+Rocket.jpg',
+    'https://cdn11.bigcommerce.com/s-mgidzs2fr0/products/318/images/1070/basic-shapes__01302.1500356170.500.750.jpg',
+    'https://www.purposegames.com/images/games/background/353/353313.png',
+    'https://learningmole.com/wp-content/uploads/2020/05/whats-a-polygon-696x676.png',
+]
+
 if __name__ == '__main__':
-    url = 'https://i.ytimg.com/vi/Cb2h2-lkJq0/maxresdefault.jpg'
-    find_ngons(WebImage(url))
+    find_ngons(WebImage(urls[-1]))
