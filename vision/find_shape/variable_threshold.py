@@ -33,7 +33,7 @@ def main():
 
     thresh_type = (cv2.THRESH_OTSU
                    if st.checkbox('Otsu?')
-                   else cv2.THRESH_BINARY
+                   else cv2.THRESH_TRIANGLE
                    )
     _, threshold = cv2.threshold(gray, 127, 255, thresh_type)
     contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
