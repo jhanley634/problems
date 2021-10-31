@@ -1,0 +1,14 @@
+
+name: streamlit-python-3-7
+
+channels:
+- conda-forge
+
+dependencies:
+#- pandas >= 1.2.5
+- pillow >= 8.3.2
+- pip >= 21.3.1
+- py-opencv >= 0.4.5.3
+- python >= 3.7.12, < 3.8
+- ruamel.yaml >= 0.17.16
+- streamlit >= 1.1.0
