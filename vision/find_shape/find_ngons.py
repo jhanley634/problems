@@ -6,6 +6,10 @@ import cv2
 
 from .web_image import WebImage
 
+CYAN = (255, 255, 0)  # BGR
+PURPLE = (128, 0, 128)
+BLACK = (0, 0, 0)
+
 
 def _find_center(contour):
     x, y = 0, 0
@@ -17,26 +21,23 @@ def _find_center(contour):
 
 
 def find_ngons(web_img, font=cv2.FONT_HERSHEY_SIMPLEX):
-    cyan = (255, 255, 0)  # BGR
-    purple = (128, 0, 128)
     img = cv2.imread(web_img.image())
     blur = cv2.GaussianBlur(img, ksize=(9, 9), sigmaX=30)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_OTSU)
 
-    contours, _ = cv2.findContours(
-        threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     for contour in contours[1:]:  # 1st contour is entire image
 
-        cv2.drawContours(img, [contour], 0, cyan, thickness=5)
+        cv2.drawContours(img, [contour], 0, CYAN, thickness=5)
 
         perimeter = cv2.arcLength(contour, closed=True)
         approx = cv2.approxPolyDP(contour, 0.01 * perimeter, closed=True)
         n_gon = f'{len(approx)}-gon'
 
         x, y = _find_center(contour)
-        cv2.putText(img, n_gon, (x, y), font, fontScale=0.6, color=purple, thickness=2)
+        cv2.putText(img, n_gon, (x, y), font, fontScale=0.6, color=PURPLE, thickness=2)
 
     cv2.imshow('shapes', img)
     cv2.waitKey(0)
