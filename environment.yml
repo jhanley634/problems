@@ -21,8 +21,10 @@ dependencies:
 - palettable >= 3.3.0
 - pandas >= 1.2.5
 - pandas-profiling >= 3.1.0
-- pip >= 21.3.1
+- pillow >= 8.3.2
+- pip >= 21.0.1
 - psutil >= 5.8.0
+- py-opencv >= 4.5.3
 - pyarrow >= 5.0.0
 - pydeck >= 0.5.0
 - pynisher >= 0.6.4
@@ -34,6 +36,5 @@ dependencies:
 - scipy >= 1.7.1
 - streamlit >= 1.1.0
 - torchvision >= 0.10.1
-- pillow >= 0.8.3.2
 - pip:
   - autopytorch >= 0.0.2
