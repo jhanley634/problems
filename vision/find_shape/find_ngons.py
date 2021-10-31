@@ -19,8 +19,7 @@ class WebImage:
             resp.raise_for_status()
             with open(self.fspec, 'wb') as fout:
                 fout.write(resp.content)
-        with open(self.fspec, 'b') as fin:
-            return fin.read()
+        return f'{self.fspec}'
 
 
 def _find_center(contour):
@@ -32,10 +31,10 @@ def _find_center(contour):
     return x, y
 
 
-def find_ngons(infile='shapes.jpg', font=cv2.FONT_HERSHEY_SIMPLEX):
+def find_ngons(web_img, font=cv2.FONT_HERSHEY_SIMPLEX):
     cyan = (255, 255, 0)  # BGR
     purple = (128, 0, 128)
-    img = cv2.imread(expanduser(f'~/Desktop/{infile}'))
+    img = cv2.imread(web_img.image())
     blur = cv2.GaussianBlur(img, ksize=(7, 7), sigmaX=30)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
@@ -60,4 +59,5 @@ def find_ngons(infile='shapes.jpg', font=cv2.FONT_HERSHEY_SIMPLEX):
 
 
 if __name__ == '__main__':
-    find_ngons()
+    url = 'https://i.ytimg.com/vi/Cb2h2-lkJq0/maxresdefault.jpg'
+    find_ngons(WebImage(url))
