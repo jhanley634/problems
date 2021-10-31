@@ -3,11 +3,12 @@
 """
 Verifies that packages load without error, e.g. due to missing deps.
 """
-
 # ignore F401 "imported but unused"
+from PIL import Image  # noqa F401
 from ruamel.yaml import YAML  # noqa F401
 import autoPyTorch  # noqa F401
 import dask  # noqa F401
+import fasteners  # noqa F401
 import geopandas  # noqa F401
 import geopy  # noqa F401
 import isort  # noqa F401

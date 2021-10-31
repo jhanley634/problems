@@ -8,7 +8,7 @@ dependencies:
 - catboost >= 0.26.1
 - cython >= 0.29.24
 - dask >= 2021.10.0
-- fasteners >= 0.16.3
+- fasteners >= 0.16
 - flake8 >= 4.0.1
 - geopandas >= 0.10.2
 - geopy >= 2.2.0
@@ -24,7 +24,7 @@ dependencies:
 - pip >= 21.3.1
 - psutil >= 5.8.0
 - pyarrow >= 5.0.0
-- pydeck >= 0.7.1
+- pydeck >= 0.5.0
 - pynisher >= 0.6.4
 - pyrfr == 0.8.2
 - python >= 3.9.7
@@ -34,5 +34,6 @@ dependencies:
 - scipy >= 1.7.1
 - streamlit >= 1.1.0
 - torchvision >= 0.10.1
+- pillow >= 0.8.3.2
 - pip:
   - autopytorch >= 0.0.2
