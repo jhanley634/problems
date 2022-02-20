@@ -4,12 +4,11 @@
 Retrieves article history from Wikipedia's RESTful API.
 """
 from pathlib import Path
-from pprint import pp
 import datetime as dt
-import json
 import re
 import subprocess
 
+from glom import glom
 import requests
 
 utc = dt.timezone.utc
@@ -32,8 +31,19 @@ class HistoryScraper:
         resp.raise_for_status()
         return resp
 
-    def _minor(self, is_minor: bool):
+    @staticmethod
+    def _minor(is_minor: bool):
         return 'm' if is_minor else '.'
+
+    author_re = re.compile(r'([\w .-]+)')
+
+    @classmethod
+    def _get_author(cls, rev: dict):
+        name = glom(rev, 'user.name')
+        name = cls.author_re.search(name).group(1).strip()  # Sanitize.
+        assert name, rev  # Wikipedia requires a non-empty author name.
+        pseudo_email = f"<{name.replace(' ', '_')}@wiki>"
+        return f'{name} {pseudo_email}'  # Git requires Ident + email addr, so dup it.
 
     older_re = re.compile(r'/history\?older_than=\d+$')
 
@@ -46,6 +56,7 @@ class HistoryScraper:
                 minor = 'm' if rev['minor'] else ' '
                 yield (rev['id'],
                        dt.datetime.fromisoformat(rev['timestamp'].removesuffix('Z')).replace(tzinfo=utc),
+                       self._get_author(rev),
                        f"{minor} {rev['comment']}".strip() or '.')
             older = d.get('older')
             if older:
@@ -74,7 +85,7 @@ class HistoryScraper:
 
         comment_re = re.compile(r'^([()[\]\w  !#$%&*+,./:;<=>?@^~{|}–-]*)')
 
-        for id_, stamp, comment in self._get_all_history_ids():
+        for id_, stamp, author, comment in self._get_all_history_ids():
             stamp = stamp.strftime('%Y-%m-%dT%H:%M:%S')
             comment = comment.replace('"', '.').replace("'", '.')
             out_file = out_dir / self.title
@@ -93,26 +104,12 @@ class HistoryScraper:
                 if comment != m.group(1):
                     print(comment)
                     print(m.group(1))
+                print(author, '.')
                 cmd = f'''
                     cd {out_dir} &&
                     git add {self.title} &&
-                    git commit --date={stamp} -m "{comment}"'''
+                    git commit --date={stamp} --author "{author}" -m "{comment}"'''
                 subprocess.check_call(cmd, shell=True)
-
-    def scrape(self):
-
-        # pg = wiki.page('title=Zinc_finger&action=history')
-        url = 'https://en.wikipedia.org/w/rest.php/v1/page/Zinc_finger/history'
-        resp = requests.get(url)
-        resp = json.loads(resp.text)
-
-        print('timestamp            id        delta')
-        for revision in resp['revisions']:
-            print(revision['timestamp'], revision['id'], revision['delta'],
-                  revision['minor'], revision['comment'])
-
-        pp(resp['latest'])
-        pp(resp['older'])
 
 
 if __name__ == '__main__':
