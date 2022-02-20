@@ -9,6 +9,7 @@ import re
 import subprocess
 
 from glom import glom
+import click
 import requests
 
 utc = dt.timezone.utc
@@ -112,5 +113,12 @@ class HistoryScraper:
                 subprocess.check_call(cmd, shell=True)
 
 
+@click.command()
+@click.option('--article-url', default='Nathan_Safir')
+def main(article_url):
+    prefix = 'https://en.wikipedia.org/wiki/'  # We strip the prefix if present, for copy-n-paste convenience
+    HistoryScraper(article_url.replace(prefix, '')).write_versions()
+
+
 if __name__ == '__main__':
-    HistoryScraper('Nathan_Safir').write_versions()
+    main()
