@@ -5,6 +5,7 @@ Retrieves article history from Wikipedia's RESTful API.
 """
 from pathlib import Path
 import datetime as dt
+import os
 import re
 import subprocess
 
@@ -71,7 +72,7 @@ class HistoryScraper:
         txt = txt.replace('\n', '\n\n======\n')  # This improves `diff` output a bit.
         txt = txt.replace('<', '\n<')
         # Line break, for diff, on a deterministic subset of words. (Nothing special about "vowels".)
-        txt = re.sub(r'([aeiou])', r'\n\1', txt, re.IGNORECASE)
+        txt = re.sub(r'\b([aeiou])', r'\n\1', txt, re.IGNORECASE)
         lines = [line.strip()  # so `git log -p` won't append EOL red "trailing blank" notations
                  for line in txt.split('\n')]
         return '\n'.join(lines)
@@ -85,31 +86,33 @@ class HistoryScraper:
             assert git_dir.exists()
 
         comment_re = re.compile(r'^([()[\]\w  !#$%&*+,./:;<=>?@^~{|}–-]*)')
+        single_quote = "'"
+        xlate_tbl = str.maketrans(f'{single_quote}"\t\n', '..  ')
 
         for id_, stamp, author, comment in self._get_all_history_ids():
+            sec = int(stamp.timestamp())
             stamp = stamp.strftime('%Y-%m-%dT%H:%M:%S')
-            comment = comment.replace('"', '.').replace("'", '.')
+            comment = comment.translate(xlate_tbl)
             out_file = out_dir / self.title
             out_file_id = Path(f'{out_file}-{id_}')
             if not out_file_id.exists():
                 resp = self.get(f'https://en.wikipedia.org/w/index.php?title={self.title}&oldid={id_}')
-                msg_file = Path('/tmp/commit-message.txt')
-                with open(msg_file, 'w') as fout:
-                    fout.write(f'{stamp}\n')
-                    fout.write(f'{comment}')
-                with open(out_file_id, 'w') as fout:
-                    fout.write(resp.text)
                 with open(out_file, 'w') as fout:
                     fout.write(self._short_lines(resp.text))
+                    fout.write('\n')
+                with open(out_file_id, 'w') as fout:
+                    fout.write(resp.text)
+                    fout.write('\n')
+                os.utime(out_file_id, (sec, sec))
                 m = comment_re.search(comment)
                 if comment != m.group(1):
                     print(comment)
                     print(m.group(1))
-                print(author, '.')
+                print('')
                 cmd = f'''
                     cd {out_dir} &&
                     git add {self.title} &&
-                    git commit --date={stamp} --author "{author}" -m "{comment}"'''
+                    git commit --date={stamp} --author "{author}" -m "{id_} {comment}"'''
                 subprocess.check_call(cmd, shell=True)
 
 
