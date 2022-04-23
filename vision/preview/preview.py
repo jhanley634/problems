@@ -24,9 +24,14 @@ def preview_images(folder: Path = DESKTOP, pattern='*.png'):
     if len(images) < 2:
         images = ['α'] + images
     assert len(images) >= 2
+    st.set_page_config(layout='wide')
+
     choice = folder / st.select_slider('file', options=images)
     if choice.exists():
-        st.image(f'{choice}')
+        st.image(f'{choice}', use_column_width=True)
+
+    st.markdown('----')
+    st.write('- ' + '\n- '.join(images))
 
 
 if __name__ == '__main__':
