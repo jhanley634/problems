@@ -5,7 +5,6 @@ channels:
 - conda-forge
 
 dependencies:
-- catboost >= 1.0.4
 - cython >= 0.29.24
 - dask >= 2022.2.0
 - fasteners >= 0.17.3
@@ -13,7 +12,7 @@ dependencies:
 - geopandas >= 0.10.2
 - geopy >= 2.2.0
 - glom >= 20.11.0
-- hpbandster >= 0.7.4
+#- hpbandster >= 0.7.4  # better to use https://github.com/automl/SMAC3
 - imbalanced-learn >= 0.8.1
 - isort >= 5.10.1
 - netifaces >= 0.10.9
@@ -29,7 +28,6 @@ dependencies:
 - pyarrow >= 7.0.0
 - pydeck >= 0.7.1
 - pynisher >= 0.6.4
-- pyrfr == 0.8.2
 - pytest >= 7.0.1
 - python >= 3.9.7
 - pytorch == 1.6.0
