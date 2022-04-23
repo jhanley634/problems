@@ -38,5 +38,6 @@ dependencies:
 - scipy >= 1.8.0
 - streamlit >= 1.5.1
 - torchvision >= 0.10.1
+- typer >= 0.4.1
 - pip:
   - autopytorch >= 0.0.2
