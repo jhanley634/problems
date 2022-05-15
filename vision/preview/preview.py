@@ -10,15 +10,16 @@ from pathlib import Path
 import streamlit as st
 import typer
 
-DESKTOP = Path('~/Desktop').expanduser()
+DESKTOP = Path('~/Desktop')
 cli = typer.Typer()
 
 
 @cli.command()
 def preview_images(folder: Path = DESKTOP, pattern='*.png'):
+    folder = folder.expanduser()
     assert folder.is_dir(), folder
     images = [Path(f).name
-              for f in glob(f'{folder}/{pattern}')]
+              for f in sorted(glob(f'{folder}/{pattern}'))]
     if len(images) < 2:
         images.append('ω')
     if len(images) < 2:
