@@ -1,5 +1,6 @@
 
 # Copyright 2022 John Hanley. MIT licensed.
+from random import seed
 import unittest
 
 import pandas as pd
@@ -17,5 +18,6 @@ class TestProjection(unittest.TestCase):
         df = pd.DataFrame(rows)
         self.assertEqual('a b c d e', ' '.join(df.columns))
 
+        seed(44)
         df = feature_subset(df, num_features=3)
-        self.assertEqual('a b c', ' '.join(df.columns))
+        self.assertEqual('a d e', ' '.join(df.columns))

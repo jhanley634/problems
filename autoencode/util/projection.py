@@ -1,9 +1,11 @@
 
+from random import shuffle
+
 # Copyright 2022 John Hanley. MIT licensed.
 import pandas as pd
 
 
-def feature_subset(df: pd.DataFrame, *, num_features=None, frac=1.0):
+def feature_subset(df: pd.DataFrame, *, num_features=None, frac=1.0, keep=1):
     assert len(df.shape) == 2, df.shape
 
     nc = df.shape[1]  # num columns
@@ -11,7 +13,9 @@ def feature_subset(df: pd.DataFrame, *, num_features=None, frac=1.0):
         num_features = int(frac * nc)
     nc = min(nc, num_features)
 
-    for col in reversed(df.columns):  # prune from the end
+    cols = list(df.columns[keep:])
+    shuffle(cols)
+    for col in cols:
         if df.shape[1] <= nc:
             break
         df.drop(columns=[col], inplace=True)
