@@ -5,10 +5,13 @@ import unittest
 
 import pandas as pd
 
-from autoencode.util.projection import feature_subset
+from autoencode.util.projection import _hash_col, feature_subset
 
 
 class TestProjection(unittest.TestCase):
+
+    def test_hash(self):
+        self.assertEqual(('d1651215', 'name'), _hash_col('name'))
 
     def test_feature_subset(self):
         rows = [

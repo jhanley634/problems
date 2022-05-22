@@ -1,4 +1,5 @@
 
+# Copyright 2022 John Hanley. MIT licensed.
 import unittest
 
 from web.wiki.history import HistoryScraper
