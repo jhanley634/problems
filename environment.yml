@@ -12,7 +12,7 @@ dependencies:
 - geopandas >= 0.10.2
 - geopy >= 2.2.0
 - glom >= 20.11.0
-- imbalanced-learn >= 0.9.0
+- imbalanced-learn >= 0.9.1
 - isort >= 5.10.1
 - netifaces >= 0.10.9
 - networkit >= 9.1.1
@@ -29,9 +29,12 @@ dependencies:
 - pynisher >= 0.6.4
 - pytest >= 7.1.2
 - python >= 3.9.7
+- python-levenshtein >= 0.12.2
 - ruamel.yaml >= 0.17.21
 - scikit-learn >= 0.24.2
 - scipy >= 1.8.0
-- streamlit >= 1.8.1
+- streamlit >= 1.10.0
 - torchvision >= 0.10.1
 - typer >= 0.4.1
+- pip:
+  - uszipcode >= 1.0.1
