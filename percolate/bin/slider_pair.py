@@ -33,16 +33,17 @@ def main():
     prev_lo = prev['lo']
     prev_delta = min(prev['hi'] - prev['lo'], 50)
 
-    lo = st.slider('low', min_value=1, max_value=120)
     widget = st.empty()
-    hi = widget.slider('high', min_value=1, max_value=120, value=prev['hi'])
+    lo, hi = widget.slider('high', min_value=1, max_value=120, value=(prev['lo'], prev['hi']))
+    print(hi)
 
     if lo != prev_lo:  # We assume mouse will only adjust a single slider per refresh interval.
-        hi = widget.slider('high', min_value=1, max_value=120, value=lo + prev_delta)
+        lo, hi = widget.slider('high', min_value=1, max_value=120, value=(lo, lo + prev_delta))
 
     st.write(prev_delta)
     prev['lo'] = lo
     prev['hi'] = hi
+    return
 
     se = _get_search_engine()
 
