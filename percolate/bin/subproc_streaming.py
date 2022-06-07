@@ -16,12 +16,28 @@ def streaming_subproc(cmd):
         stdout = io.TextIOWrapper(proc.stdout)
         fd = stdout.fileno()
         os.set_blocking(fd, False)
-        buf = 'sentinel'
-        while proc.poll() is None and len(buf) > 0:
+        buf = ''
+        temp = 'sentinel'
+        while proc.poll() is None and temp:
             select([fd], [], [], timeout.total_seconds())
-            buf = stdout.read(PIPE_BUF)
-            if len(buf):
-                yield buf
+            temp = stdout.read(PIPE_BUF)
+            buf += temp
+
+            start, end = 0, 0
+            while start > -1:
+                end = buf.index('\n', start) + 1
+                if end:
+                    yield buf[start:end]
+                start = end
+            buf = buf[start:]
+
+        if buf:
+            yield buf
+
+        # Now drain the last few lines from the wrapper, until EOF.
+        for line in stdout:
+            yield line
+
         proc.terminate()
         proc.wait()
 
