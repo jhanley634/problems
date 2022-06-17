@@ -16,13 +16,13 @@ def generate_all(dest_dir: Path, num_copies: int = 1_000, length: int = 12_500):
     def _fspec(i: int) -> Path:
         return Path(dest_dir / f'scan_{i:04d}.txt')
 
-    for i in range(num_copies):
-        _write_one(data, _fspec(i))
-
-def _write_one(data, out_fspec):
-    with open(out_fspec, 'w') as fout:
+    file0 = _fspec(0)
+    with open(file0, 'w') as fout:
         for n in data:
             fout.write(f'   {3 * n:.7f}e-05  {-2 * n:.7f}e-03\n')
+
+    for i in range(1, num_copies):
+        copyfile(file0, _fspec(i))
 
 
 if __name__ == '__main__':
