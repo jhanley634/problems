@@ -3,6 +3,7 @@ from pathlib import Path
 from shutil import copyfile
 
 from numpy.random import default_rng
+from tqdm import tqdm
 import typer
 
 
@@ -21,7 +22,7 @@ def generate_all(dest_dir: Path, num_copies: int = 1_000, length: int = 12_500):
         for n in data:
             fout.write(f'   {3 * n:.7f}e-05  {-2 * n:.7f}e-03\n')
 
-    for i in range(1, num_copies):
+    for i in tqdm(range(1, num_copies), mininterval=.2):
         copyfile(file0, _fspec(i))
 
 
