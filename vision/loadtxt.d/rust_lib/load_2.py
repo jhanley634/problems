@@ -1,9 +1,16 @@
 #! /usr/bin/env python
-import rust
+from pathlib import Path
 
-# http://saidvandeklundert.net/learn/2021-11-18-calling-rust-from-python-using-pyo3
+from rust_fast import load_txt
+import typer
+
+
+def main(in_folder: Path = '/tmp/loadtxt.d'):
+    for f in sorted(in_folder.glob('*.txt')):
+        n = load_txt(str(f))
+        assert 42 == n, n
+    print(f)
 
 
 if __name__ == '__main__':
-    result = rust.multiply(2, 3)
-    print(result)
+    typer.run(main)
