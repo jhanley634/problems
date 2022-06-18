@@ -1,11 +1,9 @@
 #! /usr/bin/env python
-import ctypes
+import rust
 
-# http://saidvandeklundert.net/learn/2021-11-06-calling-rust-from-python
-
-rust = ctypes.CDLL('target/release/librust_lib.so')
+# http://saidvandeklundert.net/learn/2021-11-18-calling-rust-from-python-using-pyo3
 
 
 if __name__ == '__main__':
-    SOME_BYTES = 'Python says hi inside Rust!'.encode('utf-8')
-    rust.print_string(SOME_BYTES)
+    result = rust.multiply(2, 3)
+    print(result)
