@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2022 John Hanley. MIT licensed.
 from pathlib import Path
 
 from rust_fast import load_txt

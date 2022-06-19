@@ -1,8 +1,9 @@
+// Copyright 2022 John Hanley. MIT licensed.
+
 use std::fs::File;
 use std::io::Read;
 use std::str;
-use pyo3::prelude::*;
-// use pyo3::types::{PyList, PyTuple};
+use pyo3::prelude::{PyModule, PyResult, Python, pyfunction, pymodule, wrap_pyfunction};
 
 
 #[pyfunction]

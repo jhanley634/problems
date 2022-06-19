@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2022 John Hanley. MIT licensed.
 from pathlib import Path
 from shutil import copyfile
 
@@ -7,7 +8,12 @@ from tqdm import tqdm
 import typer
 
 
-def generate_all(dest_dir: Path, num_copies: int = 1_000, length: int = 12_500):
+def generate_all(dest_dir: Path, num_copies: int = 7_000, length: int = 12_500):
+    """Generates example data for a timing comparison.
+
+    Question originally posed in
+    https://stackoverflow.com/questions/72611636/optimise-cython-speed-in-for-loop
+    """
     dest_dir.mkdir(exist_ok=True)
 
     rng = default_rng(seed=42)
