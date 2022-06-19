@@ -1,3 +1,5 @@
 .idea/
 .ipynb_checkpoints/
 __pycache__/
+vision/loadtxt.d/rust_lib/Cargo.lock
+vision/loadtxt.d/rust_lib/target
