@@ -22,5 +22,7 @@ run: $(OBJ)
 	cd rust_lib && $(RUN)
 	./load_1.py
 
+SHELL = bash
+
 clean:
-	rm -rf $(OUT) rust_lib/Cargo.lock rust_lib/target
+	rm -rf $(OUT) rust_lib/{Cargo.lock,target} pythran/{build,dist,hello{,.egg-info},loadtxt}
