@@ -1,14 +1,15 @@
 // Copyright 2022 John Hanley. MIT licensed.
 
+use pyo3::prelude::{PyModule, PyResult, Python, pyfunction, pymodule, wrap_pyfunction};
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::str;
-use pyo3::prelude::{PyModule, PyResult, Python, pyfunction, pymodule, wrap_pyfunction};
 
 
 #[pyfunction]
 fn load_txt(path: &str) -> PyResult<Vec<f64>> {
     // This consumes ~ 150 .CSV files per second.
+    // A hint of Vec::with_capacity(13000) instead of new() lets it hit 160 per sec.
     let mut infile = File::open(path).unwrap();
     let mut content = String::new();
     infile.read_to_string(&mut content).unwrap();

@@ -13,6 +13,12 @@ name = "rust_fast"
 
 crate-type = ["cdylib", "rlib"]
 
+[dependencies.ndarray]
+version = "0.15"
+
+[dependencies.numpy]
+version = "0.16"
+
 [dependencies.pyo3]
-version = "0.15.0"
+version = "0.16"
 features = ["extension-module"]

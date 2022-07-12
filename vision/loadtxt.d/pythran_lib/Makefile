@@ -1,5 +1,8 @@
 
-all:
+all: hello/hello.cpp
+	cd hello && python -c 'from hello import hello; hello()'
+
+hello/hello.cpp:
 	./setup.py build
 
 clean:
