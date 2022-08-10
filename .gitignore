@@ -1,9 +1,11 @@
+
 .idea/
 .ipynb_checkpoints/
 __pycache__/
+cache/
 vision/loadtxt.d/pythran_lib/build/
 vision/loadtxt.d/pythran_lib/dist/
-vision/loadtxt.d/pythran_lib/hello/hello.cpp
 vision/loadtxt.d/pythran_lib/hello.egg-info/
+vision/loadtxt.d/pythran_lib/hello/hello.cpp
 vision/loadtxt.d/rust_lib/Cargo.lock
 vision/loadtxt.d/rust_lib/target
