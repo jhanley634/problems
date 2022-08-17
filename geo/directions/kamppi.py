@@ -12,10 +12,6 @@ import seaborn as sns
 import typer
 
 
-def _set_nearest_node(graph, marker):
-    marker.nearest_node = ox.get_nearest_node(graph, marker.location)
-
-
 def show_locale(place_name='Kamppi, Helsinki, Finland'):
     out_file = Path('~/Desktop').expanduser() / place_name.replace(', ', '-')
     graph = graph_from_place(place_name)
