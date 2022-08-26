@@ -6,17 +6,17 @@ channels:
 
 dependencies:
 - cython >= 0.29.24
-- dask >= 2022.8.0
+- dask >= 2022.8.1
 - fasteners >= 0.17.3
 - flake8 >= 5.0.4
 - geopandas >= 0.11.1
 - geopy >= 2.2.0
 - glom >= 20.11.0
-- gpxpy >= 0.0.1
+- gpxpy >= 1.5.0
 - imbalanced-learn >= 0.9.1
-- ipyleaflet >= 0.17.0
+- ipyleaflet >= 0.17.1
 - isort >= 5.10.1
-- maturin >= 0.13.1
+- maturin >= 0.13.2
 - netifaces >= 0.11.0
 - networkit >= 10.0
 - openml >= 0.12.2
@@ -30,7 +30,7 @@ dependencies:
 - py-opencv >= 4.6.0
 - pyarrow >= 9.0.0
 - pydeck >= 0.7.1
-- pynisher >= 0.6.4
+- pynisher >= 1.0.0
 - pyo3-pack >= 0.3.6
 - pytest >= 7.1.2
 - python >= 3.9.7
@@ -38,7 +38,7 @@ dependencies:
 - ruamel.yaml >= 0.17.21
 - scikit-learn >= 1.1.2
 - scipy >= 1.9.0
-- streamlit >= 1.11.1
+- streamlit >= 1.12.2
 - torchvision >= 0.10.1
 - typer >= 0.6.1
 - pip:
