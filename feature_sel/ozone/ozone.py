@@ -16,7 +16,7 @@ def _get_csv_fspec(folder: Path = Path('/tmp')) -> Path:
     return fspec
 
 
-def _get_df():
+def get_df(add_stamp=True) -> pd.DataFrame:
     # from https://rdrr.io/cran/mlbench/man/Ozone.html
     new_names = {
         'V1': 'month',
@@ -36,6 +36,11 @@ def _get_df():
     df = pd.read_csv(_get_csv_fspec())
     df = df.rename(columns=new_names)
 
+    if add_stamp:
+        df['year'] = df.day * 0 + 1976
+        df['stamp'] = pd.to_datetime(df[['year', 'month', 'day']])
+        del df['year']
+
     # Now shuffle target to the end.
     target = df.ozone
     df = df.drop(columns='ozone')
@@ -45,7 +50,7 @@ def _get_df():
 
 
 def main():
-    df = _get_df()
+    df = get_df()
     print(df)
 
 
