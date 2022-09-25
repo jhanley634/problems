@@ -2,8 +2,11 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from pathlib import Path
 
+from pandas_profiling import ProfileReport
+import matplotlib.pyplot as plt
 import pandas as pd
 import requests
+import seaborn as sns
 
 
 def _get_csv_fspec(folder: Path = Path('/tmp')) -> Path:
@@ -49,9 +52,18 @@ def get_df(add_stamp=True) -> pd.DataFrame:
     return df
 
 
-def main():
+def main(out_file: Path = Path('~/Desktop/ozone.png').expanduser(), want_report=False):
     df = get_df()
-    print(df)
+
+    cols = 'pres_500mb humidity inversion_height_ft gradient_mm_hg inversion_temp_f ozone'.split()
+    subset = df[[*cols]]
+    print(subset.head(2))
+    sns.pairplot(subset)
+    plt.savefig(out_file)
+
+    if want_report:
+        pr = ProfileReport(df)
+        pr.to_file('/tmp/ozone.html')
 
 
 if __name__ == '__main__':
