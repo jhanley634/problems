@@ -52,11 +52,13 @@ def get_df(add_stamp=True) -> pd.DataFrame:
     return df
 
 
+COLS = 'pres_500mb humidity temp_f_sandberg gradient_mm_hg inversion_temp_f ozone'.split()
+
+
 def main(out_file: Path = Path('~/Desktop/ozone.png').expanduser(), want_report=False):
     df = get_df()
 
-    cols = 'pres_500mb humidity inversion_height_ft gradient_mm_hg inversion_temp_f ozone'.split()
-    subset = df[[*cols]]
+    subset = df[[*COLS]]
     print(subset.head(2))
     sns.pairplot(subset)
     plt.savefig(out_file)

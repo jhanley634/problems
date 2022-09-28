@@ -3,15 +3,16 @@
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 
-from feature_sel.ozone.ozone import get_df
+from feature_sel.ozone.ozone import COLS, get_df
 
 
 def _get_train_test(train_through='1976-06-30'):
-    df = get_df()
-    assert 366 == len(df)
+    cols = COLS + ['stamp']
+    df = get_df()[[*cols]]
+    assert 366 == len(df), len(df)
     df = df.dropna()
-    assert 203 == len(df)
-    del df['month']  # not predictive, messes up linear regression
+    assert 331 == len(df), len(df)
+    # del df['month']  # not predictive, messes up linear regression
 
     y_train = df[df.stamp <= train_through].ozone
     y_test = df[df.stamp > train_through].ozone
@@ -28,8 +29,8 @@ def _get_train_test(train_through='1976-06-30'):
 
 def main():
     x_train, y_train, x_test, y_test = _get_train_test()
-    assert 103 == len(x_train)
-    assert 100 == len(x_test)
+    assert 171 == len(x_train), len(x_train)
+    assert 160 == len(x_test), len(x_test)
     assert len(y_train) == len(x_train)
     assert len(y_test) == len(x_test)
 
