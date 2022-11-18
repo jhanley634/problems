@@ -19,7 +19,6 @@ def _show(gpx):
     import numpy as np
     import xgboost as xgb
 
-
     dtrain = xgb.DMatrix(X)
 
     # mlmodel.E_train is the boolean event indicator
@@ -30,11 +29,15 @@ def _show(gpx):
     dtrain.set_float_info('label_lower_bound', y_lower_bound)
     dtrain.set_float_info('label_upper_bound', y_upper_bound)
 
-    params = {'objective': 'survival:aft',
-              'eval_metric': 'aft-nloglik',
-              'aft_loss_distribution': 'normal',
-              'aft_loss_distribution_scale': 1.20,
-              'tree_method': 'hist', 'learning_rate': 0.05, 'max_depth': 2}
+    params = {
+        'objective': 'survival:aft',
+        'eval_metric': 'aft-nloglik',
+        'aft_loss_distribution': 'normal',
+        'aft_loss_distribution_scale': 1.20,
+        'tree_method': 'hist',
+        'learning_rate': 0.05,
+        'max_depth': 2,
+    }
 
     bst = xgb.train(params, dtrain, num_boost_round=5, evals=[(dtrain, 'train')])
 

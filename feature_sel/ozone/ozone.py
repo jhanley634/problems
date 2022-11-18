@@ -8,8 +8,11 @@ import pandas as pd
 import requests
 import seaborn as sns
 
+_desktop = Path("~/Desktop")
+_tmp = Path("/tmp")
 
-def _get_csv_fspec(folder: Path = Path("/tmp")) -> Path:
+
+def _get_csv_fspec(folder: Path = _tmp) -> Path:
     fspec = folder.expanduser() / "ozone.csv"
     if not fspec.exists():
         url = "https://www.sector6.net/shared/ozone.csv"
@@ -57,7 +60,7 @@ COLS = (
 )
 
 
-def main(out_file: Path = Path("~/Desktop/ozone.png").expanduser(), want_report=False):
+def main(out_file: Path = _desktop / "ozone.png", want_report=False):
     df = get_df()
 
     subset = df[[*COLS]]
