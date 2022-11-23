@@ -8,9 +8,9 @@ import numpy as np
 class GenerateCalls:
     def __init__(
         self,
-        arrival_rate: float = 1 / 30.0,  # λ: expect a call every thirty seconds
-        call_duration: float = 28,
-        variance: float = 10,
+        arrival_rate: float = 1 / 30.0,  # expect a call every thirty seconds
+        call_duration: float = 28,  # almost one Erlang of call traffic
+        variance: float = 15,
     ):
         """Generate call events at random times.
 
@@ -33,7 +33,6 @@ class GenerateCalls:
     ):
         t = start_time
         while t < end_time:
-            # advance time to the next event
             t += dt.timedelta(seconds=self.rng.exponential(1 / self.arrival_rate))
             yield self._produce_event(t)
 
@@ -52,7 +51,9 @@ class GenerateCalls:
             t += one_second
 
     def _produce_event(self, t: dt.datetime):
-        dur = dt.timedelta(seconds=self.call_duration)
+        sec = self.rng.normal(self.call_duration, self.variance)
+        sec = max(5, sec)  # call length cannot be super short, definitely not negative
+        dur = dt.timedelta(seconds=sec)
         self.id_ += 1
         self.q.put((t + dur, self.id_))
         return t, dur, self.id_
