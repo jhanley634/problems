@@ -5,7 +5,7 @@ import datetime as dt
 import numpy as np
 
 
-class GenerateCalls:
+class CallGenerator:
     def __init__(
         self,
         arrival_rate: float = 1 / 30.0,  # expect a call every thirty seconds
@@ -62,15 +62,15 @@ class GenerateCalls:
 
 def max_occupancy():
     events = []
-    gen = GenerateCalls()
-    for stamp, _, _ in gen.gen_continuous(
+    generator = CallGenerator()
+    for stamp, _, _ in generator.gen_continuous(
         dt.datetime.now(),
         dt.datetime.now() + dt.timedelta(seconds=1_200),
     ):
         events.append((stamp, 1))  # arrival will increment occupancy
 
-    while len(gen.q.queue) > 0:
-        stamp, _ = gen.q.get()
+    while len(generator.q.queue) > 0:
+        stamp, _ = generator.q.get()
         events.append((stamp, -1))  # and a departure decrements it
 
     max_occ = occ = 0
