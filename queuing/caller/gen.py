@@ -5,11 +5,23 @@ import datetime as dt
 import numpy as np
 
 
-class GenerateCallers:
+class GenerateCalls:
     def __init__(
-        self, arrival_rate: float = 1 / 30.0  # λ: expect a call every thirty seconds
+        self,
+        arrival_rate: float = 1 / 30.0,  # λ: expect a call every thirty seconds
+        call_duration: float = 28,
+        variance: float = 10,
     ):
+        """Generate call events at random times.
+
+        arrival_rate: λ, in event per second, expect a call every 1 / λ seconds
+        call_duration: expected call length, in seconds
+        variance: standard deviation of call length, in seconds
+        """
         self.arrival_rate = arrival_rate
+        self.call_duration = call_duration
+        self.variance = variance
+
         self.q: PriorityQueue = PriorityQueue()
         self.rng = np.random.default_rng()
         self.id_ = 0  # serial
@@ -18,22 +30,17 @@ class GenerateCallers:
         self,
         start_time: dt.datetime,
         end_time: dt.datetime,
-        call_duration_sec: float = 20,
     ):
         t = start_time
         while t < end_time:
             # advance time to the next event
             t += dt.timedelta(seconds=self.rng.exponential(1 / self.arrival_rate))
-            dur = dt.timedelta(seconds=call_duration_sec)
-            self.id_ += 1
-            self.q.put((t + dur, self.id_))
-            yield t, dur, self.id_
+            yield self._produce_event(t)
 
     def gen_discrete(
         self,
         start: dt.datetime,
         end: dt.datetime,
-        call_duration_sec: float = 20,
     ):
         one_second = dt.timedelta(seconds=1)
         t = start
@@ -41,18 +48,25 @@ class GenerateCallers:
             # cf np.random.poisson() & np.random.exponential()
             num_events = self.rng.poisson(self.arrival_rate)
             for _ in range(num_events):
-                dur = dt.timedelta(seconds=call_duration_sec)
-                self.id_ += 1
-                self.q.put((t + dur, self.id_))
-                yield t, dur, self.id_
-
+                yield self._produce_event(t)
             t += one_second
+
+    def _produce_event(self, t: dt.datetime):
+        dur = dt.timedelta(seconds=self.call_duration)
+        self.id_ += 1
+        self.q.put((t + dur, self.id_))
+        return t, dur, self.id_
 
 
 if __name__ == "__main__":
-    gen = GenerateCallers()
+    gen = GenerateCalls()
     for stamp, duration, id_ in gen.gen_continuous(
         dt.datetime.now(),
         dt.datetime.now() + dt.timedelta(seconds=1_200),
     ):
         print(stamp, " ", duration, " ", id_)
+
+    while len(gen.q.queue) > 0:
+        # These are "end of event" timestamps.
+        stamp, id_ = gen.q.get()
+        print(id_, stamp)
