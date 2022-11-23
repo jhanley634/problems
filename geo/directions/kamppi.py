@@ -12,18 +12,15 @@ import seaborn as sns
 import typer
 
 
-def show_locale(place_name='Kamppi, Helsinki, Finland'):
-    out_file = Path('~/Desktop').expanduser() / place_name.replace(', ', '-')
+def show_locale(place_name="Kamppi, Helsinki, Finland"):
+    out_file = Path("~/Desktop").expanduser() / place_name.replace(", ", "-")
     graph = graph_from_place(place_name)
     # fig, ax = ox.plot_graph(graph); print(fig, ax)
     nodes, edges = ox.graph_to_gdfs(graph)
     center = (60.16607, 24.93116)
     m = Map(center=center, basemap=basemaps.CartoDB.Positron, zoom=15)
     to_marker_style = AwesomeIcon(
-        name='circle',
-        icon_color='white',
-        marker_color='red',
-        spin=False
+        name="circle", icon_color="white", marker_color="red", spin=False
     )
     from_marker = Marker(location=center)
     to_marker = Marker(location=center, icon=to_marker_style)
@@ -32,10 +29,15 @@ def show_locale(place_name='Kamppi, Helsinki, Finland'):
 
     print(nodes)
     print(edges)
-    sns.scatterplot(data=nodes, x='x', y='y',
-                    hue='highway', legend='full')
+    sns.scatterplot(
+        data=nodes,
+        x="x",
+        y="y",
+        hue="highway",
+        legend="full",
+    )
     plt.savefig(out_file)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     typer.run(show_locale)
