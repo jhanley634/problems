@@ -61,14 +61,12 @@ class CallGenerator:
 
 
 def max_occupancy():
-    events = []
     generator = CallGenerator()
-    for stamp, _, _ in generator.gen_continuous(
+    gen = generator.gen_continuous(
         dt.datetime.now(),
         dt.datetime.now() + dt.timedelta(seconds=1_200),
-    ):
-        events.append((stamp, 1))  # arrival will increment occupancy
-
+    )
+    events = [(stamp, 1) for stamp, _, _ in gen]  # arrival will increment occupancy
     while len(generator.q.queue) > 0:
         stamp, _ = generator.q.get()
         events.append((stamp, -1))  # and a departure decrements it
