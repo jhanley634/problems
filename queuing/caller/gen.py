@@ -53,21 +53,33 @@ class GenerateCalls:
     def _produce_event(self, t: dt.datetime):
         sec = self.rng.normal(self.call_duration, self.variance)
         sec = max(5, sec)  # call length cannot be super short, definitely not negative
+        sec += 1e-6
         dur = dt.timedelta(seconds=sec)
         self.id_ += 1
         self.q.put((t + dur, self.id_))
         return t, dur, self.id_
 
 
-if __name__ == "__main__":
+def max_occupancy():
+    events = []
     gen = GenerateCalls()
-    for stamp, duration, id_ in gen.gen_continuous(
+    for stamp, _, _ in gen.gen_continuous(
         dt.datetime.now(),
         dt.datetime.now() + dt.timedelta(seconds=1_200),
     ):
-        print(stamp, " ", duration, " ", id_)
+        events.append((stamp, 1))  # arrival will increment occupancy
 
     while len(gen.q.queue) > 0:
-        # These are "end of event" timestamps.
-        stamp, id_ = gen.q.get()
-        print(id_, stamp)
+        stamp, _ = gen.q.get()
+        events.append((stamp, -1))  # and a departure decrements it
+
+    max_occ = occ = 0
+    for _, delta in sorted(events):
+        occ += delta
+        max_occ = max(max_occ, occ)
+
+    print(f"maximum occupancy was {max_occ}")
+
+
+if __name__ == "__main__":
+    max_occupancy()
