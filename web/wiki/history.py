@@ -110,10 +110,10 @@ class HistoryScraper:
                     fout.write(resp.text)
                     fout.write("\n")
                 os.utime(out_file_id, (sec, sec))
-                m = comment_re.search(comment)
-                if comment != m.group(1):
+                match = comment_re.search(comment)
+                if comment != match[1]:
                     print(comment)
-                    print(m.group(1))
+                    print(match[1])
                 print("")
                 cmd = f'''
                     cd {out_dir} &&

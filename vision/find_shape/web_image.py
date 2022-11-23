@@ -10,10 +10,10 @@ _tmp = Path("/tmp")
 class WebImage:
     """Offers cached access to images from the web."""
 
-    def __init__(self, url, fname="shapes.jpg", temp=_tmp):
+    def __init__(self, url, filename="shapes.jpg", temp=_tmp):
         self.url = url
-        pfx = "img" + sha3_224(url.encode()).hexdigest()[:4]
-        self.fspec = temp / f"{pfx}_{fname}"
+        digest = sha3_224(url.encode()).hexdigest()[:4]
+        self.fspec = temp / f"img{digest}_{filename}"
 
     def image(self):
         if not self.fspec.exists():
