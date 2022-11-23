@@ -61,13 +61,14 @@ class GenerateCalls:
 
 
 def max_occupancy():
-    events = []
     gen = GenerateCalls()
-    for stamp, _, _ in gen.gen_continuous(
-        dt.datetime.now(),
-        dt.datetime.now() + dt.timedelta(seconds=1_200),
-    ):
-        events.append((stamp, 1))  # arrival will increment occupancy
+    events = [
+        (stamp, 1)
+        for stamp, _, _ in gen.gen_continuous(
+            dt.datetime.now(),
+            dt.datetime.now() + dt.timedelta(seconds=1_200),
+        )
+    ]
 
     while len(gen.q.queue) > 0:
         stamp, _ = gen.q.get()
