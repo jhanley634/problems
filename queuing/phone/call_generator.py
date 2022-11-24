@@ -92,10 +92,8 @@ def _get_start_and_end(events: pd.DataFrame):
         yield Pair(row.end, -1)  # departure decrement
 
 
-Call = namedtuple("Call", "stamp, duration, id_")
-
-
 def _get_events_dataframe() -> pd.DataFrame:
+    Call = namedtuple("Call", "stamp, duration, id_")
     _, gen = _get_gen()
     events = pd.DataFrame([Call(*row) for row in gen])
     events["end"] = events.stamp + events.duration
@@ -119,6 +117,7 @@ def pandas_occ2():  # Compute same thing, avoiding row-by-row iteration.
 
     df["stamp"] = df.stamp.combine_first(df.end)
     df = df.sort_values(["stamp"])
+
     df["occupancy"] = df.delta.cumsum()
     return df.occupancy.max()
 

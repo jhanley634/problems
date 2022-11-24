@@ -3,11 +3,13 @@
 from pathlib import Path
 
 import gpxpy
-import mlmodel
+# import mlmodel
 import numpy as np
 import pandas as pd
 import typer
-import xgboost as xgb
+
+# import xgboost as xgb
+
 
 
 def directions(in_file="/tmp/10-Jul-2022-1714.gpx"):
