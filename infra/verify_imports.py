@@ -3,7 +3,7 @@
 """
 Verifies that packages load without error, e.g. due to missing deps.
 """
-from collections import Counter  # noqa F401
+from collections import Counter  # noqa F401 ignore "imported but unused"
 from distutils.core import setup  # noqa F401
 from glob import glob  # noqa F401
 from hashlib import blake2b  # noqa F401
@@ -32,7 +32,6 @@ from numpy.random import default_rng  # noqa F401
 from osmnx.graph import graph_from_place  # noqa F401
 from palettable.colorbrewer import qualitative  # noqa F401
 from pandas_profiling import ProfileReport  # noqa F401
-# ignore F401 "imported but unused"
 from PIL.Image import Image  # noqa F401
 from PIL.ImageDraw import ImageDraw  # noqa F401
 from rust_fast import load_txt  # noqa F401

@@ -5,6 +5,7 @@ channels:
 - conda-forge
 
 dependencies:
+- black >= 0.22.10.0
 - cython >= 0.29.24
 - dask >= 2022.11.1
 - fasteners >= 0.17.3
