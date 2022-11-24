@@ -6,23 +6,23 @@ channels:
 
 dependencies:
 - cython >= 0.29.24
-- dask >= 2022.10.2
+- dask >= 2022.11.1
 - fasteners >= 0.17.3
 - flake8 >= 5.0.4
 - geopandas >= 0.12.1
 - geopy >= 2.3.0
-- glom >= 22.1.0
+- glom >= 20.11.0
 - gpxpy >= 1.5.0
 - imbalanced-learn >= 0.9.1
 - ipyleaflet >= 0.17.2
 - isort >= 5.10.1
-- maturin >= 0.14.1
+- maturin >= 0.14.2
 - netifaces >= 0.11.0
 - networkit >= 10.0
 - openml >= 0.12.2
 - osmnx >= 1.2.2
 - palettable >= 3.3.0
-- pandas >= 1.4.3
+- pandas >= 1.5.2
 - pandas-profiling >= 3.2.0
 - pillow >= 9.0.1
 - pip >= 22.3.1
@@ -34,7 +34,7 @@ dependencies:
 - pynisher >= 1.0.0
 - pyo3-pack >= 0.3.6
 - pytest >= 7.2.0
-- python >= 3.9.7
+- python >= 3.10.8, < 3.11
 - python-levenshtein >= 0.12.2
 - ruamel.yaml >= 0.17.21
 - scikit-learn >= 1.1.3
