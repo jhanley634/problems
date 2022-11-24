@@ -1,8 +1,10 @@
 #! /usr/bin/env python
+from collections import namedtuple
 from queue import PriorityQueue
 import datetime as dt
 
 import numpy as np
+import pandas as pd
 
 
 class CallGenerator:
@@ -60,12 +62,16 @@ class CallGenerator:
         return t, dur, self.id_
 
 
-def max_occupancy():
+def _get_gen():
     generator = CallGenerator()
-    gen = generator.gen_continuous(
+    return generator, generator.gen_continuous(
         dt.datetime.now(),
         dt.datetime.now() + dt.timedelta(seconds=1_200),
     )
+
+
+def max_occupancy():
+    generator, gen = _get_gen()
     events = [(stamp, 1) for stamp, _, _ in gen]  # arrival will increment occupancy
     while len(generator.q.queue) > 0:
         stamp, _ = generator.q.get()
@@ -76,8 +82,48 @@ def max_occupancy():
         occ += delta
         max_occ = max(max_occ, occ)
 
-    print(f"maximum occupancy was {max_occ}")
+    return max_occ
+
+
+def _get_start_and_end(events: pd.DataFrame):
+    Pair = namedtuple("Pair", ["stamp", "delta"])
+    for _, row in events.iterrows():
+        yield Pair(row.stamp, 1)  # arrival increment
+        yield Pair(row.end, -1)  # departure decrement
+
+
+Call = namedtuple("Call", "stamp, duration, id_")
+
+
+def _get_events_dataframe() -> pd.DataFrame:
+    _, gen = _get_gen()
+    events = pd.DataFrame([Call(*row) for row in gen])
+    events["end"] = events.stamp + events.duration
+    events = events[["stamp", "end"]]
+    return events
+
+
+def pandas_occ():  # Compute same thing, in a slightly different way.
+    events = _get_events_dataframe()
+    df = pd.DataFrame(sorted(_get_start_and_end(events)))
+    df["occupancy"] = df.delta.cumsum()
+    return df.occupancy.max()
+
+
+def pandas_occ2():  # Compute same thing, avoiding row-by-row iteration.
+    ev = _get_events_dataframe()
+    df = pd.concat([ev.stamp.to_frame(), ev.end.to_frame()])
+
+    df["delta"] = np.where(~df.stamp.isnull(), 1, 0)
+    df.delta += np.where(~df.end.isnull(), -1, 0)
+
+    df["stamp"] = df.stamp.combine_first(df.end)
+    df = df.sort_values(["stamp"])
+    df["occupancy"] = df.delta.cumsum()
+    return df.occupancy.max()
 
 
 if __name__ == "__main__":
-    max_occupancy()
+    print(f"maximum occupancy was {max_occupancy()}")
+    print(f"maximum occupancy was  {pandas_occ()}")
+    print(f"maximum occupancy was   {pandas_occ2()}")
