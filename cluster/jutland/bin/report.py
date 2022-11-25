@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2021 John Hanley. MIT licensed.
+#
+# Alas, the pypi package autoPyTorch wants auto-sklearn 0.24.x, not e.g. 1.1.3.
 from autoPyTorch import AutoNetClassification
 from jutland.dataset import Dataset
 from numpy import nan
