@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2022 John Hanley. MIT licensed.
 from pprint import pp
 from random import randrange
 import datetime as dt
