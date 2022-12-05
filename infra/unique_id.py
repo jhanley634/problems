@@ -25,5 +25,5 @@ def main():
 
 
 if __name__ == "__main__":
-    assert Dataset().get_df().shape == (25431, 4)  # cols are: osm_id, lon, lat, alt
     main()
+    assert Dataset().get_df().shape == (25431, 4)  # cols are: osm_id, lon, lat, alt
