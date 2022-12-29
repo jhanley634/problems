@@ -1,8 +1,8 @@
 
-# pythran export hello()
+# pythran export hello1()
 
 
-def hello():
+def hello1():
     """
     Wave hello.
     """
