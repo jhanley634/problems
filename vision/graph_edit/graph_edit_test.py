@@ -81,3 +81,7 @@ class GraphEditTest(unittest.TestCase):
             map(as_array, all_double_mods(g)),
         ):
             assert_array_equal(ex, actual)
+
+    def test_many_mods(self):
+        self.assertEqual(40, len(list(all_single_mods(self.g))))
+        self.assertEqual(1600, len(list(all_double_mods(self.g))))

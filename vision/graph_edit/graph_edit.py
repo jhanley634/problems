@@ -42,7 +42,7 @@ def all_single_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
             if i == j:  # not an edge -- we don't support self-loops
                 continue
             valid_weights = {0, 1, 2} - {g[i, j]}
-            for w in valid_weights:
+            for w in sorted(valid_weights):
                 yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
 
 
