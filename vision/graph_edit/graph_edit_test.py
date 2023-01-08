@@ -6,7 +6,7 @@ import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
 
-from .graph_edit import GraphEdit, all_double_mods, all_single_mods, as_array
+from .graph_edit import GraphEdit, all_double_mods, all_mods, all_single_mods, as_array
 
 
 class GraphEditTest(unittest.TestCase):
@@ -84,4 +84,7 @@ class GraphEditTest(unittest.TestCase):
 
     def test_many_mods(self):
         self.assertEqual(40, len(list(all_single_mods(self.g))))
-        self.assertEqual(1600, len(list(all_double_mods(self.g))))
+        self.assertEqual(1_600, len(list(all_double_mods(self.g))))
+        self.assertEqual(1_600, len(list(all_mods(self.g, 2))))
+        self.assertEqual(64_000, len(list(all_mods(self.g, 3))))
+        # self.assertEqual(2_560_000, len(list(all_mods(self.g, 4))))  # takes 16 seconds

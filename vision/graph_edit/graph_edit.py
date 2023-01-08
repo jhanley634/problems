@@ -46,7 +46,15 @@ def all_single_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
                 yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
 
 
+def all_mods(g: GraphEdit, depth: int) -> Generator[GraphEdit, None, None]:
+    assert depth >= 1
+    if depth == 1:
+        yield from all_single_mods(g)
+    else:
+        for gm in all_single_mods(g):
+            yield from all_mods(gm, depth - 1)
+
+
 def all_double_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
     """Generates all possible double-edge modifications to the graph."""
-    for gm in all_single_mods(g):
-        yield from all_single_mods(gm)
+    yield from all_mods(g, 2)
