@@ -48,14 +48,7 @@ def all_single_mods(g: GraphEdit):
                 yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
 
 
-def all_double_mods(g0: GraphEdit):
+def all_double_mods(g: GraphEdit):
     """Generates all possible double-edge modifications to the graph."""
-    for g in all_single_mods(g0):
-        orig_edit = g.edit.copy()
-        for i in range(g.num_nodes):
-            for j in range(g.num_nodes):
-                if i == j:  # not an edge -- we don't support self-loops
-                    continue
-                valid_weights = {0, 1, 2} - {g[i, j]}
-                for w in valid_weights:
-                    yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
+    for gm in all_single_mods(g):
+        yield from all_single_mods(gm)
