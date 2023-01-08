@@ -6,7 +6,7 @@ import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
 
-from .graph_edit import GraphEdit, all_mods, as_array
+from .graph_edit import GraphEdit, all_double_mods, all_single_mods, as_array
 
 
 class GraphEditTest(unittest.TestCase):
@@ -37,10 +37,10 @@ class GraphEditTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             GraphEdit(np.array([[0, 0], [1, 1], [2, 2]]))
 
-    def test_all_mods(self):
+    def test_all_single_mods(self):
         g = GraphEdit(np.array([[0, 0], [1, 0]]))
 
-        self.assertEqual(4, len(list(all_mods(g))))
+        self.assertEqual(4, len(list(all_single_mods(g))))
 
         expected = [
             np.array([[0, 1], [1, 0]]),
@@ -51,7 +51,7 @@ class GraphEditTest(unittest.TestCase):
 
         for ex, actual in zip(
             expected,
-            map(as_array, all_mods(g)),
+            map(as_array, all_single_mods(g)),
         ):
             assert_array_equal(ex, actual)
 
@@ -60,3 +60,24 @@ class GraphEditTest(unittest.TestCase):
                 np.array([[0, 0], [1, 0]]),
                 as_array(g),
             )
+
+    def test_all_double_mods(self):
+        g = GraphEdit(np.array([[0, 0], [1, 0]]))
+
+        self.assertEqual(16, len(list(all_double_mods(g))))
+
+        expected = [
+            np.array([[0, 0], [1, 0]]),
+            np.array([[0, 2], [1, 0]]),
+            np.array([[0, 1], [0, 0]]),
+            np.array([[0, 1], [2, 0]]),
+            np.array([[0, 0], [1, 0]]),  # note the duplicate
+            np.array([[0, 1], [1, 0]]),
+            np.array([[0, 2], [0, 0]]),  # and it continues on in this vein
+        ]
+
+        for ex, actual in zip(
+            expected,
+            map(as_array, all_double_mods(g)),
+        ):
+            assert_array_equal(ex, actual)
