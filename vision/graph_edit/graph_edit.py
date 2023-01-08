@@ -10,7 +10,7 @@ class GraphEdit:
     def __init__(self, edge: np.ndarray):
         a, b = edge.shape
         assert a == b, f"Expected square matrix, got {a}x{b}"
-        self.edge = edge
+        self.edge = edge  # We treat these as immutable weights.
         self.edit = {}
         self._verify_no_self_loops()
 
@@ -44,3 +44,4 @@ def all_mods(g: GraphEdit):
             for w in valid_weights:
                 g.edit = {**orig_edit, (i, j): w}
                 yield g
+    g.edit = orig_edit

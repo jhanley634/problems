@@ -39,10 +39,8 @@ class GraphEditTest(unittest.TestCase):
 
     def test_all_mods(self):
         g = GraphEdit(np.array([[0, 0], [1, 0]]))
-        assert_array_equal(
-            np.array([[0, 0], [1, 0]]),
-            as_array(g),
-        )
+
+        self.assertEqual(4, len(list(all_mods(g))))
 
         expected = [
             np.array([[0, 1], [1, 0]]),
@@ -51,5 +49,14 @@ class GraphEditTest(unittest.TestCase):
             np.array([[0, 0], [2, 0]]),
         ]
 
-        for ex, actual in zip(expected, map(as_array, all_mods(g))):
+        for ex, actual in zip(
+            expected,
+            map(as_array, all_mods(g)),
+        ):
             assert_array_equal(ex, actual)
+
+            # Now verify that original graph is untouched.
+            assert_array_equal(
+                np.array([[0, 0], [1, 0]]),
+                as_array(g),
+            )
