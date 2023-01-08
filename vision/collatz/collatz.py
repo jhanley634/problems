@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+
+# Copyright 2022 John Hanley. MIT licensed.
 from functools import lru_cache
 
 

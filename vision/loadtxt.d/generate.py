@@ -28,7 +28,7 @@ def generate_all(dest_dir: Path, num_copies: int = 7_000, length: int = 12_500):
         for n in data:
             fout.write(f'   {3 * n:.7f}e-05  {-2 * n:.7f}e-03\n')
 
-    for i in tqdm(range(1, num_copies), mininterval=.2):
+    for i in tqdm(range(1, num_copies), mininterval=0.2):
         copyfile(file0, _fspec(i))
 
 

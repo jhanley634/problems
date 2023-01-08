@@ -18,8 +18,7 @@ _hash_funcs = {
 
 
 def _get_search_engine():
-    """Returns a zipcode search engine offering "comprehensive" details, connected to sqlite backend.
-    """
+    """Returns a zipcode search engine offering "comprehensive" details, connected to sqlite backend."""
     comp = SearchEngine.SimpleOrComprehensiveArgEnum.comprehensive
     se = SearchEngine(simple_or_comprehensive=comp)
 
@@ -34,11 +33,20 @@ def main():
     prev_delta = min(prev['hi'] - prev['lo'], 50)
 
     widget = st.empty()
-    lo, hi = widget.slider('high', min_value=1, max_value=120, value=(prev['lo'], prev['hi']))
+    lo, hi = widget.slider(
+        'high',
+        min_value=1,
+        max_value=120,
+        value=(prev['lo'], prev['hi']),
+    )
     print(hi)
 
-    if lo != prev_lo:  # We assume mouse will only adjust a single slider per refresh interval.
-        lo, hi = widget.slider('high', min_value=1, max_value=120, value=(lo, lo + prev_delta))
+    if (
+        lo != prev_lo
+    ):  # We assume mouse will only adjust a single slider per refresh interval.
+        lo, hi = widget.slider(
+            'high', min_value=1, max_value=120, value=(lo, lo + prev_delta)
+        )
 
     st.write(prev_delta)
     prev['lo'] = lo
@@ -48,10 +56,14 @@ def main():
     se = _get_search_engine()
 
     scale = 1000
-    df = pd.DataFrame([dict(city=z.major_city,
-                            zip=z.zipcode,
-                            pop=int(z.population / scale) * scale)
-                       for z in se.by_population(lo * scale, hi * scale, returns=12)])
+    df = pd.DataFrame(
+        [
+            dict(
+                city=z.major_city, zip=z.zipcode, pop=int(z.population / scale) * scale
+            )
+            for z in se.by_population(lo * scale, hi * scale, returns=12)
+        ]
+    )
     st.write(df)
 
 

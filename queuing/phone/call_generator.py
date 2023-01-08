@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2022 John Hanley. MIT licensed.
 from collections import namedtuple
 from queue import PriorityQueue
 import datetime as dt

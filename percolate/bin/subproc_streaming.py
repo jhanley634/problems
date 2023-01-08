@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+
+# Copyright 2022 John Hanley. MIT licensed.
 from pathlib import Path
 from select import PIPE_BUF, select
 from subprocess import PIPE, Popen

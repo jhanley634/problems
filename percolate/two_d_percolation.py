@@ -54,7 +54,7 @@ class Perc:
                     g.addEdge(node_a, node_b)
         return g
 
-    def plot(self, alpha=.1):
+    def plot(self, alpha=0.1):
         x = []
         y = []
         edge_x = []

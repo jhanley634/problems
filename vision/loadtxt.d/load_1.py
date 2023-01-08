@@ -24,8 +24,7 @@ def read_file1(fspec):
 
 def read_file4(fspec):
     with open(fspec) as fin:
-        a = [float(y)
-             for x, y in map(str.split, fin.readlines())]
+        a = [float(y) for x, y in map(str.split, fin.readlines())]
 
     assert 12_500 == len(a)
 

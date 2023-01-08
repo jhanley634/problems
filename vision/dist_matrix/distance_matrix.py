@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+# Copyright 2022 John Hanley. MIT licensed.
+
 # https://stackoverflow.com/questions/74912653/how-can-i-efficiently-plot-a-distance-matrix-using-seaborn
 import gc
 

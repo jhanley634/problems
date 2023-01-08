@@ -1,3 +1,4 @@
+# Copyright 2022 John Hanley. MIT licensed.
 
 INITIAL = 114
 

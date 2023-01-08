@@ -1,8 +1,11 @@
 #! /usr/bin/env python
+
+# Copyright 2022 John Hanley. MIT licensed.
 from distutils.core import setup
 
 try:
     from pythran.dist import PythranBuildExt, PythranExtension
+
     setup_args = {
         'cmdclass': {'build_ext': PythranBuildExt},
         'ext_modules': [PythranExtension('hello.hello', sources=['hello/hello.py'])],
