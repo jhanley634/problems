@@ -2,7 +2,7 @@
 from math import ceil, sqrt
 import unittest
 
-from vision.collatz.collatz import collatz
+from .collatz import collatz
 
 
 class CollatzTest(unittest.TestCase):

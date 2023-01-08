@@ -6,7 +6,7 @@ import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
 
-from vision.graph_edit.graph_edit import GraphEdit, all_mods, as_array
+from .graph_edit import GraphEdit, all_mods, as_array
 
 
 class GraphEditTest(unittest.TestCase):

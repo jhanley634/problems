@@ -1,18 +1,21 @@
 #! /usr/bin/env python
 
 # Copyright 2023 John Hanley. MIT licensed.
+from typing import Optional
+
 import numpy as np
 
 
 class GraphEdit:
     """A digraph with many base edge weights plus a handful of edited weights."""
 
-    def __init__(self, edge: np.ndarray):
+    def __init__(self, edge: np.ndarray, edit: Optional[dict] = None, verify=False):
         a, b = edge.shape
         assert a == b, f"Expected square matrix, got {a}x{b}"
         self.edge = edge  # We treat these as immutable weights.
-        self.edit = {}
-        self._verify_no_self_loops()
+        self.edit = edit or {}
+        if verify:
+            self._verify_no_self_loops()  # Changes the ctor cost from O(1) to O(n).
 
     def _verify_no_self_loops(self):
         for i in range(self.num_nodes):
@@ -42,6 +45,4 @@ def all_mods(g: GraphEdit):
                 continue
             valid_weights = {0, 1, 2} - {g[i, j]}
             for w in valid_weights:
-                g.edit = {**orig_edit, (i, j): w}
-                yield g
-    g.edit = orig_edit
+                yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
