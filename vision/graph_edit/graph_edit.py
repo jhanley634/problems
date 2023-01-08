@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
-from typing import Optional
+from typing import Generator, Optional
 
 import numpy as np
 
@@ -36,7 +34,7 @@ def as_array(g: GraphEdit) -> np.ndarray:
     return np.array([[g[i, j] for j in range(g.num_nodes)] for i in range(g.num_nodes)])
 
 
-def all_single_mods(g: GraphEdit):
+def all_single_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
     """Generates all possible single-edge modifications to the graph."""
     orig_edit = g.edit.copy()
     for i in range(g.num_nodes):
@@ -48,7 +46,7 @@ def all_single_mods(g: GraphEdit):
                 yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
 
 
-def all_double_mods(g: GraphEdit):
+def all_double_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
     """Generates all possible double-edge modifications to the graph."""
     for gm in all_single_mods(g):
         yield from all_single_mods(gm)
