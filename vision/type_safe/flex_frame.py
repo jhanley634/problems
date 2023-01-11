@@ -1,24 +1,25 @@
 #! /usr/bin/env python
 
 # Copyright 2023 John Hanley. MIT licensed.
+from abc import ABC
+
 import pandas as pd
 import pyspark.context as pc
 import pyspark.pandas as sp
 
 
-class Delegator:
-    def _get_obj(self):
-        # We're either delegating to pandas or to spark.
-        return self.pd if self.pd is not None else self.sp
+class Delegator(ABC):
+    def get_delegated_obj(self):
+        raise ValueError("Implementor must delegate to an object")
 
     def __getattr__(self, called_method):
         def _wrapper(*args, **kwargs):
-            return getattr(self._get_obj(), called_method)(*args, **kwargs)
+            return getattr(self.get_delegated_obj(), called_method)(*args, **kwargs)
 
         return _wrapper
 
     def __getitem__(self, item):
-        return self._get_obj()[item]
+        return self.get_delegated_obj()[item]
 
 
 class FlexFrame(Delegator):
@@ -31,6 +32,10 @@ class FlexFrame(Delegator):
             self.sp = sp.DataFrame(rec, **kwargs)
         else:
             raise TypeError(f"Unexpected type: {type(arg)}")
+
+    def get_delegated_obj(self):
+        # We're either delegating to pandas or to spark.
+        return self.pd if self.pd is not None else self.sp
 
 
 def format_table(df: FlexFrame) -> FlexFrame:
