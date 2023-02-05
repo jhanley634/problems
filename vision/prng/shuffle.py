@@ -40,6 +40,7 @@ def main(n: int = 1_000_000):
         print(df.groupby("opt").sum())
     cnts = df.groupby("opt").sum().cnt.tolist()
     plt.plot(range(len(cnts)), cnts)
+    plt.plot(range(len(cnts)), sorted(cnts))
     plt.gca().set_xlim((0, 1700))
     plt.gca().set_ylim((0, None))
     plt.gca().set_xlabel("combination of options")
