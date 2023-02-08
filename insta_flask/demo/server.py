@@ -23,5 +23,16 @@ def mean():
     return dict(mean=ct_mean(data))
 
 
+def median():
+    d = request.json
+    shape = d["shape"]
+    data = np.asarray(d["data"]).reshape(shape)
+
+    return dict(median=ct_median(data))
+
+
+app.add_url_rule("/median", view_func=median, methods=["POST"])
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
