@@ -2,6 +2,7 @@
 
 # Copyright 2023 John Hanley. MIT licensed.
 from flask import Flask, request
+import numpy as np
 
 from insta_flask.demo.central_tendency import ct_mean, ct_median
 
@@ -15,9 +16,11 @@ def hello():
 
 @app.route("/mean", methods=["POST"])
 def mean():
-    arg = request.json
-    print(arg)
-    return f"mean: {ct_mean(arg)}"
+    d = request.json
+    shape = d["shape"]
+    data = np.asarray(d["data"]).reshape(shape)
+
+    return dict(mean=ct_mean(data))
 
 
 if __name__ == "__main__":

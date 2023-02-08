@@ -2,9 +2,9 @@
 import numpy as np
 
 
-def ct_mean(x):
+def ct_mean(x: np.ndarray):
     return sum(x) / len(x)
 
 
-def ct_median(x):
+def ct_median(x: np.ndarray):
     return np.median(x)
