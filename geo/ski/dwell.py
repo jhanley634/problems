@@ -17,8 +17,23 @@ def main(infile="~/Desktop/gpx/2022-07-14-1234-pizza.gpx"):
     infile = Path(infile).expanduser()
     with open(infile) as fin:
         gpx = gpxpy.parse(fin)
-        df = pl.DataFrame(get_breadcrumbs(gpx))
+        df = pl.DataFrame(get_rows(gpx))
         print(df)
+
+
+def get_rows(gpx: GPX):
+    g = get_breadcrumbs(gpx)
+    cum = 0
+    first_row = next(g)
+    first_loc = Point(first_row["lat"], first_row["lng"])
+    for row in g:
+        cum += row["delta_x"]
+        d = dict(
+            elapsed=(row["stamp"] - first_row["stamp"]).total_seconds(),
+            cum=cum,
+            crow_fly=great_circle(Point(row["lat"], row["lng"]), first_loc).meters,
+        )
+        yield {**row, **d}
 
 
 def get_breadcrumbs(gpx: GPX, precision=6, verbose=False):
