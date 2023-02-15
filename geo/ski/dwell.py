@@ -21,10 +21,10 @@ def main(infile="~/Desktop/gpx/2022-07-14-1234-pizza.gpx"):
         print(df)
 
 
-def get_breadcrumbs(gpx: GPX, precision=6):
+def get_breadcrumbs(gpx: GPX, precision=6, verbose=False):
     prev_time: Optional[dt.datetime] = None
     prev_loc: Optional[Point] = None
-    for t, track in enumerate(gpx.tracks):
+    for track in gpx.tracks:
         for s, segment in enumerate(track.segments):
             for point in segment.points:
                 prev_time = prev_time or point.time
@@ -34,7 +34,8 @@ def get_breadcrumbs(gpx: GPX, precision=6):
                 lng = round(point.longitude, precision)
                 loc = Point(lat, lng)
                 delta_x = great_circle(prev_loc, loc).meters if prev_loc else 0
-                print(t, s, delta_t, point.time, f"   {lat:.6f}  {lng:.6f}")
+                if verbose:
+                    print(s, delta_t, point.time, f"   {lat:.6f}  {lng:.6f}")
                 yield dict(
                     stamp=point.time,
                     lat=lat,
