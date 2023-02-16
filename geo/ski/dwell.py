@@ -12,8 +12,10 @@ import gpxpy
 import polars as pl
 import typer
 
+GPX_DIR = Path("~/Desktop/gpx").expanduser()
 
-def main(infile="~/Desktop/gpx/2022-07-14-1234-pizza.gpx"):
+
+def main(infile=f"{GPX_DIR}/2022-07-14-1234-pizza.gpx"):
     infile = Path(infile).expanduser()
     with open(infile) as fin:
         gpx = gpxpy.parse(fin)
