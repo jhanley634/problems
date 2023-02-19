@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+
+# Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 import datetime as dt
 import shutil

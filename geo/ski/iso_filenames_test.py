@@ -1,3 +1,4 @@
+# Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 import unittest
 

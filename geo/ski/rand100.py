@@ -1,3 +1,4 @@
+# Copyright 2023 John Hanley. MIT licensed.
 from collections import Counter
 from typing import List, Optional
 import unittest

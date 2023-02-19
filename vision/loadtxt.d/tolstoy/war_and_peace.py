@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+# Copyright 2023 John Hanley. MIT licensed.
+
 # https://codereview.stackexchange.com/questions/282549/performant-text-file-reading-in-scheme
 from pathlib import Path
 from time import time
