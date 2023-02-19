@@ -1,5 +1,12 @@
 #! /usr/bin/env python
+from collections import namedtuple
 import re
+
+from sortedcontainers import SortedList
+
+
+class Node(namedtuple("Node", "prefix, suffix, word")):
+    ...
 
 
 class WordLadder:
@@ -11,6 +18,12 @@ class WordLadder:
                 for word in fin.read().splitlines()
                 if len(word) == length and letters_re.match(word)
             )
+        self.nodes = SortedList()
+        for word in self.words:
+            for i in range(len(word)):
+                prefix = word[:i]
+                suffix = word[i + 1 :]
+                self.nodes.add(Node(prefix, suffix, word))
 
 
 if __name__ == "__main__":
