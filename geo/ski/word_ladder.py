@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 from collections import namedtuple
+from operator import attrgetter
 import re
 
 from networkx import Graph
@@ -22,24 +23,34 @@ class WordLadder:
                 for word in fin.read().splitlines()
                 if len(word) == length and letters_re.match(word)
             }
-        self.nodes = SortedList()
+        self.pfx_nodes = SortedList()
+        self.sfx_nodes = SortedList(key=attrgetter("suffix"))
         for word in self.words:
             for i in range(len(word)):
                 prefix = word[:i]
                 suffix = word[i + 1 :]
                 node = Node(prefix, suffix, word)
-                self.nodes.add(node)
+                self.pfx_nodes.add(node)
+                self.sfx_nodes.add(node)
         self.g = self._create_graph()
 
     def _create_graph(self):
         g = Graph()
-        for node in tqdm(self.nodes):
+        for node in tqdm(self.pfx_nodes):
             g.add_node(node.word)
-            i = self.nodes.bisect_left(node)
-            assert self.nodes[i] == node
-            while i < len(self.nodes) and self.nodes[i].prefix == node.prefix:
-                other = self.nodes[i]
+            i = self.pfx_nodes.bisect_left(node)
+            j = self.sfx_nodes.bisect_left(node)
+            assert self.pfx_nodes[i] == node
+            assert self.sfx_nodes[j].suffix == node.suffix
+            while (
+                i < len(self.pfx_nodes)
+                and self.pfx_nodes[i].prefix == node.prefix
+                and j < len(self.sfx_nodes)
+                and self.sfx_nodes[j].suffix == node.suffix
+            ):
+                other = self.pfx_nodes[i]
                 i += 1
+                j += 1
                 if other.word == node.word:
                     continue
                 if other.prefix == node.prefix and other.suffix == node.suffix:
