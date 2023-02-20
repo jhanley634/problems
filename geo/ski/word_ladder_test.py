@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from sortedcontainers import SortedList
@@ -29,6 +30,9 @@ class TestSortedList(unittest.TestCase):
 
 class TestWordLadder(unittest.TestCase):
     def test_init(self):
+        self.assertEqual(1_000, sys.getrecursionlimit())
+        sys.setrecursionlimit(10_000)
+
         for length, num_words in [
             (14, 9761),
             (10, 30_824),

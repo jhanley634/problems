@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from collections import namedtuple
 from operator import attrgetter
+from typing import List, Optional, Set
 import re
 
 from networkx import Graph
@@ -59,9 +60,35 @@ class WordLadder:
         return g
 
     def find_path(self, start: str, end: str):
-        p = nx.shortest_path(self.g, start, end)
-        assert isinstance(p, list)
-        return p
+        return self._find_path(start, end, [start], set())
+
+    def _find_path(
+        self, start: str, end: str, path: List[str], seen: Set[str]
+    ) -> Optional[List[str]]:
+
+        seen.add(start)  # We have definitely visited this node, and won't re-visit.
+
+        if start == end:
+            path.append(end)
+            return path
+
+        candidates = []
+        for node in self.g.adj[start]:
+            assert node != start
+            if node not in seen:
+                if temp := self._find_path(node, end, path + [node], seen):
+                    candidates.append((len(temp), temp))
+
+        if candidates:
+            candidates.sort()
+            _, result = candidates[0]
+            return result
+
+        return None  # No feasible path was found.
+
+        # p = nx.shortest_path(self.g, start, end)
+        # assert isinstance(p, list)
+        # return p
 
     def display_graph(self):
         self._display(self.g)
