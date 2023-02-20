@@ -3,7 +3,7 @@ import unittest
 
 from sortedcontainers import SortedList
 
-from .word_ladder import WordLadder
+from .word_ladder import WordLadder, hamming_distance
 
 
 class TestSortedList(unittest.TestCase):
@@ -26,6 +26,20 @@ class TestSortedList(unittest.TestCase):
         self.assertEqual(4, i)
         i = xs.bisect_right(10)
         self.assertEqual(4, i)
+
+
+class TestHammingDistance(unittest.TestCase):
+    def test_symmetric_hamming_distance(self):
+        for a, b, distance in [
+            ("abc", "abc", 0),
+            ("abc", "bbc", 1),
+            ("abc", "azc", 1),
+            ("abc", "abz", 1),
+            ("abc", "ayz", 2),
+            ("abc", "def", 3),
+        ]:
+            self.assertEqual(distance, hamming_distance(a, b))
+            self.assertEqual(distance, hamming_distance(b, a))
 
 
 class TestWordLadder(unittest.TestCase):

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 from collections import namedtuple
+from functools import partial
 from operator import attrgetter
 from typing import List, Optional, Set
 import re
@@ -9,6 +10,12 @@ from sortedcontainers import SortedList
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import networkx as nx
+
+
+def hamming_distance(a: str, b: str) -> int:
+    # https://en.wikipedia.org/wiki/Hamming_distance
+    assert len(a) == len(b)
+    return sum(x != y for x, y in zip(a, b))
 
 
 class Node(namedtuple("Node", "prefix, suffix, word")):
@@ -69,13 +76,13 @@ class WordLadder:
         seen.add(start)  # We have definitely visited this node, and won't re-visit.
 
         if start == end:
-            path.append(end)
             return path
 
         candidates = []
-        for node in self.g.adj[start]:
+        for node in self._ordered(self.g.adj[start], start, end):
             assert node != start
             if node not in seen:
+                assert node not in path
                 if temp := self._find_path(node, end, path + [node], seen):
                     candidates.append((len(temp), temp))
 
@@ -89,6 +96,11 @@ class WordLadder:
         # p = nx.shortest_path(self.g, start, end)
         # assert isinstance(p, list)
         # return p
+
+    @staticmethod
+    def _ordered(nbrs: List[str], start: str, end: str) -> List[str]:
+        distance_to_goal = partial(hamming_distance, end)
+        return sorted(sorted(nbrs), key=distance_to_goal)
 
     def display_graph(self):
         self._display(self.g)
