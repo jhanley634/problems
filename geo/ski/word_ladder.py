@@ -1,12 +1,16 @@
 from collections import defaultdict
 from functools import partial
-from typing import Generator, List, Set, TextIO
+from typing import Generator, List, Set, TextIO, Tuple
 
 
 def hamming_distance(a: str, b: str) -> int:
     # https://en.wikipedia.org/wiki/Hamming_distance
     assert len(a) == len(b)
     return sum(x != y for x, y in zip(a, b))
+
+
+class Word(str):
+    ...
 
 
 class WordLadder:
@@ -19,15 +23,18 @@ class WordLadder:
                 self.words[prototype].add(word)
 
     @classmethod
-    def _read_words(cls, length: int, fin: TextIO):
+    def _read_words(
+        cls, length: int, fin: TextIO
+    ) -> Generator[Tuple[str, Word], None, None]:
         for word in fin:
-            word = word.lower().rstrip()
+            word = Word(word).lower().rstrip()
             if len(word) == length and word.isalpha():
                 for prototype in cls._gen_prototypes(word):
-                    yield prototype, word
+                    yield prototype, Word(word)
 
     @staticmethod
-    def _gen_prototypes(word: str):
+    def _gen_prototypes(word: str) -> Generator[str, None, None]:
+
         assert word.isalpha()
         for i in range(len(word)):
             prefix = word[:i]
