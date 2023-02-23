@@ -22,6 +22,12 @@ perc:
 jupyter:
 	$(ACTIVATE) && env PYTHONPATH=../.. jupyter notebook
 
+COVERAGE = --cov --cov-report=term-missing --import-mode=importlib
+test:
+	$(ACTIVATE) && pytest $(COVERAGE)  geo/
+	$(ACTIVATE) && python -m unittest  geo/*/*_test.py ; isort . ; black geo/
+	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports geo/
+
 SHELL = bash -o pipefail
 
 INCLUDE = '\.py$$'

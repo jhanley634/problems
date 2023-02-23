@@ -29,5 +29,4 @@ def iso(path: Path) -> Path:
     return path.with_name(f"{stamp}{suffix}")
 
 
-if __name__ == "__main__":
-    typer.run(copy_all)
+__name__ == "__main__" and typer.run(copy_all)  # type: ignore [func-returns-value]

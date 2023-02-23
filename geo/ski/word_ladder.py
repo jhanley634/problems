@@ -1,3 +1,4 @@
+# Copyright 2023 John Hanley. MIT licensed.
 from collections import defaultdict
 from functools import partial
 from typing import Generator, List, Set, TextIO, Tuple
