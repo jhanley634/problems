@@ -1,9 +1,6 @@
-#! /usr/bin/env python
 from collections import defaultdict
 from functools import partial
 from typing import Generator, List, Set, TextIO
-
-from tqdm import tqdm
 
 
 def hamming_distance(a: str, b: str) -> int:
@@ -38,35 +35,27 @@ class WordLadder:
             yield f"{prefix}_{suffix}"
 
     def find_path(self, start: str, end: str) -> List[str]:
-        if paths := sorted(self.bfs_paths(start, end), key=len):
-            return paths[0]
-        else:
-            return []
+        paths = sorted(self.bfs_paths(start, end), key=len) + [[]]
+        return paths[0]
 
     def bfs_paths(self, start: str, end: str) -> Generator[List[str], None, None]:
         """Generates candidate acyclic paths from start to end."""
         assert start.isalpha()
         assert end.isalpha()
-        best_len = 999  # positive infinity
+        POSITIVE_INFINITY = 999
+        best = defaultdict(lambda: POSITIVE_INFINITY)
         queue = [(start, [start])]
         while queue:
             node, path = queue.pop(0)
-            if len(path) >= best_len:
-                continue  # Can't be a candidate, since we already yielded a better one.
             for prototype in self._gen_prototypes(node):
-                for word in sorted(self.words[prototype] - set(path)):
+                for word in self._ordered(self.words[prototype] - set(path), end):
                     if word == end:
-                        if best_len > len(path):
-                            best_len = len(path)
-                            yield path + [end]
-                    else:
+                        yield path + [end]
+                    elif best[word] > len(path):
+                        best[word] = len(path)
                         queue.append((word, path + [word]))
 
     @staticmethod
-    def _ordered(neighbors: List[str], end: str) -> List[str]:
+    def _ordered(neighbors: Set[str], end: str) -> List[str]:
         distance_to_goal = partial(hamming_distance, end)
         return sorted(sorted(neighbors), key=distance_to_goal)
-
-
-if __name__ == "__main__":
-    WordLadder()
