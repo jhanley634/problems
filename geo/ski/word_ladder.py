@@ -15,9 +15,19 @@ class Word(str):
         super().__init__()
 
 
+class Proto(str):
+    """A prototype word, with exactly one "_" underscore wildcard."""
+
+    def __init__(self, text: str):
+        assert "_" in text, text
+        assert text.count("_") == 1
+        assert text.replace("_", "").isalpha()
+        super().__init__()
+
+
 class WordLadder:
     def __init__(self, length: int = 3, words_file="/usr/share/dict/words"):
-        self.words: defaultdict[str, Set[Word]] = defaultdict(set)
+        self.words: defaultdict[Proto, Set[Word]] = defaultdict(set)
         with open(words_file) as fin:
             for prototype, word in sorted(self._read_words(length, fin)):
                 assert "_" in prototype
@@ -26,7 +36,7 @@ class WordLadder:
     @classmethod
     def _read_words(
         cls, length: int, fin: TextIO
-    ) -> Generator[Tuple[str, Word], None, None]:
+    ) -> Generator[Tuple[Proto, Word], None, None]:
 
         for line in map(str.rstrip, fin):
             if len(line) == length and line.isalpha():
@@ -35,23 +45,23 @@ class WordLadder:
                     yield prototype, word
 
     @staticmethod
-    def _gen_prototypes(word: Word) -> Generator[str, None, None]:
+    def _gen_prototypes(word: Word) -> Generator[Proto, None, None]:
 
         for i in range(len(word)):
             prefix = word[:i]
             suffix = word[i + 1 :]
-            yield f"{prefix}_{suffix}"
+            yield Proto(f"{prefix}_{suffix}")
 
-    def find_path(self, start: Word, end: Word) -> List[Word]:
-        paths = sorted(self.bfs_paths(start, end), key=len) + [[]]
+    def find_path(self, start: Word | str, end: Word | str) -> List[Word]:
+        paths = sorted(self.bfs_paths(Word(start), Word(end)), key=len) + [[]]
         return paths[0]
 
     def bfs_paths(self, start: Word, end: Word) -> Generator[List[Word], None, None]:
         """Generates candidate acyclic paths from start to end."""
         assert start.isalpha()
         assert end.isalpha()
-        POSITIVE_INFINITY = 999
-        best: defaultdict[str, int] = defaultdict(lambda: POSITIVE_INFINITY)
+        positive_infinity = 999
+        best: defaultdict[str, int] = defaultdict(lambda: positive_infinity)
         queue = [(start, [start])]
         while queue:
             node, path = queue.pop(0)
