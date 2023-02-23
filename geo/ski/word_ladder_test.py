@@ -47,32 +47,26 @@ class TestWordLadder(unittest.TestCase):
         self.assertEqual(1_000, sys.getrecursionlimit())
         sys.setrecursionlimit(10_000)
 
-        for length, num_words in [
-            (14, 136_099),  # 9761),
-            (10, 303_762),  # 30_824),
-            (6, 90_290),  # 17_462),
-            (4, 9118),  # 4994),
-            (3, 969),  # 1294),
+        for length, num_words, path in [
+            (10, 303_762, ["blistering", "blustering", "clustering"]),
+            (7, 154_820, ["blister", "bluster", "cluster"]),
+            (6, 90_290, self._get_6_char_path()),
+            (5, 36_485, self._get_5_char_path()),
+            (4, 9118, ["shoe", "sloe", "floe", "flop", "flap"]),
+            (3, 969, ["cat", "pat", "pot", "pow"]),
         ]:
             wl = WordLadder(length=length)
             self.assertEqual(num_words, len(wl.words))
-            if length == 10:
-                self.assertEqual(
-                    ["blistering", "blustering", "clustering"],
-                    wl.find_path("blistering", "clustering"),
-                )
-            if length == 6:
-                self.assertEqual(
-                    self._get_6_char_path(), wl.find_path("boyish", "paunch")
-                )
-            if length == 4:
-                self.assertEqual(
-                    ["shoe", "sloe", "floe", "flop", "flap"],
-                    wl.find_path("shoe", "flap"),
-                )
+            word_pair = [path[0], path[-1]]
+            self.assertEqual(path, wl.find_path(*word_pair))
+            self.assertEqual(len(path), len(wl.find_path(*reversed(word_pair))))
+
         self.assertEqual(["dog", "cog", "cag", "cat"], wl.find_path("dog", "cat"))
         self.assertEqual(["cat", "cot", "dot", "dog"], wl.find_path("cat", "dog"))
-        self.assertEqual(["cat", "pat", "pot", "pow"], wl.find_path("cat", "pow"))
+
+    @staticmethod
+    def _get_5_char_path():
+        return ["douse", "rouse", "route", "foute", "flute", "flume", "flame"]
 
     @staticmethod
     def _get_6_char_path():

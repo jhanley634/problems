@@ -43,7 +43,7 @@ class WordLadder:
         assert start.isalpha()
         assert end.isalpha()
         POSITIVE_INFINITY = 999
-        best = defaultdict(lambda: POSITIVE_INFINITY)
+        best: defaultdict[str, int] = defaultdict(lambda: POSITIVE_INFINITY)
         queue = [(start, [start])]
         while queue:
             node, path = queue.pop(0)
