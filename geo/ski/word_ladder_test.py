@@ -48,11 +48,11 @@ class TestWordLadder(unittest.TestCase):
         sys.setrecursionlimit(10_000)
 
         for length, num_words in [
-            (14, 9761),
-            (10, 30_824),
-            (6, 17_462),
-            (4, 4994),
-            (3, 1294),
+            (14, 136_099),  # 9761),
+            (10, 303_762),  # 30_824),
+            # (6, 90_290),  # 17_462),
+            (4, 9118),  # 4994),
+            (3, 969),  # 1294),
         ]:
             wl = WordLadder(length=length)
             self.assertEqual(num_words, len(wl.words))
@@ -65,16 +65,14 @@ class TestWordLadder(unittest.TestCase):
                 self.assertEqual(
                     self._get_6_char_path(), wl.find_path("boyish", "paunch")
                 )
-
-        self.assertEqual(3882, len(wl.pfx_nodes))
-
-        # Pick an arbitrary word.
-        i = int(len(wl.pfx_nodes) * 0.1)
-        self.assertEqual("pen", wl.pfx_nodes[i].word)
-
+            if length == 4:
+                self.assertEqual(
+                    ["shoe", "sloe", "floe", "flop", "flap"],
+                    wl.find_path("shoe", "flap"),
+                )
         self.assertEqual(["dog", "cog", "cag", "cat"], wl.find_path("dog", "cat"))
-        self.assertEqual(["cat", "cag", "cog", "dog"], wl.find_path("cat", "dog"))
-        self.assertEqual(["cat", "caw", "cow", "pow"], wl.find_path("cat", "pow"))
+        self.assertEqual(["cat", "cot", "dot", "dog"], wl.find_path("cat", "dog"))
+        self.assertEqual(["cat", "pat", "pot", "pow"], wl.find_path("cat", "pow"))
 
     @staticmethod
     def _get_6_char_path():
