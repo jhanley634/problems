@@ -4,7 +4,6 @@
 
 # https://stackoverflow.com/questions/75549599/how-to-efficiently-read-pq-files-python
 # $ python -m cProfile -s tottime geo/ski/bench_parquet.py
-from math import prod
 from pathlib import Path
 from time import time
 
@@ -21,18 +20,17 @@ def gen_dfs(k=K, dst_dir=PQ_DIR, shape=(667_858, 48)):
     dst_dir.mkdir(exist_ok=True)
     rng = np.random.default_rng()
     for i in range(k):
-        n = prod(shape)
         df = pd.DataFrame(
             rng.integers(66_000, size=shape) / 1_000,
             columns=[f"col_{j}" for j in range(shape[1])],
         )
         print(i)
-        df.to_parquet(dst_dir / f"{i}.parquet")
+        df.to_parquet(dst_dir / f"{i}.parquet", compression=None)
 
 
 def read_dfs(src_dir=PQ_DIR):
-    for path in src_dir.glob("*.parquet"):
-        yield pd.read_parquet(path)
+    for file in src_dir.glob("*.parquet"):
+        yield pd.read_parquet(file)
 
 
 def main():
