@@ -11,6 +11,7 @@ from time import time
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as pq
 
 K = 24
 PQ_DIR = Path("/tmp/parquet.d")
@@ -22,7 +23,7 @@ def gen_dfs(k=K, dst_dir=PQ_DIR, shape=(667_858, 48)):
     for i in range(k):
         n = prod(shape)
         df = pd.DataFrame(
-            rng.integers(84_000, dtype=np.int32, size=shape),
+            rng.integers(66_000, size=shape) / 1_000,
             columns=[f"col_{j}" for j in range(shape[1])],
         )
         print(i)
@@ -37,8 +38,14 @@ def read_dfs(src_dir=PQ_DIR):
 def main():
     gen_dfs()
     t0 = time()
+
     for df in tqdm(read_dfs()):
         assert len(df) > 0
+
+    files = list(PQ_DIR.glob("2*.parquet"))
+    dataset = pq.ParquetDataset(files)
+    assert dataset
+    # df = dataset.read(use_threads=True).to_pandas()
 
     elapsed = time() - t0
     print(f"{elapsed:.3f} seconds elapsed, {elapsed / K:.3f} per file")
