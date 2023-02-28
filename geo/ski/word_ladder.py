@@ -1,6 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from collections import defaultdict
 from functools import partial
+from io import StringIO
 from typing import Generator, List, Set, TextIO, Tuple
 
 
@@ -27,12 +28,17 @@ class Proto(str):
 
 
 class WordLadder:
-    def __init__(self, length: int = 3, words_file="/usr/share/dict/words"):
+    def __init__(self, length: int = 3, input_words="/usr/share/dict/words"):
         self.words: defaultdict[Proto, Set[Word]] = defaultdict(set)
-        with open(words_file) as fin:
-            for prototype, word in sorted(self._read_words(length, fin)):
-                assert "_" in prototype
-                self.words[prototype].add(word)
+        if isinstance(input_words, str):
+            with open(input_words) as fin:
+                self._store_sorted_words(length, fin)
+        else:
+            self._store_sorted_words(length, StringIO("\n".join(input_words)))
+
+    def _store_sorted_words(self, length: int, fin: TextIO):
+        for prototype, word in sorted(self._read_words(length, fin)):
+            self.words[prototype].add(word)
 
     @classmethod
     def _read_words(

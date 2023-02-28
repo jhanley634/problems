@@ -1,4 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
+import datetime as dt
 import sys
 import unittest
 
@@ -43,7 +44,20 @@ class TestHammingDistance(unittest.TestCase):
             self.assertEqual(distance, hamming_distance(b, a))
 
 
+def _get_months():
+    for month in range(1, 13):
+        yield dt.date(2023, month, 1).strftime("%b").lower()
+
+
 class TestWordLadder(unittest.TestCase):
+    def test_months(self):
+        months = list(_get_months())
+        self.assertEqual(["jan", "feb", "mar", "apr", "may", "jun", "jul"], months[:7])
+
+        wl = WordLadder(3, months)
+        path = ["jan", "jun", "jul"]
+        self.assertEqual(path, wl.find_path(path[0], path[-1]))
+
     def test_init(self):
         self.assertEqual(1_000, sys.getrecursionlimit())
         sys.setrecursionlimit(10_000)
