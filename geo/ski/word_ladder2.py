@@ -18,12 +18,17 @@ class WordLadder:
                 self.vocabulary = sorted(self._read_words(fin))
         else:
             self.vocabulary = sorted(self._read_words(StringIO("\n".join(input_words))))
+        self.rev_vocab = self._get_rev_vocabulary()
 
     def _read_words(self, fin: TextIO) -> Generator[str, None, None]:
         for line in map(str.rstrip, fin):
             if len(line) == self.length and line.isalpha():
                 word = line.lower()
                 yield word
+
+    def _get_rev_vocabulary(self) -> List[int]:
+        pairs = [("".join(reversed(word)), i) for i, word in enumerate(self.vocabulary)]
+        return [i for _, i in sorted(pairs)]
 
     def word_str(self, n: int) -> str:
         return self.vocabulary[n // self.length]
@@ -47,7 +52,7 @@ class WordLadder:
             return self.vocabulary.index(s) * self.length
 
         paths = sorted(self.bfs_paths(as_int(start), as_int(end)), key=len) + [[]]
-        return paths[0]
+        return [self.word_str(i) for i in paths[0]]
 
     def bfs_paths(self, start: int, end: int) -> Generator[List[int], None, None]:
         """Generates candidate acyclic paths from start to end."""

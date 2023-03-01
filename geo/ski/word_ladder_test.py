@@ -45,14 +45,14 @@ class TestHammingDistance(unittest.TestCase):
 
 
 def _get_months():
-    for month in range(1, 13):
+    for month in range(1, 8):
         yield dt.date(2023, month, 1).strftime("%b").lower()
 
 
 class TestWordLadder(unittest.TestCase):
     def test_months(self):
         months = list(_get_months())
-        self.assertEqual(["jan", "feb", "mar", "apr", "may", "jun", "jul"], months[:7])
+        self.assertEqual(["jan", "feb", "mar", "apr", "may", "jun", "jul"], months)
 
         wl = WordLadder(3, months)
         path = ["jan", "jun", "jul"]
