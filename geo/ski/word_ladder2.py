@@ -73,7 +73,8 @@ class WordLadder:
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, proto: int, end: int) -> Set[int]:
+    def _adjacent_words(self, proto: int, position: int) -> Set[int]:
+        assert 0 <= position < self.length
         return []
         if False:
             while (
