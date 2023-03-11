@@ -17,7 +17,10 @@ def woz_melt():
 
 
 def _get_dataframes():
-    woz_waarde = "https://raw.githubusercontent.com/uvacw/teaching-bdaca/main/12ec-course/week03/exercises/wozwaarde-clean.csv"
+    woz_waarde = (
+        "https://raw.githubusercontent.com/uvacw/teaching-bdaca/main"
+        "/12ec-course/week03/exercises/wozwaarde-clean.csv"
+    )
     df1 = pd.read_csv(woz_waarde)
     df1 = df1.melt(
         id_vars=["wijk", "code", "stadsdeel"],
