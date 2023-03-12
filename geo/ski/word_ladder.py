@@ -44,7 +44,6 @@ class WordLadder:
     def _read_words(
         cls, length: int, fin: TextIO
     ) -> Generator[Tuple[Proto, Word], None, None]:
-
         for line in map(str.rstrip, fin):
             if len(line) == length and line.isalpha():
                 word = Word(line.lower())
@@ -53,7 +52,6 @@ class WordLadder:
 
     @staticmethod
     def _gen_prototypes(word: Word) -> Generator[Proto, None, None]:
-
         for i in range(len(word)):
             prefix = word[:i]
             suffix = word[i + 1 :]

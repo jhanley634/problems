@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+# Copyright 2023 John Hanley. MIT licensed.
 # https://codereview.stackexchange.com/questions/283558/processing-a-very-long-single-line-of-comma-separated-FPs
 
 from pathlib import Path
@@ -10,8 +10,8 @@ import typer
 
 def svg_json_to_gnuplot(infile: str):
     assert infile.endswith(".json")
-    infile = Path(infile).expanduser()
-    outfile = infile.with_suffix(".dat")
+    infile1 = Path(infile).expanduser()
+    outfile = infile1.with_suffix(".dat")
     with open(infile) as fin, open(outfile, "w") as fout:
         d = json.load(fin)
         for path in sorted(d.keys()):
