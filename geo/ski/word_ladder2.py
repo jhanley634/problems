@@ -75,7 +75,13 @@ class WordLadder:
 
     def _adjacent_words(self, proto: int, position: int) -> Set[int]:
         assert 0 <= position < self.length
-        return []
+        pr = self.prototype_str(proto)
+        print(pr, position)
+        for word_idx in range(len(self.vocabulary)):
+            print(proto, self.word_str(proto), word_idx, self.word_str(word_idx))
+            if self.hamming_distance(proto, word_idx) == 1:
+                yield word_idx
+
         if False:
             while (
                 i < len(self.pfx_nodes)
