@@ -1,8 +1,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from collections import defaultdict
+from collections.abc import Generator
 from functools import partial
 from io import StringIO
-from typing import Generator, List, Set, TextIO
+from typing import TextIO
 
 from geo.ski.word_ladder import hamming_distance
 
@@ -10,7 +11,7 @@ from geo.ski.word_ladder import hamming_distance
 class WordLadder:
     def __init__(self, length: int = 3, input_words="/usr/share/dict/words"):
         self.length = length
-        self.words: defaultdict[int, Set[int]] = defaultdict(set)
+        self.words: defaultdict[int, set[int]] = defaultdict(set)
         if isinstance(input_words, str):
             with open(input_words) as fin:
                 self.vocabulary = sorted(self._read_words(fin))
@@ -24,7 +25,7 @@ class WordLadder:
                 word = line.lower()
                 yield word
 
-    def _get_rev_vocabulary(self) -> List[int]:
+    def _get_rev_vocabulary(self) -> list[int]:
         pairs = [("".join(reversed(word)), i) for i, word in enumerate(self.vocabulary)]
         return [i for _, i in sorted(pairs)]
 
@@ -45,14 +46,14 @@ class WordLadder:
         for j in range(self.length):
             yield word + j
 
-    def find_path(self, start: str, end: str) -> List[str]:
+    def find_path(self, start: str, end: str) -> list[str]:
         def as_int(s: str) -> int:
             return self.vocabulary.index(s) * self.length
 
         paths = sorted(self.bfs_paths(as_int(start), as_int(end)), key=len) + [[]]
         return [self.word_str(i) for i in paths[0]]
 
-    def bfs_paths(self, start: int, end: int) -> Generator[List[int], None, None]:
+    def bfs_paths(self, start: int, end: int) -> Generator[list[int], None, None]:
         """Generates candidate acyclic paths from start to end."""
         assert self.word_str(start).isalpha()
         assert self.word_str(end).isalpha()
@@ -71,7 +72,7 @@ class WordLadder:
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, proto: int, position: int) -> Set[int]:
+    def _adjacent_words(self, proto: int, position: int) -> set[int]:
         assert 0 <= position < self.length
         pr = self.prototype_str(proto)
         print(pr, position)
@@ -100,6 +101,6 @@ class WordLadder:
         assert a % self.length == 0
         assert b % self.length == 0
 
-    def _ordered(self, neighbors: Set[int], end: int) -> List[int]:
+    def _ordered(self, neighbors: set[int], end: int) -> list[int]:
         distance_to_goal = partial(hamming_distance, end)
         return sorted(sorted(neighbors), key=distance_to_goal)

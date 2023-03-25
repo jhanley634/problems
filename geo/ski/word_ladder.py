@@ -1,8 +1,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from collections import defaultdict
+from collections.abc import Generator
 from functools import partial
 from io import StringIO
-from typing import Generator, List, Set, TextIO, Tuple
+from typing import TextIO
 
 
 def hamming_distance(a: str, b: str) -> int:
@@ -29,7 +30,7 @@ class Proto(str):
 
 class WordLadder:
     def __init__(self, length: int = 3, input_words="/usr/share/dict/words"):
-        self.words: defaultdict[Proto, Set[Word]] = defaultdict(set)
+        self.words: defaultdict[Proto, set[Word]] = defaultdict(set)
         if isinstance(input_words, str):
             with open(input_words) as fin:
                 self._store_sorted_words(length, fin)
@@ -43,7 +44,7 @@ class WordLadder:
     @classmethod
     def _read_words(
         cls, length: int, fin: TextIO
-    ) -> Generator[Tuple[Proto, Word], None, None]:
+    ) -> Generator[tuple[Proto, Word], None, None]:
         for line in map(str.rstrip, fin):
             if len(line) == length and line.isalpha():
                 word = Word(line.lower())
@@ -57,11 +58,11 @@ class WordLadder:
             suffix = word[i + 1 :]
             yield Proto(f"{prefix}_{suffix}")
 
-    def find_path(self, start: Word | str, end: Word | str) -> List[Word]:
+    def find_path(self, start: Word | str, end: Word | str) -> list[Word]:
         paths = sorted(self.bfs_paths(Word(start), Word(end)), key=len) + [[]]
         return paths[0]
 
-    def bfs_paths(self, start: Word, end: Word) -> Generator[List[Word], None, None]:
+    def bfs_paths(self, start: Word, end: Word) -> Generator[list[Word], None, None]:
         """Generates candidate acyclic paths from start to end."""
         assert start.isalpha()
         assert end.isalpha()
@@ -79,6 +80,6 @@ class WordLadder:
                         queue.append((word, path + [word]))
 
     @staticmethod
-    def _ordered(neighbors: Set[Word], end: Word) -> List[Word]:
+    def _ordered(neighbors: set[Word], end: Word) -> list[Word]:
         distance_to_goal = partial(hamming_distance, end)
         return sorted(sorted(neighbors), key=distance_to_goal)

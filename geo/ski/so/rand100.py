@@ -1,7 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from collections import Counter
-from typing import List, Optional
+from typing import Optional
 import unittest
 
 from numpy.random import default_rng
@@ -14,7 +14,7 @@ def rand100(size=100_000):
 
 
 class RandomIntGenerator:
-    def __init__(self, bits: Optional[List[bool]] = None, size=750_000):
+    def __init__(self, bits: Optional[list[bool]] = None, size=750_000):
         self._bits = bits or self._get_random_bits(size)
 
     @staticmethod
