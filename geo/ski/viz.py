@@ -1,6 +1,7 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 
 # Copyright 2023 John Hanley. MIT licensed.
+
 import streamlit as st
 
 from geo.ski.dwell import GPX_DIR

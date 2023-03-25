@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
+
 from pathlib import Path
 from typing import Optional
 import datetime as dt

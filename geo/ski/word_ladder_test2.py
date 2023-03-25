@@ -1,4 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
+
 import unittest
 
 from geo.ski.word_ladder2 import WordLadder

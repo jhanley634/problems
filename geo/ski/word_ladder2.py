@@ -2,9 +2,7 @@
 from collections import defaultdict
 from functools import partial
 from io import StringIO
-from typing import Generator, List, Set, TextIO, Tuple
-
-from sortedcontainers import SortedList
+from typing import Generator, List, Set, TextIO
 
 from geo.ski.word_ladder import hamming_distance
 
@@ -65,7 +63,7 @@ class WordLadder:
             node, path = queue.pop(0)
             for prototype in self._gen_prototypes(node):
                 for word in self._ordered(
-                    self._adjacent_words(set([prototype]) - set(path), end), end
+                    self._adjacent_words({prototype} - set(path), end), end
                 ):
                     if word == end:
                         yield path + [end]
