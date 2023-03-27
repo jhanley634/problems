@@ -1,7 +1,9 @@
 from math import sqrt
 import unittest
 
+from hypothesis import given
 from numba import jit
+import hypothesis.strategies as st
 import sympy
 
 
@@ -24,22 +26,17 @@ def _find_divisor(n: int) -> int:
     return 1
 
 
-_find_divisor(999_999)  # force a compile
+LARGE = 1_000_000
+assert _find_divisor(LARGE - 1) == 3  # force a compile
 
 
 class PrimeTest(unittest.TestCase):
     def test_is_prime(self, verbose=False):
         count = 0
-        for n in range(2, 1_000_000):
+        for n in range(2, LARGE):
             divisor = _find_divisor(n)
             if divisor > 1:
                 count += 1
-                if verbose:
-                    dividend = n / divisor
-                    self.assertEqual(n, divisor * dividend)
-                    self.assertEqual(0, n % divisor)
-                    self.assertEqual(0, n % dividend)
-                    self.assertEqual(dividend, int(dividend))
             else:
                 self.assertTrue(sympy.isprime(n))
                 if verbose:
@@ -49,3 +46,14 @@ class PrimeTest(unittest.TestCase):
 
         with self.assertRaises(AssertionError):
             _find_divisor(0)
+
+    @given(st.integers(min_value=2, max_value=100 * LARGE))
+    def test_is_prime_hypo(self, n):
+        self.assertEqual(is_prime(n), sympy.isprime(n))
+
+        divisor = _find_divisor(n)
+        dividend = n / divisor
+        self.assertEqual(n, divisor * dividend)
+        self.assertEqual(0, n % divisor)
+        self.assertEqual(0, n % dividend)
+        self.assertEqual(dividend, int(dividend))
