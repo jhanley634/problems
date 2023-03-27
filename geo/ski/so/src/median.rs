@@ -5,8 +5,16 @@
 use std::collections::HashMap;
 
 fn main() {
+    use itertools::Itertools;
     let mut v = vec![10, -1, 9, -2];
     println!("{}", exercise_median_of_vector(&mut v));
+    println!("{v:?}");
+    let perms = v.iter().permutations(v.len());
+    println!("{:?}", perms.clone().collect::<Vec<_>>());
+    println!("{perms:?}");
+    for perm in perms {
+        println!("{perm:?}");
+    }
 
     let v = vec![1, 2, 3, 1];
     println!("{}", exercise_mode_of_vector(&v));
@@ -52,8 +60,12 @@ mod tests {
 
     #[test]
     fn test_median() {
-        let mut v = vec![10, -1, 9, -2];
-        assert_eq!(9, exercise_median_of_vector(&mut v));
+        use itertools::Itertools;
+        let v = vec![10, -1, 9, -2];
+        for perm in v.clone().iter().permutations(v.len()) {
+            println!("{perm:?}");
+        }
+        assert_eq!(9, exercise_median_of_vector(&mut v.to_vec()));
     }
     #[test]
     fn test_mode() {

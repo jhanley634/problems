@@ -2,7 +2,11 @@
 [package]
 name = "median"
 version = "0.1.0"
+edition = "2021"
 
 [[test]]
 name = "median_test"
 path = "src/median.rs"
+
+[dependencies]
+itertools = "0.10.5"
