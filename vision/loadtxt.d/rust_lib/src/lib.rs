@@ -5,7 +5,6 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::str;
 
-
 #[pyfunction]
 fn load_txt(path: &str) -> PyResult<Vec<f64>> {
     // This consumes ~ 150 .CSV files per second.
@@ -20,15 +19,13 @@ fn load_txt(path: &str) -> PyResult<Vec<f64>> {
     Ok(ret)
 }
 
-
 fn second_num(line: &str) -> f64 {
     // e.g. "7  8" --> 8.0
     let mut words = line.split_whitespace();
     words.next();  // discard first word
     let second = words.next().unwrap();
-    return second.parse::<f64>().unwrap()
+    return second.parse::<f64>().unwrap();
 }
-
 
 #[pyfunction]
 fn buffered_load_txt(path: &str) -> PyResult<Vec<f64>> {
@@ -42,7 +39,6 @@ fn buffered_load_txt(path: &str) -> PyResult<Vec<f64>> {
     }
     Ok(ret)
 }
-
 
 #[pymodule]
 fn rust_fast(_py: Python, m: &PyModule) -> PyResult<()> {

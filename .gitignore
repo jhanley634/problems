@@ -4,6 +4,9 @@
 .ipynb_checkpoints/
 __pycache__/
 cache/
+geo/ski/so/Cargo.lock
+geo/ski/so/median
+geo/ski/so/target/
 vision/loadtxt.d/pythran_lib/build/
 vision/loadtxt.d/pythran_lib/dist/
 vision/loadtxt.d/pythran_lib/hello.egg-info/

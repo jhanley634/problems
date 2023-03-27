@@ -1,3 +1,5 @@
+# Copyright 2023 John Hanley. MIT licensed.
+
 from math import sqrt
 import unittest
 

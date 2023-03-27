@@ -1,0 +1,8 @@
+
+[package]
+name = "median"
+version = "0.1.0"
+
+[[test]]
+name = "median_test"
+path = "src/median.rs"
