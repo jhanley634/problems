@@ -3,6 +3,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/284448/matching-from-a-big-list-of-keywords
 
+import re
+
+import regex
 import unidecode
 
 
@@ -21,15 +24,8 @@ class Drug:
         return hash(("name", self.name, "atc", self.atc))
 
 
-US_DRUGS = [
-    Drug("MED1", 1, None),
-    Drug("MED2", 2, None),
-    Drug("MED3", 3, None),
-    Drug("MED4", 4, None),
-    Drug("MED5", 5, None),
-    Drug("MED6", 6, None)
-    # imagine this list way bigger (around 150.000 items)
-]
+NUM_DRUGS = 150_000
+US_DRUGS = [Drug(f"MED{i:05d}", i, None) for i in range(NUM_DRUGS)]
 
 
 def _extract_drugs_from_prescription_text(prescription_text):
