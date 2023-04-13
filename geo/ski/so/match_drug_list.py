@@ -3,6 +3,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/284448/matching-from-a-big-list-of-keywords
 
+from pprint import pp
 import re
 
 import regex
@@ -12,7 +13,7 @@ import unidecode
 class Drug:
     def __init__(self, name, atc, position):
         # normalize name make it capitalize
-        self.name = name.upper()
+        self.name = re.escape(name.upper())
         self.atc = atc
         self.start = position[0] if position is not None else None
         self.stop = position[1] if position is not None else None
@@ -23,8 +24,12 @@ class Drug:
     def __hash__(self):
         return hash(("name", self.name, "atc", self.atc))
 
+    def __repr__(self):
+        return f"Drug({self.name}, {self.atc}, {range(self.start, self.stop)}))"
+
 
 NUM_DRUGS = 150_000
+NUM_DRUGS = 1500
 US_DRUGS = [Drug(f"MED{i:05d}", i, None) for i in range(NUM_DRUGS)]
 
 
@@ -63,11 +68,15 @@ def _extract_drugs_from_prescription_text(prescription_text):
 
 
 if __name__ == "__main__":
-    prescription_text = "- TEST - some example text here with some medication names like MED1, MED2, MED3. End of the test #$%^"
+    vitamin_c = "A11GA01"  # an ATC, https://en.wikipedia.org/wiki/Anatomical_Therapeutic_Chemical_Classification_System
+    prescription_text = "- TEST - some example text here with some medication names like MED1, MED2, MED3, MED00004, MED00005. End of the test #$%^"
+    normalized_prescription_text = re.escape(
+        unidecode.unidecode(prescription_text.upper())
+    )
     _extract_drugs_from_prescription_text(prescription_text)
 
+    matched_drugs = []
     for DRUG in US_DRUGS:
-        for match in regex.finditer(
-            re.escape(DRUG.name), re.escape(normalized_prescription_text), re.IGNORECASE
-        ):
+        for match in regex.finditer(DRUG.name, normalized_prescription_text):
             matched_drugs.append(Drug(DRUG.name, DRUG.atc, match.span()))
+    pp(matched_drugs)
