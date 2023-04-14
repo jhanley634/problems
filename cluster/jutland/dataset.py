@@ -1,4 +1,3 @@
-
 # Copyright 2021 John Hanley. MIT licensed.
 from collections import Counter
 from pathlib import Path
@@ -11,7 +10,6 @@ import pyarrow.parquet as pq
 
 
 class Dataset:
-
     TMP = Path('/tmp')
     SPATIAL = TMP / '3D_spatial_network.txt'
 
@@ -43,21 +41,20 @@ class Dataset:
             cls.profile(df, Path(f'{base}.html'))
             pq.write_table(pa.Table.from_pandas(df), cache)
 
-        return pq.read_table(cache).to_pandas()  # Elapsed time is less than two seconds.
+        # Elapsed time is less than two seconds.
+        return pq.read_table(cache).to_pandas()
 
     @staticmethod
-    def filter_short_segments(df: pd.DataFrame, k=4):
+    def filter_short_segments(df: pd.DataFrame, k: int = 4) -> pd.DataFrame:
         """Demands that a given osm_id shall have at least K segments.
 
         So e.g. singleton "roads", containing just a single point, are discarded.
         """
         counts = Counter(df.osm_id)
-        small_roads = set(osm_id
-                          for osm_id, count in counts.items()
-                          if count < k)
+        small_roads = set(osm_id for osm_id, count in counts.items() if count < k)
         return df[~df.osm_id.isin(small_roads)]
 
     @staticmethod
-    def profile(df: pd.DataFrame, out: Path):
+    def profile(df: pd.DataFrame, out: Path) -> None:
         if not out.exists():
             ProfileReport(df).to_file(out)

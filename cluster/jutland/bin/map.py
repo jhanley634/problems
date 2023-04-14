@@ -9,7 +9,7 @@ import streamlit as st
 
 
 @st.cache
-def _get_points(only_show_favorites=False):
+def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
     df = Dataset.get_df()
 
     # These are simply the first couple, in sorted order.
@@ -33,32 +33,33 @@ def _get_points(only_show_favorites=False):
 AALBORG = (57.050, 9.917)
 
 
-def column_layer(df):
-    st.pydeck_chart(pdk.Deck(
-        map_style='mapbox://styles/mapbox/light-v9',
-        initial_view_state=pdk.ViewState(
-            latitude=AALBORG[0],
-            longitude=AALBORG[1],
-            zoom=9,
-            pitch=30,
-        ),
-        layers=[
-            pdk.Layer(
-                'ColumnLayer',
-                data=df,
-                get_position='[lon, lat]',
-                get_elevation=90,
-                elevation_scale=1,
-                radius=20,
-                get_fill_color=[10, 10, '[20 * color]'],
+def column_layer(df: pd.DataFrame) -> None:
+    st.pydeck_chart(
+        pdk.Deck(
+            map_style='mapbox://styles/mapbox/light-v9',
+            initial_view_state=pdk.ViewState(
+                latitude=AALBORG[0],
+                longitude=AALBORG[1],
+                zoom=9,
+                pitch=30,
             ),
-        ],
-    ))
+            layers=[
+                pdk.Layer(
+                    'ColumnLayer',
+                    data=df,
+                    get_position='[lon, lat]',
+                    get_elevation=90,
+                    elevation_scale=1,
+                    radius=20,
+                    get_fill_color=[10, 10, '[20 * color]'],
+                ),
+            ],
+        )
+    )
 
 
 if __name__ == '__main__':
-
-    st.markdown('# DK roads')
+    st.markdown("# DK roads")
     st.map(_get_points())
     column_layer(_get_points())
 
