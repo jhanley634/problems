@@ -9,7 +9,7 @@ from geo.ski.word_ladder import hamming_distance
 
 
 class WordLadder:
-    def __init__(self, length: int = 3, input_words="/usr/share/dict/words"):
+    def __init__(self, length: int = 3, input_words: str = "/usr/share/dict/words"):
         self.length = length
         self.words: defaultdict[int, set[int]] = defaultdict(set)
         if isinstance(input_words, str):
@@ -37,9 +37,12 @@ class WordLadder:
         j = n % self.length
         return f"{w[:j]}_{w[j+1:]}"
 
-    def hamming_distance(self, a: str, b: str) -> int:
-        assert len(a) == len(b)
-        return sum(x != y for x, y in zip(a, b))
+    def hamming_distance(self, a: int, b: int) -> int:
+        p = self.prototype_str(a)
+        w = self.word_str(b)
+        assert len(p) == len(w)
+        assert "_" in p
+        return sum(x != y for x, y in zip(p, w))
 
     def _gen_prototypes(self, word: int) -> Generator[int, None, None]:
         for j in range(self.length):
@@ -71,14 +74,13 @@ class WordLadder:
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, proto: int, position: int) -> set[int]:
+    def _adjacent_words(self, proto: int, position: int) -> Generator[int, None, None]:
         assert 0 <= position < self.length
-        pr = self.prototype_str(proto + position)
         for word_idx in range(len(self.vocabulary)):
             if word_idx == proto // self.length:
                 continue
-            other = self.word_str(word_idx * self.length)
-            if self.hamming_distance(pr, other) == 1:
+            other = word_idx * self.length
+            if self.hamming_distance(proto + position, other) == 1:
                 yield other
 
         if False:

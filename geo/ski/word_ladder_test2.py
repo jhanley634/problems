@@ -27,7 +27,9 @@ class TestWordLadder2(unittest.TestCase):
 
         self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 0)))
         self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 1)))
-        self.assertEqual(["may"], list(wl._adjacent_words(5 * wl.length, 2)))
+        self.assertEqual(
+            ["may"], list(map(wl.word_str, wl._adjacent_words(5 * wl.length, 2)))
+        )
 
         path = ["jan", "jun", "jul"]
         self.assertEqual(path, wl.find_path(path[0], path[-1]))
