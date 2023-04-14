@@ -4,7 +4,7 @@
 import pandas as pd
 
 
-def woz_melt():
+def woz_melt() -> None:
     df1, df2 = _get_dataframes()
 
     assert set(df1.stadsdeel) == set(df2.stadsdeel)  # Yup, the spellings match!
@@ -16,7 +16,7 @@ def woz_melt():
     print(df1.merge(df2, how="left", on=["stadsdeel", "year"]).dropna())
 
 
-def _get_dataframes():
+def _get_dataframes() -> tuple[pd.DataFrame, pd.DataFrame]:
     woz_waarde = (
         "https://raw.githubusercontent.com/uvacw/teaching-bdaca/main"
         "/12ec-course/week03/exercises/wozwaarde-clean.csv"

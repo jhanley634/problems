@@ -4,6 +4,7 @@
 # from https://codereview.stackexchange.com/questions/284448/matching-from-a-big-list-of-keywords
 
 from pprint import pp
+from typing import Any, Optional
 import re
 
 import regex
@@ -11,29 +12,30 @@ import unidecode
 
 
 class Drug:
-    def __init__(self, name, atc, position):
+    def __init__(self, name: str, atc: str, position: Optional[tuple[int, int]]):
         # normalize name make it capitalize
         self.name = re.escape(name.upper())
         self.atc = atc
         self.start = position[0] if position is not None else None
         self.stop = position[1] if position is not None else None
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Drug):
+            return False
         return self.name == other.name and self.atc == other.atc
 
-    def __hash__(self):
-        return hash(("name", self.name, "atc", self.atc))
+    def __hash__(self) -> int:
+        return hash((self.name, self.atc))
 
-    def __repr__(self):
-        return f"Drug({self.name}, {self.atc}, {range(self.start, self.stop)}))"
+    def __repr__(self) -> str:
+        return f"Drug({self.name}, {self.atc}, {self.start, self.stop}))"
 
 
 NUM_DRUGS = 150_000
-NUM_DRUGS = 1500
-US_DRUGS = [Drug(f"MED{i:05d}", i, None) for i in range(NUM_DRUGS)]
+US_DRUGS = [Drug(f"MED{i:05d}", f"{i}", None) for i in range(NUM_DRUGS)]
 
 
-def _extract_drugs_from_prescription_text(prescription_text):
+def _extract_drugs_from_prescription_text(prescription_text: str) -> list[int]:
     # normalize prescription text (remove accents)
     normalized_prescription_text = unidecode.unidecode(prescription_text)
 
