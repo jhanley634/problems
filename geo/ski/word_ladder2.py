@@ -35,7 +35,7 @@ class WordLadder:
     def prototype_str(self, n: int) -> str:
         w = self.word_str(n)
         j = n % self.length
-        return f"{w[:j]}_{w[j:]}"
+        return f"{w[:j]}_{w[j+1:]}"
 
     def hamming_distance(self, a: int, b: int) -> int:
         w_a = self.word_str(a)

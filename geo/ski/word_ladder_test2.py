@@ -20,6 +20,11 @@ class TestWordLadder2(unittest.TestCase):
         self.assertEqual("feb", wl.word_str(1 * wl.length))
         self.assertEqual("jan", wl.word_str(2 * wl.length))
         self.assertEqual("mar", wl.word_str(5 * wl.length))
+
+        self.assertEqual("_ar", wl.prototype_str(5 * wl.length + 0))
+        self.assertEqual("m_r", wl.prototype_str(5 * wl.length + 1))
+        self.assertEqual("ma_", wl.prototype_str(5 * wl.length + 2))
+
         self.assertEqual(["may"], list(wl._adjacent_words(5 * wl.length, 1)))
         self.assertEqual([], list(wl._adjacent_words(0 * wl.length, 1)))
 
