@@ -6,7 +6,7 @@ from .collatz import collatz
 
 
 class CollatzTest(unittest.TestCase):
-    def test_collatz(self):
+    def test_collatz(self) -> None:
         self.assertEqual(collatz(1), 1)
         self.assertEqual(collatz(2), 2)
         self.assertEqual(collatz(3), 8)
@@ -43,7 +43,7 @@ class CollatzTest(unittest.TestCase):
         self.assertEqual(collatz(100_000_000), 108)
         self.assertEqual(collatz(1_000_000_000), 101)
 
-    def test_iterate(self):
+    def test_iterate(self) -> None:
         phi = 0.5 * (1 + sqrt(5))
         n = 2
         for i in range(1, 410_000):

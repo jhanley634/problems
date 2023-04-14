@@ -6,13 +6,13 @@ import streamlit as st
 from percolate.two_d_percolation import Perc
 
 
-def main():
-    st.write('Hi!')
+def main() -> None:
+    st.write("Hi!")
     p = Perc(3, 2)
     st.write(p.g.numberOfNodes(), p.g.numberOfEdges())
-    print('')
+    print("")
     nk.overview(p.g)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

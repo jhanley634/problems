@@ -5,7 +5,7 @@ from functools import lru_cache
 
 
 @lru_cache(maxsize=500)
-def collatz(n):
+def collatz(n: int) -> int:
     if n == 1:
         return n
     elif n % 2 == 0:

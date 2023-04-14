@@ -17,7 +17,7 @@ _hash_funcs = {
 }
 
 
-def _get_search_engine():
+def _get_search_engine() -> SearchEngine:
     """Returns a zipcode search engine offering "comprehensive" details, connected to sqlite backend."""
     comp = SearchEngine.SimpleOrComprehensiveArgEnum.comprehensive
     se = SearchEngine(simple_or_comprehensive=comp)
@@ -28,29 +28,31 @@ def _get_search_engine():
     return se
 
 
-def main():
-    prev_lo = prev['lo']
-    prev_delta = min(prev['hi'] - prev['lo'], 50)
+def main() -> None:
+    prev_lo = prev["lo"]
+    prev_delta = min(prev["hi"] - prev["lo"], 50)
 
     widget = st.empty()
     lo, hi = widget.slider(
-        'high',
+        "high",
         min_value=1,
         max_value=120,
-        value=(prev['lo'], prev['hi']),
+        value=(prev["lo"], prev["hi"]),
     )
     print(hi)
 
-    if (
-        lo != prev_lo
-    ):  # We assume mouse will only adjust a single slider per refresh interval.
+    # We assume mouse will only adjust a single slider per refresh interval.
+    if lo != prev_lo:
         lo, hi = widget.slider(
-            'high', min_value=1, max_value=120, value=(lo, lo + prev_delta)
+            "high",
+            min_value=1,
+            max_value=120,
+            value=(lo, lo + prev_delta),
         )
 
     st.write(prev_delta)
-    prev['lo'] = lo
-    prev['hi'] = hi
+    prev["lo"] = lo
+    prev["hi"] = hi
     return
 
     se = _get_search_engine()
@@ -67,5 +69,5 @@ def main():
     st.write(df)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

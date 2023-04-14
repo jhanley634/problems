@@ -10,7 +10,7 @@ from .graph_edit import GraphEdit, all_double_mods, all_mods, all_single_mods, a
 
 
 class GraphEditTest(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.g = GraphEdit(
             np.array(
                 [
@@ -24,7 +24,7 @@ class GraphEditTest(unittest.TestCase):
             )
         )
 
-    def test_graph_edit(self):
+    def test_graph_edit(self) -> None:
         g = self.g
         self.assertEqual(5, self.g.num_nodes)
         self.assertEqual(2, g[0, 1])
@@ -33,11 +33,11 @@ class GraphEditTest(unittest.TestCase):
         del g.edit[(0, 1)]
         self.assertEqual(2, g[0, 1])
 
-    def test_non_square(self):
+    def test_non_square(self) -> None:
         with self.assertRaises(AssertionError):
             GraphEdit(np.array([[0, 0], [1, 1], [2, 2]]))
 
-    def test_all_single_mods(self):
+    def test_all_single_mods(self) -> None:
         g = GraphEdit(np.array([[0, 0], [1, 0]]))
 
         self.assertEqual(4, len(list(all_single_mods(g))))
@@ -61,7 +61,7 @@ class GraphEditTest(unittest.TestCase):
                 as_array(g),
             )
 
-    def test_all_double_mods(self):
+    def test_all_double_mods(self) -> None:
         g = GraphEdit(np.array([[0, 0], [1, 0]]))
 
         self.assertEqual(16, len(list(all_double_mods(g))))
@@ -82,7 +82,7 @@ class GraphEditTest(unittest.TestCase):
         ):
             assert_array_equal(ex, actual)
 
-    def test_many_mods(self):
+    def test_many_mods(self) -> None:
         self.assertEqual(40, len(list(all_single_mods(self.g))))
         self.assertEqual(1_600, len(list(all_double_mods(self.g))))
         self.assertEqual(1_600, len(list(all_mods(self.g, 2))))

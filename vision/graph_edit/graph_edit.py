@@ -2,12 +2,18 @@
 from typing import Generator, Optional
 
 import numpy as np
+import numpy.typing as npt
 
 
 class GraphEdit:
     """A digraph with many base edge weights plus a handful of edited weights."""
 
-    def __init__(self, edge: np.ndarray, edit: Optional[dict] = None, verify=False):
+    def __init__(
+        self,
+        edge: npt.NDArray[np.int_],
+        edit: Optional[dict[tuple[int, int], int]] = None,
+        verify: bool = False,
+    ):
         a, b = edge.shape
         assert a == b, f"Expected square matrix, got {a}x{b}"
         self.edge = edge  # We treat these as immutable weights.
@@ -15,22 +21,22 @@ class GraphEdit:
         if verify:
             self._verify_no_self_loops()  # Changes the ctor cost from O(1) to O(n).
 
-    def _verify_no_self_loops(self):
+    def _verify_no_self_loops(self) -> None:
         for i in range(self.num_nodes):
             assert self[i, i] == 0, f"self-loop at node {i}"
 
     @property
-    def num_nodes(self):
+    def num_nodes(self) -> int:
         return len(self.edge)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: tuple[int, int]) -> int:
         return self.edit.get(item, self.edge[item])
 
-    def __setitem__(self, item, value):
+    def __setitem__(self, item: tuple[int, int], value: int) -> None:
         self.edit[item] = value
 
 
-def as_array(g: GraphEdit) -> np.ndarray:
+def as_array(g: GraphEdit) -> npt.NDArray[np.int_]:
     return np.array([[g[i, j] for j in range(g.num_nodes)] for i in range(g.num_nodes)])
 
 

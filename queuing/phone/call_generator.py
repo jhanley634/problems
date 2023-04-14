@@ -2,6 +2,7 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from collections import namedtuple
 from queue import PriorityQueue
+from typing import Generator
 import datetime as dt
 
 import numpy as np
@@ -25,7 +26,7 @@ class CallGenerator:
         self.call_duration = call_duration
         self.variance = variance
 
-        self.q: PriorityQueue = PriorityQueue()
+        self.q: PriorityQueue[tuple[dt.datetime, int]] = PriorityQueue()
         self.rng = np.random.default_rng()
         self.id_ = 0  # serial
 
@@ -33,7 +34,7 @@ class CallGenerator:
         self,
         start_time: dt.datetime,
         end_time: dt.datetime,
-    ):
+    ) -> Generator[tuple[dt.datetime, dt.timedelta, int], None, None]:
         t = start_time
         while t < end_time:
             t += dt.timedelta(seconds=self.rng.exponential(1 / self.arrival_rate))
@@ -43,7 +44,7 @@ class CallGenerator:
         self,
         start: dt.datetime,
         end: dt.datetime,
-    ):
+    ) -> Generator[tuple[dt.datetime, dt.timedelta, int], None, None]:
         one_second = dt.timedelta(seconds=1)
         t = start
         while t < end:
@@ -53,7 +54,7 @@ class CallGenerator:
                 yield self._produce_event(t)
             t += one_second
 
-    def _produce_event(self, t: dt.datetime):
+    def _produce_event(self, t: dt.datetime) -> tuple[dt.datetime, dt.timedelta, int]:
         sec = self.rng.normal(self.call_duration, self.variance)
         sec = max(5, sec)  # call length cannot be super short, definitely not negative
         sec += 1e-6
@@ -63,7 +64,9 @@ class CallGenerator:
         return t, dur, self.id_
 
 
-def _get_gen():
+def _get_gen() -> (
+    tuple[CallGenerator, Generator[tuple[dt.datetime, dt.timedelta, int], None, None]]
+):
     generator = CallGenerator()
     return generator, generator.gen_continuous(
         dt.datetime.now(),
@@ -71,7 +74,7 @@ def _get_gen():
     )
 
 
-def max_occupancy():
+def max_occupancy() -> int:
     generator, gen = _get_gen()
     events = [(stamp, 1) for stamp, _, _ in gen]  # arrival will increment occupancy
     while len(generator.q.queue) > 0:
@@ -86,7 +89,9 @@ def max_occupancy():
     return max_occ
 
 
-def _get_start_and_end(events: pd.DataFrame):
+def _get_start_and_end(
+    events: pd.DataFrame,
+) -> Generator[tuple[dt.datetime, int], None, None]:
     Pair = namedtuple("Pair", ["stamp", "delta"])
     for _, row in events.iterrows():
         yield Pair(row.stamp, 1)  # arrival increment
@@ -102,14 +107,16 @@ def _get_events_dataframe() -> pd.DataFrame:
     return events
 
 
-def pandas_occ():  # Compute same thing, in a slightly different way.
+# Compute same thing, in a slightly different way.
+def pandas_occ() -> int:
     events = _get_events_dataframe()
     df = pd.DataFrame(sorted(_get_start_and_end(events)))
     df["occupancy"] = df.delta.cumsum()
-    return df.occupancy.max()
+    return int(df.occupancy.max())
 
 
-def pandas_occ2():  # Compute same thing, avoiding row-by-row iteration.
+# Compute same thing, avoiding row-by-row iteration.
+def pandas_occ2() -> int:
     ev = _get_events_dataframe()
     df = pd.concat([ev.stamp.to_frame(), ev.end.to_frame()])
 
@@ -120,7 +127,7 @@ def pandas_occ2():  # Compute same thing, avoiding row-by-row iteration.
     df = df.sort_values(["stamp"])
 
     df["occupancy"] = df.delta.cumsum()
-    return df.occupancy.max()
+    return int(df.occupancy.max())
 
 
 if __name__ == "__main__":

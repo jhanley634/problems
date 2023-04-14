@@ -4,12 +4,14 @@
 Retrieves article history from Wikipedia's RESTful API.
 """
 from pathlib import Path
+from typing import Generator
 import datetime as dt
 import os
 import re
 import subprocess
 
 from glom import glom
+from requests import Response
 import click
 import requests
 
@@ -25,29 +27,33 @@ class HistoryScraper:
         self.title = title
 
     @staticmethod
-    def get(url: str):
+    def get(url: str) -> Response:
         headers = {"User-Agent": "jhanley634-history-scraper-v1"}
         resp = requests.get(url, headers=headers)
         resp.raise_for_status()
         return resp
 
     @staticmethod
-    def _minor(is_minor: bool):
+    def _minor(is_minor: bool) -> str:
         return "m" if is_minor else "."
 
     author_re = re.compile(r"([\w .-]+)")
 
     @classmethod
-    def _get_author(cls, rev: dict):
+    def _get_author(cls, rev: dict[str, str]) -> str:
         name = glom(rev, "user.name")
-        name = cls.author_re.search(name).group(1).strip()  # Sanitize.
+        m = cls.author_re.search(name)
+        assert m
+        name = m.group(1).strip()  # Sanitize.
         assert name, rev  # Wikipedia requires a non-empty author name.
         pseudo_email = f"<{name.replace(' ', '_')}@wiki>"
         return f"{name} {pseudo_email}"  # Git requires Ident + email addr, so dup it.
 
     older_re = re.compile(r"/history\?older_than=\d+$")
 
-    def _get_reverse_history_ids(self):
+    def _get_reverse_history_ids(
+        self,
+    ) -> Generator[tuple[int, dt.datetime, str, str], None, None]:
         # now = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         older = f"{self.page_url_prefix}/history"
         while older:
@@ -66,7 +72,7 @@ class HistoryScraper:
             if older:
                 assert self.older_re.search(older), older
 
-    def _get_all_history_ids(self):
+    def _get_all_history_ids(self) -> list[tuple[int, dt.datetime, str, str]]:
         return sorted(self._get_reverse_history_ids())
 
     @staticmethod
@@ -81,7 +87,7 @@ class HistoryScraper:
         ]
         return "\n".join(lines)
 
-    def write_versions(self, out_dir=_tmp / "wiki_history"):
+    def write_versions(self, out_dir: Path = _tmp / "wiki_history") -> None:
         out_dir.mkdir(exist_ok=True)
         git_dir = out_dir / ".git"
         if not git_dir.exists():
@@ -95,7 +101,7 @@ class HistoryScraper:
 
         for id_, stamp, author, comment in self._get_all_history_ids():
             sec = int(stamp.timestamp())
-            stamp = stamp.strftime("%Y-%m-%dT%H:%M:%S")
+            stamp_ = stamp.strftime("%Y-%m-%dT%H:%M:%S")
             comment = comment.translate(xlate_tbl)
             out_file = out_dir / self.title
             out_file_id = Path(f"{out_file}-{id_}")
@@ -111,6 +117,7 @@ class HistoryScraper:
                     fout.write("\n")
                 os.utime(out_file_id, (sec, sec))
                 match = comment_re.search(comment)
+                assert match and len(match.groups()) > 1
                 if comment != match[1]:
                     print(comment)
                     print(match[1])
@@ -118,13 +125,13 @@ class HistoryScraper:
                 cmd = f'''
                     cd {out_dir} &&
                     git add {self.title} &&
-                    git commit --date={stamp} --author "{author}" -m "{id_} {comment}"'''
+                    git commit --date={stamp_} --author "{author}" -m "{id_} {comment}"'''
                 subprocess.check_call(cmd, shell=True)
 
 
 @click.command()
 @click.option("--article-url", default="Nathan_Safir")
-def main(article_url):
+def main(article_url: str) -> None:
     prefix = "https://en.wikipedia.org/wiki/"  # We strip the prefix if present, for copy-n-paste convenience
     HistoryScraper(article_url.replace(prefix, "")).write_versions()
 

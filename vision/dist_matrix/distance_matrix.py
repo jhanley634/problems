@@ -12,7 +12,7 @@ import pandas as pd
 import seaborn as sns
 
 
-def distance_matrix(df: pd.DataFrame, metric: str = "euclidean"):
+def distance_matrix(df: pd.DataFrame, metric: str = "euclidean") -> None:
     df = df[["zipcode", "lat", "lng", "population_density"]]
     df = df.sort_values(by=["zipcode"])
     print(df)
@@ -48,4 +48,5 @@ def get_df() -> pd.DataFrame:
     return df
 
 
-distance_matrix(get_df())
+if __name__ == "__main__":
+    distance_matrix(get_df())
