@@ -69,7 +69,7 @@ def _extract_drugs_from_prescription_text(prescription_text):
 
 if __name__ == "__main__":
     vitamin_c = "A11GA01"  # an ATC, https://en.wikipedia.org/wiki/Anatomical_Therapeutic_Chemical_Classification_System
-    prescription_text = "- TEST - some example text here with some medication names like MED1, MED2, MED3, MED00004, MED00005. End of the test #$%^"
+    prescription_text = "- TEST -  medication names like MED1, MED2, MED3, MED00004, MED00005. End of the test #$%^"
     normalized_prescription_text = re.escape(
         unidecode.unidecode(prescription_text.upper())
     )

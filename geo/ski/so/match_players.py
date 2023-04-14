@@ -4,6 +4,7 @@
 # https://stackoverflow.com/questions/76016826/algorithm-to-match-a-pool-of-players-by-rating
 
 from dataclasses import dataclass
+from itertools import pairwise
 import unittest
 
 
@@ -33,10 +34,8 @@ pool = [
 
 def get_deltas(pool: list[Player]):
     pool = sorted(pool)
-    prev = pool[0].rating
-    for player in pool[1:]:
-        yield player.rating - prev
-        prev = player.rating
+    for a, b in pairwise(pool):
+        yield b.rating - a.rating
 
 
 def get_player_pairs(pool: list[Player]):
