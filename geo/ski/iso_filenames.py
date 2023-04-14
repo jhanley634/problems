@@ -12,7 +12,7 @@ GPX_DIR = Path("~/Desktop/gpx").expanduser()
 DOWNLOADS = Path("~/Downloads").expanduser()
 
 
-def copy_all(src_dir: Path = DOWNLOADS, dst_dir: Path = GPX_DIR):
+def copy_all(src_dir: Path = DOWNLOADS, dst_dir: Path = GPX_DIR) -> None:
     """Copy all GPX files from src_dir to dst_dir, renaming to ISO8601 filenames."""
     src_dir = Path(src_dir).expanduser()
     for path in tqdm(sorted(src_dir.glob("*.gpx"))):

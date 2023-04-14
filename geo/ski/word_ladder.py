@@ -29,7 +29,7 @@ class Proto(str):
 
 
 class WordLadder:
-    def __init__(self, length: int = 3, input_words="/usr/share/dict/words"):
+    def __init__(self, length: int = 3, input_words: str = "/usr/share/dict/words"):
         self.words: defaultdict[Proto, set[Word]] = defaultdict(set)
         if isinstance(input_words, str):
             with open(input_words) as fin:
@@ -37,7 +37,7 @@ class WordLadder:
         else:
             self._store_sorted_words(length, StringIO("\n".join(input_words)))
 
-    def _store_sorted_words(self, length: int, fin: TextIO):
+    def _store_sorted_words(self, length: int, fin: TextIO) -> None:
         for prototype, word in sorted(self._read_words(length, fin)):
             self.words[prototype].add(word)
 

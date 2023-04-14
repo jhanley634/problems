@@ -7,7 +7,7 @@ import streamlit as st
 from geo.ski.dwell import GPX_DIR
 
 
-def main():
+def main() -> None:
     st.title("available files:")
     files = sorted(GPX_DIR.glob("*.gpx"))
     st.write("\n\n".join(map(str, files)))

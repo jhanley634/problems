@@ -1,4 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
+from typing import Generator
 import datetime as dt
 import sys
 import unittest
@@ -9,7 +10,7 @@ from .word_ladder import WordLadder, hamming_distance
 
 
 class TestSortedList(unittest.TestCase):
-    def test_sorted_list(self):
+    def test_sorted_list(self) -> None:
         xs = SortedList([9, 5, 6, 7])
         self.assertEqual([5, 6, 7, 9], xs)
         self.assertEqual(6, xs[1])
@@ -31,7 +32,7 @@ class TestSortedList(unittest.TestCase):
 
 
 class TestHammingDistance(unittest.TestCase):
-    def test_symmetric_hamming_distance(self):
+    def test_symmetric_hamming_distance(self) -> None:
         for a, b, distance in [
             ("abc", "abc", 0),
             ("abc", "bbc", 1),
@@ -44,13 +45,13 @@ class TestHammingDistance(unittest.TestCase):
             self.assertEqual(distance, hamming_distance(b, a))
 
 
-def _get_months():
+def _get_months() -> Generator[str, None, None]:
     for month in range(1, 8):
         yield dt.date(2023, month, 1).strftime("%b").lower()
 
 
 class TestWordLadder(unittest.TestCase):
-    def test_months(self):
+    def test_months(self) -> None:
         months = list(_get_months())
         self.assertEqual(["jan", "feb", "mar", "apr", "may", "jun", "jul"], months)
 
@@ -58,7 +59,7 @@ class TestWordLadder(unittest.TestCase):
         path = ["jan", "jun", "jul"]
         self.assertEqual(path, wl.find_path(path[0], path[-1]))
 
-    def test_init(self):
+    def test_init(self) -> None:
         self.assertEqual(1_000, sys.getrecursionlimit())
         sys.setrecursionlimit(10_000)
 
@@ -80,11 +81,11 @@ class TestWordLadder(unittest.TestCase):
         self.assertEqual(["cat", "cot", "dot", "dog"], wl.find_path("cat", "dog"))
 
     @staticmethod
-    def _get_5_char_path():
+    def _get_5_char_path() -> list[str]:
         return ["douse", "rouse", "route", "foute", "flute", "flume", "flame"]
 
     @staticmethod
-    def _get_6_char_path():
+    def _get_6_char_path() -> list[str]:
         return [
             "boyish",
             "bayish",

@@ -12,7 +12,7 @@ tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore [assi
 
 
 class IsoFilenamesTest(unittest.TestCase):
-    def test_iso_filenames(self):
+    def test_iso_filenames(self) -> None:
         path = Path("01-Aug-2022-2043-milk.gpx")
         self.assertEqual(Path("2022-08-01-2043-milk.gpx"), iso(path))
 

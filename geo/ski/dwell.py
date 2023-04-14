@@ -2,7 +2,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Generator, Optional
 import datetime as dt
 
 from geopy import Point
@@ -15,15 +15,15 @@ import typer
 GPX_DIR = Path("~/Desktop/gpx").expanduser()
 
 
-def main(infile=f"{GPX_DIR}/2022-07-14-1234-pizza.gpx"):
-    infile = Path(infile).expanduser()
-    with open(infile) as fin:
+def main(infile: str = f"{GPX_DIR}/2022-07-14-1234-pizza.gpx") -> None:
+    infile_ = Path(infile).expanduser()
+    with open(infile_) as fin:
         gpx = gpxpy.parse(fin)
         df = pl.DataFrame(get_rows(gpx))
         print(df)
 
 
-def get_rows(gpx: GPX):
+def get_rows(gpx: GPX) -> Generator[dict[Any, Any], None, None]:
     g = get_breadcrumbs(gpx)
     cum = 0
     first_row = next(g)
@@ -38,7 +38,9 @@ def get_rows(gpx: GPX):
         yield {**row, **d}
 
 
-def get_breadcrumbs(gpx: GPX, precision=6, verbose=False):
+def get_breadcrumbs(
+    gpx: GPX, precision: int = 6, verbose: bool = False
+) -> Generator[dict[Any, Any], None, None]:
     prev_time: Optional[dt.datetime] = None
     prev_loc: Optional[Point] = None
     for track in gpx.tracks:

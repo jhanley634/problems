@@ -12,7 +12,7 @@ import seaborn as sns
 import typer
 
 
-def show_locale(place_name="Kamppi, Helsinki, Finland"):
+def show_locale(place_name: str = "Kamppi, Helsinki, Finland") -> None:
     out_file = Path("~/Desktop").expanduser() / place_name.replace(", ", "-")
     graph = graph_from_place(place_name)
     # fig, ax = ox.plot_graph(graph); print(fig, ax)

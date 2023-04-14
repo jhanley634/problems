@@ -3,7 +3,7 @@
 import pandas as pd
 
 
-def bbox(df: pd.DataFrame):
+def bbox(df: pd.DataFrame) -> tuple[tuple[float, float], tuple[float, float]]:
     ul = df.lat.max(), df.lon.min()
     lr = df.lat.min(), df.lon.max()
     return ul, lr
