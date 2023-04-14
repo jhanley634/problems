@@ -7,7 +7,7 @@ from geo.ski.word_ladder_test import _get_months
 
 
 class TestWordLadder2(unittest.TestCase):
-    def test_months(self):
+    def test_months(self) -> None:
         months = list(_get_months())
         self.assertEqual("jan feb mar apr may jun jul", " ".join(months))
 
@@ -25,8 +25,9 @@ class TestWordLadder2(unittest.TestCase):
         self.assertEqual("m_r", wl.prototype_str(5 * wl.length + 1))
         self.assertEqual("ma_", wl.prototype_str(5 * wl.length + 2))
 
-        self.assertEqual(["may"], list(wl._adjacent_words(5 * wl.length, 1)))
-        self.assertEqual([], list(wl._adjacent_words(0 * wl.length, 1)))
+        self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 0)))
+        self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 1)))
+        self.assertEqual(["may"], list(wl._adjacent_words(5 * wl.length, 2)))
 
         path = ["jan", "jun", "jul"]
         self.assertEqual(path, wl.find_path(path[0], path[-1]))

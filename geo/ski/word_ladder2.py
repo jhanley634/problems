@@ -37,10 +37,9 @@ class WordLadder:
         j = n % self.length
         return f"{w[:j]}_{w[j+1:]}"
 
-    def hamming_distance(self, a: int, b: int) -> int:
-        w_a = self.word_str(a)
-        w_b = self.word_str(b)
-        return sum(x != y for x, y in zip(w_a, w_b))
+    def hamming_distance(self, a: str, b: str) -> int:
+        assert len(a) == len(b)
+        return sum(x != y for x, y in zip(a, b))
 
     def _gen_prototypes(self, word: int) -> Generator[int, None, None]:
         for j in range(self.length):
@@ -74,14 +73,16 @@ class WordLadder:
 
     def _adjacent_words(self, proto: int, position: int) -> set[int]:
         assert 0 <= position < self.length
-        pr = self.prototype_str(proto)
-        print(pr, position)
+        pr = self.prototype_str(proto + position)
         for word_idx in range(len(self.vocabulary)):
-            print(proto, self.word_str(proto), word_idx, self.word_str(word_idx))
-            if self.hamming_distance(proto, word_idx) == 1:
-                yield word_idx
+            if word_idx == proto // self.length:
+                continue
+            other = self.word_str(word_idx * self.length)
+            if self.hamming_distance(pr, other) == 1:
+                yield other
 
         if False:
+            i = j = node = g = 0
             while (
                 i < len(self.pfx_nodes)
                 and self.pfx_nodes[i].prefix == node.prefix
