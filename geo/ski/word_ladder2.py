@@ -5,8 +5,6 @@ from functools import partial
 from io import StringIO
 from typing import TextIO
 
-from geo.ski.word_ladder import hamming_distance
-
 
 class WordLadder:
     def __init__(self, length: int = 3, input_words: str = "/usr/share/dict/words"):
@@ -65,22 +63,22 @@ class WordLadder:
         while queue:
             node, path = queue.pop(0)
             for prototype in self._gen_prototypes(node):
-                for word in self._ordered(
-                    self._adjacent_words({prototype} - set(path), end), end
-                ):
+                adj = set(self._adjacent_words({prototype} - set(path)))
+                for word in self._ordered(adj, end):
                     if word == end:
                         yield path + [end]
                     elif best[word] > len(path):
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, proto: int) -> Generator[int, None, None]:
-        for word_idx in range(len(self.vocabulary)):
-            if word_idx == proto // self.length:
-                continue
-            other = word_idx * self.length
-            if self.hamming_distance(proto, other) == 1:
-                yield other
+    def _adjacent_words(self, protos: set[int]) -> Generator[int, None, None]:
+        for proto in protos:
+            for word_idx in range(len(self.vocabulary)):
+                if word_idx == proto // self.length:
+                    continue
+                other = word_idx * self.length
+                if self._is_adjacent(proto, other):
+                    yield other
 
         if False:
             i = j = node = g = 0
@@ -99,10 +97,10 @@ class WordLadder:
                     g.add_node(other.word)
                     g.add_edge(other.word, node.word)
 
-    def _is_adjacent(self, a: int, b: int) -> bool:
-        assert a % self.length == 0
-        assert b % self.length == 0
+    def _is_adjacent(self, proto: int, other: int) -> bool:
+        assert other % self.length == 0
+        return self.hamming_distance(proto, other) == 1
 
     def _ordered(self, neighbors: set[int], end: int) -> list[int]:
-        distance_to_goal = partial(hamming_distance, end)
+        distance_to_goal = partial(self.hamming_distance, end)
         return sorted(sorted(neighbors), key=distance_to_goal)
