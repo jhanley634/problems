@@ -25,10 +25,10 @@ class TestWordLadder2(unittest.TestCase):
         self.assertEqual("m_r", wl.prototype_str(5 * wl.length + 1))
         self.assertEqual("ma_", wl.prototype_str(5 * wl.length + 2))
 
-        self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 0)))
-        self.assertEqual([], list(wl._adjacent_words(5 * wl.length, 1)))
+        self.assertEqual([], list(wl._adjacent_words(5 * wl.length + 0)))
+        self.assertEqual([], list(wl._adjacent_words(5 * wl.length + 1)))
         self.assertEqual(
-            ["may"], list(map(wl.word_str, wl._adjacent_words(5 * wl.length, 2)))
+            ["may"], list(map(wl.word_str, wl._adjacent_words(5 * wl.length + 2)))
         )
 
         path = ["jan", "jun", "jul"]

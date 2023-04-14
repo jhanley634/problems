@@ -74,13 +74,12 @@ class WordLadder:
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, proto: int, position: int) -> Generator[int, None, None]:
-        assert 0 <= position < self.length
+    def _adjacent_words(self, proto: int) -> Generator[int, None, None]:
         for word_idx in range(len(self.vocabulary)):
             if word_idx == proto // self.length:
                 continue
             other = word_idx * self.length
-            if self.hamming_distance(proto + position, other) == 1:
+            if self.hamming_distance(proto, other) == 1:
                 yield other
 
         if False:
