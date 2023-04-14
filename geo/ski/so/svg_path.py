@@ -3,12 +3,13 @@
 # https://codereview.stackexchange.com/questions/283558/processing-a-very-long-single-line-of-comma-separated-FPs
 
 from pathlib import Path
+from typing import Generator
 import json
 
 import typer
 
 
-def svg_json_to_gnuplot(infile: str):
+def svg_json_to_gnuplot(infile: str) -> None:
     assert infile.endswith(".json")
     infile1 = Path(infile).expanduser()
     outfile = infile1.with_suffix(".dat")
@@ -19,7 +20,7 @@ def svg_json_to_gnuplot(infile: str):
                 fout.write(f"{x}, {y}\n")
 
 
-def _pairs(nums):
+def _pairs(nums: list[int]) -> Generator[tuple[int, ...], None, None]:
     for i in range(0, len(nums), 2):
         yield tuple(nums[i : i + 2])
 

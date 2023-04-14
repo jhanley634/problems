@@ -6,6 +6,7 @@
 # $ python -m cProfile -s tottime geo/ski/bench_parquet.py
 from pathlib import Path
 from time import time
+from typing import Generator
 
 from tqdm import tqdm
 import numpy as np
@@ -16,7 +17,11 @@ K = 24
 PQ_DIR = Path("/tmp/parquet.d")
 
 
-def gen_dfs(k=K, dst_dir=PQ_DIR, shape=(667_858, 48)):
+def gen_dfs(
+    k: int = K,
+    dst_dir: Path = PQ_DIR,
+    shape: tuple[int, int] = (667_858, 48),
+) -> None:
     dst_dir.mkdir(exist_ok=True)
     rng = np.random.default_rng()
     for i in range(k):
@@ -28,12 +33,12 @@ def gen_dfs(k=K, dst_dir=PQ_DIR, shape=(667_858, 48)):
         df.to_parquet(dst_dir / f"{i}.parquet", compression=None)
 
 
-def read_dfs(src_dir=PQ_DIR):
+def read_dfs(src_dir: Path = PQ_DIR) -> Generator[pd.DataFrame, None, None]:
     for file in src_dir.glob("*.parquet"):
         yield pd.read_parquet(file)
 
 
-def main():
+def main() -> None:
     gen_dfs()
     t0 = time()
 

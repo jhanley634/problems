@@ -5,6 +5,7 @@
 
 from dataclasses import dataclass
 from itertools import pairwise
+from typing import Any, Generator
 import unittest
 
 
@@ -13,10 +14,12 @@ class Player:
     name: str
     rating: int
 
-    def __lt__(self, other):
+    def __lt__(self, other: Any) -> bool:
+        if not isinstance(other, Player):
+            return False
         return self.rating < other.rating
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.name} {self.rating}"
 
 
@@ -32,13 +35,15 @@ pool = [
 ]
 
 
-def get_deltas(pool: list[Player]):
+def get_deltas(pool: list[Player]) -> Generator[int, None, None]:
     pool = sorted(pool)
     for a, b in pairwise(pool):
         yield b.rating - a.rating
 
 
-def get_player_pairs(pool: list[Player]):
+def get_player_pairs(
+    pool: list[Player],
+) -> Generator[tuple[Player, Player], None, None]:
     max_delta = max(get_deltas(pool))
     pool = sorted(pool)
     while len(pool) > 1:
@@ -49,11 +54,11 @@ def get_player_pairs(pool: list[Player]):
 
 
 class TestMatchPlayers(unittest.TestCase):
-    def test_get_deltas(self):
+    def test_get_deltas(self) -> None:
         self.assertEqual([10, 40, 10, 10], list(get_deltas(pool)))
         self.assertEqual(40, max(get_deltas(pool)))
 
-    def test_get_pairs(self):
+    def test_get_pairs(self) -> None:
         self.assertEqual(
             [
                 "(John 1600, Chris 1610)",

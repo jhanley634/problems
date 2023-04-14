@@ -6,19 +6,19 @@ import pandas as pd
 
 
 class JaccardTest(unittest.TestCase):
-    def test_jaccard(self):
+    def test_jaccard(self) -> None:
         df = _get_example_data()
         self.assertAlmostEqual(2 / 3, jaccard_similarity(df.cancer, df.thyroid))
         self.assertAlmostEqual(3 / 7, jaccard_similarity(df.cancer, df.allergy))
 
 
 def jaccard_similarity(
-    a: pd.Series,
-    b: pd.Series,
-):
+    a: pd.Series[int],
+    b: pd.Series[int],
+) -> float:
     assert len(a) == len(b)  # must be a pair of columns from same dataframe
     total_size = len(a) + len(b)
-    intersection = (a == b).sum()
+    intersection: int = (a == b).sum()
     return intersection / (total_size - intersection)
 
 
