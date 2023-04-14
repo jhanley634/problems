@@ -1,23 +1,28 @@
-
 # Copyright 2022 John Hanley. MIT licensed.
 from hashlib import blake2b
+from typing import Optional
 
 import pandas as pd
 
 
-def _hash_col(col_name: str, seed='51') -> tuple:
+def _hash_col(col_name: str, seed: str = "51") -> tuple[str, str]:
     """Gives a 32-bit hash of input name."""
     digest = blake2b((seed + col_name).encode()).hexdigest()  # 128 nybbles
     return digest[:8], col_name
 
 
-def _random_permutation(pairs: list[tuple]) -> list[str]:
+def _random_permutation(pairs: list[tuple[str, str]]) -> list[str]:
     """Gives an arbitrary (repeatable!) re-ordering of column names."""
-    return [col_name
-            for _, col_name in sorted(pairs)]
+    return [col_name for _, col_name in sorted(pairs)]
 
 
-def feature_subset(df: pd.DataFrame, *, num_features=None, fraction=1.0, keep=1):
+def feature_subset(
+    df: pd.DataFrame,
+    *,
+    num_features: Optional[int] = None,
+    fraction: float = 1.0,
+    keep: int = 1
+) -> pd.DataFrame:
     assert len(df.shape) == 2, df.shape
 
     nc = df.shape[1]  # num columns

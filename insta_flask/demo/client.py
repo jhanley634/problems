@@ -7,7 +7,7 @@ import numpy as np
 import requests
 
 
-def main():
+def main() -> None:
     assert "Hello!" == requests.get("http://localhost:5000/hello").text.rstrip()
     check_mean()
     check_median()
@@ -16,11 +16,11 @@ def main():
 headers = {"Content-Type": "application/json"}
 
 
-def url(path):
+def url(path: str) -> str:
     return f"http://localhost:5000/{path}"
 
 
-def check_mean():
+def check_mean() -> None:
     data = np.array([1, 2, 6])
     jsn = json.dumps(dict(shape=data.shape, data=data.tolist()))
     resp = requests.post(url("/mean"), headers=headers, data=jsn)
@@ -28,7 +28,7 @@ def check_mean():
     assert 3 == ct_mean
 
 
-def check_median():
+def check_median() -> None:
     data = np.array([1, 2, 6])
     jsn = json.dumps(dict(shape=data.shape, data=data.tolist()))
     resp = requests.post(url("/median"), headers=headers, data=jsn)

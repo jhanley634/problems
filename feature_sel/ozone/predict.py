@@ -2,12 +2,15 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
+import pandas as pd
 
 from feature_sel.ozone.ozone import COLS, get_df
 
 
-def _get_train_test(train_through='1976-06-30'):
-    cols = COLS + ['stamp']
+def _get_train_test(
+    train_through: str = "1976-06-30",
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    cols = COLS + ["stamp"]
     df = get_df()[[*cols]]
     assert 366 == len(df), len(df)
     df = df.dropna()
@@ -16,18 +19,17 @@ def _get_train_test(train_through='1976-06-30'):
 
     y_train = df[df.stamp <= train_through].ozone
     y_test = df[df.stamp > train_through].ozone
-    del df['ozone']
+    del df["ozone"]
 
     x_train = df[df.stamp <= train_through]
     x_test = df[df.stamp > train_through]
-    del x_train['stamp']
-    del x_test['stamp']
+    del x_train["stamp"]
+    del x_test["stamp"]
 
-    return (x_train, y_train,
-            x_test, y_test)
+    return (x_train, y_train, x_test, y_test)
 
 
-def main():
+def main() -> None:
     x_train, y_train, x_test, y_test = _get_train_test()
     assert 171 == len(x_train), len(x_train)
     assert 160 == len(x_test), len(x_test)
@@ -45,5 +47,5 @@ def main():
     print(rf.score(x_test, y_test))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

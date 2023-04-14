@@ -8,7 +8,7 @@ from .central_tendency import ct_mean, ct_median
 
 
 class CentralTendencyTest(unittest.TestCase):
-    def test_measures(self):
+    def test_measures(self) -> None:
         nums = [1, 2, 6]
         self.assertEqual(3, ct_mean(nums))
         self.assertEqual(2, ct_median(nums))

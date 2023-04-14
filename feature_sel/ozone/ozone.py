@@ -22,7 +22,7 @@ def _get_csv_fspec(folder: Path = _tmp) -> Path:
     return fspec
 
 
-def get_df(add_stamp=True) -> pd.DataFrame:
+def get_df(add_stamp: bool = True) -> pd.DataFrame:
     # from https://rdrr.io/cran/mlbench/man/Ozone.html
     new_names = {
         "V1": "month",
@@ -60,7 +60,7 @@ COLS = (
 )
 
 
-def main(out_file: Path = _desktop / "ozone.png", want_report=False):
+def main(out_file: Path = _desktop / "ozone.png", want_report: bool = False) -> None:
     df = get_df()
 
     subset = df[[*COLS]]
