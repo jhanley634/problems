@@ -10,10 +10,10 @@ import sympy
 
 
 def is_prime(n: int) -> bool:
-    return _find_divisor(n) == 1
+    return int(_find_divisor(n)) == 1
 
 
-@jit(int_(int_))
+@jit(int_(int_))  # type: ignore [misc]
 def _find_divisor(n: int) -> int:
     assert n >= 2
     if n == 2:
