@@ -4,7 +4,7 @@ from math import sqrt
 import unittest
 
 from hypothesis import given
-from numba import jit
+from numba import int_, jit
 import hypothesis.strategies as st
 import sympy
 
@@ -13,7 +13,7 @@ def is_prime(n: int) -> bool:
     return _find_divisor(n) == 1
 
 
-@jit
+@jit(int_(int_))
 def _find_divisor(n: int) -> int:
     assert n >= 2
     if n == 2:
@@ -33,14 +33,14 @@ assert _find_divisor(LARGE - 1) == 3  # force a compile
 
 
 class PrimeTest(unittest.TestCase):
-    def test_is_prime(self, verbose=False):
+    def test_is_prime(self, verbose: bool = False) -> None:
         count = 0
         for n in range(2, LARGE):
             divisor = _find_divisor(n)
             if divisor > 1:
                 count += 1
             else:
-                self.assertTrue(sympy.isprime(n))
+                self.assertTrue(sympy.isprime(n))  # type: ignore [no-untyped-call]
                 if verbose:
                     print(n, end="  ")
 
@@ -50,8 +50,8 @@ class PrimeTest(unittest.TestCase):
             _find_divisor(0)
 
     @given(st.integers(min_value=2, max_value=100 * LARGE))
-    def test_is_prime_hypo(self, n):
-        self.assertEqual(is_prime(n), sympy.isprime(n))
+    def test_is_prime_hypo(self, n: int) -> None:
+        self.assertEqual(is_prime(n), sympy.isprime(n))  # type: ignore [no-untyped-call]
 
         divisor = _find_divisor(n)
         dividend = n / divisor
