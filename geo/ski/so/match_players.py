@@ -33,7 +33,10 @@ pool = [
 
 def get_deltas(pool: list[Player]):
     pool = sorted(pool)
-    return [pool[i + 1].rating - pool[i].rating for i in range(len(pool) - 1)]
+    prev = pool[0].rating
+    for player in pool[1:]:
+        yield player.rating - prev
+        prev = player.rating
 
 
 def get_player_pairs(pool: list[Player]):
@@ -48,7 +51,7 @@ def get_player_pairs(pool: list[Player]):
 
 class TestMatchPlayers(unittest.TestCase):
     def test_get_deltas(self):
-        self.assertEqual([10, 40, 10, 10], get_deltas(pool))
+        self.assertEqual([10, 40, 10, 10], list(get_deltas(pool)))
         self.assertEqual(40, max(get_deltas(pool)))
 
     def test_get_pairs(self):
