@@ -22,14 +22,14 @@ def main() -> None:
     img_idx = st.slider("image #", 0, len(urls) - 1)
     st.write(urls[img_idx])
 
-    ksize = st.slider("kernel_size", 1, 19, step=2)  # We require the size to be odd.
+    k_size = st.slider("kernel_size", 1, 19, step=2)  # We require the size to be odd.
     sigma = st.slider("sigma", 1, 16)
 
     img = _read_image(img_idx)
     assert len(img.shape) == 3  # (width, height, depth)
     assert img.shape[2] == 3
 
-    blur = cv2.GaussianBlur(img, ksize=(ksize, ksize), sigmaX=sigma)
+    blur = cv2.GaussianBlur(img, ksize=(k_size, k_size), sigmaX=sigma)
     disp_img = blur
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     if st.checkbox("gray?"):
