@@ -49,7 +49,7 @@ class PrimeTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             _find_divisor(0)
 
-    @given(st.integers(min_value=2, max_value=100 * LARGE))
+    @given(st.integers(min_value=2, max_value=100 * LARGE))  # type: ignore [misc]
     def test_is_prime_hypo(self, n: int) -> None:
         self.assertEqual(is_prime(n), sympy.isprime(n))  # type: ignore [no-untyped-call]
 
