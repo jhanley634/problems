@@ -29,6 +29,7 @@ dependencies:
   - imbalanced-learn >= 0.10.1
   - ipyleaflet >= 0.17.2
   - isort >= 5.12.0
+  - lxml >= 4.9.2
   - maturin >= 0.14.17
   - mypy >= 1.2.0
   - netifaces >= 0.11.0
