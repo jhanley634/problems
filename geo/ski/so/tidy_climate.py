@@ -83,28 +83,31 @@ class OriginalClimate:
             yield url
 
 
-class TidyClimate:
-    @classmethod
-    def read_dataset(cls, url: str) -> pd.DataFrame:
-        messy = OriginalClimate().read_dataset(url)
-        tidy = pl.DataFrame(cls._get_monthly_rows(messy))
-        return tidy
+def read_tidy_dataset(oc: OriginalClimate, col_name: str) -> pd.DataFrame:
+    messy = oc.read_dataset(oc.url_for(col_name))
+    tidy = pl.DataFrame(_get_monthly_rows(messy, col_name))
+    return tidy
 
-    @staticmethod
-    def _get_monthly_rows(df: pd.DataFrame) -> Generator[dict[str, Any], None, None]:
-        for _, row in df.iterrows():
-            for month_num, month in enumerate(OriginalClimate.MONTHS):
-                yield dict(
-                    state=row.state,
-                    county=row.county,
-                    stamp=dt.datetime(row.year, 1 + month_num, 1),
-                    value=row[month],
-                )
-            return
+
+def _get_monthly_rows(
+    df: pd.DataFrame,
+    col_name: str,
+) -> Generator[dict[str, Any], None, None]:
+    for _, row in df.iterrows():
+        place = dict(state=row.state, county=row.county)
+        for month_num, month in enumerate(OriginalClimate.MONTHS):
+            yield {
+                **place,
+                "stamp": dt.datetime(row.year, 1 + month_num, 1),
+                col_name: row[month],
+            }
+        return
 
 
 if __name__ == "__main__":
     pd.options.display.max_rows = 7
-    for url in OriginalClimate().download_datasets():
-        df = TidyClimate.read_dataset(url)
+    oc = OriginalClimate()
+
+    for elt in OriginalClimate.DATA_ELEMENTS:
+        df = read_tidy_dataset(oc, elt)
         print(df)
