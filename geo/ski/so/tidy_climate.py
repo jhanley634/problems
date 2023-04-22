@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env SQLALCHEMY_WARN_20=1 python
 
 # Copyright 2023 John Hanley. MIT licensed.
 # https://codereview.stackexchange.com/questions/284557/mysql-creating-this-table-got-nasty
@@ -10,12 +10,8 @@ import datetime as dt
 import logging
 
 import pandas as pd
-import polars as pl
 import requests
 import sqlalchemy as sa
-
-logging.basicConfig()
-logger = logging.getLogger(__name__)
 
 
 class OriginalClimate:
@@ -37,6 +33,7 @@ class OriginalClimate:
     def __init__(self, temp: str = "/tmp/climate"):
         self.temp = Path(temp)
         self.temp.mkdir(exist_ok=True)
+        self.log = logging.getLogger(self.__class__.__name__)
 
     def get_urls(self) -> Generator[str, None, None]:
         yield from map(self.url_for, self.DATA_ELEMENTS)
@@ -52,7 +49,7 @@ class OriginalClimate:
         """Fetches the raw data of the given URL, possibly enjoying a local cache hit."""
         csv = self._path_for_url(url)
         if not csv.exists():
-            logger.info(f"Saving {csv}")
+            self.log.info(f"Saving {csv}")
             resp = requests.get(url)
             resp.raise_for_status()
             with open(csv, "w") as fout:
@@ -85,7 +82,7 @@ class OriginalClimate:
 
 def read_tidy_dataset(oc: OriginalClimate, col_name: str) -> pd.DataFrame:
     messy = oc.read_dataset(oc.url_for(col_name))
-    tidy = pl.DataFrame(_get_monthly_rows(messy, col_name))
+    tidy = pd.DataFrame(_get_monthly_rows(messy, col_name))
     return tidy
 
 
@@ -104,10 +101,45 @@ def _get_monthly_rows(
         return
 
 
+class TidyClimate:
+    """Maintains tidy versions of climate datasets in DB tables."""
+
+    TEMP_DIR = OriginalClimate().temp
+    DB_PATH = TEMP_DIR / "climate.db"
+
+    def __init__(self, db_url: str = f"sqlite:///{DB_PATH}"):
+        self.engine = sa.create_engine(db_url)
+        self.metadata = sa.MetaData()
+        self.oc = OriginalClimate()
+
+    def populate_tables(self) -> None:
+        con = self.engine.connect()
+        con.begin()
+        for elt in self.oc.DATA_ELEMENTS:
+            con.execute(sa.text(f"DROP TABLE  IF EXISTS  {elt}"))
+            con.execute(self._get_create(elt))
+
+            df: pd.DataFrame = read_tidy_dataset(self.oc, elt)
+            df.to_sql(elt, self.engine, index=False, if_exists="append")
+
+    @staticmethod
+    def _get_create(elt: str) -> sa.text:
+        """Arrange for a compound primary key."""
+        return sa.text(
+            f"""
+            CREATE TABLE {elt} (
+                state TEXT,
+                county TEXT,
+                stamp DATETIME,
+                {elt} FLOAT,
+                PRIMARY KEY (state, county, stamp)
+            )
+        """
+        )
+
+
 if __name__ == "__main__":
     pd.options.display.max_rows = 7
-    oc = OriginalClimate()
+    logging.basicConfig(level=logging.INFO)
 
-    for elt in OriginalClimate.DATA_ELEMENTS:
-        df = read_tidy_dataset(oc, elt)
-        print(df)
+    TidyClimate().populate_tables()
