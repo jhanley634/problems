@@ -4,12 +4,13 @@
 # https://codereview.stackexchange.com/questions/284557/mysql-creating-this-table-got-nasty
 
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator
 from urllib.parse import urlparse
 import datetime as dt
 import logging
 
 import pandas as pd
+import polars as pl
 import requests
 import sqlalchemy as sa
 
@@ -22,7 +23,7 @@ class OriginalClimate:
 
     BASE_URL = "https://www.ncei.noaa.gov/pub/data/cirs/climdiv"
     FILE_PREFIX = "climdiv"
-    FILE_SUFFIXES = [
+    DATA_ELEMENTS = [
         # "sp01dv",
         # "sp24dv",  # Standardized Precipitation uses "division", not "county"
         "tmaxcy",
@@ -38,9 +39,9 @@ class OriginalClimate:
         self.temp.mkdir(exist_ok=True)
 
     def get_urls(self) -> Generator[str, None, None]:
-        yield from map(self._url_for, self.FILE_SUFFIXES)
+        yield from map(self.url_for, self.DATA_ELEMENTS)
 
-    def _url_for(self, suffix: str) -> str:
+    def url_for(self, suffix: str) -> str:
         return f"{self.BASE_URL}/{self.FILE_PREFIX}-{suffix}-{self.FILE_VERSION}"
 
     def _path_for_url(self, url: str) -> Path:
@@ -60,8 +61,9 @@ class OriginalClimate:
 
     def read_dataset(self, url: str) -> pd.DataFrame:
         names = ["id"] + self.MONTHS
-        csv = self._fetch(url)
-        df = pd.read_csv(csv, names=names, converters={0: str}, delim_whitespace=True)
+        preserve = {0: str}  # ID starts with state code; preserve leading "0".
+        csv = self._fetch(url)  # Neither a .CSV nor a .TSV, but close enough.
+        df = pd.read_csv(csv, names=names, converters=preserve, delim_whitespace=True)
 
         # 1st column is numeric state code (contiguous US, not FIPS)
         # 2nd column is FIPS county code
@@ -72,13 +74,37 @@ class OriginalClimate:
         assert min(df.elt) == max(df.elt)
 
         df = df.drop(columns=["id", "elt"])
+        df["year"] = df["year"].astype(int)
         return df
 
-    def download_datasets(self) -> None:
+    def download_datasets(self) -> Generator[str, None, None]:
         for url in self.get_urls():
             self.read_dataset(url)  # drags remote data into local cache
+            yield url
+
+
+class TidyClimate:
+    @classmethod
+    def read_dataset(cls, url: str) -> pd.DataFrame:
+        messy = OriginalClimate().read_dataset(url)
+        tidy = pl.DataFrame(cls._get_monthly_rows(messy))
+        return tidy
+
+    @staticmethod
+    def _get_monthly_rows(df: pd.DataFrame) -> Generator[dict[str, Any], None, None]:
+        for _, row in df.iterrows():
+            for month_num, month in enumerate(OriginalClimate.MONTHS):
+                yield dict(
+                    state=row.state,
+                    county=row.county,
+                    stamp=dt.datetime(row.year, 1 + month_num, 1),
+                    value=row[month],
+                )
+            return
 
 
 if __name__ == "__main__":
     pd.options.display.max_rows = 7
-    OriginalClimate().download_datasets()
+    for url in OriginalClimate().download_datasets():
+        df = TidyClimate.read_dataset(url)
+        print(df)
