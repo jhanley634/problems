@@ -12,6 +12,10 @@ import logging
 import pandas as pd
 import requests
 import sqlalchemy as sa
+import sqlalchemy.orm as orm
+
+TEMP_DIR = Path("/tmp/climate")  # We store things like cached CSV's here.
+DB_URL = f"sqlite:///{TEMP_DIR / 'climate.db'}"
 
 
 class OriginalClimate:
@@ -30,9 +34,9 @@ class OriginalClimate:
 
     MONTHS = [dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13)]
 
-    def __init__(self, temp: str = "/tmp/climate"):
-        self.temp = Path(temp)
-        self.temp.mkdir(exist_ok=True)
+    def __init__(self, temp_dir: Path = TEMP_DIR):
+        self.folder = temp_dir
+        self.folder.mkdir(exist_ok=True)
         self.log = logging.getLogger(self.__class__.__name__)
 
     def get_urls(self) -> Generator[str, None, None]:
@@ -43,7 +47,7 @@ class OriginalClimate:
 
     def _path_for_url(self, url: str) -> Path:
         url_path = urlparse(url).path
-        return self.temp / (url_path.split("/")[-1] + ".csv")
+        return self.folder / (url_path.split("/")[-1] + ".csv")
 
     def _fetch(self, url: str) -> Path:
         """Fetches the raw data of the given URL, possibly enjoying a local cache hit."""
@@ -98,21 +102,17 @@ def _get_monthly_rows(
                 "stamp": dt.datetime(row.year, 1 + month_num, 1),
                 col_name: row[month],
             }
-        return
 
 
 class TidyClimate:
     """Maintains tidy versions of climate datasets in DB tables."""
 
-    TEMP_DIR = OriginalClimate().temp
-    DB_PATH = TEMP_DIR / "climate.db"
-
-    def __init__(self, db_url: str = f"sqlite:///{DB_PATH}"):
+    def __init__(self, db_url: str = DB_URL):
         self.engine = sa.create_engine(db_url)
-        self.metadata = sa.MetaData()
         self.oc = OriginalClimate()
 
     def populate_tables(self) -> None:
+        """ETL, from original web data to tidy DB tables."""
         con = self.engine.connect()
         con.begin()
         for elt in self.oc.DATA_ELEMENTS:
@@ -131,15 +131,80 @@ class TidyClimate:
                 state TEXT,
                 county TEXT,
                 stamp DATETIME,
-                {elt} FLOAT,
+                {elt} FLOAT  NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
         """
         )
 
 
+class PastAndRecentClimate:
+    """Aggregate reporting for recent and past historic intervals."""
+
+    PAST = range(1895, 1931)  # half-open interval
+    RECENT = range(1991, 2100)  # half-open interval
+
+    def __init__(self, db_url: str = DB_URL):
+        self.engine = sa.create_engine(db_url).execution_options(stream_results=True)
+        self.meta = sa.MetaData()
+        self.log = logging.getLogger(self.__class__.__name__)
+
+    def _get_table(self, table_name: str) -> sa.Table:
+        return sa.Table(table_name, self.meta, autoload_with=self.engine)
+
+    def _get_session(self) -> orm.Session:
+        return orm.sessionmaker(bind=self.engine)()
+
+    def report(self) -> None:
+        lo = self._get_table("tmincy")
+        mpc = self._get_table("tmpccy")  # mean per county?
+        hi = self._get_table("tmaxcy")
+        with self._get_session() as session:
+            q = (
+                session.query(lo, mpc.c.tmpccy, hi.c.tmaxcy)
+                .join(
+                    mpc,
+                    (mpc.c.state == lo.c.state)
+                    & (mpc.c.county == lo.c.county)
+                    & (mpc.c.stamp == lo.c.stamp),
+                )
+                .join(
+                    hi,
+                    (hi.c.state == lo.c.state)
+                    & (hi.c.county == lo.c.county)
+                    & (hi.c.stamp == lo.c.stamp),
+                )
+            )
+            insert = sa.text(f"INSERT INTO temperatures  {q}")
+            session.begin()
+            session.execute(sa.text("DROP TABLE  IF EXISTS  temperatures"))
+            session.execute(self._get_create_temperatures())
+            session.execute(insert)
+            return
+
+            for row in q:
+                d = row._asdict()
+                d["stamp"] = d["stamp"].strftime("%Y-%m-%d")
+                print("\t".join(map(str, d.values())))
+                breakpoint()
+
+    @staticmethod
+    def _get_create_temperatures() -> sa.text:
+        return sa.text("""
+            CREATE TABLE IF NOT EXISTS temperatures (
+                state   TEXT,
+                county  TEXT,
+                stamp   TIMESTAMP,
+                tmincy  REAL  NOT NULL,
+                tmpccy  REAL  NOT NULL,
+                tmaxcy  REAL  NOT NULL,
+                PRIMARY KEY (state, county, stamp)
+            )
+        """)
+
+
 if __name__ == "__main__":
     pd.options.display.max_rows = 7
     logging.basicConfig(level=logging.INFO)
 
-    TidyClimate().populate_tables()
+    PastAndRecentClimate().report()
