@@ -6,7 +6,7 @@ from web.wiki.history import HistoryScraper
 
 class HistoryTest(unittest.TestCase):
     def setUp(self) -> None:
-        SHORT_ARTICLE = 'Nathan_Safir'  # Page was created 2022-02-02.
+        SHORT_ARTICLE = "Nathan_Safir"  # Page was created 2022-02-02.
         self.scraper = HistoryScraper(SHORT_ARTICLE)
 
     def test_ids(self) -> None:
@@ -47,13 +47,13 @@ class HistoryTest(unittest.TestCase):
 
     def test_short_lines(self) -> None:
         """Verifies vowels will force a newline, improving the diffs."""
-        txt = 'groceries:\ncherry banana apple date eggplant fennel'
+        txt = "groceries:\ncherry banana apple date eggplant fennel"
         self.assertEqual(
             self.scraper._short_lines(txt),
-            '''groceries:
+            """groceries:
 
 ======
 cherry banana
 apple date
-eggplant fennel''',
+eggplant fennel""",
         )

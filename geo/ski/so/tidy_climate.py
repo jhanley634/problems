@@ -128,10 +128,10 @@ class TidyClimate:
         return sa.text(
             f"""
             CREATE TABLE {elt} (
-                state TEXT,
-                county TEXT,
-                stamp DATETIME,
-                {elt} REAL  NOT NULL,
+                state   TEXT      NOT NULL,
+                county  TEXT      NOT NULL,
+                stamp   DATETIME  NOT NULL,
+                {elt}   REAL      NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
         """
@@ -192,12 +192,12 @@ class PastAndRecentClimate:
         return sa.text(
             """
             CREATE TABLE IF NOT EXISTS temperatures (
-                state   TEXT,
-                county  TEXT,
-                stamp   TIMESTAMP,
-                tmincy  REAL  NOT NULL,
-                tmpccy  REAL  NOT NULL,
-                tmaxcy  REAL  NOT NULL,
+                state   TEXT       NOT NULL,
+                county  TEXT       NOT NULL,
+                stamp   TIMESTAMP  NOT NULL,
+                tmincy  REAL       NOT NULL,
+                tmpccy  REAL       NOT NULL,
+                tmaxcy  REAL       NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
         """
