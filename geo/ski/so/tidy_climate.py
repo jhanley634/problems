@@ -131,7 +131,7 @@ class TidyClimate:
                 state TEXT,
                 county TEXT,
                 stamp DATETIME,
-                {elt} FLOAT  NOT NULL,
+                {elt} REAL  NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
         """
@@ -157,7 +157,7 @@ class PastAndRecentClimate:
 
     def report(self) -> None:
         lo = self._get_table("tmincy")
-        mpc = self._get_table("tmpccy")  # mean per county?
+        mpc = self._get_table("tmpccy")  # mean per county
         hi = self._get_table("tmaxcy")
         with self._get_session() as session:
             q = (
@@ -175,22 +175,22 @@ class PastAndRecentClimate:
                     & (hi.c.stamp == lo.c.stamp),
                 )
             )
+            # QUERY PLAN
+            # |--SCAN tmincy
+            # |--SEARCH tmpccy USING INDEX sqlite_autoindex_tmpccy_1 (state=? AND county=? AND stamp=?)
+            # `--SEARCH tmaxcy USING INDEX sqlite_autoindex_tmaxcy_1 (state=? AND county=? AND stamp=?))
+
             insert = sa.text(f"INSERT INTO temperatures  {q}")
             session.begin()
             session.execute(sa.text("DROP TABLE  IF EXISTS  temperatures"))
             session.execute(self._get_create_temperatures())
             session.execute(insert)
-            return
-
-            for row in q:
-                d = row._asdict()
-                d["stamp"] = d["stamp"].strftime("%Y-%m-%d")
-                print("\t".join(map(str, d.values())))
-                breakpoint()
+            session.commit()
 
     @staticmethod
     def _get_create_temperatures() -> sa.text:
-        return sa.text("""
+        return sa.text(
+            """
             CREATE TABLE IF NOT EXISTS temperatures (
                 state   TEXT,
                 county  TEXT,
@@ -200,7 +200,8 @@ class PastAndRecentClimate:
                 tmaxcy  REAL  NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
-        """)
+        """
+        )
 
 
 if __name__ == "__main__":
