@@ -18,6 +18,7 @@ dependencies:
 - scipy == 1.9.3
 - torchvision >= 0.9.1
 - pip:
+  - beautifulsoup4 >= 4.12.2
   - black >= 23.3.0
   - dask >= 2023.4.0
   - fasteners >= 0.18
