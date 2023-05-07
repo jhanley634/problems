@@ -10,6 +10,8 @@ class TestOutlineParser(unittest.TestCase):
             """
         1. one
             a. apple
+                i. Granny
+                ii. Delicious
             b. banana
         2. two
         """

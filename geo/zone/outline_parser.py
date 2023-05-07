@@ -1,4 +1,11 @@
 # Copyright 2023 John Hanley. MIT licensed.
+from enum import Enum
+
+
+class Level(Enum):
+    """Outline level, e.g. 1) a) ii)"""
+
+
 class OutlineParser:
     def __init__(self, lines):
         self.lines = lines
