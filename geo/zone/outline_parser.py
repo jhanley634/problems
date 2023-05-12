@@ -1,20 +1,53 @@
 # Copyright 2023 John Hanley. MIT licensed.
-from enum import Enum
+
+from collections import deque
+from typing import Any, Iterable
+import re
 
 
-class Level(Enum):
-    """Outline level, e.g. 1) a) ii)"""
+class Level:
+    """Outline level, e.g. 2. (a) (1) (A) (ii)"""
+
+    _level_re = [
+        re.compile(r"^\d+$"),
+        re.compile(r"^[a-z]+$"),
+        re.compile(r"^\d+$"),
+        re.compile(r"^[A-Z]+$"),
+        re.compile(r"^[ivx]+$"),
+    ]
+
+    def __init__(self, text: str):
+        self.text = text
+        self.level = None
+        for i, pattern in enumerate(self._level_re):
+            if pattern.match(text):
+                self.level = i
+        assert self.level is not None, text
+
+    def __repr__(self) -> str:
+        return self.text
 
 
 class OutlineParser:
-    def __init__(self, lines):
-        self.lines = lines
+    def __init__(self, lines: Iterable[str]):
+        self.lines = deque(lines)
+        self.level: list[Level] = []
 
-    def __iter__(self):
+    def __iter__(self) -> "OutlineParser":
         return self
 
-    def __next__(self):
+    def __next__(self) -> tuple[Any, str]:
         try:
-            return self.lines.pop(0)
+            line = self.lines.popleft()
+            self._parse_level(line)
+            return tuple(self.level), line
         except IndexError:
             raise StopIteration
+
+    _level_re = re.compile(r"^\((\w+)\)")
+
+    def _parse_level(self, line: str) -> None:
+        m = self._level_re.match(line.lstrip())
+        if m:
+            print(m[1])
+            self.level.append(Level(m[1]))
