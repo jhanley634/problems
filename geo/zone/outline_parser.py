@@ -37,17 +37,15 @@ class OutlineParser:
         return self
 
     def __next__(self) -> tuple[Any, str]:
-        try:
-            line = self.lines.popleft()
-            self._parse_level(line)
-            return tuple(self.level), line
-        except IndexError:
+        if len(self.lines) == 0:
             raise StopIteration
+        line = self.lines.popleft()
+        self._parse_level(line)
+        return tuple(self.level), line
 
     _level_re = re.compile(r"^\((\w+)\)")
 
     def _parse_level(self, line: str) -> None:
-        m = self._level_re.match(line.lstrip())
-        if m:
-            print(m[1])
+        if m := self._level_re.match(line.lstrip()):
+            new_level = Level(m[1])
             self.level.append(Level(m[1]))
