@@ -8,11 +8,21 @@ import requests
 import typer
 
 
-def get_wx_stats(date: dt.date, station: str = "KSJC:9:US") -> pl.DataFrame:
+def get_wx_stats(start: dt.date, station: str = "KSJC:9:US") -> pl.DataFrame:
     """Obtains daily weather data from Wunderground."""
+    end = start + dt.timedelta(days=32)
+    end = dt.date(end.year, end.month, 1) - dt.timedelta(days=1)
+    fmt = "%Y%m%d"
+    ENGLISH_UNITS = "e"
     api_key = "e1f10a1e78da46f5b10a1e78da96f525"
-    url = f"https://api.weather.com/v1/location/{station}/observations/historical.json?apiKey={api_key}&units=e&startDate=20220201&endDate=20220228"
-    resp = requests.get(url)
+    url = f"https://api.weather.com/v1/location/{station}/observations/historical.json"
+    params = dict(
+        apiKey=api_key,
+        units=ENGLISH_UNITS,
+        startDate=start.strftime(fmt),
+        endDate=end.strftime(fmt),
+    )
+    resp = requests.get(url, params=params)
     resp.raise_for_status()
     data = resp.json()
     _verify_metadata(data["metadata"])
@@ -30,25 +40,27 @@ def _filter_columns(df: pl.DataFrame) -> pl.DataFrame:
     assert (df["class"] == "observation").all()
     drops = [
         "class",  # constant across all stations
+        "clds",  # cloud cover, one of ['BKN', 'CLR', 'FEW', 'OVC', 'SCT']
+        "day_ind",  # "N" -> night, "D" -> day
+        "feels_like",  # perceived temperature
+        "gust",
+        "heat_index",
+        "icon_extd",
         "obs_id",  # constant station identifier, e.g. KSJC
         "obs_name",  # constant station name, e.g. San Jose
-        "day_ind",  # "N" -> night, "D" -> day
-        "wx_icon",
-        "icon_extd",
-        "heat_index",
-        "pressure_tend",  # 0..2 inclusive
-        "pressure_desc",  # one of ['Falling', 'Falling Rapidly', 'Rising', 'Rising Rapidly', 'Steady']
-        "wc",  # wind chill
-        "wdir_cardinal",  # e.g. "NNW", "VAR" or "CALM"
-        "wdir",  # wind direction, in degrees, congruent to zero mod ten
-        "gust",
-        "uv_index",  # 0..5 inclusive
-        "uv_desc",  # e.g. "Low", "Moderate"
-        "feels_like",  # perceived temperature
-        "clds",  # cloud cover, one of ['BKN', 'CLR', 'FEW', 'OVC', 'SCT']
         "precip_total",
+        "pressure_desc",  # one of ['Falling', 'Falling Rapidly', 'Rising', 'Rising Rapidly', 'Steady']
+        "pressure_tend",  # 0..2 inclusive
+        "uv_desc",  # e.g. "Low", "Moderate"
+        "uv_index",  # 0..5 inclusive
+        "wc",  # wind chill
+        "wdir",  # wind direction, in degrees, congruent to zero mod ten
+        "wdir_cardinal",  # e.g. "NNW", "VAR" or "CALM"
+        "wx_icon",
     ]
     df = df.drop(drops)
+
+    # NB: {min,max}_temp columns have just a single non-null value per day.
 
     for col_name in ["expire_time_gmt", "valid_time_gmt"]:
         df = df.with_columns(
