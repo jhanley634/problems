@@ -48,4 +48,5 @@ class OutlineParser:
     def _parse_level(self, line: str) -> None:
         if m := self._level_re.match(line.lstrip()):
             new_level = Level(m[1])
+            assert new_level
             self.level.append(Level(m[1]))
