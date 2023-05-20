@@ -80,6 +80,9 @@ def main(start_day: dt.datetime) -> None:
     start_date = start_day.date()
     df = get_wx_stats(start_date)
 
+    # narrow from hourly to daily observations
+    # df = df.filter(pl.col("max_temp").is_not_null())
+
     pl.Config.set_tbl_cols(50)
     pl.Config.set_tbl_rows(100)
     print(df)
