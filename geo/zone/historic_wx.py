@@ -33,7 +33,7 @@ def _verify_metadata(meta: dict[str, str]) -> None:
     assert meta["language"] == "en-US"
     assert meta["version"] == "1"
     assert meta["units"] == "e"
-    assert meta["location_id"] == "KSJC:9:US"
+    assert meta["location_id"].endswith(":US")
 
 
 def _filter_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -42,6 +42,7 @@ def _filter_columns(df: pl.DataFrame) -> pl.DataFrame:
         "class",  # constant across all stations
         "clds",  # cloud cover, one of ['BKN', 'CLR', 'FEW', 'OVC', 'SCT']
         "day_ind",  # "N" -> night, "D" -> day
+        "expire_time_gmt",  # this is simply valid_time_gmt + two hours
         "feels_like",  # perceived temperature
         "gust",
         "heat_index",
@@ -54,7 +55,7 @@ def _filter_columns(df: pl.DataFrame) -> pl.DataFrame:
         "uv_desc",  # e.g. "Low", "Moderate"
         "uv_index",  # 0..5 inclusive
         "wc",  # wind chill
-        "wdir",  # wind direction, in degrees, congruent to zero mod ten
+        "wdir",  # wind direction in degrees, congruent to zero mod ten
         "wdir_cardinal",  # e.g. "NNW", "VAR" or "CALM"
         "wx_icon",
     ]
@@ -62,11 +63,9 @@ def _filter_columns(df: pl.DataFrame) -> pl.DataFrame:
 
     # NB: {min,max}_temp columns have just a single non-null value per day.
 
-    for col_name in ["expire_time_gmt", "valid_time_gmt"]:
-        df = df.with_columns(
-            (pl.col(col_name) * 1e3).cast(pl.Datetime).dt.with_time_unit("ms")
-        )
-
+    df = df.with_columns(
+        (pl.col("valid_time_gmt") * 1e3).cast(pl.Datetime).dt.with_time_unit("ms")
+    )
     return _discard_uninformative_columns(df)
 
 
