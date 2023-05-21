@@ -18,11 +18,11 @@ class Level:
 
     def __init__(self, text: str):
         self.text = text
-        self.level = 0
+        self.number = 0
         for i, pattern in enumerate(self._level_re):
             if pattern.match(text):
-                self.level = i
-        assert self.level is not None, text
+                self.number = i
+        assert self.number > 0, text
 
     def __repr__(self) -> str:
         return self.text
@@ -48,6 +48,6 @@ class OutlineParser:
     def _parse_level(self, line: str) -> None:
         if m := self._level_re.match(line.lstrip()):
             new_lvl = Level(m[1])
-            while len(self.level) > 0 and self.level[-1].level >= new_lvl.level:
+            while len(self.level) > 0 and self.level[-1].number >= new_lvl.number:
                 self.level.pop()
             self.level.append(new_lvl)
