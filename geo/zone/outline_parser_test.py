@@ -3,7 +3,14 @@
 from inspect import cleandoc
 import unittest
 
-from geo.zone.outline_parser import OutlineParser
+from geo.zone.outline_parser import Level, OutlineParser
+
+
+class TestLevel(unittest.TestCase):
+    def test_level(self) -> None:
+        lvl = Level("E")
+        self.assertEqual(3, lvl.depth)
+        self.assertEqual(5, lvl.ordinal)
 
 
 class TestOutlineParser(unittest.TestCase):
