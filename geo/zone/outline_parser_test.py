@@ -18,9 +18,9 @@ class TestOutlineParser(unittest.TestCase):
             """
         2. section
             (a) apple
-                (1) Cornish
-                    (A) Aromatic
-                    (B) Gilliflower
+                (1) Autumn
+                    (A) Bough
+                    (B) Glory
                 (2) Golden
                     (A) Noble
                     (B) Sweet
