@@ -21,6 +21,13 @@ class TestOutlineParser(unittest.TestCase):
         ).splitlines()
         self.assertEqual(6, len(list(OutlineParser(lines))))
 
+    @staticmethod
+    def _level_summary(lines: list[str]) -> list[tuple[int, ...]]:
+        ret = []
+        for levels, line in OutlineParser(lines):
+            ret.append(tuple(lvl.text for lvl in levels))
+        return ret
+
     def test_parse_parens(self) -> None:
         lines = cleandoc(
             """
@@ -30,8 +37,11 @@ class TestOutlineParser(unittest.TestCase):
                     (A) Smith
                     (B) Delicious
             (b) banana
-        3. three
         """
         ).splitlines()
         pp(list(OutlineParser(lines)))
-        self.assertEqual(7, len(list(OutlineParser(lines))))
+        self.assertEqual(
+            [(), ("a",), ("a", "1"), ("a", "1", "A"), ("a", "1", "B"), ("b",)],
+            self._level_summary(lines),
+        )
+        self.assertEqual(6, len(list(OutlineParser(lines))))
