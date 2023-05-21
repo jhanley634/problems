@@ -5,14 +5,28 @@ from typing import Any, Iterable
 import re
 
 
+def _int_val(s: str) -> int:
+    return int(s)
+
+
+def _lower_val(s: str) -> int:
+    assert s.islower()
+    return ord(s) - ord("a") + 1
+
+
+def _upper_val(s: str) -> int:
+    assert s.isupper()
+    return ord(s) - ord("A") + 1
+
+
 class Level:
     """Outline level, e.g. 2. (a) (1) (A) (ii)"""
 
     _level_re_ordinal = [
-        (re.compile(r"^\d+$"), int),
-        (re.compile(r"^[a-z]+$"), lambda x: ord(x) - ord("a") + 1),
-        (re.compile(r"^\d+$"), int),
-        (re.compile(r"^[A-Z]+$"), lambda x: ord(x) - ord("A") + 1),
+        (re.compile(r"^\d+$"), _int_val),
+        (re.compile(r"^[a-z]+$"), _lower_val),
+        (re.compile(r"^\d+$"), _int_val),
+        (re.compile(r"^[A-Z]+$"), _upper_val),
         (re.compile(r"^[ivx]+$"), len),
     ]
 
@@ -33,7 +47,7 @@ class Level:
 class OutlineParser:
     def __init__(self, lines: Iterable[str]):
         self.lines = deque(lines)
-        self.level: list[Level] = []
+        self.levels: list[Level] = []
 
     def __iter__(self) -> "OutlineParser":
         return self
@@ -43,13 +57,13 @@ class OutlineParser:
             raise StopIteration
         line = self.lines.popleft()
         self._parse_level(line)
-        return tuple(self.level), line
+        return tuple(self.levels), line
 
     _level_re = re.compile(r"^\((\w+)\)")
 
     def _parse_level(self, line: str) -> None:
         if m := self._level_re.match(line.lstrip()):
             new_lvl = Level(m[1])
-            while len(self.level) > 0 and self.level[-1].depth >= new_lvl.depth:
-                self.level.pop()
-            self.level.append(new_lvl)
+            while len(self.levels) > 0 and self.levels[-1].depth >= new_lvl.depth:
+                self.levels.pop()
+            self.levels.append(new_lvl)
