@@ -8,20 +8,22 @@ import re
 class Level:
     """Outline level, e.g. 2. (a) (1) (A) (ii)"""
 
-    _level_re = [
-        re.compile(r"^\d+$"),
-        re.compile(r"^[a-z]+$"),
-        re.compile(r"^\d+$"),
-        re.compile(r"^[A-Z]+$"),
-        re.compile(r"^[ivx]+$"),
+    _level_re_ordinal = [
+        (re.compile(r"^\d+$"), int),
+        (re.compile(r"^[a-z]+$"), lambda x: ord(x) - ord("a") + 1),
+        (re.compile(r"^\d+$"), int),
+        (re.compile(r"^[A-Z]+$"), lambda x: ord(x) - ord("A") + 1),
+        (re.compile(r"^[ivx]+$"), len),
     ]
 
     def __init__(self, text: str):
         self.text = text
         self.depth = 0
-        for i, pattern in enumerate(self._level_re):
+        self.ordinal = 0
+        for i, (pattern, ord_fn) in enumerate(self._level_re_ordinal):
             if pattern.match(text):
                 self.depth = i
+                self.ordinal = ord_fn(text)
         assert self.depth > 0, text
 
     def __repr__(self) -> str:
