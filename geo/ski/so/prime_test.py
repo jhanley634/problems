@@ -8,6 +8,9 @@ from numba import int_, jit
 import hypothesis.strategies as st
 import sympy
 
+assert int_
+assert jit
+
 
 def is_prime(n: int) -> bool:
     return int(_find_divisor(n)) == 1
@@ -28,11 +31,19 @@ def _find_divisor(n: int) -> int:
     return 1
 
 
+# @jit  # (int_(int_))
+def _square(n: int) -> int:
+    return n**2
+
+
 LARGE = 1_000_000
 assert _find_divisor(LARGE - 1) == 3  # force a compile
 
 
 class PrimeTest(unittest.TestCase):
+    def test_square(self) -> None:
+        self.assertEqual(9, _square(3))
+
     def test_is_prime(self, verbose: bool = False) -> None:
         count = 0
         for n in range(2, LARGE):
@@ -49,7 +60,7 @@ class PrimeTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             _find_divisor(0)
 
-    @given(st.integers(min_value=2, max_value=100 * LARGE))  # type: ignore [misc]
+    @given(st.integers(min_value=2, max_value=100 * LARGE))
     def test_is_prime_hypo(self, n: int) -> None:
         self.assertEqual(is_prime(n), sympy.isprime(n))  # type: ignore [no-untyped-call]
 
