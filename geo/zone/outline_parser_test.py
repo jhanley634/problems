@@ -9,6 +9,7 @@ from geo.zone.outline_parser import Level, OutlineParser
 class TestLevel(unittest.TestCase):
     def test_level(self) -> None:
         lvl = Level("E")
+        self.assertEqual("E", f"{lvl}")
         self.assertEqual(3, lvl.depth)
         self.assertEqual(5, lvl.ordinal)
 

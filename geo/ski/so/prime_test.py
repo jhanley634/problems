@@ -13,7 +13,7 @@ def is_prime(n: int) -> bool:
     return int(_find_divisor(n)) == 1
 
 
-@jit(int_(int_))  # type: ignore [misc]
+# @jit(int_(int_))  # type: ignore [misc]
 def _find_divisor(n: int) -> int:
     assert n >= 2
     if n == 2:
@@ -41,7 +41,7 @@ class PrimeTest(unittest.TestCase):
                 count += 1
             else:
                 self.assertTrue(sympy.isprime(n))  # type: ignore [no-untyped-call]
-                if verbose:
+                if verbose:  # pragma: no cover
                     print(n, end="  ")
 
         self.assertEqual(921_500, count)  # 90_406, 8_769
