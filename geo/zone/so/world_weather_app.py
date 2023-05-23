@@ -2,7 +2,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285103/world-weather-application-in-python-using-tkinter
 from datetime import datetime
-from tkinter import *
+from tkinter import Button, Label, PhotoImage, Tk
 import calendar
 import tkinter as tk
 
