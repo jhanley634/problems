@@ -2,15 +2,16 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285103/world-weather-application-in-python-using-tkinter
 from datetime import datetime
-from tkinter import Button, Label, PhotoImage, Tk
-import calendar
+import geocoder
+from tkinter import *
 import tkinter as tk
-
-from weather_icons import icons_day, icons_mini
 import requests
+import calendar
+from weather_icons import icons_day, icons_mini
 
 
-def main():
+def world_weather():
+
     # Create the window and set the basics
     root = Tk()
     root.title('World Weather by paichiwo')
@@ -21,6 +22,9 @@ def main():
     # Colors
     l_blue = '#1581ef'
     d_blue = '#1167f2'
+
+    # https://weatherbit.io/ API KEY
+    api_key = ''
 
     def format_date_long(date):
         """ Format date to weekday, day month_name (Monday, 14 May) """
@@ -41,6 +45,12 @@ def main():
         """ Convert units - m/s to km/h """
         return ms * (1 / 1000) / (1 / 3600)
 
+    def get_user_location():
+        ip_location = geocoder.ip('me')
+        city = ip_location.city
+        country = ip_location.country
+        return f"{city}, {country}"
+
     def get_current_weather(api_key, location):
         try:
             url = f'https://api.weatherbit.io/v2.0/current?city={location}&key={api_key}'
@@ -60,11 +70,10 @@ def main():
         return forecast_data
 
     def update_current_weather_main_window(current_data):
-        # Info Data
+
+        # Main window data
         city = current_data['data'][0]['city_name']
         country = current_data['data'][0]['country_code']
-
-        # Current Data
         code = current_data['data'][0]['weather']['code']
         current_temp = str(int(current_data['data'][0]['temp']))
         current_condition = current_data['data'][0]['weather']['description']
@@ -109,6 +118,7 @@ def main():
         humidity.config(text=f'{current_humidity}%', justify='center')
         cloud_coverage.config(text=f'{current_cloud_coverage}%', justify='center')  # change graphics !!!!!!
         pressure.config(text=f'{current_pressure} hPa', justify='center')
+        textfield.delete(0, END)
 
     def create_forecast_data_list(forecast_data):
 
@@ -150,8 +160,12 @@ def main():
 
     def get_weather():
         """ Connect to API, get data and update tkinter labels """
-        api_key = ''
-        location = textfield.get()
+
+        if len(textfield.get()) > 0:
+            location = textfield.get()
+        else:
+            location = get_user_location()
+
         try:
             current_data = get_current_weather(api_key, location)
             forecast_data = get_forecast_weather(api_key, location)
@@ -168,18 +182,18 @@ def main():
     search_image = PhotoImage(file='img/current_window.png')
     search_label = Label(image=search_image, bg='black')
     search_label.place(x=22, y=20)
-    textfield = tk.Entry(root, justify='center', width=25, font=('Noto Sans', 11, 'bold'), bg=d_blue, border=0,
-                         fg='white')
-    textfield.place(x=60, y=67, height=22)
+    textfield = tk.Entry(root, cursor='hand2', justify='center', width=23, font=('Noto Sans', 11, 'bold'),
+                         bg=d_blue, border=0, fg='white')
+    textfield.place(x=60, y=67, height=25)
     textfield.focus()
     textfield.bind('<Return>', lambda event=None: search_button.invoke())
     search_icon = PhotoImage(file='img/magnifying_glass.png')
     search_button = Button(image=search_icon, activebackground=l_blue, borderwidth=0,
-                           cursor='hand2', bg=d_blue, command=get_weather)
+                           bg=d_blue, command=get_weather)
     search_button.place(x=268, y=65)
 
     # Create Current Weather labels
-    # Main window
+
     city_info = Label(text='Enter city name or postcode', font=('Noto Sans', 10), bg=l_blue, fg='white')
     city_info.place(x=90, y=97)
     weather_icon = PhotoImage(file='img/splash_icon.png')
@@ -193,7 +207,7 @@ def main():
     condition.place(x=53, y=390, height=30)
     date_info = Label(text='', font=('Noto Sans', 8), bg=l_blue, fg='white', width=30)
     date_info.place(x=69, y=418, height=15)
-    # Bottom row
+
     feelslike = Label(text='', font=('Noto Sans', 8, 'bold'), bg=l_blue, fg='white', width=3)
     feelslike.place(x=63, y=487, height=15)
     wind = Label(text='', font=('Noto Sans', 8, 'bold'), bg=l_blue, fg='white', width=7)
@@ -246,4 +260,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    world_weather()
