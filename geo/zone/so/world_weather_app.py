@@ -3,10 +3,12 @@
 # from https://codereview.stackexchange.com/questions/285103/world-weather-application-in-python-using-tkinter
 from datetime import datetime
 from tkinter import *
-import tkinter as tk
-import requests
 import calendar
+import tkinter as tk
+
 from weather_icons import icons_day, icons_mini
+import requests
+
 
 def main():
     # Create the window and set the basics
