@@ -2,12 +2,13 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285103/world-weather-application-in-python-using-tkinter
 from datetime import datetime
-import geocoder
-from tkinter import *
-import tkinter as tk
-import requests
+from tkinter import END, Button, Label, PhotoImage, Tk
 import calendar
+import tkinter as tk
+
 from weather_icons import icons_day, icons_mini
+import geocoder
+import requests
 
 
 def world_weather():
