@@ -65,8 +65,8 @@ class OutlineParser:
         if m := self._level_re.match(line.lstrip()):
             new_lvl = Level(m[1])
             if len(self.levels) > 0 and self.levels[-1].depth == new_lvl.depth:
-                # print(self.levels[-1].ordinal, new_lvl.ordinal)
-                assert self.levels[-1].ordinal + 1 == new_lvl.ordinal
+                if self.levels[-1].ordinal + 1 != new_lvl.ordinal:
+                    raise ValueError(f"non-sequential: {self.levels[-1]} {new_lvl}")
             while len(self.levels) > 0 and self.levels[-1].depth >= new_lvl.depth:
                 self.levels.pop()
             self.levels.append(new_lvl)

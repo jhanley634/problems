@@ -50,3 +50,15 @@ class TestOutlineParser(unittest.TestCase):
             self._levels_summary(lines),
         )
         self.assertEqual(9, len(list(OutlineParser(lines))))
+
+    def test_non_sequential(self) -> None:
+        lines = cleandoc(
+            """
+        2. section
+            (a) apple
+            (b) banana
+            (d) cherry
+        """
+        ).splitlines()
+        with self.assertRaises(ValueError):
+            self._levels_summary(lines)
