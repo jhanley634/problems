@@ -50,6 +50,10 @@ class TestOutlineParser(unittest.TestCase):
             (a) apple
                 (1) Autumn
                     (A) Bough
+                        (i) one
+                        (ii) two
+                        (iii) three
+                        (iv) four
                     (B) Glory
                 (2) Golden
                     (A) Noble
@@ -63,6 +67,10 @@ class TestOutlineParser(unittest.TestCase):
                 ("a",),
                 ("a", "1"),
                 ("a", "1", "A"),
+                ("a", "1", "A", "i"),
+                ("a", "1", "A", "ii"),
+                ("a", "1", "A", "iii"),
+                ("a", "1", "A", "iv"),
                 ("a", "1", "B"),
                 ("a", "2"),
                 ("a", "2", "A"),
@@ -71,7 +79,7 @@ class TestOutlineParser(unittest.TestCase):
             ],
             self._levels_summary(lines),
         )
-        self.assertEqual(9, len(list(OutlineParser(lines))))
+        self.assertEqual(13, len(list(OutlineParser(lines))))
 
     def test_non_sequential(self) -> None:
         lines = cleandoc(

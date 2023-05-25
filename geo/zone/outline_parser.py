@@ -1,6 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from collections import deque
+from re import IGNORECASE
 from typing import Any, Generator, Iterable
 import re
 
@@ -28,6 +29,7 @@ def _from_roman(s: str) -> int:
 
 
 def _reverse_enumerate(seq: list[Any]) -> Generator[tuple[int, Any], None, None]:
+    # The roman regex is at the end; going in reverse helps it to win.
     for i, val in enumerate(reversed(seq)):
         yield len(seq) - i - 1, val
 
@@ -40,18 +42,19 @@ class Level:
         (re.compile(r"^[a-z]+$"), _lower_val),
         (re.compile(r"^\d+$"), _int_val),
         (re.compile(r"^[A-Z]+$"), _upper_val),
-        (re.compile(r"^[ivx]+$"), _from_roman),
+        (re.compile(r"^[ivx]+$", IGNORECASE), _from_roman),
     ]
+    assert _level_re_ordinal[-1][0].search("ii")
 
     def __init__(self, text: str):
         self.text = text
         self.depth = 0
         self.ordinal = 0
-        for i, (pattern, ord_fn) in enumerate(self._level_re_ordinal):
-            if pattern.match(text):
+        for i, (pattern, ord_fn) in _reverse_enumerate(self._level_re_ordinal):
+            if pattern.search(text):
                 self.depth = i
-                # print(text, ord(text[0]), "<")
                 self.ordinal = ord_fn(text)
+                break
         assert self.depth > 0, text
 
     def __repr__(self) -> str:
