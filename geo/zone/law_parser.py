@@ -31,11 +31,13 @@ class LawParser:
     def get_paragraphs(self) -> Generator[str, None, None]:
         section_number_re = re.compile(r"^\(\w+\)")
         for line in self._get_paragraph_lines():
-            # deal with stacked section numbers
-            while m := section_number_re.search(line):
+            if m := section_number_re.search(line):
                 yield m[0]
-                line = line.removeprefix(m[0]).lstrip()
 
+            # Cleanup leading section numbers, which may be stacked.
+            while m := section_number_re.search(line):
+                line = line.removeprefix(m[0]).lstrip()
+            assert not line.startswith("(")
             yield line
 
     def _get_paragraph_lines(self) -> Generator[str, None, None]:
@@ -43,20 +45,30 @@ class LawParser:
         for p in self.soup.find_all("p"):
             yield p.text.translate(xlate_table).strip()
 
-    def format(self) -> None:
-        sect_re = re.compile(r"^\(\w+\)$")
-        paragraphs = list(OutlineParser(self.get_paragraphs()))
-        for levels, text in paragraphs:
-            if sect_re.match(text):
-                continue
-            hashes = '#' * len(levels)
-            dots = '. . ' * len(levels)
+    def _get_outline(self):
+        return [
+            (levels, text)
+            for levels, text in OutlineParser(self.get_paragraphs())
+            if not text.startswith("(")
+        ]
+
+    def format_md(self) -> None:
+        for levels, text in self._get_outline():
+            hashes = "#" * len(levels)
+            dots = ". . " * len(levels)
+            levels = str(levels).replace(",)", ")")
+            print(f"{hashes} {levels}\n{dots} {text}\n")
+
+    def format_html(self) -> None:
+        for levels, text in self._get_outline():
+            hashes = "#" * len(levels)
+            dots = ". . " * len(levels)
             levels = str(levels).replace(",)", ")")
             print(f"{hashes} {levels}\n{dots} {text}\n")
 
 
 def main(input_html_file: Path) -> None:
-    LawParser(input_html_file).parse().format()
+    LawParser(input_html_file).parse().format_md()
 
 
 if __name__ == "__main__":
