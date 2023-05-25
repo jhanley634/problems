@@ -44,9 +44,15 @@ class LawParser:
             yield p.text.translate(xlate_table).strip()
 
     def format(self) -> None:
+        sect_re = re.compile(r"^\(\w+\)$")
         paragraphs = list(OutlineParser(self.get_paragraphs()))
-        for level, text in paragraphs:
-            print(f"{level} {text[:60]}")
+        for levels, text in paragraphs:
+            if sect_re.match(text):
+                continue
+            hashes = '#' * len(levels)
+            dots = '. . ' * len(levels)
+            levels = str(levels).replace(",)", ")")
+            print(f"{hashes} {levels}\n{dots} {text}\n")
 
 
 def main(input_html_file: Path) -> None:
