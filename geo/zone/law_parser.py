@@ -60,15 +60,27 @@ class LawParser:
             print(f"{hashes} {levels}\n{dots} {text}\n")
 
     def format_html(self) -> None:
+        style = "font-family: sans-serif; line-height: 1.4; max-width: 50em; text-align: justify;"
+        html = [
+            "<!DOCTYPE html><head><title>outline</title></head>"
+            + f"<body><div style='{style}'>"
+        ]
         for levels, text in self._get_outline():
-            hashes = "#" * len(levels)
-            dots = ". . " * len(levels)
+            heading = f"h{len(levels)}>"
+            indent = 4 * len(levels)
+            style = f"margin-left: {indent}em;"
             levels = str(levels).replace(",)", ")")
-            print(f"{hashes} {levels}\n{dots} {text}\n")
+            html.append(
+                f"<{heading} {levels} </{heading}\n"
+                + f"<p style='{style}'>{text}</p>\n"
+            )
+
+        soup = BeautifulSoup("\n".join(html), "html.parser")
+        print(soup.prettify())
 
 
 def main(input_html_file: Path) -> None:
-    LawParser(input_html_file).parse().format_md()
+    LawParser(input_html_file).parse().format_html()
 
 
 if __name__ == "__main__":
