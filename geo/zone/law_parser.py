@@ -5,7 +5,6 @@ from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
-from roman import fromRoman as from_roman
 import typer
 
 from geo.zone.outline_parser import OutlineParser

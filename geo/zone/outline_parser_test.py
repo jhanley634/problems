@@ -6,7 +6,7 @@ import unittest
 from roman import InvalidRomanNumeralError
 from roman import fromRoman as from_roman
 
-from geo.zone.outline_parser import Level, OutlineParser
+from geo.zone.outline_parser import Level, OutlineParser, _reverse_enumerate
 
 
 class TestRoman(unittest.TestCase):
@@ -18,6 +18,14 @@ class TestRoman(unittest.TestCase):
 
         with self.assertRaises(InvalidRomanNumeralError):
             from_roman("iv")
+
+
+class TestReverseEnumerate(unittest.TestCase):
+    def test_reverse_enumerate(self):
+        self.assertEqual([(0, "a"), (1, "b"), (2, "c")], list(enumerate("abc")))
+        self.assertEqual(
+            [(2, "c"), (1, "b"), (0, "a")], list(_reverse_enumerate("abc"))
+        )
 
 
 class TestLevel(unittest.TestCase):

@@ -1,7 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from collections import deque
-from typing import Any, Iterable
+from typing import Any, Generator, Iterable
 import re
 
 from roman import fromRoman as from_roman
@@ -22,8 +22,14 @@ def _upper_val(s: str) -> int:
     assert len(s) == 1
     return ord(s) - ord("A") + 1
 
+
 def _from_roman(s: str) -> int:
     return from_roman(s.upper())
+
+
+def _reverse_enumerate(seq: list[Any]) -> Generator[tuple[int, Any], None, None]:
+    for i, val in enumerate(reversed(seq)):
+        yield len(seq) - i - 1, val
 
 
 class Level:
@@ -44,7 +50,7 @@ class Level:
         for i, (pattern, ord_fn) in enumerate(self._level_re_ordinal):
             if pattern.match(text):
                 self.depth = i
-                print(text, ord(text[0]), "<")
+                # print(text, ord(text[0]), "<")
                 self.ordinal = ord_fn(text)
         assert self.depth > 0, text
 
