@@ -10,4 +10,4 @@ class TestLawParser(unittest.TestCase):
         desktop = Path("~/Desktop").expanduser()
         in_file = desktop / "GOV_65852.2.html"
         paragraphs = list(LawParser(in_file).parse().get_paragraphs())
-        self.assertEqual(111, len(paragraphs))
+        self.assertEqual(238, len(paragraphs))

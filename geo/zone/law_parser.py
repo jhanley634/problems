@@ -2,9 +2,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 from typing import Generator
+import re
 
 from bs4 import BeautifulSoup
-from bs4.element import Tag
 import typer
 
 
@@ -26,8 +26,20 @@ class LawParser:
         self.soup = BeautifulSoup(tag.prettify(), "html.parser")
         return self
 
-    def get_paragraphs(self) -> Generator[Tag, None, None]:
-        yield from self.soup.find_all("p")
+    def get_paragraphs(self) -> Generator[str, None, None]:
+        section_number_re = re.compile(r"^\(\w+\)")
+        for line in self._get_paragraph_lines():
+            # deal with stacked section numbers
+            while m := section_number_re.search(line):
+                yield m[0]
+                line = line.removeprefix(m[0]).lstrip()
+
+            yield line
+
+    def _get_paragraph_lines(self) -> Generator[str, None, None]:
+        xlate_table = str.maketrans("\xa0", " ")  # No non-breaking spaces, please.
+        for p in self.soup.find_all("p"):
+            yield p.text.translate(xlate_table).strip()
 
 
 def main(input_html_file: Path) -> None:
