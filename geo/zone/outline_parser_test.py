@@ -3,7 +3,21 @@
 from inspect import cleandoc
 import unittest
 
+from roman import InvalidRomanNumeralError
+from roman import fromRoman as from_roman
+
 from geo.zone.outline_parser import Level, OutlineParser
+
+
+class TestRoman(unittest.TestCase):
+    def test_roman(self) -> None:
+        self.assertEqual(4, from_roman("IV"))
+        self.assertEqual(9, from_roman("IX"))
+        self.assertEqual(90, from_roman("XC"))
+        self.assertEqual(1900, from_roman("MCM"))
+
+        with self.assertRaises(InvalidRomanNumeralError):
+            from_roman("iv")
 
 
 class TestLevel(unittest.TestCase):

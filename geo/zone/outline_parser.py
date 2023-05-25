@@ -4,6 +4,8 @@ from collections import deque
 from typing import Any, Iterable
 import re
 
+from roman import fromRoman as from_roman
+
 
 def _int_val(s: str) -> int:
     return int(s)
@@ -11,12 +13,17 @@ def _int_val(s: str) -> int:
 
 def _lower_val(s: str) -> int:
     assert s.islower()
+    assert len(s) == 1
     return ord(s) - ord("a") + 1
 
 
 def _upper_val(s: str) -> int:
     assert s.isupper()
+    assert len(s) == 1
     return ord(s) - ord("A") + 1
+
+def _from_roman(s: str) -> int:
+    return from_roman(s.upper())
 
 
 class Level:
@@ -27,7 +34,7 @@ class Level:
         (re.compile(r"^[a-z]+$"), _lower_val),
         (re.compile(r"^\d+$"), _int_val),
         (re.compile(r"^[A-Z]+$"), _upper_val),
-        (re.compile(r"^[ivx]+$"), len),
+        (re.compile(r"^[ivx]+$"), _from_roman),
     ]
 
     def __init__(self, text: str):
@@ -37,6 +44,7 @@ class Level:
         for i, (pattern, ord_fn) in enumerate(self._level_re_ordinal):
             if pattern.match(text):
                 self.depth = i
+                print(text, ord(text[0]), "<")
                 self.ordinal = ord_fn(text)
         assert self.depth > 0, text
 

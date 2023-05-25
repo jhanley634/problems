@@ -5,7 +5,10 @@ from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
+from roman import fromRoman as from_roman
 import typer
+
+from geo.zone.outline_parser import OutlineParser
 
 
 class LawParser:
@@ -41,9 +44,14 @@ class LawParser:
         for p in self.soup.find_all("p"):
             yield p.text.translate(xlate_table).strip()
 
+    def format(self) -> None:
+        paragraphs = list(OutlineParser(self.get_paragraphs()))
+        for level, text in paragraphs:
+            print(f"{level.ordinal} {level.value} {text[:60]}")
+
 
 def main(input_html_file: Path) -> None:
-    LawParser(input_html_file).parse()
+    LawParser(input_html_file).parse().format()
 
 
 if __name__ == "__main__":
