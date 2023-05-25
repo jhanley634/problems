@@ -1,11 +1,10 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from collections import deque
-from re import IGNORECASE
 from typing import Any, Generator, Iterable
 import re
 
-from roman import fromRoman as from_roman
+from roman import fromRoman
 
 
 def _int_val(s: str) -> int:
@@ -25,7 +24,7 @@ def _upper_val(s: str) -> int:
 
 
 def _from_roman(s: str) -> int:
-    return from_roman(s.upper())
+    return fromRoman(s.upper())
 
 
 def _reverse_enumerate(seq: list[Any]) -> Generator[tuple[int, Any], None, None]:
@@ -42,9 +41,9 @@ class Level:
         (re.compile(r"^[a-z]+$"), _lower_val),
         (re.compile(r"^\d+$"), _int_val),
         (re.compile(r"^[A-Z]+$"), _upper_val),
-        (re.compile(r"^[ivx]+$", IGNORECASE), _from_roman),
+        (re.compile(r"^[ivx]+$"), _from_roman),
+        (re.compile(r"^[IVX]+$"), _from_roman),
     ]
-    assert _level_re_ordinal[-1][0].search("ii")
 
     def __init__(self, text: str):
         self.text = text

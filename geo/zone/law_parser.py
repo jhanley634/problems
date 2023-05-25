@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env _TYPER_STANDARD_TRACEBACK=1 python
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 from typing import Generator
@@ -46,7 +46,7 @@ class LawParser:
     def format(self) -> None:
         paragraphs = list(OutlineParser(self.get_paragraphs()))
         for level, text in paragraphs:
-            print(f"{level.ordinal} {level.value} {text[:60]}")
+            print(f"{level} {text[:60]}")
 
 
 def main(input_html_file: Path) -> None:
