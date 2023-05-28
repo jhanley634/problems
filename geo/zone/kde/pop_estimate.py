@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 
-def generate_data(seed=17):
+def generate_1d_bimodal_random_data(seed=17):
     rng = np.random.RandomState(seed)
     x = []
     dat = rng.lognormal(0, 0.3, 1000)
@@ -19,10 +19,20 @@ def generate_data(seed=17):
     return x
 
 
-if __name__ == "__main__":
+def estimate_1d_data():
     df = pd.DataFrame()
-    df["x"] = generate_data()
-
-    # sns.displot(df, x="x", kind="kde")
+    df["x"] = generate_1d_bimodal_random_data()
     df.plot.density()
+
+    x_train = np.array(df.x).reshape(-1, 1)
+    x_test = np.linspace(-1, 7, 2000)[:, np.newaxis]
+
+    model = KernelDensity(bandwidth=0.1)
+    model.fit(x_train)
+    log_dens = model.score_samples(x_test)
+    plt.fill(x_test, np.exp(log_dens), c="cyan")
     plt.show()
+
+
+if __name__ == "__main__":
+    estimate_1d_data()
