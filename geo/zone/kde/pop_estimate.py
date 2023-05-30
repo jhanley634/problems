@@ -19,19 +19,42 @@ def generate_1d_bimodal_random_data(seed=17):
     return x
 
 
-def estimate_1d_data():
+def sparse_population_data():
+    a = np.array([0, 0, 0, 0, 0, 0, 6, 16, 8, 0, 0, 0, 5, 15, 35, 5, 0, 0, 0, 0])
+    assert 20 == len(a)
+    return a
+
+
+def estimate_1d_data(generator=sparse_population_data):
     df = pd.DataFrame()
-    df["x"] = generate_1d_bimodal_random_data()
+    df["x"] = generator()
     df.plot.density()
 
     x_train = np.array(df.x).reshape(-1, 1)
-    x_test = np.linspace(-1, 7, 2000)[:, np.newaxis]
+    x_test = np.linspace(-1, 20, len(df.x))[:, np.newaxis]
 
-    model = KernelDensity(bandwidth=0.1)
+    model = KernelDensity()
     model.fit(x_train)
     log_dens = model.score_samples(x_test)
-    plt.fill(x_test, np.exp(log_dens), c="cyan")
+    plt.scatter(x_test, np.exp(log_dens), c="cyan")
+
+    _grid_search(x_train, x_test)
+
     plt.show()
+
+
+def _grid_search(x_train, x_test):
+    bandwidth = np.arange(0.05, 2, 0.05)
+    kde = KernelDensity(kernel="gaussian")
+    grid = GridSearchCV(kde, {"bandwidth": bandwidth})
+    grid.fit(x_train)
+
+    kde = grid.best_estimator_
+    log_dens = kde.score_samples(x_test)
+    plt.fill(x_test, np.exp(log_dens), c="green")
+    plt.title("Optimal estimate with Gaussian kernel")
+    plt.show()
+    print("optimal bandwidth: " + "{:.2f}".format(kde.bandwidth))
 
 
 if __name__ == "__main__":
