@@ -9,6 +9,7 @@ import requests
 CACHE_DIR = Path("/tmp/web_cache")
 CACHE_DIR.mkdir(exist_ok=True)
 _FNAME_RE = re.compile(r"^[\w.-]+$")  # no crazy characters like [?&%=]
+_TRIM_PREAMBLE_RE = re.compile(r"^.*AUDIO VERSION *", re.DOTALL)
 
 
 def _cache_file_for(url: str) -> Path:
@@ -29,6 +30,13 @@ def get_html_text(url: str) -> str:
 def get_web_text(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")
     return soup.get_text()
+
+
+def get_story_text(url: str) -> str:
+    html = get_html_text(url)
+    assert "AUDIO " in html, html
+    html = _TRIM_PREAMBLE_RE.sub("", html)
+    return get_web_text(html)
 
 
 def squish(s: str) -> str:

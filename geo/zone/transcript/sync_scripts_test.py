@@ -1,8 +1,15 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
+
 import unittest
 
-from geo.zone.transcript.sync_scripts import get_html_text, get_web_text, squish
+from geo.zone.transcript.sync_scripts import (
+    _TRIM_PREAMBLE_RE,
+    get_html_text,
+    get_story_text,
+    get_web_text,
+    squish,
+)
 
 
 class SyncScriptsTest(unittest.TestCase):
@@ -29,3 +36,8 @@ class SyncScriptsTest(unittest.TestCase):
         self.assertEqual(
             expected, squish(get_web_text(get_html_text(self.fuego_url)[:18_600]))
         )
+
+        expected = _TRIM_PREAMBLE_RE.sub("", expected)
+        text = _TRIM_PREAMBLE_RE.sub("", get_story_text(self.fuego_url)).lstrip()
+        self.assertEqual(f"{expected}", text[:133])
+        self.assertTrue(text.startswith(expected))
