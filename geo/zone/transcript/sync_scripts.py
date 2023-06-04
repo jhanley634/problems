@@ -42,3 +42,7 @@ def get_story_text(url: str) -> str:
 def squish(s: str) -> str:
     """Remove dup whitespace from a string."""
     return " ".join(s.split())
+
+
+class HapaxLegomenon:
+    """"""
