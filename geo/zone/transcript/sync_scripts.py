@@ -1,6 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from pathlib import Path
+from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
@@ -37,6 +38,11 @@ def get_story_text(url: str) -> str:
     assert "AUDIO " in html, html
     html = _TRIM_PREAMBLE_RE.sub("", html)
     return get_web_text(html)
+
+
+def get_story_tokens(url: str) -> Generator[str, None, None]:
+    """Generates both words and paragraph breaks."""
+    yield from get_story_text(url).split()
 
 
 def squish(s: str) -> str:
