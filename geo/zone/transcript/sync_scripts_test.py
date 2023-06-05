@@ -61,6 +61,11 @@ class SyncScriptsTest(unittest.TestCase):
 
     def test_get_markdown_words(self) -> None:
         words = list(get_markdown_words(self.fuego_url))
-        self.assertEqual(8_105, len(words))
+        self.assertEqual(8_434, len(words))
         self.assertEqual("Tiago", words[0])
         self.assertEqual("this.", words[-1])
+
+        for word in words:
+            if "\n" in word:
+                self.assertFalse(word.startswith("\n"))
+                self.assertEqual(1, word.count("\n"))
