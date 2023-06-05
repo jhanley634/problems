@@ -57,7 +57,9 @@ def clean_text(text: str) -> str:
         "\xa0", " "
     )  # Turn non-breaking spaces into spaces.
     text = text.translate(non_breaking_space_xlate)
-    return re.sub(r"\. \. \. *", "...", text)
+    text = re.sub(r"\. \. \. *", "...", text)
+    # Extra space helps with sentence segmentation of dialog.
+    return text.replace("\n", " \n")
 
 
 def get_story_tokens(url: str) -> Generator[str, None, None]:

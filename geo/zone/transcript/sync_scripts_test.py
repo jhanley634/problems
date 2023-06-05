@@ -1,4 +1,3 @@
-from collections import deque
 # Copyright 2023 John Hanley. MIT licensed.
 import re
 import unittest
@@ -59,15 +58,5 @@ class SyncScriptsTest(unittest.TestCase):
                 assert token_re.search(token), f">{token}<  {ord(token[0])}"
 
     def test_sentences(self):
-        tokens = deque(get_story_tokens(self.fuego_url))
-        while True:
-            try:
-                i = tokens.index(".") + 1
-            except ValueError:
-                break
-            sentence = [tokens.popleft() for _ in range(i)]
-            if False:
-                print(i, " ".join(sentence).lstrip())
-
-        for i, sent in enumerate(get_story_sentences(self.fuego_url)):
-            print(f"\n{i}  {sent!r}")
+        for sent in get_story_sentences(self.fuego_url):
+            print(sent, end="")
