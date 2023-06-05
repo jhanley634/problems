@@ -5,6 +5,7 @@ from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
+from spacy import Language
 from spacy.cli import download
 import requests
 import spacy
@@ -42,27 +43,34 @@ def get_story_text(url: str) -> str:
     return get_web_text(html)
 
 
-def load_language_model(name: str = "en_core_web_sm") -> spacy.Language:
+def load_language_model(name: str = "en_core_web_sm") -> Language:
     try:
-        spacy.load(name)
-    except OSError:
+        return spacy.load(name)
+    except OSError:  # Can't find model.... It doesn't seem to be a Python package
         download(name)
-    return spacy.load(name)
+        return spacy.load(name)
+
+
+def clean_text(text: str) -> str:
+    """Remove non-breaking spaces, etc."""
+    no_nbsp_xlate = str.maketrans("\xa0", " ")  # Turn non-breaking spaces into spaces.
+    return text.translate(no_nbsp_xlate).replace(". . .", "...")
 
 
 def get_story_tokens(url: str) -> Generator[str, None, None]:
     """Generates both words and paragraph breaks."""
     nlp = load_language_model()
-    doc = nlp(get_story_text(url))
+    doc = nlp(clean_text(get_story_text(url)))
+
+    # No non-breaking spaces, please.
+    whitespace_xlate = str.maketrans("", "", "\t \xa0")
+
     for token in doc:
         if token.is_space:
-            if ord(token.text[0]) != 160:  # We suppress NBSP tokens.
-                if token.text.startswith('\n\xa0\n'):
-                    text = '\n\n'
-                else:
-                    text = token.text.strip(" ")[:2]
-                if text in ("\n", "\n\n"):
-                    yield text
+            text = token.text.translate(whitespace_xlate)[:2]
+            # Alternative to newlines at this point would be the empty string.
+            if text in ("\n", "\n\n"):
+                yield text
         else:
             yield token.text
 
