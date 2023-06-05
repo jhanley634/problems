@@ -35,20 +35,30 @@ def get_web_text(html: str) -> str:
 
 
 def get_story_text(url: str) -> str:
-    html = get_html_text(url)
+    return get_web_text(trim_preamble(trim_postamble(get_html_text(url))))
+
+
+def trim_preamble(html: str) -> str:
     assert "AUDIO " in html, html
-    html = _TRIM_PREAMBLE_RE.sub("", html)
-    return get_web_text(html)
+    return _TRIM_PREAMBLE_RE.sub("", html)
+
+
+def trim_postamble(html: str) -> str:
+    # marker = '<div class="molongui-clearfix">'
+    marker = '<h3 class="about"> </h3>'
+    assert marker in html, html
+    strip_till_eof_re = re.compile(f"{marker}.*", re.DOTALL)
+    return strip_till_eof_re.sub("", html)
 
 
 def get_markdown_text(url: str) -> str:
-    def clean(md: str) -> str:
-        postamble_marker = '<div class="molongui-clearfix">'
-        strip_postamble_till_eof_re = re.compile(f"{postamble_marker}.*", re.DOTALL)
-        return strip_postamble_till_eof_re.sub("", md)
-
-    html = clean(_TRIM_PREAMBLE_RE.sub("", get_html_text(url)))
+    html = trim_preamble(trim_postamble(get_html_text(url)))
     return markdownify(html).strip()
+
+
+def get_markdown_words(url: str) -> Generator[str, None, None]:
+    text = get_markdown_text(url)
+    yield from text.split(" ")
 
 
 def squish(s: str) -> str:

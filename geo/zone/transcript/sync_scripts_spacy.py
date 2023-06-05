@@ -4,6 +4,7 @@ import re
 
 from spacy import Language
 from spacy.cli import download
+from spacy.tokens import Span
 import spacy
 
 from geo.zone.transcript.sync_scripts import get_story_text
@@ -46,7 +47,7 @@ def get_story_tokens(url: str) -> Generator[str, None, None]:
             yield token.text
 
 
-def get_story_sentences(url: str) -> Generator[str, None, None]:
+def get_story_sentences(url: str) -> Generator[Span, None, None]:
     nlp = load_language_model()
     doc = nlp(clean_text_for_spacy(get_story_text(url)))
 

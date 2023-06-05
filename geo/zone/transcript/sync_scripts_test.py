@@ -6,6 +6,7 @@ from geo.zone.transcript.sync_scripts import (
     _TRIM_PREAMBLE_RE,
     get_html_text,
     get_markdown_text,
+    get_markdown_words,
     get_story_text,
     get_web_text,
     squish,
@@ -54,7 +55,12 @@ class SyncScriptsTest(unittest.TestCase):
         self.assertEqual("abc\nz", till_eof_re.sub("z", s))
 
     def test_get_markdown_text(self) -> None:
-        self.maxDiff = None
         md = get_markdown_text(self.fuego_url)
         self.assertTrue(md.startswith("Tiago would "))
-        self.assertTrue(md.endswith(" a chance just like this.\n\n###"))
+        self.assertTrue(md.endswith(" a chance just like this."))
+
+    def test_get_markdown_words(self) -> None:
+        words = list(get_markdown_words(self.fuego_url))
+        self.assertEqual(8_105, len(words))
+        self.assertEqual("Tiago", words[0])
+        self.assertEqual("this.", words[-1])
