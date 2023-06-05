@@ -5,17 +5,19 @@ from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
+from spacy.cli import download
 import requests
+import spacy
 
 CACHE_DIR = Path("/tmp/web_cache")
 CACHE_DIR.mkdir(exist_ok=True)
-_FNAME_RE = re.compile(r"^[\w.-]+$")  # no crazy characters like [?&%=]
+_FILENAME_RE = re.compile(r"^[\w.-]+$")  # no crazy characters like [?&%=]
 _TRIM_PREAMBLE_RE = re.compile(r"^.*AUDIO VERSION *", re.DOTALL)
 
 
 def _cache_file_for(url: str) -> Path:
     ret = CACHE_DIR / Path(url).name
-    assert _FNAME_RE.search(ret.name)
+    assert _FILENAME_RE.search(ret.name)
     return ret
 
 
@@ -40,9 +42,29 @@ def get_story_text(url: str) -> str:
     return get_web_text(html)
 
 
+def load_language_model(name: str = "en_core_web_sm") -> spacy.Language:
+    try:
+        spacy.load(name)
+    except OSError:
+        download(name)
+    return spacy.load(name)
+
+
 def get_story_tokens(url: str) -> Generator[str, None, None]:
     """Generates both words and paragraph breaks."""
-    yield from get_story_text(url).split()
+    nlp = load_language_model()
+    doc = nlp(get_story_text(url))
+    for token in doc:
+        if token.is_space:
+            if ord(token.text[0]) != 160:  # We suppress NBSP tokens.
+                if token.text.startswith('\n\xa0\n'):
+                    text = '\n\n'
+                else:
+                    text = token.text.strip(" ")[:2]
+                if text in ("\n", "\n\n"):
+                    yield text
+        else:
+            yield token.text
 
 
 def squish(s: str) -> str:

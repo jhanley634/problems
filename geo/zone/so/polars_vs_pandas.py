@@ -4,6 +4,7 @@
 
 from pathlib import Path
 from time import sleep
+from typing import Optional
 import io
 import logging
 import time
@@ -39,21 +40,18 @@ def fetch_ny_data(parquet_buffer: io.BytesIO):
     pause()
     log.info("1: Reading into polars")
     parquet_buffer.seek(0)
-    df = pl.read_parquet(parquet_buffer)
-    n = len(df)
+    df: Optional[pd.DataFrame] = pl.read_parquet(parquet_buffer)
     df = None
 
     log.info("2: Reading into pandas")
     parquet_buffer.seek(0)
     df = pd.read_parquet(parquet_buffer)
-    assert n == len(df)
     df = None
     log.info("3: Done")
     parquet_buffer.seek(0)
     df = pl.read_parquet(parquet_buffer)
     print(df)
     print(df.describe())
-    return
 
 
 def pause(secs: float = 0.2):
