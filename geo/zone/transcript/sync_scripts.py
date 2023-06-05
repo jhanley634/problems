@@ -53,8 +53,11 @@ def load_language_model(name: str = "en_core_web_sm") -> Language:
 
 def clean_text(text: str) -> str:
     """Remove non-breaking spaces, etc."""
-    no_nbsp_xlate = str.maketrans("\xa0", " ")  # Turn non-breaking spaces into spaces.
-    return text.translate(no_nbsp_xlate).replace(". . .", "...")
+    non_breaking_space_xlate = str.maketrans(
+        "\xa0", " "
+    )  # Turn non-breaking spaces into spaces.
+    text = text.translate(non_breaking_space_xlate)
+    return re.sub(r"\. \. \. *", "...", text)
 
 
 def get_story_tokens(url: str) -> Generator[str, None, None]:
@@ -73,6 +76,13 @@ def get_story_tokens(url: str) -> Generator[str, None, None]:
                 yield text
         else:
             yield token.text
+
+
+def get_story_sentences(url: str) -> Generator[str, None, None]:
+    nlp = load_language_model()
+    doc = nlp(clean_text(get_story_text(url)))
+
+    yield from doc.sents
 
 
 def squish(s: str) -> str:

@@ -6,6 +6,7 @@ import unittest
 from geo.zone.transcript.sync_scripts import (
     _TRIM_PREAMBLE_RE,
     get_html_text,
+    get_story_sentences,
     get_story_text,
     get_story_tokens,
     get_web_text,
@@ -65,4 +66,8 @@ class SyncScriptsTest(unittest.TestCase):
             except ValueError:
                 break
             sentence = [tokens.popleft() for _ in range(i)]
-            # print(i, " ".join(sentence).lstrip())
+            if False:
+                print(i, " ".join(sentence).lstrip())
+
+        for i, sent in enumerate(get_story_sentences(self.fuego_url)):
+            print(f"\n{i}  {sent!r}")
