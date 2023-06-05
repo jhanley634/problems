@@ -5,6 +5,7 @@ from typing import Generator
 import re
 
 from bs4 import BeautifulSoup
+from markdownify import markdownify
 import requests
 
 CACHE_DIR = Path("/tmp/web_cache")
@@ -38,6 +39,16 @@ def get_story_text(url: str) -> str:
     assert "AUDIO " in html, html
     html = _TRIM_PREAMBLE_RE.sub("", html)
     return get_web_text(html)
+
+
+def get_markdown_text(url: str) -> str:
+    def clean(md: str) -> str:
+        postamble_marker = '<div class="molongui-clearfix">'
+        strip_postamble_till_eof_re = re.compile(f"{postamble_marker}.*", re.DOTALL)
+        return strip_postamble_till_eof_re.sub("", md)
+
+    html = clean(_TRIM_PREAMBLE_RE.sub("", get_html_text(url)))
+    return markdownify(html).strip()
 
 
 def squish(s: str) -> str:

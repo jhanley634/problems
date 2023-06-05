@@ -1,9 +1,11 @@
 # Copyright 2023 John Hanley. MIT licensed.
+import re
 import unittest
 
 from geo.zone.transcript.sync_scripts import (
     _TRIM_PREAMBLE_RE,
     get_html_text,
+    get_markdown_text,
     get_story_text,
     get_web_text,
     squish,
@@ -39,3 +41,20 @@ class SyncScriptsTest(unittest.TestCase):
         text = _TRIM_PREAMBLE_RE.sub("", get_story_text(self.fuego_url)).lstrip()
         self.assertEqual(f"{expected}", text[:133])
         self.assertTrue(text.startswith(expected))
+
+    def test_regex_dotall(self) -> None:
+        till_eof_re = re.compile(r"def.*", re.DOTALL)
+        s = "abc\ndef\nghi\n"
+        self.assertEqual("abc\nz", till_eof_re.sub("z", s))
+
+        till_eof_re = re.compile(r"^def.*", re.DOTALL)
+        self.assertIsNone(till_eof_re.search(s))
+
+        till_eof_re = re.compile(r"^def.*", re.DOTALL | re.MULTILINE)
+        self.assertEqual("abc\nz", till_eof_re.sub("z", s))
+
+    def test_get_markdown_text(self) -> None:
+        self.maxDiff = None
+        md = get_markdown_text(self.fuego_url)
+        self.assertTrue(md.startswith("Tiago would "))
+        self.assertTrue(md.endswith(" a chance just like this.\n\n###"))
