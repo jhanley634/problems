@@ -57,7 +57,7 @@ def get_markdown_text(url: str) -> str:
 
 
 def get_markdown_words(url: str) -> Generator[str, None, None]:
-    text = get_markdown_text(url)
+    text = get_markdown_text(url) + "\nEOF"
     text = re.sub(r"(\n)+", r"\1 ", text)
     for word in text.split(" "):
         yield word.lstrip()
