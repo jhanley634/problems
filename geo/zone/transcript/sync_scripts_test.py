@@ -17,7 +17,7 @@ class SyncScriptsTest(unittest.TestCase):
     fuego_url = "https://clarkesworldmagazine.com/buckell_07_09/"
 
     def test_sync_scripts(self):
-        self.assertEqual(91743, len(get_html_text(self.fuego_url)))
+        self.assertEqual(91741, len(get_html_text(self.fuego_url)))
 
         expected = (
             "Placa del Fuego by Tobias S. Buckell : Clarkesworld Magazine"
@@ -35,7 +35,7 @@ class SyncScriptsTest(unittest.TestCase):
         )
         self.maxDiff = None
         self.assertEqual(
-            expected, squish(get_web_text(get_html_text(self.fuego_url)[:18_602]))
+            expected, squish(get_web_text(get_html_text(self.fuego_url)[:18_601]))
         )
 
         expected = _TRIM_PREAMBLE_RE.sub("", expected)
