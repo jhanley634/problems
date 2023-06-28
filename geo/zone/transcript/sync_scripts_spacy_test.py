@@ -1,3 +1,4 @@
+# Copyright 2023 John Hanley. MIT licensed.
 import re
 
 from geo.zone.transcript.sync_scripts_spacy import get_story_sentences, get_story_tokens
