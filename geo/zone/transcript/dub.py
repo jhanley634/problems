@@ -1,10 +1,12 @@
 #! /usr/bin/env _TYPER_STANDARD_TRACEBACK=1 python
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
+from pprint import pp
 import struct
 
+from pyAudioAnalysis import ShortTermFeatures, audioBasicIO
 from pydub import AudioSegment
-from scipy.fftpack import rfft
+from scipy.fft import rfft, rfftfreq
 from typer import Option
 from typing_extensions import Annotated
 import matplotlib.pyplot as plt
@@ -14,7 +16,52 @@ import seaborn as sns
 import typer
 
 
+def demo_350_440_hz(input_file: Path):
+    Fs, x = audioBasicIO.read_audio_file(input_file)
+    F, f_names = ShortTermFeatures.feature_extraction(x, Fs, 0.050 * Fs, 0.025 * Fs)
+    pp(f_names)
+    plt.subplot(2, 1, 1)
+    plt.plot(F[0, :])
+    plt.xlabel("Frame no")
+    plt.ylabel(f_names[0])
+    plt.subplot(2, 1, 2)
+    plt.plot(F[1, :])
+    plt.xlabel("Frame no")
+    plt.ylabel(f_names[1])
+    plt.show()
+
+    duration = 10  # seconds
+    freq = 350  # Hz
+    n = 2048
+    x = (
+        np.sin(2 * np.pi * freq * np.linspace(0, duration, n))
+        + np.random.random(n) * 0.1
+    )
+
+    z = np.abs(np.fft.rfft(x))  # FFT, peak at .05
+    y = np.fft.rfftfreq(len(x))  # Frequency data
+
+    fig, ax = plt.subplots()
+    ax.plot(y, z)
+
+    plt.show()
+
+
+def demo():
+    n = 2048
+    x = np.sin(2 * np.pi * 10 * np.linspace(0, 10, n)) + np.random.random(n) * 0.1
+
+    z = np.abs(np.fft.rfft(x))  # FFT, peak at .05
+    y = np.fft.rfftfreq(len(x))  # Frequency data
+
+    fig, ax = plt.subplots()
+    ax.plot(y, z)
+
+    plt.show()
+
+
 def main(mp3_file: Annotated[Path, Option(help="input audio file", default=None)]):
+    return demo()
     sound1 = AudioSegment.from_file(mp3_file.expanduser())
     msec_per_sec = 1000
     start = 3 * msec_per_sec
@@ -29,12 +76,12 @@ def main(mp3_file: Annotated[Path, Option(help="input audio file", default=None)
     assert sound.duration_seconds == (end - start) / msec_per_sec == 0.25
 
     fmt = "%ih" % sound.frame_count() * channels
+    amplitudes = struct.unpack(fmt, raw_data)
     df = pd.DataFrame()
-    df["amplitudes"] = struct.unpack(fmt, raw_data)
-    df["y"] = np.abs(rfft(df.amplitudes))
+    df["y"] = np.abs(rfft(amplitudes))
     print(df.iloc[170:190])
-    assert len(df) == sound.frame_count()
 
+    df["y"] = rfftfreq(len(amplitudes), 1 / sound.frame_rate)
     print(df.dtypes)
     ax = sns.scatterplot(df)
     ax.set_xlim([0, 1040])
@@ -42,4 +89,4 @@ def main(mp3_file: Annotated[Path, Option(help="input audio file", default=None)
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    typer.run(demo_350_440_hz)
