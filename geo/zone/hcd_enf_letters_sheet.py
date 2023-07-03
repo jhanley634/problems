@@ -1,6 +1,7 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
+from typing import Generator, NamedTuple
 import re
 
 from polars import Utf8
@@ -51,6 +52,21 @@ def _rename_column(name: str) -> str:
     return name.lower()
 
 
+class CountName(NamedTuple):
+    cnt: int
+    name: str
+
+
+def _bool_frequencies(df: pl.DataFrame) -> Generator[tuple[int, str], None, None]:
+    for col in df.columns:
+        if df[col].dtype == pl.Boolean:
+            yield CountName(sum(df[col]), col)
+
+
+def summarize_bool_frequencies(df: pl.DataFrame) -> pl.DataFrame:
+    return pl.DataFrame(sorted(_bool_frequencies(df), reverse=True))
+
+
 def summarize_letter_types(df: pl.DataFrame, thresh_count: int = 1) -> pl.DataFrame:
     keys = ["count", "hcd_letter_type"]
     df_ltr_typ = df.groupby("hcd_letter_type").count().sort(by=keys, descending=True)
@@ -62,7 +78,9 @@ def main() -> None:
     df = read_sheet()
     print(df.drop("hcd_letter_date").to_pandas().describe())
     # print(df.to_pandas().info())  # gives dtype, and a non-null count for each column
-    st.write(df.to_pandas())
+    st.dataframe(df)
+
+    st.dataframe(summarize_bool_frequencies(df), hide_index=True)
 
     st.dataframe(summarize_letter_types(df), hide_index=True)
 
