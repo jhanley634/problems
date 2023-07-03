@@ -39,7 +39,7 @@ def demo_350_440_hz(input_file: Path):
     )
 
     z = np.abs(np.fft.rfft(x))  # FFT, peak at .05
-    y = np.fft.rfftfreq(len(x))  # Frequency data
+    y = np.fft.rfftfreq(len(x), d=1)  # Frequency data
 
     fig, ax = plt.subplots()
     ax.plot(y, z)

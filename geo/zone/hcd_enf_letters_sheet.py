@@ -3,6 +3,7 @@
 from pathlib import Path
 import re
 
+from polars import Utf8
 import pandas as pd
 import polars as pl
 import streamlit as st
@@ -10,13 +11,15 @@ import streamlit as st
 DESKTOP = Path("~/Desktop").expanduser()
 
 
+# https://www.hcd.ca.gov/planning-and-community-development/accountability-and-enforcement
+# https://www.hcd.ca.gov/sites/default/files/docs/planning-and-community/enforcement-letters-issued.xlsx
 def read_sheet(
     infile: Path = DESKTOP / "enforcement-letters-issued.xlsx",
 ) -> pl.DataFrame:
     df = pl.from_dataframe(pd.read_excel(infile, skiprows=1))
     df = _rename_columns(df)
     df = df.with_columns(df["hcd_letter_type"].apply(_clean_letter_type))
-    df = df.with_columns(map(_cast_if_boolean, df.columns))
+    df = df.with_columns([_cast_if_boolean(df[col]) for col in df.columns])
     return df
 
 
@@ -25,10 +28,11 @@ def _clean_letter_type(type_: str) -> str:
     return type_re.sub("", type_.strip())
 
 
-def _cast_if_boolean(series):
-    if "x" in series:
+def _cast_if_boolean(series: pl.Series) -> pl.Series:
+    if set(series.unique()) == {None, "x"}:
+        assert series.dtype == Utf8
+        series = series.map_dict({"x": True, None: False})
         return series.cast(pl.Boolean)
-    print(series)
     return series
 
 
@@ -56,7 +60,6 @@ def summarize_letter_types(df: pl.DataFrame, thresh_count: int = 1) -> pl.DataFr
 
 def main() -> None:
     df = read_sheet()
-    print(df.dtypes)
     print(df.drop("hcd_letter_date").to_pandas().describe())
     # print(df.to_pandas().info())  # gives dtype, and a non-null count for each column
     st.write(df.to_pandas())
