@@ -1,6 +1,7 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
+import re
 
 import pandas as pd
 import polars as pl
@@ -13,10 +14,22 @@ def read_sheet(
     infile: Path = DESKTOP / "enforcement-letters-issued.xlsx",
 ) -> pl.DataFrame:
     df = pl.from_dataframe(pd.read_excel(infile, skiprows=1))
-    df = df.with_columns(
-        [df[col].map_dict({"x": "x", None: ""}) for col in df.columns if "x" in df[col]]
-    )
-    return _rename_columns(df)
+    df = _rename_columns(df)
+    df = df.with_columns(df["hcd_letter_type"].apply(_clean_letter_type))
+    df = df.with_columns(map(_cast_if_boolean, df.columns))
+    return df
+
+
+def _clean_letter_type(type_: str) -> str:
+    type_re = re.compile(r" Letter$")
+    return type_re.sub("", type_.strip())
+
+
+def _cast_if_boolean(series):
+    if "x" in series:
+        return series.cast(pl.Boolean)
+    print(series)
+    return series
 
 
 def _rename_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -34,11 +47,21 @@ def _rename_column(name: str) -> str:
     return name.lower()
 
 
+def summarize_letter_types(df: pl.DataFrame, thresh_count: int = 1) -> pl.DataFrame:
+    keys = ["count", "hcd_letter_type"]
+    df_ltr_typ = df.groupby("hcd_letter_type").count().sort(by=keys, descending=True)
+    df_ltr_typ = df_ltr_typ.filter(pl.col("count") > thresh_count)
+    return df_ltr_typ
+
+
 def main() -> None:
     df = read_sheet()
+    print(df.dtypes)
     print(df.drop("hcd_letter_date").to_pandas().describe())
     # print(df.to_pandas().info())  # gives dtype, and a non-null count for each column
     st.write(df.to_pandas())
+
+    st.dataframe(summarize_letter_types(df), hide_index=True)
 
 
 if __name__ == "__main__":
