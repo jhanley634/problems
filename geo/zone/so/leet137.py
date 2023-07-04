@@ -4,33 +4,27 @@ import unittest
 
 
 def single_number(nums: list[int]) -> int:
-    INT_BASE = 33  # because of INT32_MIN
-    # give python what it likes
-    counts_nz = [0 for _ in range(INT_BASE)]
-    vals_bit = ["0" for _ in range(INT_BASE)]
+    BIAS = 2**31
+    nums = [num + BIAS for num in nums]
 
-    for num in nums:
-        # 33 because of INT32_MIN takes 33 bits to represent.
-        for idx, bin_val in enumerate(f"{num:033b}"):
-            if bin_val != "0":  # can be "1" or "-"
-                counts_nz[idx] += 1
-                vals_bit[idx] = bin_val
+    res = 0
 
-        # make the bits binary string -- set to value for M3 + 1 and 0 otherwise
-        bin_res = "".join(
-            [
-                vals_bit[idx] if count % 3 == 1 else "0"
-                for idx, count in enumerate(counts_nz)
-            ]
-        )
+    for bit in range(32):
+        counts = 0
+        mask = 1 << bit
+        for num in nums:
+            if num & mask:
+                counts += 1
+        if counts % 3 == 1:
+            res |= mask
 
-    return int(bin_res, 2)
+    return res - BIAS
 
 
 class TestLeet137(unittest.TestCase):
     def test_leet137(self):
         self.assertEqual(3, single_number([2, 2, 3, 2]))
-        self.assertEqual(99, single_number([0, 1, 0, 1, 0, 1, 99]))
+        self.assertEqual(-99, single_number([0, 1, 0, 1, 0, 1, -99]))
 
     def test_negative_binary(self):
         num = -6
