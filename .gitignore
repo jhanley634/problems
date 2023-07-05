@@ -15,3 +15,4 @@ vision/loadtxt.d/pythran_lib/hello.egg-info/
 vision/loadtxt.d/pythran_lib/hello/hello.cpp
 vision/loadtxt.d/rust_lib/Cargo.lock
 vision/loadtxt.d/rust_lib/target
+.hypothesis/

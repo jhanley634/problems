@@ -1,6 +1,12 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285911/leetcode-137-single-number-ii-python-bit-operations
+
+
+import random
 import unittest
+
+from hypothesis import given
+import hypothesis.strategies as st
 
 
 def single_number(nums: list[int]) -> int:
@@ -31,3 +37,21 @@ class TestLeet137(unittest.TestCase):
     def test_negative_binary(self):
         num = -6
         self.assertEqual("-00000000000000000000000000000110", f"{num:033b}")
+
+
+# These constants are specified by https://leetcode.com/problems/single-number-ii
+LO = -(2**31)
+HI = 2**31 - 1
+
+
+@given(st.lists(st.integers(min_value=LO, max_value=HI), min_size=1))
+def test_leet(randoms: list[int]):
+    target, *distractors = randoms
+    arg = [target] + distractors * 3
+    assert single_number(arg) == target
+
+    arg.sort()
+    assert single_number(arg) == target
+
+    random.shuffle(arg)
+    assert single_number(arg) == target
