@@ -6,14 +6,15 @@ import unittest
 def single_number(nums: list[int]) -> int:
     BIAS = 2**31
     nums = [num + BIAS for num in nums]
+    assert all(num >= 0 for num in nums)
 
     res = 0
 
     for bit in range(32):
-        counts = 0
+        counts = sum(num < 0 for num in nums)
         mask = 1 << bit
         for num in nums:
-            if num & mask:
+            if abs(num) & mask:
                 counts += 1
         if counts % 3 == 1:
             res |= mask
@@ -24,6 +25,7 @@ def single_number(nums: list[int]) -> int:
 class TestLeet137(unittest.TestCase):
     def test_leet137(self):
         self.assertEqual(3, single_number([2, 2, 3, 2]))
+        self.assertEqual(0, single_number([2, 1, 2, 1, 2, 1, 0]))
         self.assertEqual(-99, single_number([0, 1, 0, 1, 0, 1, -99]))
 
     def test_negative_binary(self):
