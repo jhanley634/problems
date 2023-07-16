@@ -21,11 +21,11 @@ def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
         df = df[df.osm_id.isin(favorite_roads)]
 
     colors = qualitative.Paired_12.colors
-    df['road_hash'] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)
+    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)
 
     # In https://discuss.streamlit.io/t/tooltip-and-labels-in-pydeck-chart/1727
     # godot63 suggests we may need an annoying 3 (r,g,b) color columns.
-    df['color'] = df.road_hash
+    df["color"] = df.road_hash
 
     return df
 
@@ -36,7 +36,7 @@ AALBORG = (57.050, 9.917)
 def column_layer(df: pd.DataFrame) -> None:
     st.pydeck_chart(
         pdk.Deck(
-            map_style='mapbox://styles/mapbox/light-v9',
+            map_style="mapbox://styles/mapbox/light-v9",
             initial_view_state=pdk.ViewState(
                 latitude=AALBORG[0],
                 longitude=AALBORG[1],
@@ -45,20 +45,20 @@ def column_layer(df: pd.DataFrame) -> None:
             ),
             layers=[
                 pdk.Layer(
-                    'ColumnLayer',
+                    "ColumnLayer",
                     data=df,
-                    get_position='[lon, lat]',
+                    get_position="[lon, lat]",
                     get_elevation=90,
                     elevation_scale=1,
                     radius=20,
-                    get_fill_color=[10, 10, '[20 * color]'],
+                    get_fill_color=[10, 10, "[20 * color]"],
                 ),
             ],
         )
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     st.markdown("# DK roads")
     st.map(_get_points())
     column_layer(_get_points())

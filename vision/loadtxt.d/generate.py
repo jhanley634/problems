@@ -21,16 +21,16 @@ def generate_all(dest_dir: Path, num_copies: int = 7_000, length: int = 12_500):
     print(data.shape)
 
     def _fspec(i: int) -> Path:
-        return Path(dest_dir / f'scan_{i:04d}.txt')
+        return Path(dest_dir / f"scan_{i:04d}.txt")
 
     file0 = _fspec(0)
-    with open(file0, 'w') as fout:
+    with open(file0, "w") as fout:
         for n in data:
-            fout.write(f'   {3 * n:.7f}e-05  {-2 * n:.7f}e-03\n')
+            fout.write(f"   {3 * n:.7f}e-05  {-2 * n:.7f}e-03\n")
 
     for i in tqdm(range(1, num_copies), mininterval=0.2):
         copyfile(file0, _fspec(i))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     typer.run(generate_all)

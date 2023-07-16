@@ -10,16 +10,16 @@ import pyarrow.parquet as pq
 
 
 class Dataset:
-    TMP = Path('/tmp')
-    SPATIAL = TMP / '3D_spatial_network.txt'
+    TMP = Path("/tmp")
+    SPATIAL = TMP / "3D_spatial_network.txt"
 
     @classmethod
     def get_df(cls) -> pd.DataFrame:
         """Densifies (filters) the somewhat sparse UCI roadway dataset."""
-        base = re.sub(r'\.txt$', '', f'{cls.SPATIAL}')
-        cache = Path(f'{base}.parquet')
+        base = re.sub(r"\.txt$", "", f"{cls.SPATIAL}")
+        cache = Path(f"{base}.parquet")
         if not cache.exists():
-            cols = 'osm_id lon lat alt'  # Open Street Map ID, deg, deg, meters
+            cols = "osm_id lon lat alt"  # Open Street Map ID, deg, deg, meters
             df = pd.read_csv(cls.SPATIAL, names=cols.split())
             assert (df.alt < 135).all()  # All mentioned roads are near sea level.
             assert (df.lat > 56.58).all()
@@ -38,7 +38,7 @@ class Dataset:
             df = df[df.lat > 57.55]
             assert 25_431 == len(df), len(df)
 
-            cls.profile(df, Path(f'{base}.html'))
+            cls.profile(df, Path(f"{base}.html"))
             pq.write_table(pa.Table.from_pandas(df), cache)
 
         # Elapsed time is less than two seconds.

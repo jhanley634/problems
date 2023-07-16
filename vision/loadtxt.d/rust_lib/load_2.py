@@ -8,8 +8,8 @@ import numpy as np
 import typer
 
 
-def main(in_folder: Path = '/tmp/loadtxt.d'):
-    for in_file in tqdm(sorted(in_folder.glob('*.txt')), smoothing=0.002):
+def main(in_folder: Path = "/tmp/loadtxt.d"):
+    for in_file in tqdm(sorted(in_folder.glob("*.txt")), smoothing=0.002):
         vals = load_txt(in_file.as_posix())
         a = np.array(vals)
 
@@ -19,5 +19,5 @@ def main(in_folder: Path = '/tmp/loadtxt.d'):
             assert vals[1] == -0.0008777569
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     typer.run(main)
