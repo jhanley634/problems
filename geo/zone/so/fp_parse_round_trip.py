@@ -17,10 +17,10 @@ def to_fp(num: str) -> float:
     # The above return is correct, but let's do it the hard way, digit-by-digit.
 
     acc = 0
-    exp = 10 ** -(len(num) - i - 1)
+    exp = 10 ** (len(num) - i - 1)
     for j in range(len(num) - 1, i, -1):
-        acc += exp * (ord(num[j]) - ord("0"))
-        exp *= 10
+        acc += (ord(num[j]) - ord("0")) / exp
+        exp /= 10
 
     if num.startswith("-"):
         acc *= -1
@@ -71,7 +71,8 @@ class TestFP(unittest.TestCase):
         # Sigh!
         self.assertEqual(0.1, to_fp(".1"))
         self.assertEqual(0.2, to_fp(".2"))
-        self.assertEqual(0.30000000000000004, to_fp(".3"))
+        self.assertEqual(0.3, to_fp(".3"))
+        self.assertEqual(0.3, 3 / 10)
         self.assertEqual(0.30000000000000004, 3 * 0.1)
         self.assertEqual(0.4, to_fp(".4"))
         self.assertEqual(0.5, to_fp(".5"))
@@ -82,6 +83,18 @@ class TestFP(unittest.TestCase):
         self.assertEqual(0.7000000000000001, to_fp(".7"))
         self.assertEqual(0.7500000000000001, to_fp(".75"))
         self.assertEqual(0.7509765625000001, to_fp("0.7509765625"))
+
+    def test_hex_representation(self):
+        self.assertEqual("0x1.999999999999ap-4", (0.1).hex())
+        self.assertEqual("0x1.999999999999ap-3", (0.2).hex())
+        self.assertEqual("0x1.3333333333333p-2", (0.3).hex())
+        self.assertEqual("0x1.999999999999ap-2", (0.4).hex())
+        self.assertEqual("0x1.0000000000000p-1", (0.5).hex())  # Exact!
+        self.assertEqual("0x1.3333333333333p-1", (0.6).hex())
+        self.assertEqual("0x1.6666666666666p-1", (0.7).hex())
+        self.assertEqual("0x1.999999999999ap-1", (0.8).hex())
+        self.assertEqual("0x1.ccccccccccccdp-1", (0.9).hex())
+        self.assertEqual("0x1.0000000000000p+0", (1.0).hex())
 
     @given(st.floats(allow_infinity=False, allow_nan=False))
     def test_torture(self, f: float):
