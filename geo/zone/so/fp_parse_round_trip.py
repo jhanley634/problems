@@ -13,22 +13,20 @@ def to_fp(num: str) -> float:
         num += "."
     i = num.index(".")
 
-    # acc = abs(_to_int(num[:i])) + _to_int(num[i + 1 :]) / 10 ** (len(num) - i - 1)
-    # if num.startswith("-"):
-    #     acc *= -1
-    # return acc
-    # The above is correct, but let's do it the hard way, digit-by-digit.
-
-    acc = 0
-    exp = 10 ** (len(num) - i - 1)
-    for j in range(len(num) - 1, i, -1):
-        acc += (ord(num[j]) - ord("0")) / exp
-        exp /= 10
-
+    acc = abs(_to_int(num[:i])) + _to_int(num[i + 1 :]) / 10 ** (len(num) - i - 1)
     if num.startswith("-"):
         acc *= -1
+    return acc
 
-    return _to_int(num[:i]) + acc
+    #   We would suffer round-off errors if we did it the hard way, digit-by-digit:
+    # acc = 0
+    # exp = 10 ** (len(num) - i - 1)
+    # for j in range(len(num) - 1, i, -1):
+    #     acc += (ord(num[j]) - ord("0")) / exp
+    #     exp /= 10
+    # if num.startswith("-"):
+    #     acc *= -1
+    # return _to_int(num[:i]) + acc
 
 
 def _to_int(num: str) -> int:
@@ -70,7 +68,7 @@ class TestFP(unittest.TestCase):
             n += "1"
             self.assertEqual(float(n), to_fp(n))
 
-    def test_roundoff_issues(self):
+    def test_round_off_issues(self):
         self.assertEqual(0.1, to_fp(".1"))
         self.assertEqual(0.2, to_fp(".2"))
         self.assertEqual(0.3, to_fp(".3"))
@@ -85,10 +83,13 @@ class TestFP(unittest.TestCase):
         self.assertEqual(0.7, to_fp(".7"))
         self.assertEqual(0.75, to_fp(".75"))
         self.assertEqual(0.7509765625, to_fp("0.7509765625"))
-        self.assertEqual(0.8750000000582077, to_fp("0.8750000000582076"))
-        self.assertEqual(0.8750000000582078, to_fp("0.8750000000582077"))
-        self.assertEqual(0.8750000000582079, to_fp("0.8750000000582078"))
-        self.assertEqual(0.8750000000582080, to_fp("0.8750000000582079"))
+        self.assertEqual(0.8750000000582074, to_fp("0.8750000000582074"))
+        self.assertEqual(0.8750000000582075, to_fp("0.8750000000582075"))
+        self.assertEqual(0.8750000000582075, to_fp("0.8750000000582076"))
+        self.assertEqual(0.8750000000582077, to_fp("0.8750000000582077"))
+        self.assertEqual(0.8750000000582078, to_fp("0.8750000000582078"))
+        self.assertEqual(0.8750000000582079, to_fp("0.8750000000582079"))
+        self.assertEqual("0x1.c00000007ffffp-1", (0.8750000000582076).hex())
         self.assertEqual("0x1.c000000080000p-1", (0.8750000000582077).hex())
 
     def test_hex_representation(self):
