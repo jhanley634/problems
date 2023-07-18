@@ -1,11 +1,11 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
-from jutland.dataset import Dataset
+# Copyright 2021 John Hanley. MIT licensed.
 from palettable.colorbrewer import qualitative
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
 
-# Copyright 2021 John Hanley. MIT licensed.
+from cluster.jutland.dataset import Dataset
 
 
 @st.cache

@@ -3,7 +3,7 @@ from collections import Counter
 from pathlib import Path
 import re
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq

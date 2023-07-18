@@ -7,7 +7,7 @@ channels:
 dependencies:
 - cython >= 0.29.34
 - matplotlib >= 3.7.2
-- numpy == 1.24.4
+- numpy == 1.23.5
 - pandas >= 2.0.3
 - pillow == 9.5.0
 - pip >= 23.2
@@ -15,7 +15,7 @@ dependencies:
 - py-xgboost >= 1.7.1
 - python >= 3.11.4
 - pywavelets >= 1.4.1
-- scipy >= 1.11.1
+- scipy == 1.10.1
 - torchvision >= 0.9.1
 - pip:
   - beautifulsoup4 >= 4.12.2
@@ -46,14 +46,13 @@ dependencies:
   - openpyxl >= 3.1.2
   - osmnx >= 1.5.1
   - palettable >= 3.3.3
-  - pandas-profiling >= 3.2.0
   - polars >= 0.18.7
   - psutil >= 5.9.5
   - pyarrow >= 12.0.1
   - pyaudioanalysis >= 0.3.14
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
-  - pynisher >= 1.0.5
+  - pynisher >= 1.0.6
   - pyo3-pack >= 0.6.1
   - pytest >= 7.4.0
   - pytest-cov >= 4.1.0
@@ -65,10 +64,11 @@ dependencies:
   - spacy >= 3.6.0
   - sqlalchemy >= 1.4.47, < 2
   - streamlit >= 1.24.1
-  - streamlit-image-coordinates >= 0.1.5
+  - streamlit-image-coordinates >= 0.1.6
   - tabulate >= 0.9.0
   - typer >= 0.9.0
   - types-requests >= 2.31.0.1
   - uszipcode >= 1.0.1
   - watchdog >= 3.0.0
   - xlsx2csv >= 0.8.1
+  - ydata-profiling >= 4.3.1

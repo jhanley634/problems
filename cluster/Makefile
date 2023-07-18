@@ -12,7 +12,7 @@ SPATIAL=3D_spatial_network.txt
 JUTLAND_IN = https://archive.ics.uci.edu/ml/machine-learning-databases/00246/$(SPATIAL)
 
 jutland/out/x: /tmp/$(SPATIAL)
-	jutland/bin/report.py
+	cd .. && cluster/jutland/bin/report.py
 
 /tmp/$(SPATIAL):
 	cd /tmp && wget -q $(JUTLAND_IN)

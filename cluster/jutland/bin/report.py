@@ -3,7 +3,6 @@
 #
 # Alas, the pypi package autoPyTorch wants auto-sklearn 0.24.x, not e.g. 1.1.3.
 from autoPyTorch import AutoNetClassification
-from jutland.dataset import Dataset
 from numpy import nan
 import pandas as pd
 import pyarrow as pa
@@ -11,6 +10,8 @@ import pyarrow.parquet as pq
 import sklearn.datasets
 import sklearn.metrics
 import sklearn.model_selection
+
+from cluster.jutland.dataset import Dataset
 
 
 def _get_northern_subset() -> pd.DataFrame:
