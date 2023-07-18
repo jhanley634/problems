@@ -83,6 +83,10 @@ class TestFP(unittest.TestCase):
         self.assertEqual(0.7, to_fp(".7"))
         self.assertEqual(0.75, to_fp(".75"))
         self.assertEqual(0.7509765625, to_fp("0.7509765625"))
+
+        self.assertEqual(0.8750000000582077, float("0.8750000000582077"))
+        self.assertEqual(0.8750000000582076, float("0.8750000000582075"))
+
         self.assertEqual(0.8750000000582074, to_fp("0.8750000000582074"))
         self.assertEqual(0.8750000000582075, to_fp("0.8750000000582075"))
         self.assertEqual(0.8750000000582075, to_fp("0.8750000000582076"))
