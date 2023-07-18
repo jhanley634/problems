@@ -13,8 +13,8 @@ class JaccardTest(unittest.TestCase):
 
 
 def jaccard_similarity(
-    a: pd.Series[int],
-    b: pd.Series[int],
+    a: pd.Series,
+    b: pd.Series,
 ) -> float:
     assert len(a) == len(b)  # must be a pair of columns from same dataframe
     total_size = len(a) + len(b)
