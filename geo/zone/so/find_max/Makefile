@@ -2,4 +2,4 @@
 all:
 	cargo make
 	@echo $$"\n"
-	target/debug/fp_parse
+	target/debug/find_max
