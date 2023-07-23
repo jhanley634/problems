@@ -5,16 +5,18 @@
 use rand::Rng;
 use std::time::Instant;
 
-const N: usize = 100_000;
+const N: usize = 1_000_000;
 
 fn main() {
-    let xs = sorted(roll_randoms());
+    let v = vec![0.0f32; 100 * N];
+    println!("{}", v.iter().count());
+
+    sorted(roll_randoms());
+    let xs = roll_randoms();
     find_max(xs);
 }
 
-fn sorted(mut xs: [f32; N]) -> [f32; N] {
-    // let mut xs = vec![xs_in];
-    // xs_in.clone();
+fn sorted(mut xs: Vec<f32>) -> Vec<f32> {
     xs.sort_by(|a, b| a.partial_cmp(b).unwrap());
     xs
 }
@@ -23,7 +25,7 @@ fn sorted(mut xs: [f32; N]) -> [f32; N] {
 //     xs as Vec<OrderedFloat<[f32; N]>>
 // }
 
-fn find_max(xs: [f32; N]) {
+fn find_max(xs: Vec<f32>) {
     let t0 = Instant::now();
     let max = xs
         .into_iter()
@@ -39,7 +41,11 @@ fn find_max(xs: [f32; N]) {
     println!("{}\t{}", num, num.sqrt());
 }
 
-fn roll_randoms() -> [f32; N] {
-    let xs: [f32; N] = [(); N].map(|_| rand::thread_rng().gen_range(0.0..1.0));
-    return xs;
+fn roll_randoms() -> Vec<f32> {
+    let mut rng = rand::thread_rng();
+    let mut xs = vec![0.0f32; 10 * N];
+    for i in 0..N {
+        xs[i] = rng.gen_range(0.0..1.0);
+    }
+    xs
 }
