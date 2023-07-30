@@ -4,7 +4,10 @@
 # from https://codereview.stackexchange.com/questions/286327/generating-abelian-sandpile
 
 from pathlib import Path
+from time import time
+from typing import Any
 
+from numba import njit
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,7 +15,9 @@ import numpy as np
 NaN = np.nan
 
 
-def trough(N):
+def trough(
+    N: np.ndarray[Any, np.dtype[np.float64]]
+) -> np.ndarray[Any, np.dtype[np.float64]]:
     i, j = np.shape(N)
     Nt = np.concatenate((np.ones((i, 1)) * NaN, N, np.ones((i, 1)) * NaN), axis=1)
     Nt = np.concatenate(
@@ -21,7 +26,9 @@ def trough(N):
     return Nt
 
 
-def topple(N):
+def topple(
+    N: np.ndarray[Any, np.dtype[np.float64]]
+) -> np.ndarray[Any, np.dtype[np.float64]]:
     P = trough(N)
     sP = np.shape(P)
     while np.nanmax(P) > 3:
@@ -35,7 +42,7 @@ def topple(N):
     return P[1:-1, 1:-1]
 
 
-def picard(m, n):
+def picard(m: int, n: int) -> np.ndarray[Any, np.dtype[np.float64]]:
     P1 = 6 * np.ones((m, n))
     P1 = topple(P1)
     P2 = 6 * np.ones((m, n))
@@ -44,18 +51,18 @@ def picard(m, n):
     return Pi
 
 
-def main(m=30, n=30):
+def main(m: int = 30, n: int = 30) -> None:
+    t0 = time()
     Pi = picard(m, n)
+    print(f"elapsed: {time() - t0:.3f} sec")
 
     plt.figure()
     plt.axes(aspect="equal")
     plt.axis("off")
-    cmap = mp.colormaps["viridis_r"]
-    plt.pcolormesh(Pi, cmap=cmap)
+    plt.pcolormesh(Pi, cmap=mp.colormaps["viridis_r"])
 
-    dim = str(n) + "x" + str(m)
+    dim = f"{n}x{m}"
     file_name = Path("/tmp") / f"Picard_Identity-{dim}.png"
-
     plt.savefig(file_name)
 
 
