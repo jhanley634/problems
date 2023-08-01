@@ -15,17 +15,19 @@ import numpy as np
 NaN = np.nan
 
 
+@njit
 def trough(
     N: np.ndarray[Any, np.dtype[np.float64]]
 ) -> np.ndarray[Any, np.dtype[np.float64]]:
-    i, j = np.shape(N)
-    Nt = np.concatenate((np.ones((i, 1)) * NaN, N, np.ones((i, 1)) * NaN), axis=1)
+    w, h = np.shape(N)
+    Nt = np.concatenate((np.ones((w, 1)) * NaN, N, np.ones((w, 1)) * NaN), axis=1)
     Nt = np.concatenate(
-        (np.ones((1, j + 2)) * NaN, Nt, np.ones((1, j + 2)) * NaN), axis=0
+        (np.ones((1, h + 2)) * NaN, Nt, np.ones((1, h + 2)) * NaN), axis=0
     )
     return Nt
 
 
+@njit
 def topple(
     N: np.ndarray[Any, np.dtype[np.float64]]
 ) -> np.ndarray[Any, np.dtype[np.float64]]:
@@ -51,7 +53,9 @@ def picard(m: int, n: int) -> np.ndarray[Any, np.dtype[np.float64]]:
     return Pi
 
 
-def main(m: int = 30, n: int = 30) -> None:
+def main(m: int = 300, n: int = 300) -> None:
+    picard(4, 4)  # warmup
+
     t0 = time()
     Pi = picard(m, n)
     print(f"elapsed: {time() - t0:.3f} sec")
