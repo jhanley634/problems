@@ -1,6 +1,10 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
+
 import unittest
+
+from hypothesis import given
+import hypothesis.strategies as st
 
 from geo.zone.so.string_to_array import _get_codec, string_to_array
 
@@ -31,7 +35,14 @@ class StringToArrayTest(unittest.TestCase):
             string_to_array(s).tolist(),
         )
 
-    def test_roundtrip(self):
+    def test_one_roundtrip(self):
         s = "hi χ 气 🌱"
         _, codec = _get_codec(s)
         self.assertEqual(s, string_to_array(s).tobytes().decode(codec))
+
+
+# pytest --capture=tee-sys
+@given(st.text(min_size=20))
+def test_roundtrip(s: str):
+    _, codec = _get_codec(s)
+    assert s == string_to_array(s).tobytes().decode(codec)
