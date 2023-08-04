@@ -6,5 +6,5 @@ import numpy as np
 
 
 def string_to_array(s: str) -> np.ndarray:
-    a = np.frombuffer(BytesIO(s.encode("utf-8")).getbuffer(), dtype=np.uint8)
+    a = np.frombuffer(BytesIO(s.encode("utf-16")).getbuffer(), dtype=np.uint8)
     return a
