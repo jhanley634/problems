@@ -10,16 +10,32 @@ from geo.zone.so.string_to_array import TombstoneString, _get_codec, string_to_a
 
 
 class TombstoneStringTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        self.ts = TombstoneString("hello world")
+
     def test_delete(self) -> None:
-        ts = TombstoneString("hello world")
+        ts = self.ts
         self.assertEqual("hello world", str(ts))
 
         ts.delete(range(4, 6))
         self.assertEqual("hellworld", str(ts))
 
     def test_slice(self) -> None:
-        ts = TombstoneString("hello world")
-        self.assertEqual("ello", "".join(ts._slice_chars(range(1, 5))))
+        self.assertEqual("ello", "".join(self.ts._slice_chars(range(1, 5))))
+
+    def test_index(self) -> None:
+        self.assertEqual(6, self.ts.index("world"))
+
+        ts = TombstoneString("hi χ 气")
+        self.assertEqual((2, 2, "utf-16"), _get_codec(f"{ts}"))
+        self.assertEqual(1, ts.index("i "))
+
+        ts = TombstoneString("hi χ 气 🌱")
+        self.assertEqual((4, 4, "utf-32"), _get_codec(f"{ts}"))
+        self.assertEqual(1, ts.index("i "))
+
+        with self.assertRaises(ValueError):
+            ts.index("fourscore")
 
 
 class StringToArrayTest(unittest.TestCase):

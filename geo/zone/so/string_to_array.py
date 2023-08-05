@@ -2,9 +2,10 @@
 
 from io import BytesIO
 from operator import itemgetter
-from typing import Generator, Iterator
+from typing import Any, Iterator
 import struct
 
+from numpy import dtype
 import numpy as np
 
 
@@ -24,7 +25,7 @@ def _get_codec(s: str) -> tuple[int, int, str]:
             raise ValueError(f"max_val {max_val} not supported")
 
 
-def string_to_array(s: str) -> np.ndarray:
+def string_to_array(s: str) -> np.ndarray[Any, dtype[np.uint]]:
     _, strip, codec = _get_codec(s)
     buf = BytesIO(s.encode(codec)).getbuffer()
     return np.frombuffer(buf[strip:], dtype=np.uint8)
@@ -49,22 +50,12 @@ class TombstoneString:
 
         self._string = string_to_array(s)
 
-    def _slice_chars(self, r: range) -> Iterator[tuple[str, ...]]:
+    def _slice_chars(self, r: range) -> Iterator[str]:
         sz = self._size
-        fmt = "BHLL"[sz - 1]
+        fmt = "BHII"[sz - 1]
         buf = self._string[r.start * sz : r.stop * sz].tobytes()
-        u = struct.iter_unpack(fmt, buf)
-        yield from map(chr, map(itemgetter(0), u))
-
-    def _slice_chars_orig(self, r: range) -> Generator[str, None, None]:
-        for i in r:
-            yield self._get_char(i)
-
-    def _get_char(self, i: int) -> str:
-        acc = 0
-        for j in range(self._size):
-            acc = (acc << 8) | self._string[i * self._size + j]
-        return chr(acc)
+        unpacked = map(itemgetter(0), struct.iter_unpack(fmt, buf))
+        yield from map(chr, unpacked)
 
     def __str__(self) -> str:
         a = np.array([v for v in self._string if v != self.SENTINEL], dtype=np.uint8)
@@ -75,3 +66,13 @@ class TombstoneString:
         for i in r:
             for j in range(self._size):
                 self._string[i * self._size + j] = self.SENTINEL
+
+    def index(self, sub: str) -> int:
+        """Returns the index of the first occurrence of sub in s.
+
+        Raises ValueError if the substring is not found.
+        """
+        for i in range(len(self._string) - len(sub) + 1):
+            if "".join(self._slice_chars(range(i, i + len(sub)))) == sub:
+                return i
+        raise ValueError(f"{sub} not found")
