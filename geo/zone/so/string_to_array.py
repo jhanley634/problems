@@ -1,6 +1,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from io import BytesIO
+from operator import itemgetter
+from typing import Generator, Iterator
+import struct
 
 import numpy as np
 
@@ -45,6 +48,23 @@ class TombstoneString:
         self._size, _, self._codec = _get_codec(s)
 
         self._string = string_to_array(s)
+
+    def _slice_chars(self, r: range) -> Iterator[tuple[str, ...]]:
+        sz = self._size
+        fmt = "BHLL"[sz - 1]
+        buf = self._string[r.start * sz : r.stop * sz].tobytes()
+        u = struct.iter_unpack(fmt, buf)
+        yield from map(chr, map(itemgetter(0), u))
+
+    def _slice_chars_orig(self, r: range) -> Generator[str, None, None]:
+        for i in r:
+            yield self._get_char(i)
+
+    def _get_char(self, i: int) -> str:
+        acc = 0
+        for j in range(self._size):
+            acc = (acc << 8) | self._string[i * self._size + j]
+        return chr(acc)
 
     def __str__(self) -> str:
         a = np.array([v for v in self._string if v != self.SENTINEL], dtype=np.uint8)

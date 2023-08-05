@@ -10,21 +10,26 @@ from geo.zone.so.string_to_array import TombstoneString, _get_codec, string_to_a
 
 
 class TombstoneStringTestCase(unittest.TestCase):
-    def test_delete(self):
+    def test_delete(self) -> None:
         ts = TombstoneString("hello world")
         self.assertEqual("hello world", str(ts))
+
         ts.delete(range(4, 6))
         self.assertEqual("hellworld", str(ts))
 
+    def test_slice(self) -> None:
+        ts = TombstoneString("hello world")
+        self.assertEqual("ello", "".join(ts._slice_chars(range(1, 5))))
+
 
 class StringToArrayTest(unittest.TestCase):
-    def test_get_codec(self):
+    def test_get_codec(self) -> None:
         self.assertEqual((1, 0, "ascii"), _get_codec(""))
         self.assertEqual((1, 0, "ascii"), _get_codec("hi"))
         self.assertEqual((2, 2, "utf-16"), _get_codec("hi χ"))
         self.assertEqual((4, 4, "utf-32"), _get_codec("hi 🌱"))
 
-    def test_string_to_array(self):
+    def test_string_to_array(self) -> None:
         s = "hi"
         self.assertEqual(
             [104, 105],
@@ -42,7 +47,7 @@ class StringToArrayTest(unittest.TestCase):
             string_to_array(s).tolist(),
         )
 
-    def test_one_roundtrip(self):
+    def test_one_roundtrip(self) -> None:
         s = "hi χ 气 🌱"
         self.assertEqual(s, roundtrip(s))
 
@@ -55,5 +60,5 @@ def roundtrip(s: str) -> str:
 
 # pytest --capture=tee-sys
 @given(st.text(min_size=20))
-def test_roundtrip(s: str):
+def test_roundtrip(s: str) -> None:
     assert s == roundtrip(s)
