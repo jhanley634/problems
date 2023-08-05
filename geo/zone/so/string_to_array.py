@@ -5,7 +5,7 @@ from io import BytesIO
 import numpy as np
 
 
-def _get_codec(s: str) -> (int, str):
+def _get_codec(s: str) -> tuple[int, int, str]:
     """Returns (bytes_per_char, bom_bytes_to_strip, codec)"""
     if s == "" or (max_val := max(map(ord, s))) < 128:
         return 1, 0, "ascii"
@@ -37,8 +37,8 @@ class TombstoneString:
         nor UTF-16 0xFfFf, nor UTF-32 0xFfffFfff,
         as these are reserved for tombstone sentinels.
 
-        A tombstone string is a mutable string,
-        with an efficient delete() method.
+        A tombstone string is mutable,
+        and has an efficient delete() method.
         """
 
         # each char has size of 1, 2, or 4 bytes
@@ -46,5 +46,12 @@ class TombstoneString:
 
         self._string = string_to_array(s)
 
-    def __str__(self):
-        return self._string.tobytes().decode(self._codec)
+    def __str__(self) -> str:
+        a = np.array([v for v in self._string if v != self.SENTINEL], dtype=np.uint8)
+        return a.tobytes().decode(self._codec)
+
+    def delete(self, r: range) -> None:
+        """Efficiently deletes the chars in range r, even if s is big."""
+        for i in r:
+            for j in range(self._size):
+                self._string[i * self._size + j] = self.SENTINEL
