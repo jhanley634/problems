@@ -73,6 +73,8 @@ class TombstoneString:
         Raises ValueError if the substring is not found.
         """
         for i in range(len(self._string) - len(sub) + 1):
-            if "".join(self._slice_chars(range(i, i + len(sub)))) == sub:
+            if sub.startswith(
+                "".join(self._slice_chars(range(i, i + 1)))
+            ) and sub == "".join(self._slice_chars(range(i, i + len(sub)))):
                 return i
         raise ValueError(f"{sub} not found")
