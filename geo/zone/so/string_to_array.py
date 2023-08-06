@@ -15,8 +15,8 @@ def _get_codec(s: str) -> tuple[int, int, str]:
         return 1, 0, "ascii"
 
     match 1 + max_val.bit_length() // 8:
-        case 1:
-            return 1, 0, "latin-1"
+        # case 1:
+        #     return 1, 0, "latin-1"
         case 2:
             return 2, 2, "utf-16"
         case 3 | 4:

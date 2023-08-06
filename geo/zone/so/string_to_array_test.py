@@ -26,6 +26,11 @@ class TombstoneStringTestCase(unittest.TestCase):
         ts.delete(range(4, 6))
         self.assertEqual("hellworld", str(ts))
 
+    def test_delete_word(self) -> None:
+        ts = TombstoneString("the big bear")
+        ts.delete_word("big", 0)
+        self.assertEqual("the  bear", str(ts))
+
     def test_slice(self) -> None:
         self.assertEqual("ello", "".join(self.ts._slice_chars(range(1, 5))))
 
@@ -61,8 +66,9 @@ class StringToArrayTest(unittest.TestCase):
     def test_get_codec(self) -> None:
         self.assertEqual((1, 0, "ascii"), _get_codec(""))
         self.assertEqual((1, 0, "ascii"), _get_codec("hi"))
+        self.assertEqual((2, 2, "utf-16"), _get_codec("Straße des Bücher"))
         self.assertEqual((2, 2, "utf-16"), _get_codec("hi χ"))
-        self.assertEqual((4, 4, "utf-32"), _get_codec("hi 🌱"))
+        self.assertEqual((4, 4, "utf-32"), _get_codec("hi 🌱" + chr(0x110000 - 1)))
 
     def test_string_to_array(self) -> None:
         s = "hi"
