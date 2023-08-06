@@ -53,14 +53,14 @@ class ArticleTest(unittest.TestCase):
     def test_article(self) -> None:
         text = lorem_ipsum_article()
         self.assertTrue(text.startswith("aaa"))
-        self.assertEqual(1_000_994, len(text))
+        self.assertEqual(1_000_970, len(text))
         art = Article(text)
         self.assertEqual(text, str(art))
 
         n = art.censor("moo")
-        self.assertEqual(998, n)
-        self.assertEqual(998_000, len(str(art)))
-        self.assertEqual(998_000 * "a", str(art))
+        self.assertEqual(1_990, n)
+        self.assertEqual(995_000, len(str(art)))
+        self.assertEqual(995_000 * "a", str(art))
 
 
 class StringToArrayTest(unittest.TestCase):

@@ -104,6 +104,7 @@ def lorem_ipsum_article(
     assert len(bad_word) > 2
     # split = 2
     # bad_word += "aa" + bad_word[:split] + bad_word + bad_word[split:]
+    bad_word += bad_word
     boilerplate = "a" * boiler_size  # Yup, even more boring than "lorem ipsum dolor".
     ret = []
     length = 0
