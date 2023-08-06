@@ -14,15 +14,17 @@ def _get_codec(s: str) -> tuple[int, int, str]:
     if s == "" or (max_val := max(map(ord, s))) < 128:
         return 1, 0, "ascii"
 
-    match 1 + max_val.bit_length() // 8:
+    n = 1 + max_val.bit_length() // 8
+    assert 2 <= n <= 4, n
+    match n:
         # case 1:
         #     return 1, 0, "latin-1"
         case 2:
             return 2, 2, "utf-16"
         case 3 | 4:
             return 4, 4, "utf-32"
-        case _:
-            raise ValueError(f"max_val {max_val} not supported")
+        # case _:
+        #     raise ValueError(f"max_val {max_val} not supported")
 
 
 def string_to_array(s: str) -> np.ndarray[Any, dtype[np.uint]]:
@@ -118,21 +120,14 @@ class Article:
     def __str__(self) -> str:
         return str(self._article)
 
-    def censor(self, bad_word: str) -> str:
+    def censor(self, bad_word: str) -> int:
         """Deletes all occurrences of bad_word from the article, per USACO olympiad rules."""
-
-        # XXX cheating...
-        ham = ord("a")  # the part of the article we wish to retain
-        for i, ch in enumerate(self._article._string):
-            if ch != ham:
-                self._article._string[i] = self._article.SENTINEL
-        return
-
         try:
-            i = 0
+            n = i = 0
             while True:
-                i = self._article.delete_word(bad_word, i) - len(bad_word)
-                print(f"\r{i} ", end="", flush=True)
+                # We back up by len(bad_word) for cases like "momooo", while avoiding negatives.
+                i = max(0, self._article.delete_word(bad_word, i) - len(bad_word))
+                n += 1
 
         except ValueError:
-            pass
+            return n

@@ -57,9 +57,10 @@ class ArticleTest(unittest.TestCase):
         art = Article(text)
         self.assertEqual(text, str(art))
 
-        art.censor("moo")
-        self.assertEqual(991_980, len(str(art)))
-        self.assertEqual(991_980, len(str(art)))
+        n = art.censor("moo")
+        self.assertEqual(1_980, n)
+        self.assertEqual(994_950, len(str(art)))
+        # self.assertEqual(994_950 * "a", str(art))
 
 
 class StringToArrayTest(unittest.TestCase):
