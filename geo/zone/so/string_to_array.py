@@ -102,9 +102,9 @@ def lorem_ipsum_article(
     # cf https://codereview.stackexchange.com/questions/286290/repeatedly-remove-a-substring-quickly
     # and http://www.usaco.org/index.php?page=viewproblem2&cpid=526
     assert len(bad_word) > 2
-    split = 2
-    bad_word += "aa" + bad_word[:split] + bad_word + bad_word[split:]
-    boilerplate = "a" * boiler_size  # Yup, even more boring than "lorem ipsum".
+    # split = 2
+    # bad_word += "aa" + bad_word[:split] + bad_word + bad_word[split:]
+    boilerplate = "a" * boiler_size  # Yup, even more boring than "lorem ipsum dolor".
     ret = []
     length = 0
     while length < size:
