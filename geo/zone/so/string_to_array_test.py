@@ -6,7 +6,13 @@ import unittest
 from hypothesis import given
 import hypothesis.strategies as st
 
-from geo.zone.so.string_to_array import TombstoneString, _get_codec, string_to_array
+from geo.zone.so.string_to_array import (
+    Article,
+    TombstoneString,
+    _get_codec,
+    lorem_ipsum_article,
+    string_to_array,
+)
 
 
 class TombstoneStringTestCase(unittest.TestCase):
@@ -36,6 +42,19 @@ class TombstoneStringTestCase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             ts.index("fourscore")
+
+
+class ArticleTest(unittest.TestCase):
+    def test_article(self) -> None:
+        text = lorem_ipsum_article()
+        self.assertTrue(text.startswith("aaa"))
+        self.assertEqual(1_000_890, len(text))
+        art = Article(text)
+        self.assertEqual(text, str(art))
+
+        art.censor("moo")
+        self.assertEqual(991_980, len(str(art)))
+        self.assertEqual(991_980, len(str(art)))
 
 
 class StringToArrayTest(unittest.TestCase):
