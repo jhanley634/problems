@@ -65,7 +65,8 @@ class TombstoneString:
             i += 1
 
     def __str__(self) -> str:
-        a = np.array([v for v in self._string if v != self.SENTINEL], dtype=np.uint8)
+        a = np.array(self._string, dtype=np.uint8)
+        a = a[a != self.SENTINEL]
         return a.tobytes().decode(self._codec)
 
     def delete_word(self, word: str, start: int) -> int:
