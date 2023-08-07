@@ -28,8 +28,20 @@ class TombstoneStringTestCase(unittest.TestCase):
 
     def test_delete_word(self) -> None:
         ts = TombstoneString("the big bear")
-        ts.delete_word("big", 0)
+        i = ts.delete_word("big", 0)
+        self.assertEqual(4, i)
         self.assertEqual("the  bear", str(ts))
+
+        ts = TombstoneString("Straße des Bücher")
+        i = ts.delete_word("des", 0)
+        self.assertEqual(7, i)
+        self.assertEqual("Straße  Bücher", str(ts))
+        i = ts.index("ße  ")
+        self.assertEqual(4, i)
+
+        i = ts.delete_word("ße  B", 0)
+        self.assertEqual(4, i)
+        self.assertEqual("Straücher", str(ts))
 
     def test_slice(self) -> None:
         self.assertEqual("ello", "".join(self.ts._slice_chars(range(1, 5))))
@@ -50,17 +62,29 @@ class TombstoneStringTestCase(unittest.TestCase):
 
 
 class ArticleTest(unittest.TestCase):
+    def test_short_article(self) -> None:
+        text = lorem_ipsum_article(size=100, boiler_size=10)
+        self.assertEqual(114, len(text))
+        art = Article(text)
+        self.assertEqual(text, str(art))
+        self.assertEqual(60, str(art).count("a"))
+
+        n = art.censor("moo")
+        self.assertEqual(18, n)
+        self.assertEqual(60, len(str(art)))
+        self.assertEqual(60 * "a", str(art))
+
     def test_article(self) -> None:
         text = lorem_ipsum_article()
         self.assertTrue(text.startswith("aaa"))
-        self.assertEqual(1_000_970, len(text))
+        self.assertEqual(1_000_928, len(text))
         art = Article(text)
         self.assertEqual(text, str(art))
 
         n = art.censor("moo")
-        self.assertEqual(1_990, n)
-        self.assertEqual(995_000, len(str(art)))
-        self.assertEqual(995_000 * "a", str(art))
+        self.assertEqual(2_976, n)
+        self.assertEqual(992_000, len(str(art)))
+        # self.assertEqual(994_976 * "a", str(art))
 
 
 class StringToArrayTest(unittest.TestCase):

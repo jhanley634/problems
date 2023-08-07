@@ -1,7 +1,6 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from io import BytesIO
-from operator import itemgetter
 from typing import Any, Iterator
 import struct
 
@@ -16,15 +15,10 @@ def _get_codec(s: str) -> tuple[int, int, str]:
 
     n = 1 + max_val.bit_length() // 8
     assert 2 <= n <= 4, n
-    match n:
-        # case 1:
-        #     return 1, 0, "latin-1"
-        case 2:
-            return 2, 2, "utf-16"
-        case 3 | 4:
-            return 4, 4, "utf-32"
-        # case _:
-        #     raise ValueError(f"max_val {max_val} not supported")
+    if n == 2:
+        return 2, 2, "utf-16"
+    else:
+        return 4, 4, "utf-32"
 
 
 def string_to_array(s: str) -> np.ndarray[Any, dtype[np.uint]]:
@@ -57,11 +51,18 @@ class TombstoneString:
         self._string = string_to_array(s)
 
     def _slice_chars(self, r: range) -> Iterator[str]:
+        """Yields chars in range r, skipping tombstones."""
         sz = self._size
         fmt = "BHII"[sz - 1]
-        buf = self._string[r.start * sz : r.stop * sz].tobytes()
-        unpacked = map(itemgetter(0), struct.iter_unpack(fmt, buf))
-        yield from map(chr, unpacked)
+        i = r.start
+        n = len(r)
+        while n > 0 and i * sz < len(self._string):
+            if self._string[i * sz] != self.SENTINEL:
+                buf = self._string[i * sz : (i + 1) * sz].tobytes()
+                val = struct.unpack(fmt, buf)[0]
+                yield chr(val)
+                n -= 1
+            i += 1
 
     def __str__(self) -> str:
         a = np.array([v for v in self._string if v != self.SENTINEL], dtype=np.uint8)
@@ -78,9 +79,15 @@ class TombstoneString:
 
     def delete(self, r: range) -> None:
         """Efficiently deletes the chars in range r, even if s is big."""
-        for i in r:
-            for j in range(self._size):
-                self._string[i * self._size + j] = self.SENTINEL
+        assert r.stop * self._size <= len(self._string)
+        n = len(r)  # We must blank out this many non-tombstone chars.
+        i = r.start
+        while n > 0:
+            if self._string[i * self._size] != self.SENTINEL:
+                for j in range(self._size):
+                    self._string[i * self._size + j] = self.SENTINEL
+                n -= 1
+            i += 1
 
     def index(self, sub: str, start: int = 0) -> int:
         """Returns the index of the first occurrence of sub in s.
@@ -102,9 +109,9 @@ def lorem_ipsum_article(
     # cf https://codereview.stackexchange.com/questions/286290/repeatedly-remove-a-substring-quickly
     # and http://www.usaco.org/index.php?page=viewproblem2&cpid=526
     assert len(bad_word) > 2
-    # split = 2
-    # bad_word += "aa" + bad_word[:split] + bad_word + bad_word[split:]
-    bad_word += bad_word
+    split = 2
+    bad_word += bad_word[:split] + bad_word + bad_word[split:]
+    assert "moomomooo" == bad_word, bad_word
     boilerplate = "a" * boiler_size  # Yup, even more boring than "lorem ipsum dolor".
     ret = []
     length = 0
