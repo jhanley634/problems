@@ -2,7 +2,7 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from pathlib import Path
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 import matplotlib.pyplot as plt
 import pandas as pd
 import requests
