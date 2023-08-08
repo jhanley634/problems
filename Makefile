@@ -6,7 +6,8 @@ ACTIVATE = source activate problems
 all:
 	@echo Hello, world!
 
-VERIFY = $(ACTIVATE) && infra/verify_imports.py && flake8
+IGNORE_TZ = env PYARROW_IGNORE_TIMEZONE=1
+VERIFY = $(ACTIVATE) && $(IGNORE_TZ) infra/verify_imports.py && flake8
 
 verify:
 	$(VERIFY)
