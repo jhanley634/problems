@@ -1,6 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 
+from time import time
 import unittest
 
 from hypothesis import given
@@ -22,9 +23,15 @@ class TombstoneStringTestCase(unittest.TestCase):
     def test_delete(self) -> None:
         ts = self.ts
         self.assertEqual("hello world", str(ts))
+        self.assertEqual(5, ts.index(" world"))
 
         ts.delete(range(4, 6))
         self.assertEqual("hellworld", str(ts))
+
+        self.assertEqual(2, ts.index("ll"))
+        self.assertEqual(6, ts.index("world"))
+        self.assertEqual(6, ts.index("w"))
+        self.assertEqual(2, ts.index("llw"))
 
     def test_delete_word(self) -> None:
         ts = TombstoneString("the big bear")
@@ -47,7 +54,8 @@ class TombstoneStringTestCase(unittest.TestCase):
         self.assertEqual("ello", "".join(self.ts._slice_chars(range(1, 5))))
 
     def test_index(self) -> None:
-        self.assertEqual(6, self.ts.index("world"))
+        ts = self.ts
+        self.assertEqual(6, ts.index("world"))
 
         ts = TombstoneString("hi χ 气")
         self.assertEqual((2, 2, "utf-16"), _get_codec(f"{ts}"))
@@ -81,10 +89,15 @@ class ArticleTest(unittest.TestCase):
         art = Article(text)
         self.assertEqual(text, str(art))
 
+        t0 = time()
         n = art.censor("moo")
+        elapsed = time() - t0
+
         self.assertEqual(2_976, n)
         self.assertEqual(992_000, len(str(art)))
-        # self.assertEqual(994_976 * "a", str(art))
+        self.assertEqual(992_000 * "a", str(art))
+        # print(f"\n  {elapsed:.3f} sec")
+        self.assertLess(elapsed, 10)  # typically ~ 4 sec, when not measuring coverage
 
 
 class StringToArrayTest(unittest.TestCase):

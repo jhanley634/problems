@@ -28,7 +28,7 @@ def string_to_array(s: str) -> np.ndarray[Any, dtype[np.uint]]:
 
 
 class TombstoneString:
-    SENTINEL = 255
+    SENTINEL: int = 255
 
     def __init__(self, s: str):
         """Accepts a unicode string.
@@ -46,7 +46,7 @@ class TombstoneString:
         """
 
         # each char has size of 1, 2, or 4 bytes
-        self._size, _, self._codec = _get_codec(s)
+        self._size, self._strip, self._codec = _get_codec(s)
 
         self._string = string_to_array(s)
 
@@ -94,13 +94,36 @@ class TombstoneString:
         """Returns the index of the first occurrence of sub in s.
 
         Raises ValueError if the substring is not found.
+
+        The start index includes tombstones; it is different from str() output.
         """
-        for i in range(start, len(self._string) - len(sub) + 1):
-            if sub.startswith(
-                "".join(self._slice_chars(range(i, i + 1)))
-            ) and sub == "".join(self._slice_chars(range(i, i + len(sub)))):
-                return i
-        raise ValueError(f"{sub} not found")
+
+        # substring, serialized
+        sub_ser = np.frombuffer(
+            BytesIO(sub.encode(self._codec)).getbuffer()[self._strip :],
+            dtype=np.uint8,
+        )
+        assert len(sub_ser) == len(sub) * self._size
+
+        if start + len(sub_ser) > len(self._string):
+            sub_ser = sub_ser[: len(self._string) - start]
+        return self._index1(sub_ser, start * self._size)
+
+    def _index1(self, sub_ser: np.ndarray[Any, dtype[np.uint8]], start_ser: int) -> int:
+        for i in range(start_ser, len(self._string)):
+            if self._string[i] == self.SENTINEL:
+                continue
+            if self._index2(i, sub_ser):
+                return i // self._size
+        raise ValueError(f"{sub_ser} not found")
+
+    def _index2(self, i: int, sub_ser: np.ndarray[Any, dtype[np.uint8]]) -> bool:
+        for j, ch in enumerate(sub_ser):
+            if self._string[i + j] == self.SENTINEL:
+                continue
+            if self._string[i + j] != ch:
+                return False
+        return True
 
 
 def lorem_ipsum_article(
@@ -131,8 +154,8 @@ class Article:
 
     def censor(self, bad_word: str) -> int:
         """Deletes all occurrences of bad_word from the article, per USACO olympiad rules."""
+        n = i = 0
         try:
-            n = i = 0
             while True:
                 # We back up by len(bad_word) for cases like "momooo", while avoiding negatives.
                 i = max(0, self._article.delete_word(bad_word, i) - len(bad_word))
