@@ -7,6 +7,8 @@ channels:
 dependencies:
 - cython >= 0.29.34
 - pip >= 23.2.1
+- py-opencv >= 4.6.0
+- py-xgboost >= 1.7.1
 - python >= 3.11.4
 - scipy >= 1.11.1
 - torchvision >= 0.9.1
@@ -23,6 +25,7 @@ dependencies:
   - geopy >= 2.3.0
   - glom >= 23.3.0
   - gpxpy >= 1.5.0
+  - huggingface_hub >= 0.16.4
   - hypothesis >= 6.82.3
   - imbalanced-learn >= 0.11.0
   - ipyleaflet >= 0.17.3
@@ -37,7 +40,7 @@ dependencies:
   - networkit >= 10.1
   - numba >= 0.57.1
   - numbers_parser >= 3.11.0
-  - numpy >= 1.25.2
+  - numpy >= 1.23.5
   - openml >= 0.14.1
   - openpyxl >= 3.1.2
   - osmnx >= 1.6.0
@@ -46,15 +49,13 @@ dependencies:
   - pillow >= 9.5.0
   - polars >= 0.18.13
   - psutil >= 5.9.5
-  - py-opencv >= 4.6.0
-  - py-xgboost >= 1.7.1
   - pyarrow >= 12.0.1
   - pyaudioanalysis >= 0.3.14
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
   - pynisher >= 1.0.8
   - pyo3-pack >= 0.6.1
-  - pyspark >= 3.2.1
+  - pyspark >= 3.4.1
   - pytest >= 7.4.0
   - pytest-cov >= 4.1.0
   - python-Levenshtein >= 0.21.1
