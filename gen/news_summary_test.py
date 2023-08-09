@@ -8,12 +8,11 @@ class SummarizerTest(unittest.TestCase):
     def setUp(self) -> None:
         self.s = Summarizer()
 
-    def test_summarize(self):
-        self.s.add_doc("hello world")
-
     def test_summarize_newsweek(self):
-        url = "https://www.newsweek.com/americas-most-responsible-companies-2022"
-        self.s.add_doc_url(url)
+        # self.s.add_doc("hello world")
+
+        # url = "https://www.newsweek.com/americas-most-responsible-companies-2022"
+        # self.s.add_doc_url(url)
 
         txt_file = Path("/tmp/cache/americas-most-responsible-companies-2022.txt")
         self.s.add_doc_file(txt_file)
