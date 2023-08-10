@@ -25,6 +25,13 @@ class SummarizerTest(unittest.TestCase):
             r,
         )
 
+    def test_summarize_deal(self):
+        # https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html
+        self.assertEqual(
+            "five americans will eventually be allowed to leave the country in exchange for a $6 billion grant from",
+            self.s.add_doc_file(Path("/tmp/deal.txt")),
+        )
+
     def test_load_dataset(self):
         billsum = load_dataset("billsum", split="ca_test")
         self.assertIsInstance(billsum, Dataset)
