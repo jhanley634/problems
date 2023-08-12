@@ -19,16 +19,17 @@ class SummarizerTest(unittest.TestCase):
         # self.s.add_doc_url(url)
 
         txt_file = Path("/tmp/cache/americas-most-responsible-companies-2022.txt")
-        r = self.s.add_doc_file(txt_file)
         self.assertEqual(
-            "a list of America's most Responsible Companies is being compiled by newsweek. the",
-            r,
+            "a list of America's most Responsible Companies is being compiled by newsweek."
+            " the list includes 499 of the largest",  # publified
+            self.s.add_doc_file(txt_file, limit=27),
         )
 
     def test_summarize_deal(self):
         # https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html
         self.assertEqual(
-            "five americans will eventually be allowed to leave the country in exchange for a $6 billion grant from",
+            "five americans will eventually be allowed to leave the country"
+            " in exchange for a $6 billion grant from the united states",
             self.s.add_doc_file(Path("/tmp/deal.txt")),
         )
 

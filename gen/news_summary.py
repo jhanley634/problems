@@ -33,10 +33,10 @@ class Summarizer:
 
         return self.add_doc(fspec.read_text(encoding="UTF-8"))
 
-    def add_doc_file(self, in_file: Path) -> str:
-        return self.add_doc(in_file.read_text(encoding="UTF-8"))
+    def add_doc_file(self, in_file: Path, **kwargs) -> str:
+        return self.add_doc(in_file.read_text(encoding="UTF-8"), **kwargs)
 
-    def add_doc(self, text: str, limit: int = 20) -> str:
+    def add_doc(self, text: str, limit: int = 24) -> str:
         text = "summarize: " + text[:1800]
 
         tokenizer, model = get_t5_model()
