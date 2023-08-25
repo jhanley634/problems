@@ -43,6 +43,7 @@ dependencies:
   - numba >= 0.57.1
   - numbers_parser >= 3.11.0
   - numpy >= 1.23.5
+  - onnx >= 1.14.0
   - openml >= 0.14.1
   - openpyxl >= 3.1.2
   - osmnx >= 1.6.0
@@ -55,6 +56,7 @@ dependencies:
   - pyaudioanalysis >= 0.3.14
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
+  - pylint >= 2.17.5
   - pynisher >= 1.0.8
   - pyo3-pack >= 0.6.1
   - pyspark >= 3.4.1
