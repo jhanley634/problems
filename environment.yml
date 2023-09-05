@@ -49,6 +49,7 @@ dependencies:
   - osmnx >= 1.6.0
   - palettable >= 3.3.3
   - pandas >= 2.0.3
+  - html2text >= 2020.1.16
   - pillow >= 9.5.0
   - polars >= 0.18.15
   - psutil >= 5.9.5

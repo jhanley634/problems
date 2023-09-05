@@ -1,9 +1,12 @@
 from pathlib import Path
+from pprint import pp
 import unittest
 
 from datasets import Dataset, load_dataset
+from html2text import html2text
 from huggingface_hub import hf_hub_download
 import huggingface_hub
+import requests
 
 from gen.news_summary import Summarizer
 
@@ -13,24 +16,38 @@ class SummarizerTest(unittest.TestCase):
         self.s = Summarizer()
 
     def test_summarize_newsweek(self):
-        # self.s.add_doc("hello world")
-
-        # url = "https://www.newsweek.com/americas-most-responsible-companies-2022"
-        # self.s.add_doc_url(url)
-
-        txt_file = Path("/tmp/cache/americas-most-responsible-companies-2022.txt")
+        url = "https://www.newsweek.com/americas-most-responsible-companies-2022"
+        fspec = self.get_cached_url(url)
+        text = html2text(fspec.read_text())
+        fspec.write_text(text)
         self.assertEqual(
             "a list of America's most Responsible Companies is being compiled by newsweek."
             " the list includes 499 of the largest",  # publified
-            self.s.add_doc_file(txt_file, limit=27),
+            self.s.add_doc_file(fspec, limit=27),
         )
 
+    def get_cached_url(self, url: str, verbose=False) -> Path:
+        fspec = self.s._get_cache_filespec(url)
+        if not fspec.exists():
+            ua = "Wget/1.21.4"
+            resp = requests.get(url, headers={"User-Agent": ua})
+            resp.raise_for_status()
+            ct = resp.headers["Content-Type"]
+            assert "text/html; charset=utf-8" == str(ct).lower(), ct
+            assert "utf-8" == str(resp.encoding).lower(), resp.encoding
+            if verbose:
+                pp(dict(resp.headers))
+            fspec.write_bytes(resp.content)
+        return fspec
+
     def test_summarize_deal(self):
-        # https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html
+        fspec = self.get_cached_url(
+            "https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html"
+        )
         self.assertEqual(
             "five americans will eventually be allowed to leave the country"
             " in exchange for a $6 billion grant from the united states",
-            self.s.add_doc_file(Path("/tmp/deal.txt")),
+            self.s.add_doc_file(fspec),
         )
 
     def test_load_dataset(self):

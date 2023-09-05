@@ -19,7 +19,7 @@ class Summarizer:
             basename += ".html"
         return cls.CACHE_DIR / basename
 
-    def add_doc_url(self, url: str) -> str:
+    def add_doc_url(self, url: str, verbose=True) -> str:
         fspec = self._get_cache_filespec(url)
         if not fspec.exists():
             ua = "Wget/1.21.4"
@@ -28,7 +28,8 @@ class Summarizer:
             ct = resp.headers["Content-Type"]
             assert "text/html; charset=UTF-8" == ct, ct
             assert "UTF-8" == resp.encoding, resp.encoding
-            # pp(dict(resp.headers))
+            if verbose:
+                pp(dict(resp.headers))
             fspec.write_bytes(resp.content)
 
         return self.add_doc(fspec.read_text(encoding="UTF-8"))
