@@ -1,5 +1,7 @@
 from pathlib import Path
 from pprint import pp
+import os
+import re
 import unittest
 
 from datasets import Dataset, load_dataset
@@ -15,15 +17,26 @@ class SummarizerTest(unittest.TestCase):
     def setUp(self) -> None:
         self.s = Summarizer()
 
-    def test_summarize_newsweek(self):
-        url = "https://www.newsweek.com/americas-most-responsible-companies-2022"
-        fspec = self.get_cached_url(url)
-        text = html2text(fspec.read_text())
-        fspec.write_text(text)
+    def _get_article_text(
+        self,
+        url: str = "https://www.newsweek.com/americas-most-responsible-companies-2022",
+    ) -> str:
+        html_fspec = self.get_cached_url(url)
+        text = html2text(html_fspec.read_text())
+        text = re.sub(r"^[\s\S]+ Comments", "", text)
+        text = re.sub(r"^[\s\S]+a list ", "a list ", text)
+        text = re.sub(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
+        print(f"\n\n{text}\n")
+        base, _ = os.path.splitext(html_fspec)
+        txt_fspec = Path(f"{base}.txt")
+        txt_fspec.write_text(text)
+        return txt_fspec
+
+    def test_summarize_newsweek(self) -> None:
         self.assertEqual(
             "a list of America's most Responsible Companies is being compiled by newsweek."
             " the list includes 499 of the largest",  # publified
-            self.s.add_doc_file(fspec, limit=27),
+            self.s.add_doc_file(self._get_article_text(), limit=27),
         )
 
     def get_cached_url(self, url: str, verbose=False) -> Path:
