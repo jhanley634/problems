@@ -10,51 +10,66 @@ from huggingface_hub import hf_hub_download
 import huggingface_hub
 import requests
 
-from gen.news_summary import Summarizer
+from gen.news_summary import Summarizer, get_cache_filespec
+
+
+def _remove(pattern: str, subst: str, s: str, flags: int = re.NOFLAG) -> str:
+    t = re.sub(pattern, subst, s, flags=flags)
+
+    # If regex failed to match, then say so.
+    if not len(t) < len(s):
+        print(s)
+    assert len(t) < len(s), (len(t), len(s), pattern)
+
+    return t
+
+
+def get_article_text_file(
+    url: str = "https://www.newsweek.com/americas-most-responsible-companies-2022",
+) -> Path:
+    html_fspec = get_cached_html_file(url)
+    text = html2text(html_fspec.read_text())
+    text = _remove(r"^[\s\S]+ Comments", "", text)
+    text = _remove(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
+    base, _ = os.path.splitext(html_fspec)
+    txt_fspec = Path(f"{base}.txt")
+    txt_fspec.write_text(text)
+    return txt_fspec
+
+
+def get_cached_html_file(url: str, verbose=False) -> Path:
+    fspec = get_cache_filespec(url)
+    if not fspec.exists():
+        ua = "Wget/1.21.4"
+        resp = requests.get(url, headers={"User-Agent": ua})
+        resp.raise_for_status()
+        ct = resp.headers["Content-Type"]
+        assert "text/html; charset=utf-8" == str(ct).lower(), ct
+        assert "utf-8" == str(resp.encoding).lower(), resp.encoding
+        if verbose:
+            pp(dict(resp.headers))
+        fspec.write_bytes(resp.content)
+    return fspec
 
 
 class SummarizerTest(unittest.TestCase):
     def setUp(self) -> None:
         self.s = Summarizer()
 
-    def _get_article_text(
-        self,
-        url: str = "https://www.newsweek.com/americas-most-responsible-companies-2022",
-    ) -> str:
-        html_fspec = self.get_cached_url(url)
-        text = html2text(html_fspec.read_text())
-        text = re.sub(r"^[\s\S]+ Comments", "", text)
-        text = re.sub(r"^[\s\S]+a list ", "a list ", text)
-        text = re.sub(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
-        print(f"\n\n{text}\n")
-        base, _ = os.path.splitext(html_fspec)
-        txt_fspec = Path(f"{base}.txt")
-        txt_fspec.write_text(text)
-        return txt_fspec
-
     def test_summarize_newsweek(self) -> None:
+        print(6)
+        print(self.s.add_doc_file(get_article_text_file().read_text(), limit=27))
+        print(7)
+
         self.assertEqual(
+            "## America's Most Responsible Companies 2022 * * * * * * * * * * * * * * * * *"
             "a list of America's most Responsible Companies is being compiled by newsweek."
             " the list includes 499 of the largest",  # publified
-            self.s.add_doc_file(self._get_article_text(), limit=27),
+            self.s.add_doc_file(get_article_text_file().read_text(), limit=27),
         )
 
-    def get_cached_url(self, url: str, verbose=False) -> Path:
-        fspec = self.s._get_cache_filespec(url)
-        if not fspec.exists():
-            ua = "Wget/1.21.4"
-            resp = requests.get(url, headers={"User-Agent": ua})
-            resp.raise_for_status()
-            ct = resp.headers["Content-Type"]
-            assert "text/html; charset=utf-8" == str(ct).lower(), ct
-            assert "utf-8" == str(resp.encoding).lower(), resp.encoding
-            if verbose:
-                pp(dict(resp.headers))
-            fspec.write_bytes(resp.content)
-        return fspec
-
     def test_summarize_deal(self):
-        fspec = self.get_cached_url(
+        fspec = get_cached_html_file(
             "https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html"
         )
         self.assertEqual(
