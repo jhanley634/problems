@@ -3,11 +3,10 @@
 # from https://codereview.stackexchange.com/questions/285312/streaming-parquet-file-in-chunks-for-write-operation
 
 from pathlib import Path
-from time import sleep
+from time import sleep, strftime
 from typing import Optional
 import io
 import logging
-import time
 
 from memory_profiler import profile
 import pandas as pd
@@ -59,7 +58,7 @@ def pause(secs: float = 0.2):
 
 
 def logging_basic_config(level=logging.INFO):
-    tz = time.strftime("%z")
+    tz = strftime("%z")
     fmt = f"%(asctime)s.%(msecs)03d{tz} %(levelname)s %(relativeCreated)d %(name)s  %(message)s"
     logging.basicConfig(level=level, datefmt="%Y-%m-%d %H:%M:%S", format=fmt)
 
