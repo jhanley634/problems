@@ -10,5 +10,4 @@ class SummarizerTest(unittest.TestCase):
 
     def test_get_article_text(self) -> None:
         art = get_article_text_file().read_text()
-        print(art)
-        self.assertEqual(4517, len(art))
+        self.assertEqual(924, len(art))

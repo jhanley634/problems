@@ -29,7 +29,7 @@ def get_article_text_file(
 ) -> Path:
     html_fspec = get_cached_html_file(url)
     text = html2text(html_fspec.read_text())
-    text = _remove(r"^[\s\S]+ Comments", "", text)
+    text = _remove(r"^[\s\S]+ Comments\n\n## ", "", text)
     text = _remove(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
     base, _ = os.path.splitext(html_fspec)
     txt_fspec = Path(f"{base}.txt")
@@ -57,25 +57,24 @@ class SummarizerTest(unittest.TestCase):
         self.s = Summarizer()
 
     def test_summarize_newsweek(self) -> None:
-        print(6)
-        print(self.s.add_doc_file(get_article_text_file().read_text(), limit=27))
-        print(7)
-
         self.assertEqual(
-            "## America's Most Responsible Companies 2022 * * * * * * * * * * * * * * * * *"
-            "a list of America's most Responsible Companies is being compiled by newsweek."
-            " the list includes 499 of the largest",  # publified
-            self.s.add_doc_file(get_article_text_file().read_text(), limit=27),
+            "newsweek has expanded our list to include 499 of the largest public corporations."
+            " the companies on our list are in dozens of",
+            self.s.add_doc_file(get_article_text_file(), limit=27),
         )
 
     def test_summarize_deal(self):
-        fspec = get_cached_html_file(
+        html_fspec = get_cached_html_file(
             "https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html"
         )
+        text = html2text(html_fspec.read_text())
+        text = _remove(r"^[\s\S]+Supported by\n\nSKIP ADVERTISEMENT\n\n# ", "", text)
+        text = _remove(r"Michael [ \w]+ from Washington[\s\S]+$", "", text)
+        text = _remove(r"Share full article[\s\S]+$", "", text)
         self.assertEqual(
-            "five americans will eventually be allowed to leave the country"
-            " in exchange for a $6 billion grant from the united states",
-            self.s.add_doc_file(fspec),
+            "five american detainees will eventually be allowed to leave Iran"
+            " in exchange for gaining access to $6 billion for humanitarian",
+            self.s.add_doc(text),
         )
 
     def test_load_dataset(self):

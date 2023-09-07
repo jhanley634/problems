@@ -36,7 +36,6 @@ from subprocess import check_output  # noqa F401
 from subprocess import PIPE, Popen  # noqa F401
 from threading import Thread  # noqa F401
 from time import sleep  # noqa F401
-from time import time  # noqa F401
 from typing import Any  # noqa F401
 from typing import Generator  # noqa F401
 from typing import Optional  # noqa F401

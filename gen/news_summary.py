@@ -39,9 +39,10 @@ class Summarizer:
         return self.add_doc(in_file.read_text(encoding="UTF-8"), **kwargs)
 
     @staticmethod
-    def add_doc(text: str, limit: int = 24) -> str:
+    def add_doc(text: str, limit: int = 24, verbose: bool = False) -> str:
         text = "summarize: " + text[:1800]
-        print(text, "\n\n\n")
+        if verbose:
+            print(text, "\n\n\n")
 
         tokenizer, model = get_t5_model()
         input_ids = tokenizer(text, return_tensors="pt").input_ids
