@@ -1,5 +1,6 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
 from time import time
+from typing import Optional
 
 from pygame import Rect, Surface, Vector2
 import pygame
@@ -36,27 +37,23 @@ class Block:
 
 
 class GreenWave:
-    def main_loop(self):
-        city = City(1, 1)
+    def __init__(self, city_size=(1, 1)) -> None:
+        self.city: City = City(*city_size)
+        self.running: bool = True
+
+    def main_loop(self, window_size=(1280, 720)) -> None:
         pygame.init()
-        self.screen = screen = pygame.display.set_mode()
+        self.screen: Surface = pygame.display.set_mode(window_size)
         clock = pygame.time.Clock()
-        running = True
-        dt = 0
 
-        player_pos = Vector2(screen.get_width() / 2, screen.get_height() / 2)
+        player_pos = Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
 
-        while running:
-            for event in pygame.event.get():
-                match event.type:
-                    case (pygame.QUIT | pygame.KEYDOWN):
-                        if event.type == pygame.KEYDOWN and event.key != pygame.K_q:
-                            continue
-                        running = False
+        while self.running:
+            self.handle_events()
 
-            screen.fill("grey")
-            self.render(city)
-            pygame.draw.circle(screen, "red", player_pos, 40)
+            self.screen.fill("grey")
+            self.render()
+            pygame.draw.circle(self.screen, "red", player_pos, 40)
 
             pygame.display.flip()
             dt = clock.tick(60) / 1e3  # FPS
@@ -65,9 +62,17 @@ class GreenWave:
 
         pygame.quit()
 
-    def render(self, city: City):
-        size = city.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX
-        for block in city.blocks:
+    def handle_events(self) -> None:
+        for event in pygame.event.get():
+            match event.type:
+                case (pygame.QUIT | pygame.KEYDOWN):
+                    if event.type == pygame.KEYDOWN and event.key != pygame.K_q:
+                        continue
+                    self.running = False
+
+    def render(self) -> None:
+        size = self.city.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX
+        for block in self.city.blocks:
             rect = Rect((block.x, block.y), (size, size))
             pygame.draw.rect(self.screen, "white", rect)
 
