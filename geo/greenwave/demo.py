@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-from time import sleep
 
 import pygame
 
@@ -20,8 +19,25 @@ class City:
 
 
 def main():
-    pygame.display.set_mode()
-    sleep(2)
+    screen = pygame.display.set_mode((1280, 720))
+    pygame.init()
+    clock = pygame.time.Clock()
+    running: bool = True
+
+    while running:
+        for event in pygame.event.get():
+            match event.type:
+                case (pygame.QUIT | pygame.KEYDOWN):
+                    if event.type == pygame.KEYDOWN and event.key != pygame.K_q:
+                        continue
+                    running = False
+
+        screen.fill("purple")
+
+        pygame.display.flip()  # Refresh on-screen display
+        clock.tick(60)  # wait until next frame (at 60 FPS)
+
+    pygame.quit()
 
 
 if __name__ == "__main__":
