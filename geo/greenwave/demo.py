@@ -22,7 +22,11 @@ class City:
     def __init__(self, width: int = 4, height: int = 3):
         scale = self.BLOCK_SIZE * GRID_SIZE_PX
         self.blocks = [
-            Block(150 + scale * i, 100 + scale * j)
+            Block(
+                150 + scale * i,
+                100 + scale * j,
+                self.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX,
+            )
             for i in range(width)
             for j in range(height)
         ]
@@ -31,9 +35,14 @@ class City:
 class Block:
     """A city block."""
 
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, size: int):
         self.x = x
         self.y = y
+        self.size = size
+
+    def render(self, screen):
+        rect = Rect((self.x, self.y), (self.size, self.size))
+        pygame.draw.rect(screen, "white", rect)
 
 
 class GreenWave:
@@ -71,10 +80,8 @@ class GreenWave:
                     self.running = False
 
     def render(self) -> None:
-        size = self.city.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX
         for block in self.city.blocks:
-            rect = Rect((block.x, block.y), (size, size))
-            pygame.draw.rect(self.screen, "white", rect)
+            block.render(self.screen)
 
 
 if __name__ == "__main__":
