@@ -36,10 +36,10 @@ class Block:
 
 
 class GreenWave:
-    def main(self):
+    def main_loop(self):
         city = City(1, 1)
         pygame.init()
-        screen = pygame.display.set_mode((1280, 720))
+        self.screen = screen = pygame.display.set_mode()
         clock = pygame.time.Clock()
         running = True
         dt = 0
@@ -55,7 +55,7 @@ class GreenWave:
                         running = False
 
             screen.fill("grey")
-            draw(city, screen)
+            self.render(city)
             pygame.draw.circle(screen, "red", player_pos, 40)
 
             pygame.display.flip()
@@ -65,12 +65,12 @@ class GreenWave:
 
         pygame.quit()
 
-
-def draw(city: City, screen: Surface):
-    size = city.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX
-    for block in city.blocks:
-        pygame.draw.rect(screen, "white", Rect((block.x, block.y), (size, size)))
+    def render(self, city: City):
+        size = city.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX
+        for block in city.blocks:
+            rect = Rect((block.x, block.y), (size, size))
+            pygame.draw.rect(self.screen, "white", rect)
 
 
 if __name__ == "__main__":
-    GreenWave().main()
+    GreenWave().main_loop()
