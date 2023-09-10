@@ -14,8 +14,8 @@ dependencies:
 - pip:
   - beautifulsoup4 >= 4.12.2
   - bitarray >= 2.8.1
-  - black[jupyter] >= 23.7.0
-  - dask >= 2023.9.0
+  - black[jupyter] >= 23.9.0
+  - dask >= 2023.9.1
   - datasets >= 2.14.5
   - evaluate >= 0.4.0
   - eyed3 >= 0.9.7
@@ -39,6 +39,7 @@ dependencies:
   - mypy >= 1.5.1
   - netifaces >= 0.11.0
   - networkit >= 10.1
+  - html2text >= 2020.1.16
   - numba >= 0.57.1
   - numbers_parser >= 3.11.0
   - numpy >= 1.23.5
@@ -48,7 +49,6 @@ dependencies:
   - osmnx >= 1.6.0
   - palettable >= 3.3.3
   - pandas >= 2.0.3
-  - html2text >= 2020.1.16
   - pillow >= 9.5.0
   - polars >= 0.19.2
   - psutil >= 5.9.5
@@ -56,11 +56,12 @@ dependencies:
   - pyaudioanalysis >= 0.3.14
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
+  - pygame >= 2.5.1
   - pylint >= 2.17.5
   - pynisher >= 1.0.9
   - pyo3-pack >= 0.6.1
   - pyspark >= 3.4.1
-  - pytest >= 7.4.1
+  - pytest >= 7.4.2
   - pytest-cov >= 4.1.0
   - python-Levenshtein >= 0.21.1
   - pywavelets >= 1.4.1
