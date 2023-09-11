@@ -30,6 +30,8 @@ class City:
             for i in range(width)
             for j in range(height)
         ]
+        western_road_segment = self.blocks[0].road_segments[0]
+        self.cars = [Car(western_road_segment)]
 
 
 class Block:
@@ -39,24 +41,47 @@ class Block:
         self.x = x
         self.y = y
         self.size = size
-        self.roads = [Road((x, y), (x + size, y))]
+        self.road_segments = [RoadSegment((x, y), (x + size, y))]
 
     def render(self, screen):
         rect = Rect((self.x, self.y), (self.size, self.size))
         pygame.draw.rect(screen, "white", rect)
-        for road in self.roads:
-            road.render(screen)
+        for segment in self.road_segments:
+            segment.render(screen)
 
 
-class Road:
-    """A one-lane roadway, a directed edge in a graph."""
+class RoadSegment:
+    """Segment of a one-lane roadway, a directed edge in a graph.
 
-    def __init__(self, start: Tuple[int, int], end: Tuple[int, int]):
+    A long "road" may consist of several linked segments.
+    """
+
+    def __init__(self, start: Tuple[int, int], end: Tuple[int, int]) -> None:
         self.start = Vector2(*start)
         self.end = Vector2(*end)
+        self.length = self.start.distance_to(self.end)
 
-    def render(self, screen):
+    def render(self, screen) -> None:
         pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
+
+
+class Car:
+    """A vehicle on a road segment."""
+
+    def __init__(self, road_segment: RoadSegment) -> None:
+        self.road_segment = road_segment
+        self.pos_px: float = 0  # distance from start
+        self.velocity = 0.2  # px per second
+
+    def update(self, dt: float) -> None:
+        seg = self.road_segment
+        assert seg.start.y == seg.end.y
+        self.pos_px += self.velocity * dt
+
+    def render(self, screen: Surface) -> None:
+        start = self.road_segment.start
+        pos = Vector2(start.x + self.pos_px, start.y)
+        pygame.draw.circle(screen, "red", pos, 2 * GRID_SIZE_PX)
 
 
 class GreenWave:
@@ -69,14 +94,11 @@ class GreenWave:
         self.screen: Surface = pygame.display.set_mode(window_size)
         clock = pygame.time.Clock()
 
-        player_pos = Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
-
         while self.running:
             self.handle_events()
 
             self.screen.fill("grey")
             self.render()
-            pygame.draw.circle(self.screen, "red", player_pos, 40)
             self.flipit()
 
             dt = clock.tick(60) / 1e3  # FPS
@@ -96,6 +118,8 @@ class GreenWave:
     def render(self) -> None:
         for block in self.city.blocks:
             block.render(self.screen)
+        for car in self.city.cars:
+            car.render(self.screen)
 
     def flipit(self) -> None:
         """Put the origin at lower left, as Descartes intended."""
