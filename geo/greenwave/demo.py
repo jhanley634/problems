@@ -1,6 +1,6 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
 from time import time
-from typing import Optional
+from typing import Tuple
 
 from pygame import Rect, Surface, Vector2
 import pygame
@@ -19,13 +19,13 @@ class City:
 
     BLOCK_SIZE: int = 50  # number of grids per (square) block
 
-    def __init__(self, width: int = 4, height: int = 3):
+    def __init__(self, width: int, height: int):
         scale = self.BLOCK_SIZE * GRID_SIZE_PX
         self.blocks = [
             Block(
-                150 + scale * i,
+                150 + scale * i + GRID_SIZE_PX,
                 100 + scale * j,
-                self.BLOCK_SIZE * GRID_SIZE_PX - GRID_SIZE_PX,
+                self.BLOCK_SIZE * GRID_SIZE_PX - 3 * GRID_SIZE_PX,
             )
             for i in range(width)
             for j in range(height)
@@ -39,14 +39,28 @@ class Block:
         self.x = x
         self.y = y
         self.size = size
+        self.roads = [Road((x, y), (x + size, y))]
 
     def render(self, screen):
         rect = Rect((self.x, self.y), (self.size, self.size))
         pygame.draw.rect(screen, "white", rect)
+        for road in self.roads:
+            road.render(screen)
+
+
+class Road:
+    """A one-lane roadway, a directed edge in a graph."""
+
+    def __init__(self, start: Tuple[int, int], end: Tuple[int, int]):
+        self.start = Vector2(*start)
+        self.end = Vector2(*end)
+
+    def render(self, screen):
+        pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
 
 
 class GreenWave:
-    def __init__(self, city_size=(1, 1)) -> None:
+    def __init__(self, city_size=(2, 1)) -> None:
         self.city: City = City(*city_size)
         self.running: bool = True
 
@@ -63,8 +77,8 @@ class GreenWave:
             self.screen.fill("grey")
             self.render()
             pygame.draw.circle(self.screen, "red", player_pos, 40)
+            self.flipit()
 
-            pygame.display.flip()
             dt = clock.tick(60) / 1e3  # FPS
             if not (0.016 <= dt < 0.020):
                 print(dt, "\t", time())
@@ -82,6 +96,12 @@ class GreenWave:
     def render(self) -> None:
         for block in self.city.blocks:
             block.render(self.screen)
+
+    def flipit(self) -> None:
+        """Put the origin at lower left, as Descartes intended."""
+        s: Surface = pygame.transform.flip(self.screen, flip_x=False, flip_y=True)
+        self.screen.blit(s, (0, 0))
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
