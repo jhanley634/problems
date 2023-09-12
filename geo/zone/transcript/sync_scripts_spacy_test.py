@@ -1,7 +1,13 @@
 # Copyright 2023 John Hanley. MIT licensed.
+import io
 import re
+import sys
 
-from geo.zone.transcript.sync_scripts_spacy import get_story_sentences, get_story_tokens
+from geo.zone.transcript.sync_scripts_spacy import (
+    get_story_sentences,
+    get_story_tokens,
+    load_language_model,
+)
 from geo.zone.transcript.sync_scripts_test import SyncScriptsTest
 
 
@@ -19,6 +25,15 @@ class SyncScriptsSpacyTest(SyncScriptsTest):
         for token in get_story_tokens(self.fuego_url):
             if token not in ("", "\n", "\n\n"):
                 assert token_re.search(token), f">{token}<  {ord(token[0])}"
+
+    def test_model_not_found(self) -> None:
+        # suppress spacy's "✘ No compatible package found" message.
+        sys.stdout = io.StringIO()
+
+        with self.assertRaises(SystemExit):
+            load_language_model("en_nonexistent_model_name")
+
+        sys.stdout = sys.__stdout__  # back to normal
 
     def test_sentences(self) -> None:
         sentences = list(get_story_sentences(self.fuego_url))

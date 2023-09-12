@@ -4,6 +4,7 @@ import unittest
 
 from geo.zone.transcript.sync_scripts import (
     _TRIM_PREAMBLE_RE,
+    _cache_file_for,
     get_html_text,
     get_markdown_text,
     get_markdown_words,
@@ -17,6 +18,10 @@ class SyncScriptsTest(unittest.TestCase):
     fuego_url = "https://clarkesworldmagazine.com/buckell_07_09/"
 
     def test_sync_scripts(self):
+        # Force a cache miss.
+        fspec = _cache_file_for(self.fuego_url)
+        fspec.unlink(missing_ok=True)
+
         self.assertGreater(len(get_html_text(self.fuego_url)), 91741)
 
         expected = (
