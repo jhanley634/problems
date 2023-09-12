@@ -25,7 +25,12 @@ def load_language_model(name: str = "en_core_web_sm") -> Language:
     try:
         return spacy.load(name)
     except OSError:  # Can't find model.... It doesn't seem to be a Python package
-        return (download(name) or True) and spacy.load(name)
+        return _downlod_then_load_model(name)
+
+
+def _downlod_then_load_model(name):
+    download(name)
+    return spacy.load(name)
 
 
 def get_story_tokens(url: str) -> Generator[str, None, None]:

@@ -1,10 +1,11 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
 from enum import Enum, auto
+from operator import attrgetter
 from time import time
 from typing import Tuple
 
 from pygame import Rect, Surface, Vector2
-from sortedcontainers import SortedList
+from sortedcontainers import SortedKeyList
 import pygame
 
 GRID_SIZE_PX: int = 3
@@ -22,7 +23,7 @@ class City:
     which appear to be infinite sinks or sources.
     """
 
-    BLOCK_SIZE: int = 50  # number of grids per (square) block
+    BLOCK_SIZE: float = 50.0  # number of grids per (square) block
 
     def __init__(self, width: int, height: int):
         scale = self.BLOCK_SIZE * GRID_SIZE_PX
@@ -52,7 +53,7 @@ class City:
 class Block:
     """A city block."""
 
-    def __init__(self, x: int, y: int, size: int):
+    def __init__(self, x: float, y: float, size: float):
         self.x = x
         self.y = y
         self.size = size
@@ -71,12 +72,14 @@ class RoadSegment:
     A long "road" may consist of several linked segments.
     """
 
-    def __init__(self, start: Tuple[int, int], end: Tuple[int, int]) -> None:
+    def __init__(self, start: Tuple[float, float], end: Tuple[float, float]) -> None:
         self.start = Vector2(*start)
         self.end = Vector2(*end)
         self.length = self.start.distance_to(self.end)
-        self.control = Control(self.end)
-        self.obstacles = SortedList()
+        self.control = Control(self.length)
+
+        # One cannot drive through certain obstacles.
+        self.obstacles = SortedKeyList(key=attrgetter("position"))
 
     def render(self, screen) -> None:
         pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
@@ -85,14 +88,14 @@ class RoadSegment:
 class Control:
     """A traffic control, or signal light, at an intersection.
 
-    It controls exactly one lane of traffic."""
+    It faces just one way and controls exactly one lane of traffic."""
 
     class Color(Enum):
         RED = auto()
         GREEN = auto()
 
-    def __init__(self, position: Vector2) -> None:
-        self.position = position
+    def __init__(self, position: float) -> None:
+        self.position = position  # distance from start, in px
         self.color = self.Color.GREEN
 
 
@@ -101,19 +104,22 @@ class Car:
 
     def __init__(self, road_segment: RoadSegment, speed_px_per_sec: float) -> None:
         self.road_segment = road_segment
-        self.pos_px: float = 0  # distance from start
+        self.position: float = 0.0  # distance from start, in px
         self.velocity: float = speed_px_per_sec
 
     def update(self, dt: float) -> None:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
-        self.pos_px += self.velocity * dt
+        print(seg.obstacles)
+        next_obstacle = 0  # seg.obstacles.bisect_key_left(self)
 
-        print(f"{self.pos_px:6f}  {self.velocity}")
+        self.position += self.velocity * dt
+
+        print(f"{self.position:6f}  {self.velocity}  {next_obstacle}  {seg.obstacles}")
 
     def render(self, screen: Surface) -> None:
         start = self.road_segment.start
-        pos = Vector2(start.x + self.pos_px, start.y)
+        pos = Vector2(start.x + self.position, start.y)
         pygame.draw.circle(screen, "red", pos, 2 * GRID_SIZE_PX)
 
 
