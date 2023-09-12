@@ -14,7 +14,7 @@ dependencies:
 - pip:
   - beautifulsoup4 >= 4.12.2
   - bitarray >= 2.8.1
-  - black[jupyter] >= 23.9.0
+  - black[jupyter] >= 23.9.1
   - dask >= 2023.9.1
   - datasets >= 2.14.5
   - evaluate >= 0.4.0
@@ -26,13 +26,13 @@ dependencies:
   - glom >= 23.3.0
   - gpxpy >= 1.5.0
   - huggingface_hub >= 0.16.4
-  - hypothesis >= 6.84.2
+  - hypothesis >= 6.84.3
   - imbalanced-learn >= 0.11.0
-  - ipyleaflet >= 0.17.3
+  - ipyleaflet >= 0.17.4
   - isort >= 5.12.0
   - lxml >= 4.9.3
   - markdownify >= 0.11.6
-  - matplotlib >= 3.7.2
+  - matplotlib >= 3.7.3
   - maturin >= 1.2.3
   - memory-profiler >= 0.61.0
   - mypy >= 1.5.1
@@ -41,7 +41,7 @@ dependencies:
   - html2text >= 2020.1.16
   - numba >= 0.57.1
   - numbers_parser >= 3.11.0
-  - numpy >= 1.23.5
+  - numpy >= 1.23.5, < 1.25  # numba works with 1.24
   - onnx >= 1.14.1
   - openml >= 0.14.1
   - openpyxl >= 3.1.2
@@ -67,7 +67,7 @@ dependencies:
   - roman >= 3.3
   - rouge_score >= 0.1.2
   - ruamel.yaml >= 0.17.32
-  - ruff >= 0.0.287
+  - ruff >= 0.0.289
   - scikit-learn >= 1.3.0
   - scipy >= 1.11.2
   - sentencepiece >= 0.1.99

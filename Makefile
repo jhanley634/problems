@@ -6,7 +6,7 @@ ACTIVATE = source activate problems
 all:
 	@echo Hello, world!
 
-IGNORE_TZ = env PYARROW_IGNORE_TIMEZONE=1
+IGNORE_TZ = env PYARROW_IGNORE_TIMEZONE=1 PYGAME_HIDE_SUPPORT_PROMPT=1
 VERIFY = $(ACTIVATE) && $(IGNORE_TZ) infra/verify_imports.py && flake8
 
 verify:

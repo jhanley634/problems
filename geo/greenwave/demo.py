@@ -19,7 +19,7 @@ class City:
 
     Comprised of WIDTH x HEIGHT city blocks,
     with 4-way traffic signals.
-    Traffic flows seemlessly into neighboring cities,
+    Traffic flows seamlessly into neighboring cities,
     which appear to be infinite sinks or sources.
     """
 
@@ -110,8 +110,7 @@ class Car:
     def update(self, dt: float) -> None:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
-        print(seg.obstacles)
-        next_obstacle = 0  # seg.obstacles.bisect_key_left(self)
+        next_obstacle = seg.obstacles.bisect_key(self.position)
 
         self.position += self.velocity * dt
 
@@ -144,7 +143,7 @@ class GreenWave:
 
             self.screen.fill("grey")
             self.render(dt)
-            self.flipit()
+            self.flip_it()
 
         pygame.quit()
 
@@ -163,7 +162,7 @@ class GreenWave:
             car.update(dt)
             car.render(self.screen)
 
-    def flipit(self) -> None:
+    def flip_it(self) -> None:
         """Put the origin at lower left, as Descartes intended."""
         s: Surface = pygame.transform.flip(self.screen, flip_x=False, flip_y=True)
         self.screen.blit(s, (0, 0))
