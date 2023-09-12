@@ -1,8 +1,10 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
+from enum import Enum, auto
 from time import time
 from typing import Tuple
 
 from pygame import Rect, Surface, Vector2
+from sortedcontainers import SortedList
 import pygame
 
 GRID_SIZE_PX: int = 3
@@ -34,9 +36,17 @@ class City:
             for j in range(height)
         ]
         western_road_segment = self.blocks[0].road_segments[0]
-        self.cars = [
+        western_road_segment.obstacles.add(
             Car(western_road_segment, self.BLOCK_SIZE * GRID_SIZE_PX / DURATION)
-        ]
+        )
+
+    @property
+    def cars(self):
+        for block in self.blocks:
+            for segment in block.road_segments:
+                for item in segment.obstacles:
+                    if isinstance(item, Car):
+                        yield item
 
 
 class Block:
@@ -65,9 +75,25 @@ class RoadSegment:
         self.start = Vector2(*start)
         self.end = Vector2(*end)
         self.length = self.start.distance_to(self.end)
+        self.control = Control(self.end)
+        self.obstacles = SortedList()
 
     def render(self, screen) -> None:
         pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
+
+
+class Control:
+    """A traffic control, or signal light, at an intersection.
+
+    It controls exactly one lane of traffic."""
+
+    class Color(Enum):
+        RED = auto()
+        GREEN = auto()
+
+    def __init__(self, position: Vector2) -> None:
+        self.position = position
+        self.color = self.Color.GREEN
 
 
 class Car:
@@ -82,6 +108,8 @@ class Car:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
         self.pos_px += self.velocity * dt
+
+        print(f"{self.pos_px:6f}  {self.velocity}")
 
     def render(self, screen: Surface) -> None:
         start = self.road_segment.start

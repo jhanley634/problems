@@ -18,7 +18,6 @@ dependencies:
   - dask >= 2023.9.1
   - datasets >= 2.14.5
   - evaluate >= 0.4.0
-#  - eyed3 >= 0.9.7  # coverage[toml]<6.0.0,>=5.3.1 (from eyed3>=0.9.7, for audio ID3 tags)
   - fasteners >= 0.18
   - flake8 >= 6.1.0
   - flask >= 2.3.2
