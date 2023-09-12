@@ -7,6 +7,9 @@ import pygame
 
 GRID_SIZE_PX: int = 3
 
+# seconds, how long we run during an interactive edit / compile / run cycle
+DURATION = 4.0
+
 
 class City:
     """Terrain that cars drive through.
@@ -31,7 +34,9 @@ class City:
             for j in range(height)
         ]
         western_road_segment = self.blocks[0].road_segments[0]
-        self.cars = [Car(western_road_segment)]
+        self.cars = [
+            Car(western_road_segment, self.BLOCK_SIZE * GRID_SIZE_PX / DURATION)
+        ]
 
 
 class Block:
@@ -68,14 +73,14 @@ class RoadSegment:
 class Car:
     """A vehicle on a road segment."""
 
-    def __init__(self, road_segment: RoadSegment) -> None:
+    def __init__(self, road_segment: RoadSegment, speed_px_per_sec: float) -> None:
         self.road_segment = road_segment
         self.pos_px: float = 0  # distance from start
-        self.velocity = 0.2  # px per second
+        self.velocity: float = speed_px_per_sec
 
     def update(self, dt: float) -> None:
         seg = self.road_segment
-        assert seg.start.y == seg.end.y
+        assert seg.start.y == seg.end.y  # horizontal
         self.pos_px += self.velocity * dt
 
     def render(self, screen: Surface) -> None:
@@ -94,16 +99,18 @@ class GreenWave:
         self.screen: Surface = pygame.display.set_mode(window_size)
         clock = pygame.time.Clock()
 
-        while self.running:
+        # while self.running:
+        FPS = 60
+        NUM_FRAMES = int(DURATION * FPS)
+        for _ in range(NUM_FRAMES):
+            dt = clock.tick(FPS) / 1e3
+            if dt > 0.022:
+                print(dt, "\t", time())
             self.handle_events()
 
             self.screen.fill("grey")
-            self.render()
+            self.render(dt)
             self.flipit()
-
-            dt = clock.tick(60) / 1e3  # FPS
-            if not (0.016 <= dt < 0.020):
-                print(dt, "\t", time())
 
         pygame.quit()
 
@@ -115,10 +122,11 @@ class GreenWave:
                         continue
                     self.running = False
 
-    def render(self) -> None:
+    def render(self, dt: float) -> None:
         for block in self.city.blocks:
             block.render(self.screen)
         for car in self.city.cars:
+            car.update(dt)
             car.render(self.screen)
 
     def flipit(self) -> None:
