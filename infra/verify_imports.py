@@ -40,6 +40,7 @@ from typing import Any  # noqa F401
 from typing import Generator  # noqa F401
 from typing import Optional  # noqa F401
 from typing import TextIO  # noqa F401
+from typing import Tuple  # noqa F401
 from typing import Iterable, Iterator, NamedTuple  # noqa F401
 from urllib.parse import urlparse  # noqa F401
 import contextlib  # noqa F401
@@ -87,6 +88,7 @@ from PIL.ImageDraw import ImageDraw  # noqa F401
 from polars import Utf8  # noqa F401
 from pyAudioAnalysis import ShortTermFeatures, audioBasicIO  # noqa F401
 from pydub import AudioSegment  # noqa F401
+from pygame import Rect, Surface, Vector2  # noqa F401
 from requests import Response  # noqa F401
 from roman import InvalidRomanNumeralError  # noqa F401
 from roman import fromRoman  # noqa F401
@@ -124,6 +126,7 @@ import polars  # noqa F401
 import pyarrow  # noqa F401
 import pyarrow.parquet  # noqa F401
 import pydeck  # noqa F401
+import pygame  # noqa F401
 import pyspark.context  # noqa F401
 import pyspark.pandas  # noqa F401
 import regex  # noqa F401

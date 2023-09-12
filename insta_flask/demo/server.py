@@ -25,7 +25,7 @@ def mean():
 
 
 def median() -> dict[str, float]:
-    d = request.json
+    d = request.json or {}  # make it clear that None is prohibited, for mypy's benefit
     shape = d["shape"]
     data = np.asarray(d["data"]).reshape(shape)
 

@@ -20,7 +20,6 @@ class SyncScriptsSpacyTest(SyncScriptsTest):
             if token not in ("", "\n", "\n\n"):
                 assert token_re.search(token), f">{token}<  {ord(token[0])}"
 
-    def test_sentences(self, verbose: bool = False) -> None:
-        for sent in get_story_sentences(self.fuego_url):
-            if verbose:
-                print(sent, end="")
+    def test_sentences(self) -> None:
+        sentences = list(get_story_sentences(self.fuego_url))
+        self.assertEqual(775, len(sentences))  # We have hundreds of spacy Spans.
