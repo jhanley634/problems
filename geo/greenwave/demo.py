@@ -110,6 +110,15 @@ class Car:
     def update(self, dt: float) -> None:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
+        for i, obs in enumerate(seg.obstacles):
+            if obs is self:
+                break
+        # assert obs is self
+        print(obs, i, self)
+        print(seg.obstacles[i])
+        print(obs)
+        assert seg.obstacles[i] is self
+
         next_obstacle = seg.obstacles.bisect_key(self.position)
 
         self.position += self.velocity * dt

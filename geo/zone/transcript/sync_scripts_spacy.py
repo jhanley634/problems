@@ -23,13 +23,14 @@ def clean_text_for_spacy(text: str) -> str:
 
 def load_language_model(name: str = "en_core_web_sm") -> Language:
     try:
-        return spacy.load(name)
+        return _downlod_then_load_model(name, do_download=False)
     except OSError:  # Can't find model.... It doesn't seem to be a Python package
-        return _downlod_then_load_model(name)
+        return _downlod_then_load_model(name, do_download=True)
 
 
-def _downlod_then_load_model(name):
-    download(name)
+def _downlod_then_load_model(name, do_download: bool):
+    if do_download:
+        download(name)
     return spacy.load(name)
 
 
