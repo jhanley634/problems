@@ -1,11 +1,13 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
+from collections import namedtuple
 from enum import Enum, auto
+from functools import total_ordering
 from operator import attrgetter
 from time import time
-from typing import Tuple
+from typing import Sequence, Tuple
 
 from pygame import Rect, Surface, Vector2
-from sortedcontainers import SortedKeyList
+from sortedcontainers import SortedKeyList, SortedList
 import pygame
 
 GRID_SIZE_PX: int = 3
@@ -66,6 +68,37 @@ class Block:
             segment.render(screen)
 
 
+class Obstacle:
+    """An obstacle represents a potential hazard to navigation.
+
+    A Car is an obstacle, always. One can never drive through another car.
+
+    OTOH a Control _can_ be driven through, iff it is green.
+    Fortunately this special case is guaranteed to appear only at end of a road segment.
+    """
+
+    serial: int = 0
+    fleet: dict[int, "Obstacle"] = {}  # maps serial number to Car or Control
+
+    def __init__(self, position: float) -> None:
+        self.position = position  # distance from RoadSegment start, in px
+
+        # We use (sorted) Position tuples of the form (position, serial) to track upcoming obstacles.
+        Obstacle.serial += 1
+        self.serial = Obstacle.serial
+        Obstacle.fleet[self.serial] = self
+
+    def __eq__(self, other) -> bool:
+        return self.position == other.position
+
+    def __lt__(self, other) -> bool:
+        return self.position < other.position
+
+
+# position in px from road segment start, for a given obstacle
+Position = namedtuple("Position", ["position", "serial"])
+
+
 class RoadSegment:
     """Segment of a one-lane roadway, a directed edge in a graph.
 
@@ -79,13 +112,16 @@ class RoadSegment:
         self.control = Control(self.length)
 
         # One cannot drive through certain obstacles.
-        self.obstacles = SortedKeyList(key=attrgetter("position"))
+        self.obstacles: SortedList[Obstacle] = SortedList()
+
+    def add_obstacle_position(self, obstacle: Obstacle) -> None:
+        self.obstacles.add(obstacle)
 
     def render(self, screen) -> None:
         pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
 
 
-class Control:
+class Control(Obstacle):
     """A traffic control, or signal light, at an intersection.
 
     It faces just one way and controls exactly one lane of traffic."""
@@ -95,17 +131,20 @@ class Control:
         GREEN = auto()
 
     def __init__(self, position: float) -> None:
-        self.position = position  # distance from start, in px
+        super().__init__(position)
         self.color = self.Color.GREEN
 
 
-class Car:
+class Car(Obstacle):
     """A vehicle on a road segment."""
 
-    def __init__(self, road_segment: RoadSegment, speed_px_per_sec: float) -> None:
+    def __init__(
+        self, road_segment: RoadSegment, speed_px_per_sec: float, position: float = 0.0
+    ) -> None:
+        super().__init__(position)
         self.road_segment = road_segment
-        self.position: float = 0.0  # distance from start, in px
         self.velocity: float = speed_px_per_sec
+        road_segment.add_obstacle_position(self)
 
     def update(self, dt: float) -> None:
         seg = self.road_segment
