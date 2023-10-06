@@ -11,6 +11,7 @@ geo/ski/so/Cargo.lock
 geo/ski/so/median
 geo/ski/so/target/
 mprofile_2023*.dat
+target/
 vision/loadtxt/pythran_lib/build/
 vision/loadtxt/pythran_lib/dist/
 vision/loadtxt/pythran_lib/hello.egg-info/
