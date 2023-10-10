@@ -1,3 +1,5 @@
+# Copyright 2023 John Hanley. MIT licensed.
+
 import unittest
 
 from gen.news_summary import Summarizer

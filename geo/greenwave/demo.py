@@ -1,4 +1,7 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
+
+# Copyright 2023 John Hanley. MIT licensed.
+
 from collections import namedtuple
 from enum import Enum, auto
 from functools import total_ordering
@@ -158,7 +161,7 @@ class Car(Obstacle):
         print(obs)
         assert seg.obstacles[i] is self
 
-        next_obstacle = seg.obstacles.bisect_key(self.position)
+        next_obstacle = seg.obstacles.bisect(self.position)
 
         self.position += self.velocity * dt
 

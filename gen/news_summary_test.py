@@ -1,3 +1,5 @@
+# Copyright 2023 John Hanley. MIT licensed.
+
 from pathlib import Path
 from pprint import pp
 import os
