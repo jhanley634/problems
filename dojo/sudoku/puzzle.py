@@ -37,26 +37,22 @@ class Grid:
             if self._has_dups(self.grid[:, i]):  # column
                 return False
         for block in self._get_blocks():
-            print("\n", block)
             if self._has_dups(block):
                 return False
         return True
 
     @staticmethod
     def _has_dups(vals: npt.NDArray[np.uint8]) -> bool:
-        vals = list(filter(None, vals))
-        return len(set(vals)) < len(vals)
+        actual_vals = vals[vals > 0]  # a zero wildcard is not an actual solution value
+        return len(set(actual_vals)) < len(actual_vals)
 
     def _get_blocks(self) -> Generator[npt.NDArray[np.uint8], None, None]:
+        sz = self.size
         for a in range(self.size):
             for b in range(self.size):
-                yield from self._get_block(a, b)
-
-    def _get_block(self, a, b) -> Generator[npt.NDArray[np.uint8], None, None]:
-        sz = self.size
-        i = a * sz
-        j = b * sz
-        yield np.array(self.grid[i : i + sz, j : j + sz]).flatten()
+                i = a * sz
+                j = b * sz
+                yield np.array(self.grid[i : i + sz, j : j + sz]).flatten()
 
 
 class Solver:
@@ -64,4 +60,4 @@ class Solver:
 
 
 if __name__ == "__main__":
-    b = Grid(size=2).from_string("1234 1234  1234 1234")
+    p = Grid(size=2).from_string("1234 1234  1234 1234")

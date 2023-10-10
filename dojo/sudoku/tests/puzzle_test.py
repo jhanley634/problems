@@ -21,5 +21,8 @@ class PuzzleTest(unittest.TestCase):
         self.assertTrue(p.is_valid())
 
     def test_wildcard_valid(self) -> None:
-        p = Grid(size=2).from_string("-" * 16)
-        self.assertTrue(p.is_valid())
+        self.assertTrue(Grid(size=2).from_string("" + "-" * 16).is_valid())
+
+        self.assertTrue(Grid(size=2).from_string("1" + "-" * 15).is_valid())
+
+        self.assertTrue(Grid(size=2).from_string("34" + "-" * 14).is_valid())
