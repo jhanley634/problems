@@ -1,5 +1,5 @@
-from enum import Enum, auto
 # Copyright 2023 John Hanley. MIT licensed.
+from enum import Enum, auto
 from typing import Generator, Self
 
 import numpy as np
@@ -33,7 +33,7 @@ class Grid:
     def from_string(self, s: str) -> Self:
         """Populates board from a string."""
         s = s.translate(self._remove_whitespace)
-        assert len(s) == self.size**4, s
+        assert len(s) == self.size**4, (len(s), self.size**4, s)
         for i, ch in enumerate(s.translate(self._empty_is_zero)):
             v = int(ch)
             assert 0 <= v <= self.size**2, (i, v)
@@ -55,6 +55,21 @@ class Grid:
 
     def _valid_cell_values(self) -> set[int]:
         return set(range(1, self.size**2 + 1))
+
+    def __str__(self) -> str:
+        sz = self.size
+        ret = []
+        for i in range(sz**2):
+            if i % sz == 0:
+                ret.append("\n")
+            row_vals = "".join(map(str, self.grid[i, :]))
+            rng = range(0, len(row_vals), sz)
+            ret.append(" ".join(row_vals[i : i + sz] for i in rng))
+            ret.append("\n")
+        return "".join(ret).replace("0", "-")
+
+    def to_short_string(self) -> str:
+        return str(self).translate(self._remove_whitespace)
 
     def is_solved(self) -> bool:
         num_wildcards = len(self.grid[self.grid == 0])

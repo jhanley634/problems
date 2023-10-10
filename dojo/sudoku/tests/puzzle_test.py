@@ -28,6 +28,18 @@ class PuzzleTest(unittest.TestCase):
 
         self.assertTrue(Grid(size=2).from_string("34" + "-" * 14).is_valid())
 
+    def test_short_string(self):
+        self.assertEqual(
+            "34--------------",
+            Grid(size=2).from_string("34" + "-" * 14).to_short_string(),
+        )
+        self.assertEqual("1234341241232341", self.puzzle.to_short_string())
+
     def test_solve(self) -> None:
         p = self.puzzle
         self.assertEqual((4, 4), solve(p).grid.shape)
+
+        self.assertEqual(1, p.grid[1, 2])
+        p.grid[1, 2] = 0
+        solve(p)
+        # self.assertEqual(1, p.grid[1, 2])
