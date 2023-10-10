@@ -2,14 +2,12 @@
 
 import unittest
 
-from dojo.sudoku.puzzle import Grid
+from dojo.sudoku.puzzle import Grid, solve
 
 
 class PuzzleTest(unittest.TestCase):
-    def test_grid_is_valid(self) -> None:
-        p = Grid(size=2).from_string("1234 1234  1234 1234")
-        p = Grid(size=2).from_string("12 23  34 41   34 41  12 23")
-        p = Grid(size=2).from_string(
+    def setUp(self):
+        self.puzzle = Grid(size=2).from_string(
             """
             12  34
             34  12
@@ -18,7 +16,10 @@ class PuzzleTest(unittest.TestCase):
             23  41
             """
         )
-        self.assertTrue(p.is_valid())
+
+    def test_grid_is_valid(self) -> None:
+        self.assertTrue(self.puzzle.is_valid())
+        self.assertTrue(self.puzzle.is_solved())
 
     def test_wildcard_valid(self) -> None:
         self.assertTrue(Grid(size=2).from_string("" + "-" * 16).is_valid())
@@ -26,3 +27,7 @@ class PuzzleTest(unittest.TestCase):
         self.assertTrue(Grid(size=2).from_string("1" + "-" * 15).is_valid())
 
         self.assertTrue(Grid(size=2).from_string("34" + "-" * 14).is_valid())
+
+    def test_solve(self) -> None:
+        p = self.puzzle
+        self.assertEqual((4, 4), solve(p).grid.shape)

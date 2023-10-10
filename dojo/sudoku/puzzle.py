@@ -27,6 +27,10 @@ class Grid:
             self.grid[y, x] = v
         return self
 
+    def is_solved(self) -> bool:
+        num_wildcards = len(self.grid[self.grid == 0])
+        return num_wildcards == 0 and self.is_valid()
+
     def is_valid(self) -> bool:
         """Returns True if grid is feasible (no dups)."""
         # Sūji wa dokushin ni kagiru (数字は独身に限る),
@@ -55,9 +59,13 @@ class Grid:
                 yield np.array(self.grid[i : i + sz, j : j + sz]).flatten()
 
 
-class Solver:
+def solve(grid: Grid) -> Grid:
     """Solves a Sudoku puzzle."""
+    assert grid.is_valid()
+    if grid.is_solved():
+        return grid
 
 
 if __name__ == "__main__":
-    p = Grid(size=2).from_string("1234 1234  1234 1234")
+    if False:
+        solve(Grid(size=2).from_string("1234 1234  1234 1234"))
