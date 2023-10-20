@@ -1,25 +1,30 @@
+#! /usr/bin/env python
+
+# Copyright 2023 John Hanley. MIT licensed.
+#
+# from https://stackoverflow.com/questions/77318785/how-do-i-detect-use-of-a-contextmanager
+
 from io import StringIO
 import dis
 import inspect
-import unittest
 
 
 class MyManager:
-    def __enter__(self):
+    def __enter__(self) -> None:
         print("enter")
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         print("exit")
 
 
-def app():
+def app() -> None:
     with MyManager() as m:
+        assert m
         report_on_ctx_mgr()
 
 
-def report_on_ctx_mgr():
+def report_on_ctx_mgr() -> None:
     stack = inspect.stack()
-    assert "test_app" == stack[2].function
     assert "app" == stack[1].function
     fn = globals()[stack[1].function]
     src = inspect.getsource(fn)
@@ -32,10 +37,9 @@ def report_on_ctx_mgr():
         print(disasm)
 
 
-def _contains_with(s: str):
+def _contains_with(s: str) -> bool:
     return "with " in s
 
 
-class TestApp(unittest.TestCase):
-    def test_app(self):
-        app()
+if __name__ == "__main__":
+    app()

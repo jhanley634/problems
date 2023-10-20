@@ -3,8 +3,6 @@
 from operator import attrgetter
 import unittest
 
-from sortedcontainers import SortedList
-
 from geo.greenwave.demo import Car, City, Obstacle
 
 
