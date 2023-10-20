@@ -2,7 +2,7 @@
 
 # Copyright 2023 John Hanley. MIT licensed.
 #
-# from https://stackoverflow.com/questions/77294679/pandas-column-split-a-row-with-conditional-and-create-a-separate-column
+# from https://stackoverflow.com/questions/77294679/split-a-row-with-conditional
 
 import pandas as pd
 

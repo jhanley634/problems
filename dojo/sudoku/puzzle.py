@@ -41,14 +41,16 @@ class Grid:
             y = i // self.size**2
             self.grid[y, x] = v
 
+        self._update_avail()
+        return self  # We offer a fluent API.
+
+    def _update_avail(self) -> None:
         self.avail = {}
         for i in range(self.size**2):
             self.avail[(Constraint.ROW, i)] = self._available_values(self.grid[i, :])
             self.avail[(Constraint.COL, i)] = self._available_values(self.grid[:, i])
         for i, block in enumerate(self._get_blocks()):
             self.avail[(Constraint.BLK, i)] = self._available_values(block)
-
-        return self  # We offer a fluent API.
 
     def _available_values(self, vals) -> list[int]:
         return sorted(self._valid_cell_values() - set(vals[vals > 0]))
