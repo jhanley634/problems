@@ -1,17 +1,26 @@
 # Copyright 2023 John Hanley. MIT licensed.
+
 from enum import Enum, auto
+from functools import total_ordering
+from pprint import pp
 from typing import Generator, Self
 
 import numpy as np
 import numpy.typing as npt
 
 
+@total_ordering
 class Constraint(Enum):
     """Soduko constrains values by row, column, and block."""
 
     ROW = auto()
     COL = auto()
     BLK = auto()
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
 
 
 class Grid:
@@ -110,6 +119,7 @@ def solve(grid: Grid) -> Grid:
     assert grid.is_valid()
     if grid.is_solved():
         return grid
+
     return grid
 
 

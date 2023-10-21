@@ -21,6 +21,14 @@ class PuzzleTest(unittest.TestCase):
         self.assertTrue(self.puzzle.is_valid())
         self.assertTrue(self.puzzle.is_solved())
 
+        self.puzzle.grid[0, 0] = 4
+        self.assertFalse(self.puzzle.is_valid())
+        self.assertFalse(self.puzzle.is_solved())
+
+        self.puzzle.grid[0, 0] = 0
+        self.assertTrue(self.puzzle.is_valid())
+        self.assertFalse(self.puzzle.is_solved())
+
     def test_wildcard_valid(self) -> None:
         self.assertTrue(Grid(size=2).from_string("" + "-" * 16).is_valid())
 
@@ -41,5 +49,6 @@ class PuzzleTest(unittest.TestCase):
 
         self.assertEqual(1, p.grid[1, 2])
         p.grid[1, 2] = 0
+        p._update_avail()
         solve(p)
         # self.assertEqual(1, p.grid[1, 2])
