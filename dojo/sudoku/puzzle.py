@@ -10,11 +10,11 @@ import numpy.typing as npt
 
 @total_ordering
 class Constraint(Enum):
-    """Soduko constrains values by row, column, and block."""
+    """Soduko constrains values by block, row, and column."""
 
+    BLK = auto()
     ROW = auto()
     COL = auto()
-    BLK = auto()
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
@@ -59,6 +59,10 @@ class Grid:
             self.avail[(Constraint.COL, i)] = self._available_values(self.grid[:, i])
         for i, block in enumerate(self._get_blocks()):
             self.avail[(Constraint.BLK, i)] = self._available_values(block)
+
+        for k, v in self.avail.copy().items():
+            if not v:
+                del self.avail[k]
 
     def _available_values(self, vals) -> list[int]:
         return sorted(self._valid_cell_values() - set(vals[vals > 0]))
@@ -124,6 +128,13 @@ class Grid:
                 i = a * sz
                 j = b * sz
                 yield np.array(self.grid[i : i + sz, j : j + sz]).flatten()
+
+    def copy(self) -> Self:
+        """Returns a deep copy."""
+        cpy = Grid(size=self.size)
+        cpy.grid = self.grid.copy()
+        cpy._update_avail()
+        return cpy
 
 
 def solve(grid: Grid) -> Grid:
