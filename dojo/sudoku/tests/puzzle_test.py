@@ -47,8 +47,7 @@ class PuzzleTest(unittest.TestCase):
         p = self.puzzle
         self.assertEqual((4, 4), solve(p).grid.shape)
 
-        self.assertEqual(1, p.grid[1, 2])
-        p.grid[1, 2] = 0
-        p._update_avail()
-        solve(p)
-        # self.assertEqual(1, p.grid[1, 2])
+        for _ in range(6):
+            p.unsolve(1)
+            solve(p)
+            self.assertTrue(p.is_solved())

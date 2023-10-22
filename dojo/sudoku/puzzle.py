@@ -2,7 +2,6 @@
 
 from enum import Enum, auto
 from functools import total_ordering
-from pprint import pp
 from typing import Generator, Self
 
 import numpy as np
@@ -82,6 +81,19 @@ class Grid:
     def to_short_string(self) -> str:
         return str(self).translate(self._remove_whitespace)
 
+    def unsolve(self, n: int = 1) -> None:
+        """Turns N grid values into wildcards."""
+        num_wildcards = len(self.grid[self.grid == 0])
+        assert num_wildcards == 0
+        i = np.random.randint(0, self.size**2)
+        j = np.random.randint(0, self.size**2)
+        for _ in range(n):
+            while self.grid[i, j] > 0:
+                self.grid[i, j] = 0
+                i = np.random.randint(0, self.size**2)
+                j = np.random.randint(0, self.size**2)
+        self._update_avail()
+
     def is_solved(self) -> bool:
         num_wildcards = len(self.grid[self.grid == 0])
         return num_wildcards == 0 and self.is_valid()
@@ -119,6 +131,8 @@ def solve(grid: Grid) -> Grid:
     assert grid.is_valid()
     if grid.is_solved():
         return grid
+    for type_, n in sorted(grid.avail):
+        print(type_, n, grid.avail[(type_, n)])
 
     return grid
 
