@@ -2,35 +2,12 @@
 #
 # from https://codereview.stackexchange.com/questions/287649/given-an-array-remove-zero-or-more-elements-to-maximize-the-reduction
 
+from typing import Any
 import unittest
 
 from beartype import beartype
-from nptyping import Int, NDArray, Shape
+from nptyping import Int, NDArray
 import numpy as np
-import numpy.typing as npt
-
-NDArrayInt = npt.NDArray[np.int_]
-
-
-def old_loop(vals: list[int]) -> None:
-    acc0 = acc1 = 0
-    sums = np.zeros((2, len(vals)), dtype=int)
-
-    for i in range(len(vals) - 1, -1, -1):
-        acc0 += vals[i] * (-1) ** i
-        sums[0][i] = acc0
-
-        acc1 += vals[i] * (-1) ** i * -1
-        sums[1][i] = acc1
-
-
-def sum_of1(vals: list[int]) -> int:
-    acc = 0
-    factor = 1
-    for val in vals:
-        acc += val * factor
-        factor *= -1
-    return acc
 
 
 @beartype
@@ -39,7 +16,7 @@ def sum_of(vals: list[int]) -> int:
 
 
 @beartype
-def get_sums(vals: list[int]) -> NDArray[Shape["2, *"], Int]:
+def get_sums(vals: list[int]) -> NDArray[Any, Int]:
     acc = np.zeros(2)
     sums = np.zeros((2, len(vals)), dtype=int)  # cumulative sums
     for i in range(len(vals) - 1, -1, -1):
@@ -59,9 +36,10 @@ def get_best(vals: list[int]) -> list[int]:
     j = 0
 
     # greedy grab:
-    for i in range(len(vals) - 1):
-        if sums[1 - j][i] < sums[j][i]:
-            dvs[i + 1] = True
+    for i in range(len(vals)):
+        if sums[j][i] < sums[1 - j][i]:
+            dvs[i] = True
+        j = 1 - j
 
     return [val for i, val in enumerate(vals) if not dvs[i]]
 
@@ -71,7 +49,13 @@ class TestRemovalForMax(unittest.TestCase):
     def test_sum_of(self) -> None:
         self.assertEqual(2, sum_of([4, 1, 2, 3]))
         self.assertEqual(6, sum_of([4, 1, 3]))
+        self.assertEqual(5, sum_of([4, 2, 3]))
 
     def test_get_best(self) -> None:
-        self.assertEqual([4, 2, 3], get_best([4, 1, 2, 3]))
-        self.assertEqual(5, sum_of(get_best([4, 1, 2, 3])))
+        a = [4, 1, 2, 3]
+        self.assertEqual([4, 1, 3], get_best(a))
+        self.assertEqual(6, sum_of(get_best(a)))
+
+        a = [1, 2, 3, 3, 2, 1, 5]
+        # self.assertEqual([3, 1, 5], get_best(a))
+        # self.assertEqual(7, sum_of(get_best(a)))
