@@ -53,19 +53,18 @@ class Grid:
         return self  # We offer a fluent API.
 
     def _update_avail(self) -> None:
-        self.avail = {}
+        avail = {}
         for i in range(self.size**2):
-            self.avail[(Constraint.ROW, i)] = self._available_values(self.grid[i, :])
-            self.avail[(Constraint.COL, i)] = self._available_values(self.grid[:, i])
+            avail[(Constraint.ROW, i)] = self._available_values(self.grid[i, :])
+            avail[(Constraint.COL, i)] = self._available_values(self.grid[:, i])
         for i, block in enumerate(self._get_blocks()):
-            self.avail[(Constraint.BLK, i)] = self._available_values(block)
+            avail[(Constraint.BLK, i)] = self._available_values(block)
 
-        for k, v in self.avail.copy().items():
-            if not v:
-                del self.avail[k]
+        tuples = [(len(v), k, v) for k, v in avail.items()]  # if v]
+        self.avail = {k: v for _, k, v in sorted(tuples)}
 
-    def _available_values(self, vals) -> list[int]:
-        return sorted(self._valid_cell_values() - set(vals[vals > 0]))
+    def _available_values(self, vals) -> set[int]:
+        return self._valid_cell_values() - set(vals[vals > 0])
 
     def _valid_cell_values(self) -> set[int]:
         return set(range(1, self.size**2 + 1))
@@ -89,13 +88,15 @@ class Grid:
         """Turns N grid values into wildcards."""
         num_wildcards = len(self.grid[self.grid == 0])
         assert num_wildcards == 0
-        i = np.random.randint(0, self.size**2)
-        j = np.random.randint(0, self.size**2)
         for _ in range(n):
-            while self.grid[i, j] > 0:
-                self.grid[i, j] = 0
+            # Avoid zeroing a cell that is already zero.
+            done = False
+            while not done:
                 i = np.random.randint(0, self.size**2)
                 j = np.random.randint(0, self.size**2)
+                if self.grid[i, j] > 0:
+                    self.grid[i, j] = 0
+                    done = True
         self._update_avail()
 
     def is_solved(self) -> bool:
@@ -103,7 +104,7 @@ class Grid:
         return num_wildcards == 0 and self.is_valid()
 
     def is_valid(self) -> bool:
-        """Returns True if grid is feasible (no dups)."""
+        """Returns True if grid is feasible (no duplicates)."""
         # Sūji wa dokushin ni kagiru (数字は独身に限る),
         # "the digits must be single", limited to one occurrence.
         for i in range(self.size**2):
@@ -142,10 +143,31 @@ def solve(grid: Grid) -> Grid:
     assert grid.is_valid()
     if grid.is_solved():
         return grid
-    for type_, n in sorted(grid.avail):
-        print(type_, n, grid.avail[(type_, n)])
+    num_wildcards = len(grid.grid[grid.grid == 0])
+    print("\n", num_wildcards)
 
-    return grid
+    # for constraint, available_values in grid.avail.items():
+    #     for val in available_values:
+
+    for i, j in np.ndindex(grid.grid.shape):
+        if grid.grid[i, j] == 0:
+            available_values = (
+                grid.avail[(Constraint.ROW, i)]
+                & grid.avail[(Constraint.COL, j)]
+                & grid.avail[(Constraint.BLK, i * j // grid.size // grid.size)]
+            )
+            print("\n", i, j, available_values)
+            for val in available_values:
+                grid.grid[i, j] = val
+                assert grid.is_valid()
+                s = solve(grid.copy())
+                if s:
+                    assert s.is_valid()
+                    return s
+            return None  # caller will backtrack
+
+    raise RuntimeError("no solution found")
+    return None
 
 
 if __name__ == "__main__":

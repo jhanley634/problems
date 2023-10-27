@@ -47,7 +47,10 @@ class PuzzleTest(unittest.TestCase):
         p = self.puzzle
         self.assertEqual((4, 4), solve(p).grid.shape)
 
-        for _ in range(6):
-            p.unsolve(1)
+        for i in range(6):
+            p = self.puzzle.copy()
+            p.unsolve(i)
+            print("\n", i)
+            print(p)
             solve(p)
             self.assertTrue(p.is_solved())
