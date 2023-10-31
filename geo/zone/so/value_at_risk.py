@@ -1,22 +1,17 @@
 # from https://codereview.stackexchange.com/questions/287718/value-at-risk-forecast-generator
 
+from functools import wraps
 #Standard library imports
 import math
 import time
 import warnings
-import functools
-from functools import wraps
 
+from arch import arch_model
+from IPython.display import display
+from scipy.stats import gumbel_r, norm
 # Related third-party imports
 import numpy as np
 import pandas as pd
-import yfinance as yf
-from scipy.stats import norm, gumbel_r, shapiro, skew, kurtosis, t
-from scipy import stats
-from arch import arch_model
-import matplotlib.pyplot as plt
-import seaborn as sns
-from IPython.display import display, HTML
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
@@ -148,8 +143,8 @@ class ValueAtRisk:
         ewma_cov_matrix = self.daily_return.cov()
 
         # Update the EWMA covariance matrix for each day's returns
-        for t in range(1, len(self.daily_return)):
-            returns_vector = self.daily_return.iloc[t].values
+        for ti in range(1, len(self.daily_return)):
+            returns_vector = self.daily_return.iloc[ti].values
             # Outer product of returns vector for the current day
             current_return_matrix = np.outer(returns_vector, returns_vector)
             # EWMA formula to update the covariance matrix
