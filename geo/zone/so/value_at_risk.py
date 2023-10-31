@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # from https://codereview.stackexchange.com/questions/287718/value-at-risk-forecast-generator
 
 # Standard library imports
@@ -17,9 +19,14 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 ticker_list = ["AAPL", "MSFT"]
-daily_return = np.zeros((len(ticker_list), 2))
+NUM_PERIODS = 11
+daily_return = pd.DataFrame(
+    np.zeros((NUM_PERIODS, len(ticker_list))),
+    columns=ticker_list,
+    index=pd.date_range(start="2019-10-01", periods=NUM_PERIODS, freq="Q"),
+)
+print(daily_return)
 
-weights = np.full(shape=len(ticker_list), fill_value=1 / len(ticker_list))
 weights = np.full(shape=len(ticker_list), fill_value=1 / len(ticker_list))
 cov_matrix = daily_return.cov()
 
@@ -60,6 +67,9 @@ class ValueAtRisk:
         self.daily_return = daily_return  # DataFrame of daily returns
         self.weights = weights  # List of portfolio weights
         self.cov_matrix = daily_return.cov()  # Covariance matrix of the returns
+
+    def __repr__(self):
+        return f"ValueAtRisk(size={len(self.daily_return)})"
 
     # ------------------- Variance-Covariance VaR -------------------
     @timing_decorator
