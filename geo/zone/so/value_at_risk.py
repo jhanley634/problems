@@ -1,15 +1,15 @@
 # from https://codereview.stackexchange.com/questions/287718/value-at-risk-forecast-generator
 
+# Standard library imports
 from functools import wraps
-#Standard library imports
 import math
 import time
 import warnings
 
+# Related third-party imports
 from arch import arch_model
 from IPython.display import display
 from scipy.stats import gumbel_r, norm
-# Related third-party imports
 import numpy as np
 import pandas as pd
 
@@ -19,10 +19,8 @@ warnings.filterwarnings("ignore")
 ticker_list = ["AAPL", "MSFT"]
 daily_return = np.zeros((len(ticker_list), 2))
 
-weights = np.full(
-    shape=len(ticker_list), fill_value=1 / len(ticker_list))
-weights = np.full(
-    shape=len(ticker_list), fill_value=1 / len(ticker_list))
+weights = np.full(shape=len(ticker_list), fill_value=1 / len(ticker_list))
+weights = np.full(shape=len(ticker_list), fill_value=1 / len(ticker_list))
 cov_matrix = daily_return.cov()
 
 
@@ -32,7 +30,9 @@ def timing_decorator(fn):
         t0 = time.time()
         result = fn(*args, **kw)
         elapsed = time.time() - t0
-        print("func:%r args:[%r, %r] took: %2.3f sec" % (fn.__name__, args, kw, elapsed))
+        print(
+            "func:%r args:[%r, %r] took: %2.3f sec" % (fn.__name__, args, kw, elapsed)
+        )
         return result
 
     return wrap
@@ -116,7 +116,7 @@ class ValueAtRisk:
                 self.CONFIDENCE_LEVEL_95 * 100,
                 self.CONFIDENCE_LEVEL_975 * 100,
                 self.CONFIDENCE_LEVEL_99 * 100,
-                ],
+            ],
         )
         # Calculate Expected Shortfall (ES) for the 97.5% percentile
         es_975 = np.mean(portfolio_returns[portfolio_returns <= var_percentiles[1]])
@@ -149,8 +149,8 @@ class ValueAtRisk:
             current_return_matrix = np.outer(returns_vector, returns_vector)
             # EWMA formula to update the covariance matrix
             ewma_cov_matrix = (
-                    lambda_factor * ewma_cov_matrix
-                    + (1 - lambda_factor) * current_return_matrix
+                lambda_factor * ewma_cov_matrix
+                + (1 - lambda_factor) * current_return_matrix
             )
 
         # Calculate portfolio variance and volatility using the EWMA covariance matrix
@@ -213,7 +213,7 @@ class ValueAtRisk:
                 self.CONFIDENCE_LEVEL_95 * 100,
                 self.CONFIDENCE_LEVEL_975 * 100,
                 self.CONFIDENCE_LEVEL_99 * 100,
-                ],
+            ],
         )
         es_975 = PnL_list[PnL_list <= var_percentiles[1]].mean()
 
@@ -240,8 +240,8 @@ class ValueAtRisk:
         )
         portfolio_pnls = np.dot(simulated_returns, self.weights)
         block_maxima = -np.sort(-portfolio_pnls)[
-                        : int(0.1 * len(portfolio_pnls))
-                        ]  # top 10% as block maxima
+            : int(0.1 * len(portfolio_pnls))
+        ]  # top 10% as block maxima
         loc, scale = gumbel_r.fit(block_maxima)
         gumbel_pnls = -np.random.gumbel(loc, scale, self.SIMULATIONS)  # simulate losses
         var_values = np.percentile(
@@ -250,7 +250,7 @@ class ValueAtRisk:
                 self.CONFIDENCE_LEVEL_95 * 100,
                 self.CONFIDENCE_LEVEL_975 * 100,
                 self.CONFIDENCE_LEVEL_99 * 100,
-                ],
+            ],
         )
         es_975 = gumbel_pnls[gumbel_pnls <= var_values[1]].mean()
         var_dict = {
@@ -273,7 +273,7 @@ class ValueAtRisk:
         date = self.daily_return.index.max() + pd.Timedelta(days=1)
         weighted_avg = pd.DataFrame()
         weighted_avg["weighted_avg"] = (
-                np.average(self.daily_return, axis=1, weights=self.weights) * 100
+            np.average(self.daily_return, axis=1, weights=self.weights) * 100
         )
         am = arch_model(
             weighted_avg["weighted_avg"], vol="Garch", p=1, o=0, q=1, dist="normal"
@@ -318,7 +318,7 @@ class ValueAtRisk:
         date = self.daily_return.index.max() + pd.Timedelta(days=1)
         weighted_avg = pd.DataFrame()
         weighted_avg["weighted_avg"] = (
-                np.average(self.daily_return, axis=1, weights=self.weights) * 100
+            np.average(self.daily_return, axis=1, weights=self.weights) * 100
         )
         am = arch_model(
             weighted_avg["weighted_avg"], vol="Garch", p=1, o=0, q=1, dist="skewt"
@@ -423,7 +423,7 @@ results_df = pd.DataFrame()
 # Loop through the data using the rolling window
 for end in range(rolling_window_length, len(daily_return) + 1):
     # Slice the data for the rolling window
-    window_data = daily_return.iloc[end - rolling_window_length:end]
+    window_data = daily_return.iloc[end - rolling_window_length : end]
 
     # Calculate VaR for the current window using the methods in the ValueAtRisk class
     VaR = ValueAtRisk(window_data, weights)
@@ -452,4 +452,6 @@ display(results_df)
 # Print the total execution time
 minutes = int(elapsed_time // 60)
 seconds = int(elapsed_time % 60)
-print(f"\nTotal execution time for all iterations: {minutes} minutes and {seconds} seconds")
+print(
+    f"\nTotal execution time for all iterations: {minutes} minutes and {seconds} seconds"
+)
