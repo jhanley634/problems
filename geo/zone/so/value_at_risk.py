@@ -3,7 +3,7 @@
 # from https://codereview.stackexchange.com/questions/287718/value-at-risk-forecast-generator
 
 # Standard library imports
-from functools import wraps
+import functools
 import math
 import time
 import warnings
@@ -18,7 +18,7 @@ import pandas as pd
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
-ticker_list = ["AAPL", "MSFT"]
+ticker_list = ["^GSPC", "^N225", "GC=F", "000001.SS", "VBMFX", "^IXIC", "VWO"]
 NUM_PERIODS = 11
 daily_return = pd.DataFrame(
     np.zeros((NUM_PERIODS, len(ticker_list))),
@@ -31,18 +31,29 @@ weights = np.full(shape=len(ticker_list), fill_value=1 / len(ticker_list))
 cov_matrix = daily_return.cov()
 
 
-def timing_decorator(fn):
-    @wraps(fn)
-    def wrap(*args, **kw):
-        t0 = time.time()
-        result = fn(*args, **kw)
-        elapsed = time.time() - t0
-        print(
-            "func:%r args:[%r, %r] took: %2.3f sec" % (fn.__name__, args, kw, elapsed)
-        )
+# ------------------- Time Tracker per VaR Model -------------------
+# Boolean flag to control timing decorator
+enable_timing = True  # Set to True to enable timing, False to disable
+
+
+# Timing decorator with condition
+def timing_decorator(func):
+    """Measure execution time of each function."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if enable_timing:  # Check if timing should be enabled
+            start_time = time.time()  # Record the start time before function execution
+        result = func(*args, **kwargs)  # Execute the function
+        if enable_timing:  # Check if timing should be enabled
+            end_time = time.time()  # Record the end time after function execution
+            elapsed_time = end_time - start_time  # Calculate calculation time
+            print(
+                f"The function {func.__name__!r} took {elapsed_time:.4f} seconds to complete."
+            )
         return result
 
-    return wrap
+    return wrapper
 
 
 class ValueAtRisk:
@@ -67,9 +78,6 @@ class ValueAtRisk:
         self.daily_return = daily_return  # DataFrame of daily returns
         self.weights = weights  # List of portfolio weights
         self.cov_matrix = daily_return.cov()  # Covariance matrix of the returns
-
-    def __repr__(self):
-        return f"ValueAtRisk(size={len(self.daily_return)})"
 
     # ------------------- Variance-Covariance VaR -------------------
     @timing_decorator
@@ -149,25 +157,35 @@ class ValueAtRisk:
         date = self.daily_return.index.max() + pd.Timedelta(
             days=1
         )  # Next day's date for VaR calculation
-        # Initialize the EWMA covariance matrix with the simple covariance matrix
-        ewma_cov_matrix = self.daily_return.cov()
 
-        # Update the EWMA covariance matrix for each day's returns
-        for ti in range(1, len(self.daily_return)):
-            returns_vector = self.daily_return.iloc[ti].values
-            # Outer product of returns vector for the current day
-            current_return_matrix = np.outer(returns_vector, returns_vector)
-            # EWMA formula to update the covariance matrix
+        # Convert daily returns to a NumPy array
+        daily_returns = self.daily_return.values
+
+        # Calculate the returns squared
+        returns_squared = daily_returns**2
+
+        # Initialize the EWMA covariance matrix with the simple covariance matrix
+        ewma_cov_matrix = self.daily_return.cov().values
+
+        # EWMA formula to update the covariance matrix
+        for t in range(1, len(self.daily_return)):
+            returns_vector = daily_returns[t]
+            returns_squared_vector = returns_squared[t]
+
+            # Update the covariance matrix using NumPy operations
             ewma_cov_matrix = (
                 lambda_factor * ewma_cov_matrix
-                + (1 - lambda_factor) * current_return_matrix
+                + (1 - lambda_factor) * np.outer(returns_vector, returns_vector)
+                + (1 - lambda_factor) * ewma_cov_matrix * returns_squared_vector
             )
 
         # Calculate portfolio variance and volatility using the EWMA covariance matrix
         port_variance = np.dot(self.weights.T, np.dot(ewma_cov_matrix, self.weights))
         port_volatility = np.sqrt(port_variance)
+
         # Mean portfolio return for VaR calculation
         port_mean_return = np.dot(self.weights, self.daily_return.mean())
+
         # Z-scores for VaR confidence intervals
         z_scores = norm.ppf(
             [
@@ -179,10 +197,13 @@ class ValueAtRisk:
 
         # Calculate VaR values
         var_values = port_mean_return + z_scores * port_volatility
+
         # Calculate portfolio returns for Expected Shortfall calculation
-        daily_return_port = np.dot(self.daily_return.values, self.weights)
+        daily_return_port = np.dot(daily_returns, self.weights)
+
         # Expected Shortfall (ES) for 97.5% confidence level
         es_975 = np.mean(daily_return_port[daily_return_port <= var_values[1]])
+
         # Map of VaR and ES calculations
         var_dict = {
             "VaR(95%)": var_values[0],
@@ -190,12 +211,13 @@ class ValueAtRisk:
             "VaR(99%)": var_values[2],
             "ES(97.5%)": es_975,
         }
+
         # Return a DataFrame with the calculated VaR and ES values
         return pd.DataFrame(var_dict, index=[date])
 
     # ------------------- Monte Carlo VaR Normal -------------------
     @timing_decorator
-    def monte_carlo(self):
+    def monte_carlo_normal(self):
         """
         Compute Monte Carlo VaR considering the correlation between assets.
 
@@ -214,18 +236,18 @@ class ValueAtRisk:
         )
 
         # Calculate the portfolio PnL by applying the weights to the simulated multivariate returns
-        PnL_list = np.dot(multivariate_normal_samples, self.weights)
+        PnL = np.dot(multivariate_normal_samples, self.weights)
 
         # Calculate VaR at different confidence levels
         var_percentiles = np.percentile(
-            PnL_list,
+            PnL,
             [
                 self.CONFIDENCE_LEVEL_95 * 100,
                 self.CONFIDENCE_LEVEL_975 * 100,
                 self.CONFIDENCE_LEVEL_99 * 100,
             ],
         )
-        es_975 = PnL_list[PnL_list <= var_percentiles[1]].mean()
+        es_975 = np.mean(PnL[PnL <= var_percentiles[1]])
 
         var_dict = {
             "VaR(95%)": var_percentiles[0],
@@ -254,6 +276,8 @@ class ValueAtRisk:
         ]  # top 10% as block maxima
         loc, scale = gumbel_r.fit(block_maxima)
         gumbel_pnls = -np.random.gumbel(loc, scale, self.SIMULATIONS)  # simulate losses
+
+        # Calculate VaR and ES directly without intermediate lists
         var_values = np.percentile(
             gumbel_pnls,
             [
@@ -262,13 +286,16 @@ class ValueAtRisk:
                 self.CONFIDENCE_LEVEL_99 * 100,
             ],
         )
-        es_975 = gumbel_pnls[gumbel_pnls <= var_values[1]].mean()
+        es_975 = np.mean(gumbel_pnls[gumbel_pnls <= var_values[1]])
+
+        # Create the dictionary with VaR and ES values
         var_dict = {
             "VaR(95%)": var_values[0],
             "VaR(97.5%)": var_values[1],
             "VaR(99%)": var_values[2],
             "ES(97.5%)": es_975,
         }
+
         return pd.DataFrame(var_dict, index=[date])
 
     # ------------------- GARCH VaR Normal -------------------
@@ -382,7 +409,7 @@ class ValueAtRisk:
             self.variance_covariance(),
             self.historic(),
             self.ewma(),
-            self.monte_carlo(),
+            self.monte_carlo_normal(),
             self.evt_monte_carlo(),
             self.para_garch_normal(),
             self.para_garch_t(),
@@ -421,8 +448,7 @@ display(summary_df)
 
 
 # Define the rolling window length
-rolling_window_length = 2000
-
+rolling_window_length = 503
 
 # Record the start time
 start_time = time.time()
@@ -442,7 +468,7 @@ for end in range(rolling_window_length, len(daily_return) + 1):
     VaR.variance_covariance()
     VaR.historic()
     VaR.ewma()
-    VaR.monte_carlo()
+    VaR.monte_carlo_normal()
     VaR.evt_monte_carlo()
     VaR.para_garch_normal()
     VaR.para_garch_t()

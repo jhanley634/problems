@@ -4,13 +4,11 @@
 
 from collections import namedtuple
 from enum import Enum, auto
-from functools import total_ordering
-from operator import attrgetter
 from time import time
-from typing import Sequence, Tuple
+from typing import Tuple
 
 from pygame import Rect, Surface, Vector2
-from sortedcontainers import SortedKeyList, SortedList
+from sortedcontainers import SortedList
 import pygame
 
 GRID_SIZE_PX: int = 3
