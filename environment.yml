@@ -18,6 +18,7 @@ dependencies:
   - dask >= 2023.9.1
   - datasets >= 2.14.5
   - evaluate >= 0.4.0
+  - eyed3 >= 0.9.7
   - fasteners >= 0.18
   - flake8 >= 6.1.0
   - flask >= 2.3.2
@@ -25,6 +26,7 @@ dependencies:
   - geopy >= 2.4.0
   - glom >= 23.3.0
   - gpxpy >= 1.5.0
+  - html2text >= 2020.1.16
   - huggingface_hub >= 0.16.4
   - hypothesis >= 6.84.3
   - imbalanced-learn >= 0.11.0
@@ -38,7 +40,6 @@ dependencies:
   - mypy >= 1.5.1
   - netifaces >= 0.11.0
   - networkit >= 10.1
-  - html2text >= 2020.1.16
   - numba >= 0.57.1
   - numbers_parser >= 3.11.0
   - numpy >= 1.23.5, < 1.25  # numba works with 1.24
