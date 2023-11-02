@@ -4,20 +4,16 @@
 
 # Standard library imports
 import functools
-import math
 import time
 import warnings
 
 # Related third-party imports
 from arch import arch_model
-from IPython.display import HTML, display
-from scipy import stats
-from scipy.stats import exponweib, gumbel_r, kurtosis, norm, shapiro, skew, t
+from IPython.display import display
+from scipy.stats import gumbel_r, norm
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import yfinance as yf
 
 # Suppress warnings
@@ -334,9 +330,9 @@ class ValueAtRisk:
         ewma_cov_matrix = self.daily_return.cov().values
 
         # Update the covariance matrix iteratively
-        for t in range(1, len(self.daily_return)):
-            returns_vector = daily_returns[t]
-            returns_squared_vector = returns_squared[t]
+        for ti in range(1, len(self.daily_return)):
+            returns_vector = daily_returns[ti]
+            returns_squared_vector = returns_squared[ti]
 
             # Update the EWMA covariance matrix
             ewma_cov_matrix = (
