@@ -3,6 +3,7 @@
 # from https://codereview.stackexchange.com/questions/287718/value-at-risk-forecast-generator
 
 # Standard library imports
+from cProfile import Profile
 import functools
 import time
 import warnings
@@ -674,60 +675,67 @@ with tqdm(
 
     # Loop through the data using the rolling window
     for end in range(ROLLING_WINDOW_LENGTH, len(daily_return) + 1):
-        # Slice the data for the rolling window
-        window_data = daily_return.iloc[end - ROLLING_WINDOW_LENGTH : end]
+        with Profile() as prof:
+            # Slice the data for the rolling window
+            window_data = daily_return.iloc[end - ROLLING_WINDOW_LENGTH : end]
 
-        # Calculate VaR for the current window using the methods in the ValueAtRisk class
-        VaR = ValueAtRisk(window_data, weights)
+            # Calculate VaR for the current window using the methods in the ValueAtRisk class
+            VaR = ValueAtRisk(window_data, weights)
 
-        # Calculate and display the execution time for individual methods
-        start_method_time = time.time()
-        VaR.variance_covariance()
-        calculation_times["variance_covariance"] += time.time() - start_method_time
+            # Calculate and display the execution time for individual methods
+            start_method_time = time.time()
+            VaR.variance_covariance()
+            calculation_times["variance_covariance"] += time.time() - start_method_time
 
-        start_method_time = time.time()
-        VaR.historic()
-        calculation_times["historic"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.historic()
+            calculation_times["historic"] += time.time() - start_method_time
 
-        start_method_time = time.time()
-        VaR.ewma()
-        calculation_times["ewma"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.ewma()
+            calculation_times["ewma"] += time.time() - start_method_time
 
-        start_method_time = time.time()
-        VaR.monte_carlo_normal()
-        calculation_times["monte_carlo_normal"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.monte_carlo_normal()
+            calculation_times["monte_carlo_normal"] += time.time() - start_method_time
 
-        start_method_time = time.time()
-        VaR.evt_monte_carlo_gumbel()
-        calculation_times["evt_monte_carlo_gumbel"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.evt_monte_carlo_gumbel()
+            calculation_times["evt_monte_carlo_gumbel"] += (
+                time.time() - start_method_time
+            )
 
-        start_method_time = time.time()
-        VaR.garch_normal()
-        calculation_times["garch_normal"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.garch_normal()
+            calculation_times["garch_normal"] += time.time() - start_method_time
 
-        start_method_time = time.time()
-        VaR.garch_t()
-        calculation_times["garch_t"] += time.time() - start_method_time
+            start_method_time = time.time()
+            VaR.garch_t()
+            calculation_times["garch_t"] += time.time() - start_method_time
 
-        current_summary = VaR.VaR_summary()
+            current_summary = VaR.VaR_summary()
 
-        # Append the results to the results_df
-        results_df = pd.concat([results_df, current_summary])
+            # Append the results to the results_df
+            results_df = pd.concat([results_df, current_summary])
 
-        # Update the tqdm progress bar
-        pbar.update(1)
+            # Update the tqdm progress bar
+            pbar.update(1)
 
-        # Calculate elapsed time
-        elapsed_time = time.time() - start_time
+            # Calculate elapsed time
+            elapsed_time = time.time() - start_time
 
-        # Calculate estimated remaining time
-        remaining_iterations = total_iterations - pbar.n
-        estimated_remaining_time = (elapsed_time / pbar.n) * remaining_iterations
+            # Calculate estimated remaining time
+            remaining_iterations = total_iterations - pbar.n
+            estimated_remaining_time = (elapsed_time / pbar.n) * remaining_iterations
 
-        # Update the progress bar with remaining and elapsed time
-        pbar.set_postfix(
-            Elapsed=f"{elapsed_time:.0f}s", Remaining=f"{estimated_remaining_time:.0f}s"
-        )
+            # Update the progress bar with remaining and elapsed time
+            pbar.set_postfix(
+                Elapsed=f"{elapsed_time:.0f}s",
+                Remaining=f"{estimated_remaining_time:.0f}s",
+            )
+        print()
+        prof.print_stats(sort="cumulative")
+        print()
 
 # Calculate the total execution time for all iterations
 total_execution_time = time.time() - start_time
