@@ -15,9 +15,9 @@ def insert_blanks(input, target):
 
 class InsertBlanksTest(unittest.TestCase):
     def test_insert_blanks(self):
-        input = "abcabcabcabc"
+        text = "abcabcabcabc"
         target = "foofoo foo fo o"
         self.assertEqual(
             "abcabc abc ab c",
-            "".join(insert_blanks(input, target)),
+            "".join(insert_blanks(text, target)),
         )

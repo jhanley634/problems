@@ -50,13 +50,11 @@ from urllib.parse import urlparse  # noqa F401
 import contextlib  # noqa F401
 import datetime  # noqa F401
 import dis  # noqa F401
-import functools  # noqa F401
 import gc  # noqa F401
 import inspect  # noqa F401
 import io  # noqa F401
 import json  # noqa F401
 import logging  # noqa F401
-import math  # noqa F401
 import os  # noqa F401
 import random  # noqa F401
 import re  # noqa F401
@@ -64,11 +62,8 @@ import shutil  # noqa F401
 import struct  # noqa F401
 import subprocess  # noqa F401
 import sys  # noqa F401
-import time  # noqa F401
 import unittest  # noqa F401
-import warnings  # noqa F401
 
-from arch import arch_model  # noqa F401
 from bs4 import BeautifulSoup  # noqa F401
 from bs4 import Tag  # noqa F401
 from datasets import Dataset, load_dataset  # noqa F401
@@ -83,8 +78,6 @@ from html2text import html2text  # noqa F401
 from huggingface_hub import hf_hub_download  # noqa F401
 from hypothesis import given  # noqa F401
 from ipyleaflet import AwesomeIcon, Map, Marker, basemaps  # noqa F401
-# ignore F401 "imported but unused"
-from IPython.display import display  # noqa F401
 from markdownify import markdownify  # noqa F401
 from memory_profiler import profile  # noqa F401
 from numba import njit  # noqa F401
@@ -96,6 +89,7 @@ from numpy.random import default_rng  # noqa F401
 from numpy.testing import assert_array_equal  # noqa F401
 from osmnx.graph import graph_from_place  # noqa F401
 from palettable.colorbrewer import qualitative  # noqa F401
+# ignore F401 "imported but unused"
 from PIL import Image, ImageDraw  # noqa F401
 from PIL.Image import Image  # noqa F401
 from PIL.ImageDraw import ImageDraw  # noqa F401
@@ -108,7 +102,6 @@ from roman import InvalidRomanNumeralError  # noqa F401
 from roman import fromRoman  # noqa F401
 from scipy.fft import rfft, rfftfreq  # noqa F401
 from scipy.spatial.distance import pdist, squareform  # noqa F401
-from scipy.stats import gumbel_r, norm  # noqa F401
 from sklearn.ensemble import RandomForestRegressor  # noqa F401
 from sklearn.linear_model import LinearRegression  # noqa F401
 from sklearn.model_selection import GridSearchCV  # noqa F401
