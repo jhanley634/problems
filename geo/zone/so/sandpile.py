@@ -17,40 +17,40 @@ NaN = np.nan
 
 @njit
 def trough(
-    N: np.ndarray[Any, np.dtype[np.float64]]
+    n: np.ndarray[Any, np.dtype[np.float64]]
 ) -> np.ndarray[Any, np.dtype[np.float64]]:
-    w, h = np.shape(N)
-    Nt = np.concatenate((np.ones((w, 1)) * NaN, N, np.ones((w, 1)) * NaN), axis=1)
-    Nt = np.concatenate(
-        (np.ones((1, h + 2)) * NaN, Nt, np.ones((1, h + 2)) * NaN), axis=0
+    w, h = np.shape(n)
+    nt = np.concatenate((np.ones((w, 1)) * NaN, n, np.ones((w, 1)) * NaN), axis=1)
+    nt = np.concatenate(
+        (np.ones((1, h + 2)) * NaN, nt, np.ones((1, h + 2)) * NaN), axis=0
     )
-    return Nt
+    return nt
 
 
 @njit
 def topple(
-    N: np.ndarray[Any, np.dtype[np.float64]]
+    n: np.ndarray[Any, np.dtype[np.float64]]
 ) -> np.ndarray[Any, np.dtype[np.float64]]:
-    P = trough(N)
-    sP = np.shape(P)
-    while np.nanmax(P) > 3:
-        for i, j in np.ndindex(sP):
-            if P[i, j] > 3 and not np.isnan(P[i, j]):
-                P[i, j] -= 4
-                P[i + 1, j] += 1
-                P[i - 1, j] += 1
-                P[i, j + 1] += 1
-                P[i, j - 1] += 1
-    return P[1:-1, 1:-1]
+    p = trough(n)
+    s_p = np.shape(p)
+    while np.nanmax(p) > 3:
+        for i, j in np.ndindex(s_p):
+            if p[i, j] > 3 and not np.isnan(p[i, j]):
+                p[i, j] -= 4
+                p[i + 1, j] += 1
+                p[i - 1, j] += 1
+                p[i, j + 1] += 1
+                p[i, j - 1] += 1
+    return p[1:-1, 1:-1]
 
 
 def picard(m: int, n: int) -> np.ndarray[Any, np.dtype[np.float64]]:
-    P1 = 6 * np.ones((m, n))
-    P1 = topple(P1)
-    P2 = 6 * np.ones((m, n))
-    Pi = P2 - P1
-    Pi = topple(Pi)
-    return Pi
+    p1 = 6 * np.ones((m, n))
+    p1 = topple(p1)
+    p2 = 6 * np.ones((m, n))
+    p_i = p2 - p1
+    p_i = topple(p_i)
+    return p_i
 
 
 def main(m: int = 300, n: int = 300) -> None:
