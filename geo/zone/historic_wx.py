@@ -13,12 +13,12 @@ def get_wx_stats(start: dt.date, station: str = "KSJC:9:US") -> pl.DataFrame:
     end = start + dt.timedelta(days=32)
     end = dt.date(end.year, end.month, 1) - dt.timedelta(days=1)
     fmt = "%Y%m%d"
-    ENGLISH_UNITS = "e"
+    english_units = "e"
     api_key = "e1f10a1e78da46f5b10a1e78da96f525"
     url = f"https://api.weather.com/v1/location/{station}/observations/historical.json"
     params = dict(
         apiKey=api_key,
-        units=ENGLISH_UNITS,
+        units=english_units,
         startDate=start.strftime(fmt),
         endDate=end.strftime(fmt),
     )

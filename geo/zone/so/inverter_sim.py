@@ -1,11 +1,12 @@
+# from https://codereview.stackexchange.com/questions/287853/python-3ph-2l-inverter-simulation-with-spwm
+
 from datetime import datetime
 
 from scipy import signal
 from scipy.integrate import solve_ivp
-# from https://codereview.stackexchange.com/questions/287853/python-3ph-2l-inverter-simulation-with-spwm
 import numpy as np
 
-##Parameters
+# Parameters
 # time axis
 starting_time = 0  # [s]
 step_time = 0.2e-6  # [s]
@@ -22,7 +23,8 @@ L = 400e-6  # [H] self-inductance
 K = 0  # inductances coupling coefficient, <1
 M = K * L  # [H] mutual inductance
 
-##Functions
+
+# Functions
 
 
 def ref(time, amplitude, frequency, phase):
@@ -35,7 +37,7 @@ def triangle(time, frequency):
     return triangle
 
 
-def SPWM(mod, carrier):
+def spwm(mod, carrier):
     if mod >= carrier:
         d = 1
     if mod < carrier:
@@ -48,9 +50,9 @@ def system(t, y):
     mod2 = ref(t, m, f_e, 2 / 3 * np.pi)
     mod3 = ref(t, m, f_e, 4 / 3 * np.pi)
     carrier = triangle(t, f_sw)
-    d1 = SPWM(mod1, carrier)
-    d2 = SPWM(mod2, carrier)
-    d3 = SPWM(mod3, carrier)
+    d1 = spwm(mod1, carrier)
+    d2 = spwm(mod2, carrier)
+    d3 = spwm(mod3, carrier)
     v1_gnd = d1 * Vdc
     v2_gnd = d2 * Vdc
     v3_gnd = d3 * Vdc
@@ -58,9 +60,9 @@ def system(t, y):
     v1 = v1_gnd + vgnd_n
     v2 = v2_gnd + vgnd_n
     v3 = v3_gnd + vgnd_n
-    v12 = v1 - v2
-    v23 = v2 - v3
-    v13 = v1 - v3
+    # v12 = v1 - v2
+    # v23 = v2 - v3
+    # v13 = v1 - v3
     i1 = 1 / (L * L + L * M - 2 * M * M) * ((L + M) * y[0] - M * y[1] - M * y[2])
     i2 = 1 / (L * L + L * M - 2 * M * M) * ((L + M) * y[1] - M * y[0] - M * y[2])
     i3 = 1 / (L * L + L * M - 2 * M * M) * ((L + M) * y[2] - M * y[0] - M * y[1])

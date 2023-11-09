@@ -10,8 +10,8 @@ import hypothesis.strategies as st
 
 
 def single_number(nums: list[int]) -> int:
-    BIAS = 2**31
-    nums = [num + BIAS for num in nums]
+    bias = 2**31
+    nums = [num + bias for num in nums]
     assert all(num >= 0 for num in nums)
 
     res = 0
@@ -25,7 +25,7 @@ def single_number(nums: list[int]) -> int:
         if counts % 3 == 1:
             res |= mask
 
-    return res - BIAS
+    return res - bias
 
 
 class TestLeet137(unittest.TestCase):

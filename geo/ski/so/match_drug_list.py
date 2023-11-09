@@ -45,11 +45,11 @@ def _extract_drugs_from_prescription_text(prescription_text: str) -> list[int]:
     # For every occurrence of a drug's name in the prescription text
     # it will append a Drug() object with match's details in a list
     matched_drugs = []
-    for DRUG in US_DRUGS:
+    for drug in US_DRUGS:
         for match in regex.finditer(
-            re.escape(DRUG.name), re.escape(normalized_prescription_text), re.IGNORECASE
+            re.escape(drug.name), re.escape(normalized_prescription_text), re.IGNORECASE
         ):
-            matched_drugs.append(Drug(DRUG.name, DRUG.atc, match.span()))
+            matched_drugs.append(Drug(drug.name, drug.atc, match.span()))
 
     # Will clean up the matches list from duplicates substring
     # ex: 'DOLIPRANE' and 'DOLIPRANE CODEINE'

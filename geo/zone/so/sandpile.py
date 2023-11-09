@@ -57,13 +57,13 @@ def main(m: int = 300, n: int = 300) -> None:
     picard(4, 4)  # warmup
 
     t0 = time()
-    Pi = picard(m, n)
+    p_i = picard(m, n)
     print(f"elapsed: {time() - t0:.3f} sec")
 
     plt.figure()
     plt.axes(aspect="equal")
     plt.axis("off")
-    plt.pcolormesh(Pi, cmap=mp.colormaps["viridis_r"])
+    plt.pcolormesh(p_i, cmap=mp.colormaps["viridis_r"])
 
     dim = f"{n}x{m}"
     file_name = Path("/tmp") / f"Picard_Identity-{dim}.png"
