@@ -13,6 +13,7 @@ dependencies:
 - torchvision >= 0.9.1
 - pip:
   - beautifulsoup4 >= 4.12.2
+  - beartype >= 0.16.4
   - bitarray >= 2.8.1
   - black[jupyter] >= 23.9.1
   - dask >= 2023.9.1

@@ -8,6 +8,7 @@ from beartype import beartype
 from geopandas.array import GeometryArray
 from uszipcode import SearchEngine, SimpleZipcode
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import requests
 
@@ -74,8 +75,13 @@ def get_cities(limit=1600) -> pd.DataFrame:
 
 
 @beartype
-def _points_from_xy(lng: pd.Series, lat: pd.Series) -> GeometryArray:
-    return gpd.points_from_xy(lng, lat)
+def _points_from_xy(lng: pd.Series, lat: pd.Series, eps=1e-9) -> GeometryArray:
+    assert len(lng) == len(lat)
+    size = len(lng)
+    return gpd.points_from_xy(
+        lng + np.random.uniform(-eps, eps, size=size),
+        lat + np.random.uniform(-eps, eps, size=size),
+    )
 
 
 @beartype
@@ -90,7 +96,8 @@ def join_on_location() -> gpd.GeoDataFrame:
     )
     both = gpd.sjoin_nearest(housing, cities, how="left", distance_col="dist")
     both = both.drop(columns=["longitude", "latitude", "lng", "lat", "index_right"])
-    assert len(both) == 21_286
+    # assert 21_286 == len(both), len(both)
+    assert 20_640 == len(both), len(both)
     return both
 
 
