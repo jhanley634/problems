@@ -4,6 +4,8 @@
 from pathlib import Path
 from typing import Any
 
+from beartype import beartype
+from geopandas.array import GeometryArray
 from uszipcode import SearchEngine, SimpleZipcode
 import geopandas as gpd
 import pandas as pd
@@ -14,6 +16,7 @@ AGERON_BASE_URL = "https://raw.githubusercontent.com/ageron/data/main"  # homl3 
 CACHE_DIR = Path("/tmp/cache")
 
 
+@beartype
 def get_cached(url: str) -> Path:
     CACHE_DIR.mkdir(exist_ok=True)
     cache_file = CACHE_DIR / Path(url).name
@@ -25,6 +28,7 @@ def get_cached(url: str) -> Path:
     return cache_file
 
 
+@beartype
 def get_housing_df(filename="housing/housing.csv") -> pd.DataFrame:
     """Retrieves simplified 1990 housing data."""
     url = f"{AGERON_BASE_URL}/{filename}"
@@ -38,17 +42,19 @@ def get_housing_df(filename="housing/housing.csv") -> pd.DataFrame:
     return df[["longitude", "latitude", "median_house_value"]]
 
 
+@beartype
 def _california_city_columns(row: SimpleZipcode) -> dict[str, Any]:
     assert row.state == "CA"
     return {
-        "longitude": row.lng,
-        "latitude": row.lat,
+        "lng": row.lng,
+        "lat": row.lat,
         "population": row.population,
         "pop_density": row.population_density,
         "city": row.major_city,
     }
 
 
+@beartype
 def get_cities(limit=1600) -> pd.DataFrame:
     zip_se = SearchEngine()
     return pd.DataFrame(
@@ -67,20 +73,26 @@ def get_cities(limit=1600) -> pd.DataFrame:
     )
 
 
-def main() -> None:
-    cities = gpd.GeoDataFrame(
-        df := get_cities(),
-        geometry=gpd.points_from_xy(df.longitude, df.latitude),
-    )
+@beartype
+def _points_from_xy(lng: pd.Series, lat: pd.Series) -> GeometryArray:
+    return gpd.points_from_xy(lng, lat)
+
+
+@beartype
+def join_on_location() -> gpd.GeoDataFrame:
     housing = gpd.GeoDataFrame(
         df := get_housing_df(),
-        geometry=gpd.points_from_xy(df.longitude, df.latitude),
+        geometry=_points_from_xy(df.longitude, df.latitude),
     )
-    both = gpd.sjoin_nearest(cities, housing, how="left", distance_col="dist")
-    both = both.drop(columns=["longitude_left", "latitude_left"])
-    print(both)
-    assert len(both) == 2433
+    cities = gpd.GeoDataFrame(
+        df := get_cities(),
+        geometry=_points_from_xy(df.lng, df.lat),
+    )
+    both = gpd.sjoin_nearest(housing, cities, how="left", distance_col="dist")
+    both = both.drop(columns=["longitude", "latitude", "lng", "lat", "index_right"])
+    assert len(both) == 21_286
+    return both
 
 
 if __name__ == "__main__":
-    main()
+    print(join_on_location())
