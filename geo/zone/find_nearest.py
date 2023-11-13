@@ -3,6 +3,7 @@
 
 from pathlib import Path
 from typing import Any
+import re
 
 from beartype import beartype
 from geopandas.array import GeometryArray
@@ -43,6 +44,9 @@ def get_housing_df(filename="housing/housing.csv") -> pd.DataFrame:
     return df[["longitude", "latitude", "median_house_value"]]
 
 
+_strip_county_suffix_re = re.compile(r" County$")
+
+
 @beartype
 def _california_city_columns(row: SimpleZipcode) -> dict[str, Any]:
     assert row.state == "CA"
@@ -52,6 +56,7 @@ def _california_city_columns(row: SimpleZipcode) -> dict[str, Any]:
         "population": row.population,
         "pop_density": row.population_density,
         "city": row.major_city,
+        "county": _strip_county_suffix_re.sub("", row.county),
     }
 
 
@@ -76,6 +81,7 @@ def get_cities(limit=1600) -> pd.DataFrame:
 
 @beartype
 def _points_from_xy(lng: pd.Series, lat: pd.Series, eps=1e-9) -> GeometryArray:
+    """Fuzzes points by small random epsilon, so all locations are distinct."""
     assert len(lng) == len(lat)
     size = len(lng)
     return gpd.points_from_xy(
@@ -94,10 +100,12 @@ def join_on_location() -> gpd.GeoDataFrame:
         df := get_cities(),
         geometry=_points_from_xy(df.lng, df.lat),
     )
+    cities.drop(columns=["geometry"]).to_csv("/tmp/cities.csv", index=False)
+
     both = gpd.sjoin_nearest(housing, cities, how="left", distance_col="dist")
+
     both = both.drop(columns=["longitude", "latitude", "lng", "lat", "index_right"])
-    # assert 21_286 == len(both), len(both)
-    assert 20_640 == len(both), len(both)
+    assert 20_640 == len(both), len(both)  # was 21_286 without fuzzing
     return both
 
 

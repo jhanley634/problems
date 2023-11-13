@@ -29,7 +29,7 @@ dependencies:
   - gpxpy >= 1.6.1
   - html2text >= 2020.1.16
   - huggingface_hub >= 0.16.4
-  - hypothesis >= 6.88.3
+  - hypothesis >= 6.88.4
   - imbalanced-learn >= 0.11.0
   - ipyleaflet >= 0.17.4
   - isort >= 5.12.0
@@ -43,7 +43,7 @@ dependencies:
   - networkit >= 10.1
   - numba >= 0.58.1
   - numbers_parser >= 3.11.0
-  - numpy >= 1.24.4, < 1.25  # numba works with 1.24
+  - numpy >= 1.25.2
   - onnx >= 1.15.0
   - openml >= 0.14.1
   - openpyxl >= 3.1.2
@@ -59,7 +59,7 @@ dependencies:
   - pydub >= 0.25.1
   - pygame >= 2.5.2
   - pylint >= 3.0.2
-  - pynisher >= 1.0.9
+  - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
   - pyspark >= 3.5.0
   - pytest >= 7.4.3
@@ -75,7 +75,7 @@ dependencies:
   - sentencepiece >= 0.1.99
   - spacy >= 3.7.2
   - sqlalchemy >= 1.4.47, < 2
-  - streamlit >= 1.28.1
+  - streamlit >= 1.28.2
   - streamlit-image-coordinates >= 0.1.6
   - tabulate >= 0.9.0
   - transformers >= 4.35.0
