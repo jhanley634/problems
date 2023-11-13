@@ -102,9 +102,9 @@ def join_on_location() -> gpd.GeoDataFrame:
     )
     cities.drop(columns=["geometry"]).to_csv("/tmp/cities.csv", index=False)
 
-    both = gpd.sjoin_nearest(housing, cities, how="left", distance_col="dist")
+    both = gpd.sjoin_nearest(housing, cities, how="left", distance_col="distance")
 
-    both = both.drop(columns=["longitude", "latitude", "lng", "lat", "index_right"])
+    both = both.drop(columns=["lng", "lat", "index_right"])
     assert 20_640 == len(both), len(both)  # was 21_286 without fuzzing
     return both
 
