@@ -1,6 +1,7 @@
 
 # Copyright 2021 John Hanley. MIT licensed.
 
+export PATH := $(PATH):$(HOME)/miniconda3/bin
 ACTIVATE = source activate problems
 
 all:
