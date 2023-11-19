@@ -32,17 +32,12 @@ def show_voronoi(want_show=False):
 
 def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
     county = "Los Angeles"
-    print(len(housing[housing.county == county]))
 
-    print(sum(housing[housing.county == county].interior))
-    # housing.loc[housing.county == county].interior = True
-    print(sum(housing[housing.county == county].interior))
+    housing.loc[housing.county == county, "interior"] = True
 
     points = housing[["longitude", "latitude"]].to_numpy()
     hull = ConvexHull(points)
-    print(hull.volume)
-    print(hull)
-    # breakpoint()
+    assert 50.275 < hull.volume < 50.276
 
     return housing
 
