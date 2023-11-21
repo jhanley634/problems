@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
+from typing import Generator
 
 from scipy.spatial import ConvexHull, Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
@@ -31,15 +32,30 @@ def show_voronoi(want_show=False):
 
 
 def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
-    county = "Los Angeles"
+    for county, num_districts in _get_large_counties(housing):
+        if num_districts < 400:
+            continue  # no need to prune clutter from the little ones
 
-    housing.loc[housing.county == county, "interior"] = True
+        h = housing
+        h.loc[h.county == county, "interior"] = True
 
-    points = housing[["longitude", "latitude"]].to_numpy()
-    hull = ConvexHull(points)
-    assert 50.275 < hull.volume < 50.276
+        points = h[["longitude", "latitude"]].to_numpy()
+        hull = ConvexHull(points)
+        for lng, lat in hull.points:
+            h.loc[(h.longitude == lng) & (h.latitude == lat), "interior"] = False
+        h = h[h.interior == False]
 
-    return housing
+        print(county.ljust(15), len(h), len(hull.vertices), hull.volume)
+
+    return h
+
+
+def _get_large_counties(housing: pd.DataFrame) -> Generator[tuple[str, int], None, None]:
+    for county, row in (
+        housing[["county", "population"]].groupby("county").count().iterrows()
+    ):
+        num_districts = row.population
+        yield county, num_districts
 
 
 if __name__ == "__main__":
