@@ -37,20 +37,25 @@ def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
             continue  # no need to prune clutter from the little ones
 
         h = housing
+        assert 0 == sum(h.interior)
         h.loc[h.county == county, "interior"] = True
 
         points = h[["longitude", "latitude"]].to_numpy()
         hull = ConvexHull(points)
-        for lng, lat in hull.points:
-            h.loc[(h.longitude == lng) & (h.latitude == lat), "interior"] = False
-        h = h[h.interior == False]
+        print(sum(h.interior), len(h), len(hull.vertices))
+        for i in hull.vertices:
+            print(sum(h.interior), i, h.loc[i].longitude, h.loc[i].latitude)
+            h.loc[(h.longitude == h.loc[i].longitude), "interior"] = False
+        h = h[not h.interior]
 
         print(county.ljust(15), len(h), len(hull.vertices), hull.volume)
 
     return h
 
 
-def _get_large_counties(housing: pd.DataFrame) -> Generator[tuple[str, int], None, None]:
+def _get_large_counties(
+    housing: pd.DataFrame,
+) -> Generator[tuple[str, int], None, None]:
     for county, row in (
         housing[["county", "population"]].groupby("county").count().iterrows()
     ):
