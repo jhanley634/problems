@@ -64,8 +64,6 @@ def create_engine():
     return engine
 
 
-engine = create_engine()
-
 # It takes 1 second to INSERT 188_000 rows into world_facts.
 NUM_FACTS = 40_000
 NUM_USERS = 10_000
@@ -106,5 +104,6 @@ def main():
 
 
 if __name__ == "__main__":
+    engine = create_engine()
     Base.metadata.create_all(engine)
     main()

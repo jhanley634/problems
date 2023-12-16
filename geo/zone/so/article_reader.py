@@ -8,31 +8,23 @@ from random import randrange
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from tqdm import tqdm
-import pandas as pd
 
 from geo.zone.so.article_db import NUM_FACTS, NUM_USERS, Fact, create_engine
 
-engine = create_engine()
 
-
-def num_facts_for(user_id: int, slow: bool = False):
-    if slow:
-        select = f"SELECT fact_id  FROM fact  WHERE user_id = {user_id}"
-        df = pd.read_sql(select, engine)
-        assert NUM_FACTS / 2 == len(df)
-
+def num_facts_for(user_id: int):
     select = "count(*)"  # or "sum(fact_id)"
     with Session(engine) as session:
         yield from session.query(text(select)).filter(Fact.user_id == user_id)
 
 
-def main():
-    for _ in tqdm(range(1000), smoothing=1e-4):
+def main(num_queries=1_000):
+    for _ in tqdm(range(num_queries), smoothing=1e-4):
         user_id = randrange(NUM_USERS)
         (n,) = next(num_facts_for(user_id))
-        # assert NUM_FACTS / 2 == n, n
-        assert n > 0
+        assert NUM_FACTS / 2 == n
 
 
 if __name__ == "__main__":
+    engine = create_engine()
     main()
