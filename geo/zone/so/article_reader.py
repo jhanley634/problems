@@ -9,7 +9,14 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from tqdm import tqdm
 
-from geo.zone.so.article_db import NUM_FACTS, NUM_USERS, Fact, create_engine
+from geo.zone.so.article_db import NUM_FACTS, NUM_USERS, Fact, WorldFact, create_engine
+
+
+def fact_details_for(user_id: int):
+    with Session(engine) as session:
+        yield from session.query(WorldFact.details).join(Fact).filter(
+            Fact.user_id == user_id
+        )
 
 
 def num_facts_for(user_id: int):
