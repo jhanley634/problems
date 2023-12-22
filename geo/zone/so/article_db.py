@@ -8,7 +8,7 @@ from hashlib import sha3_224
 from pathlib import Path
 from random import shuffle
 from time import time
-from typing import Any, Callable
+from typing import Any, Callable, Type
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Session, declarative_base
@@ -16,6 +16,7 @@ from sqlalchemy.schema import PrimaryKeyConstraint
 from tqdm import tqdm
 import pandas as pd
 import sqlalchemy as sa
+import sqlalchemy.orm.decl_api as decl_api
 
 
 def timed(
@@ -40,7 +41,7 @@ def insert_with_orm():
         session.commit()
 
 
-Base = declarative_base()
+Base: Type[decl_api.DeclarativeMeta] = declarative_base()
 
 
 class WorldFact(Base):
