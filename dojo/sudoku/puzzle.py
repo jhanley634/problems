@@ -30,7 +30,7 @@ class Grid:
         self.grid = np.zeros((size**2, size**2), dtype=np.uint8)
 
         # maps from (type, index) to the available values
-        self.avail: dict[tuple[Constraint, int], list[int]] = {}
+        self.avail: dict[tuple[Constraint, int], set[int]] = {}
 
         # trivially valid, since 100% wildcards means no conflicts
         assert self.is_valid()
@@ -130,7 +130,7 @@ class Grid:
                 j = b * sz
                 yield np.array(self.grid[i : i + sz, j : j + sz]).flatten()
 
-    def copy(self) -> Self:
+    def copy(self) -> "Grid":
         """Returns a deep copy."""
         cpy = Grid(size=self.size)
         cpy.grid = self.grid.copy()
@@ -138,7 +138,7 @@ class Grid:
         return cpy
 
 
-def solve(grid: Grid) -> Grid:
+def solve(grid: Grid) -> Grid | None:
     """Solves a Sudoku puzzle."""
     assert grid.is_valid()
     if grid.is_solved():
