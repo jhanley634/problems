@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 
+from dataclasses import dataclass
 from enum import Enum, auto
 from random import randrange
 from time import time
@@ -10,8 +11,26 @@ import numpy as np
 
 
 class ListName(Enum):
-    X = auto()
+    X = 0
     Y = auto()
+
+
+@dataclass
+class MutRange:
+    """Models a mutable `range`, with a .start and .stop attribute."""
+
+    # I may get around to implementing __iter__, if calling code ever needs that.
+    # We remedy the chief disadvantage of the builtin `range`: its immutability.
+    start: int
+    stop: int
+    # `step` is always unity.
+
+    def __len__(self) -> int:
+        assert self.stop >= self.start
+        return self.stop - self.start
+
+    def __repr__(self) -> str:
+        return f"MutableRange({self.start}, {self.stop})"
 
 
 def _monotonic(a: np.ndarray[int, np.dtype[np.int_]]) -> bool:
@@ -45,13 +64,68 @@ def median_of_list_pair(
     both_mid = x_mid + y_mid
     assert len(np.concatenate((xs, ys))) == both_mid + 1 + both_mid
 
-    # In general this can certainly happen.
-    # But never in the test data we generate, by construction.
-    # We resolve the `name` ambiguity in favor of X.
-    if xs[x_mid] == ys[y_mid]:
-        return both_mid, ListName.X if x_mid >= y_mid else ListName.Y
+    return _median2(
+        (xs, ys),
+        (MutRange(0, len(xs)), MutRange(0, len(ys))),
+    )
 
-    return both_mid, ListName.X
+
+def _median2(
+    arrays: tuple[
+        np.ndarray[int, np.dtype[np.int_]],
+        np.ndarray[int, np.dtype[np.int_]],
+    ],
+    ranges: tuple[MutRange, MutRange],
+) -> tuple[int, ListName]:
+    assert len(arrays) == len(ranges) == 2
+    xs, ys = arrays
+    r0, r1 = ranges
+
+    # The total of the range .start's needs to hit this target.
+    # So does the total amount of .stop .. len() elements.
+    target = (len(xs) + len(ys)) // 2
+
+    # invariant: the median index is always within the ranges.
+    # (A range _can_ get squished to zero length,
+    # indicating the median index is within the other range.)
+
+    while True:
+        assert sum(map(len, ranges)) >= 1  # The answer is in there!
+
+        # Two ways to win; two base cases.
+        for a in range(len(arrays)):
+            # A length of zero indicates that we have "squeezed out"
+            # the median index from the other array.
+            if len(ranges[a]) == 1 and len(ranges[1 - a]) == 0:
+                return ranges[a].start, list(ListName.__members__.values())[a]
+
+        # Haven't narrowed it down to a unique answer, yet.
+        # There's more work to be done.
+
+        # Loop variant: at least one of the two ranges _will_ shrink.
+        small_val = min(
+            xs[r0.start],
+            ys[r1.start],
+        )
+        big_val = float("-inf")
+        if len(r0) > 0 and r0.stop - 1 >= 0:
+            big_val = max(big_val, xs[r0.stop - 1])
+        if len(r1) > 0 and r1.stop - 1 >= 0:
+            big_val = max(big_val, ys[r1.stop - 1])
+        print(r0, r1)
+        assert big_val >= small_val
+
+        if r0.start + r1.start < target:
+            if len(r0) > 0 and xs[r0.start] == small_val:
+                r0.start += 1
+            if len(r1) > 0 and ys[r1.start] == small_val:
+                r1.start += 1
+
+        if (len(xs) - 1 - r0.start) + (len(ys) - 1 - r1.start) < target:
+            if len(r0) > 0 and xs[r0.stop - 1] == big_val:
+                r0.stop -= 1
+            if len(r1) > 0 and ys[r1.stop - 1] == big_val:
+                r1.stop -= 1
 
 
 def _generate_list_pair(
@@ -94,6 +168,10 @@ class SortedMedianTest(unittest.TestCase):
         i, name = median_of_list_pair(xs, ys)
         self.assertEqual(1050, i)
         self.assertEqual(true_name, name)
+
+    def test_enum_values(self) -> None:
+        self.assertEqual(0, ListName.X.value)
+        self.assertEqual(1, ListName.Y.value)
 
     # typical array speedup is 3x:idx_ 21.764 s / 6.993 s
     def test_sort_speed_list(self) -> None:
