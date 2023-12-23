@@ -38,7 +38,7 @@ def identical_sheets_multiset(in_file1: Path, in_file2: Path) -> bool:
     """True if the two spreadsheets have the same rows, in any order."""
     hashes = Counter(hash_spreadsheet(in_file1))
     hashes.subtract(hash_spreadsheet(in_file2))
-    return len(list(hashes.elements())) == 0
+    return sum(map(abs, hashes.values())) == 0
 
 
 def main(in_file1: Path, in_file2: Path) -> None:
