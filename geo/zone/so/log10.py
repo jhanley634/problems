@@ -23,14 +23,15 @@ def division_based_log10(x):
 
 def log10(x: int) -> float:
     assert x > 0
+    # original_x = x
     a = 0
     while x // 10 > 0:
-        a += 1
         x //= 10
+        a += 1
 
     r = float(a)
     frac = 0.5
-    x1: float = x
+    x1 = float(x)
     for i in range(55):
         x1 *= x1
         if x1 > 10:
@@ -41,17 +42,20 @@ def log10(x: int) -> float:
     return r
 
 
-# log10 = division_based_log10
-
-
 class Log10Test(unittest.TestCase):
     def test_log10(self):
         self.assertEqual(0, log10(1))
         self.assertEqual(1, log10(10))
         self.assertEqual(2, log10(100))
         self.assertEqual(3, math.log10(1000))
-        self.assertAlmostEqual(3, log10(1000))
+        self.assertAlmostEqual(3.0, log10(1000))
+        self.assertAlmostEqual(0.47712125, log10(3))
+        self.assertAlmostEqual(1.11394335, log10(13))
+        self.assertAlmostEqual(1.47712125, log10(30))
+        self.assertAlmostEqual(2.47712125, log10(300))
+        self.assertAlmostEqual(3.30102999, log10(2000))
         self.assertAlmostEqual(3.47712125, log10(3000))
+        self.assertAlmostEqual(3.60205999, log10(4000))
         self.assertAlmostEqual(3.5385737, log10(3456))
 
     @given(st.floats(min_value=1e-15, max_value=1e100))
