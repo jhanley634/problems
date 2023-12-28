@@ -58,7 +58,7 @@ def log_newton(base: int, x: float, epsilon: float = 1e-14) -> float:
 # from https://stackoverflow.com/questions/739532/logarithm-of-a-bigdecimal
 @beartype
 def log_meow(base: int, x: float, epsilon: float = 1e-14) -> float:
-    assert x >= 1
+    assert x >= 1  # This is a pretty significant restriction.
     input_ = x
     result = 0.0
 
@@ -81,7 +81,7 @@ def log_meow(base: int, x: float, epsilon: float = 1e-14) -> float:
     return result
 
 
-if not os.getenv("HOME"):
+if os.getenv("HOME"):
     log2 = partial(log_newton, 2)
     log10 = partial(log_newton, 10)
 else:
@@ -103,13 +103,20 @@ class Log10Test(unittest.TestCase):
         self.assertAlmostEqual(3.45943161, math.log2(11.0))
         self.assertAlmostEqual(3.45943161, log2(11.0))
 
-        return
         self.assertAlmostEqual(-1.0, math.log2(0.5))
         self.assertAlmostEqual(-1.0, log2(0.5))
         self.assertAlmostEqual(-2.0, math.log2(0.25))
         self.assertAlmostEqual(-2.0, log2(0.25))
         self.assertAlmostEqual(-2.32192809, math.log2(0.2))
         self.assertAlmostEqual(-2.32192809, log2(0.2))
+
+        j = 1.0
+        for i in map(float, range(1, 200)):
+            self.assertAlmostEqual(math.log2(i), log2(i))
+            self.assertAlmostEqual(math.log2(1 / i), log2(1 / i))
+            self.assertAlmostEqual(math.log10(j), log10(j))
+            self.assertAlmostEqual(math.log10(1 / j), log10(1 / j))
+            j *= 2
 
     def test_log10(self):
         self.assertAlmostEqual(0.0, log10(1.0))
@@ -125,6 +132,14 @@ class Log10Test(unittest.TestCase):
         self.assertAlmostEqual(3.47712125, log10(3000.0))
         self.assertAlmostEqual(3.60205999, log10(4000.0))
         self.assertAlmostEqual(3.5385737, log10(3456.0))
+
+        j = 1.0
+        for i in map(float, range(1, 200)):
+            self.assertAlmostEqual(math.log10(i), log10(i))
+            self.assertAlmostEqual(math.log10(1 / i), log10(1 / i))
+            self.assertAlmostEqual(math.log10(j), log10(j))
+            self.assertAlmostEqual(math.log10(1 / j), log10(1 / j))
+            j *= 2
 
     @given(st.floats(min_value=1 + 1e-15, max_value=3.4e38))
     def test_log10_hypothesis(self, x):
