@@ -12,13 +12,6 @@ from beartype import beartype
 from hypothesis import given
 from hypothesis import strategies as st
 
-
-def relative_error(x, y):
-    assert x > 0
-    assert y != 0
-    return abs(x - y) / y
-
-
 BASE = 10
 
 
@@ -55,9 +48,14 @@ def log_newton(base: int, x: float, epsilon: float = 1e-14) -> float:
     return r
 
 
+def relative_error(x: float, y: float) -> float:
+    assert y != 0
+    return abs(x - y) / y
+
+
 # from https://stackoverflow.com/questions/739532/logarithm-of-a-bigdecimal
 @beartype
-def log_meow(base: int, x: float, epsilon: float = 1e-14) -> float:
+def log_meow(base: int, x: float) -> float:
     assert x >= 1  # This is a pretty significant restriction.
     input_ = x
     result = 0.0
@@ -89,8 +87,8 @@ else:
     log10 = partial(log_meow, 10)
 
 
-class Log10Test(unittest.TestCase):
-    def test_log2(self):
+class LogTest(unittest.TestCase):
+    def test_log2(self) -> None:
         self.assertAlmostEqual(0.0, log2(1.0))
         self.assertAlmostEqual(1.0, log2(2.0))
         self.assertAlmostEqual(2.0, log2(4.0))
@@ -110,15 +108,7 @@ class Log10Test(unittest.TestCase):
         self.assertAlmostEqual(-2.32192809, math.log2(0.2))
         self.assertAlmostEqual(-2.32192809, log2(0.2))
 
-        j = 1.0
-        for i in map(float, range(1, 200)):
-            self.assertAlmostEqual(math.log2(i), log2(i))
-            self.assertAlmostEqual(math.log2(1 / i), log2(1 / i))
-            self.assertAlmostEqual(math.log10(j), log10(j))
-            self.assertAlmostEqual(math.log10(1 / j), log10(1 / j))
-            j *= 2
-
-    def test_log10(self):
+    def test_log10(self) -> None:
         self.assertAlmostEqual(0.0, log10(1.0))
         self.assertAlmostEqual(1.0, log10(10.0))
         self.assertAlmostEqual(2.0, log10(100.0))
@@ -133,15 +123,23 @@ class Log10Test(unittest.TestCase):
         self.assertAlmostEqual(3.60205999, log10(4000.0))
         self.assertAlmostEqual(3.5385737, log10(3456.0))
 
-        j = 1.0
-        for i in map(float, range(1, 200)):
-            self.assertAlmostEqual(math.log10(i), log10(i))
-            self.assertAlmostEqual(math.log10(1 / i), log10(1 / i))
-            self.assertAlmostEqual(math.log10(j), log10(j))
-            self.assertAlmostEqual(math.log10(1 / j), log10(1 / j))
-            j *= 2
+    def test_both(self, limit: int = 200) -> None:
+        for actual, log in [
+            (math.log2, log2),
+            (math.log10, log10),
+        ]:
+            j = 1.0
+            for i in map(float, range(1, limit)):
+                # sequential args
+                self.assertAlmostEqual(actual(i), log(i))
+                self.assertAlmostEqual(actual(1 / i), log(1 / i))
+
+                # power-of-two args
+                self.assertAlmostEqual(actual(j), log(j))
+                self.assertAlmostEqual(actual(1 / j), log(1 / j))
+                j *= 2
 
     @given(st.floats(min_value=1 + 1e-15, max_value=3.4e38))
-    def test_log10_hypothesis(self, x):
+    def test_log_hypothesis(self, x):
         self.assertAlmostEqual(math.log2(x), log2(x))
         self.assertAlmostEqual(math.log10(x), log10(x))
