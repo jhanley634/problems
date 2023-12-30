@@ -6,6 +6,7 @@
 
 from collections import Counter
 from contextlib import contextmanager
+from functools import partial
 import unittest
 
 from beartype import beartype
@@ -51,7 +52,7 @@ def sort_k(a: np.ndarray, start: int, k: int) -> None:
 @beartype
 def find_top_t(t: int, a: np.ndarray, k: int = K) -> np.ndarray:
     assert t < K
-    assert t < len(a)
+    assert t <= len(a)
     tombstone = a.min() - 1  # sentinel value
     assert tombstone not in a  # true by construction
 
@@ -66,6 +67,9 @@ def find_top_t(t: int, a: np.ndarray, k: int = K) -> np.ndarray:
 
 
 T = 3
+
+_big = 2**63 - 1
+_small_integers = partial(st.integers, min_value=-_big, max_value=_big)
 
 
 class TestTopT(unittest.TestCase):
@@ -94,9 +98,9 @@ class TestTopT(unittest.TestCase):
         self.assertEqual(sorted(xs, reverse=True), xs)
         self.assertEqual(sorted(a, reverse=True)[:t], xs)
 
-    @given(st.lists(st.integers(), min_size=T, max_size=100))
+    @given(st.lists(_small_integers(), min_size=T, max_size=100))
     def test_with_hypothesis(self, lst: list[int]) -> None:
         a = np.array(lst)
         xs = find_top_t(T, a.copy()).tolist()
-        self.assertEqual(sorted(xs, reverse=True), xs)
-        self.assertEqual(sorted(a, reverse=True)[:T], xs)
+        self.assertEqual(xs, sorted(xs, reverse=True))
+        self.assertEqual(xs, sorted(a, reverse=True)[:T])
