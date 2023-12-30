@@ -82,6 +82,8 @@ _small_integers = partial(
 
 
 class TestTopT(unittest.TestCase):
+    """Verifies that the Right Thing happens, in less than a second."""
+
     def test_roll(self) -> None:
         a = roll_some_numbers()
         self.assertLess(a[0], a[-1])
@@ -104,8 +106,15 @@ class TestTopT(unittest.TestCase):
         with count_sort_calls() as cnt:
             xs = find_top_t(t, a.copy()).tolist()
         self.assertEqual(5, cnt["sort"])
-        self.assertEqual(sorted(xs, reverse=True), xs)
-        self.assertEqual(sorted(a, reverse=True)[:t], xs)
+        self.assertEqual(xs, sorted(xs, reverse=True))
+        self.assertEqual(xs, sorted(a, reverse=True)[:t])
+
+    def test_with_dups(self, t=T, n=10_000) -> None:
+        a = np.random.randint(0, n // 2, n)
+        self.assertLess(len(set(a)), len(a) / 2)
+        xs = find_top_t(t, a.copy()).tolist()
+        self.assertEqual(xs, sorted(xs, reverse=True))
+        self.assertEqual(xs, sorted(a, reverse=True)[:t])
 
     def test_010(self) -> None:
         a = np.array([0, 1, 0])  # This input vector was surfaced by hypothesis.
