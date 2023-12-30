@@ -7,6 +7,7 @@
 from collections import Counter
 from contextlib import contextmanager
 from functools import partial
+from random import shuffle
 import unittest
 
 from beartype import beartype
@@ -81,6 +82,12 @@ _small_integers = partial(
 )
 
 
+def shuffled(a: list[int]) -> list[int]:
+    b = a.copy()
+    shuffle(b)
+    return b
+
+
 class TestTopT(unittest.TestCase):
     """Verifies that the Right Thing happens, in less than a second."""
 
@@ -115,6 +122,17 @@ class TestTopT(unittest.TestCase):
         xs = find_top_t(t, a.copy()).tolist()
         self.assertEqual(xs, sorted(xs, reverse=True))
         self.assertEqual(xs, sorted(a, reverse=True)[:t])
+
+    def test_imbalanced(self, t=T, num_distractors=10_000) -> None:
+        with count_sort_calls() as cnt:
+            a = np.array(shuffled([1] * t + [0] * num_distractors))
+            self.assertEqual([1] * t, find_top_t(t, a).tolist())
+        self.assertEqual(num_distractors / 2 + 12, cnt["sort"])
+
+        with count_sort_calls() as cnt:
+            a = np.array(shuffled([1] * (t - 1) + [0] * num_distractors))
+            self.assertEqual([1] * (t - 1) + [0], find_top_t(t, a).tolist())
+        self.assertEqual(num_distractors / 2 + 12, cnt["sort"])
 
     def test_010(self) -> None:
         a = np.array([0, 1, 0])  # This input vector was surfaced by hypothesis.
