@@ -56,6 +56,8 @@ def find_top_t(t: int, a: np.ndarray, k: int = K) -> np.ndarray:
     tombstone = a.min() - 1  # sentinel value
     assert tombstone not in a  # true by construction
 
+    if len(a) <= t:
+        sort_k(a, 0, t)
     while len(a) > t:
         for i in range(0, len(a), k):
             sort_k(a, i, k)
@@ -68,8 +70,15 @@ def find_top_t(t: int, a: np.ndarray, k: int = K) -> np.ndarray:
 
 T = 3
 
-_big = 2**63 - 1
-_small_integers = partial(st.integers, min_value=-_big, max_value=_big)
+_moderately_large = 2**63 - 1
+# The set of all integers is very, very large,
+# and cPython can model a pretty big subset of them.
+# Let's restrict the ambitions of `hypothosis` to something more reasonable.
+_small_integers = partial(
+    st.integers,
+    min_value=-_moderately_large,
+    max_value=_moderately_large,
+)
 
 
 class TestTopT(unittest.TestCase):
@@ -97,6 +106,10 @@ class TestTopT(unittest.TestCase):
         self.assertEqual(5, cnt["sort"])
         self.assertEqual(sorted(xs, reverse=True), xs)
         self.assertEqual(sorted(a, reverse=True)[:t], xs)
+
+    def test_010(self) -> None:
+        a = np.array([0, 1, 0])  # This input vector was surfaced by hypothesis.
+        self.assertEqual([1, 0, 0], find_top_t(T, a).tolist())
 
     @given(st.lists(_small_integers(), min_size=T, max_size=100))
     def test_with_hypothesis(self, lst: list[int]) -> None:
