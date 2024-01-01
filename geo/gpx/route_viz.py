@@ -23,7 +23,10 @@ def main() -> None:
 def _get_df(in_file: Path) -> pd.DataFrame:
     with open(in_file) as fin:
         gpx = gpxpy.parse(fin)
-        return pd.DataFrame(get_rows(gpx))
+        df = pd.DataFrame(get_rows(gpx))
+        if df.elapsed.max() > 2.0057e6:
+            df = df[df.elapsed > 1.9e6]
+        return df
 
 
 def _display(df: pd.DataFrame) -> None:
@@ -54,8 +57,8 @@ def _get_deck(
                 "ColumnLayer",
                 data=df,
                 get_position="[lng, lat]",
-                get_elevation=90,
-                elevation_scale=1,
+                get_elevation=4,
+                color='purple',
                 radius=1,
                 get_fill_color=[10, 10, "[20 * color]"],
             ),
