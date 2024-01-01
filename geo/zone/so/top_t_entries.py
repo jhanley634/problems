@@ -82,12 +82,14 @@ _small_integers = partial(
 )
 
 
+@beartype
 def shuffled(a: list[int]) -> list[int]:
     b = a.copy()
     shuffle(b)
     return b
 
 
+@beartype
 class TestTopT(unittest.TestCase):
     """Verifies that the Right Thing happens, in less than a second."""
 
