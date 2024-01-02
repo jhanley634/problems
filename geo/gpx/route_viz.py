@@ -5,7 +5,6 @@ from pathlib import Path
 
 import gpxpy
 import pandas as pd
-import polars as pl
 import pydeck as pdk
 import streamlit as st
 
@@ -24,41 +23,43 @@ def _get_df(in_file: Path) -> pd.DataFrame:
     with open(in_file) as fin:
         gpx = gpxpy.parse(fin)
         df = pd.DataFrame(get_rows(gpx))
-        if df.elapsed.max() > 2.0057e6:
-            df = df[df.elapsed > 1.9e6]
         return df
 
 
 def _display(df: pd.DataFrame) -> None:
-    print(df.describe())
-    print(df.dtypes)
     # Unrecognized type: "Duration" (18)
-    df = df.drop(columns=["delta_t"])
+    df["delta_t"] = df.delta_t.apply(attrgetter("seconds"))
 
-    st.pydeck_chart(_get_deck(df))
-    st.dataframe(df)
+    em = int(round(df.elapsed.max() / 60))
+    begin, end = map(int, (em * 0.25, em * 0.75))
+    begin, end = st.slider("elapsed_minutes", 0, em, (begin, end))
+    # And now back to seconds:
+    begin *= 60
+    end *= 60
+    displayed_df = df[(begin <= df.elapsed) & (df.elapsed <= end)].reset_index()
+    st.pydeck_chart(_get_deck(begin, end, df))
+    st.dataframe(displayed_df)
 
 
-
-
-def _get_deck(
-    df: pd.DataFrame, start: tuple[float, float] = (37.46, -122.15)
-) -> pdk.Deck:
+def _get_deck(begin, end, df: pd.DataFrame) -> pdk.Deck:
+    initial_lat = df.lat.iloc[0]
+    initial_lng = df.lng.iloc[0]
+    displayed_df = df[(begin <= df.elapsed) & (df.elapsed <= end)].reset_index()
     return pdk.Deck(
         map_style="mapbox://styles/mapbox/light-v9",
         initial_view_state=pdk.ViewState(
-            latitude=start[0],
-            longitude=start[1],
-            zoom=9,
+            latitude=initial_lat,
+            longitude=initial_lng,
+            zoom=14,
             pitch=30,
         ),
         layers=[
             pdk.Layer(
                 "ColumnLayer",
-                data=df,
+                data=displayed_df,
                 get_position="[lng, lat]",
                 get_elevation=4,
-                color='purple',
+                color="purple",
                 radius=1,
                 get_fill_color=[10, 10, "[20 * color]"],
             ),
