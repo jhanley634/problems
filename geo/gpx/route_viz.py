@@ -23,10 +23,16 @@ def main() -> None:
     _display(_get_df(gpx_d / chosen))
 
 
-def _get_df(in_file: Path) -> pd.DataFrame:
+def _get_df(in_file: Path, ssf_filter: bool = False) -> pd.DataFrame:
     with open(in_file) as fin:
         gpx = gpxpy.parse(fin)
         df = pd.DataFrame(get_rows(gpx))
+
+        if ssf_filter:
+            ssf = 37.75
+            df = df[df.lat > ssf]
+            df["elapsed"] = df.elapsed - df.elapsed.min()
+
         return df
 
 
