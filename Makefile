@@ -34,6 +34,6 @@ SHELL = bash -o pipefail
 INCLUDE = '\.py$$'
 EXCLUDE = '/loadtxt.d/pythran_lib/build/lib.macosx-10.9-x86_64-cpython-310/hello/'
 L = --files-without-match
-C2022 = 'Copyright 202[123] John Hanley\. MIT licensed\.'
+C2022 = 'Copyright 202[1234] John Hanley\. MIT licensed\.'
 audit:
 	@-find . -type f | grep -v $(EXCLUDE) | grep $(INCLUDE) | sort | xargs egrep $(L) $(C2022) || true

@@ -10,15 +10,14 @@ from geopy import Point
 from gpxpy.gpx import GPX
 import gpxpy
 
-from geo.gpx.route_viz import _display, _get_chosen_gpx_path, _get_df
+from geo.gpx.route_viz import _display, _get_chosen_gpx_path
 from geo.ski.dwell import get_breadcrumbs
 
 
 def main() -> None:
     in_file = Path("~/Desktop/gpx.d/2023-12-07T22:20:02Z-willows-walk.gpx").expanduser()
 
-    for point in _get_gpx_points(in_file):
-        print(point)
+    df = _get_df(in_file)
 
     # _display(_get_df(_get_chosen_gpx_path()))
 
