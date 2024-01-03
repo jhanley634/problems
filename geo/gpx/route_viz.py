@@ -15,12 +15,16 @@ from geo.ski.dwell import get_rows
 
 
 def main() -> None:
+    _display(_get_df(_get_chosen_gpx_path()))
+
+
+def _get_chosen_gpx_path() -> Path:
     gpx_d = Path("~/Desktop/gpx.d").expanduser()
     paths = sorted(gpx_d.glob("*.gpx"))
     filenames = list(map(str, map(attrgetter("name"), paths)))
     chosen = st.radio("gpx files", filenames)
     assert chosen
-    _display(_get_df(gpx_d / chosen))
+    return gpx_d / chosen
 
 
 def _get_df(in_file: Path, ssf_filter: bool = False) -> pd.DataFrame:
