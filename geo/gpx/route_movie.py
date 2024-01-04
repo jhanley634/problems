@@ -9,17 +9,34 @@ import datetime as dt
 from geopy import Point
 from gpxpy.gpx import GPX
 import gpxpy
-
-from geo.gpx.route_viz import _display, _get_chosen_gpx_path
-from geo.ski.dwell import get_breadcrumbs
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 
 
 def main() -> None:
     in_file = Path("~/Desktop/gpx.d/2023-12-07T22:20:02Z-willows-walk.gpx").expanduser()
 
     df = _get_df(in_file)
+    print(df)
+    _display(df)
 
-    # _display(_get_df(_get_chosen_gpx_path()))
+
+def _display(df: pd.DataFrame) -> None:
+    sns.scatterplot(data=df, x="lat", y="lng")
+    plt.show()
+
+
+def _get_df(in_file: Path) -> pd.DataFrame:
+    return pd.DataFrame(_get_fn_points())
+
+
+def _get_fn_points() -> Generator[Point, None, None]:
+    def fn(lat):
+        return 0.01 * lat**2
+
+    for lat in range(-100, 100):
+        yield dict(lat=lat, lng=fn(lat))
 
 
 def _get_gpx_points(in_file: Path) -> Generator[Point, None, None]:
