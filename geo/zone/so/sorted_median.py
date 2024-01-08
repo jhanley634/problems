@@ -105,14 +105,14 @@ def _median2(
 
         # Loop variant: at least one of the two ranges _will_ shrink.
         small_val = min(
-            xs[r0.start],
-            ys[r1.start],
+            int(xs[r0.start]),
+            int(ys[r1.start]),
         )
         big_val = float("-inf")
         if len(r0) > 0 and r0.stop - 1 >= 0:
-            big_val = max(big_val, xs[r0.stop - 1])
+            big_val = max(big_val, int(xs[r0.stop - 1]))
         if len(r1) > 0 and r1.stop - 1 >= 0:
-            big_val = max(big_val, ys[r1.stop - 1])
+            big_val = max(big_val, int(ys[r1.stop - 1]))
         # print(r0, r1)
         assert big_val >= small_val
 
@@ -139,6 +139,8 @@ def _generate_list_pair(
     Contents are random.
     We ensure the median value of "both" occurs in exactly one list.
     """
+    med_val = 0.0
+    xs = ys = None
     done = False
     while not done:
         xs = np.array(sorted(randrange(int(1.5 * n)) for _ in range(n)))
@@ -183,6 +185,7 @@ class SortedMedianTest(unittest.TestCase):
             a.sort(reverse=True)
             a.sort()
         # print(f"\n list sort: {time() - t0:.3f} sec")
+        self.assertLess(time() - t0, 0.250)
 
     def test_sort_speed_array(self) -> None:
         xs = np.array(self.rand)
@@ -194,3 +197,4 @@ class SortedMedianTest(unittest.TestCase):
             a.sort()
             a.sort()
         # print(f"\n array sort: {time() - t0:.3f} sec")
+        self.assertLess(time() - t0, 0.250)
