@@ -25,6 +25,7 @@ dependencies:
   - flask >= 2.3.2
   - geopandas >= 0.14.1
   - geopy >= 2.4.1
+  - geoviews >= 1.11.0
   - glom >= 23.5.0
   - gpxpy >= 1.6.2
   - html2text >= 2020.1.16
@@ -51,6 +52,7 @@ dependencies:
   - palettable >= 3.3.3
   - pandas >= 2.1.4
   - pillow >= 10.2.0
+  - plotnine >= 0.12.4
   - polars >= 0.20.3
   - psutil >= 5.9.7
   - pyarrow >= 14.0.2
