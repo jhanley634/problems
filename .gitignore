@@ -10,6 +10,7 @@ cache/
 geo/ski/so/Cargo.lock
 geo/ski/so/median
 geo/ski/so/target/
+htmlcov/
 mprofile_2023*.dat
 target/
 vision/loadtxt/pythran_lib/build/

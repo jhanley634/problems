@@ -17,7 +17,7 @@ class ListName(Enum):
 
 @dataclass
 class MutRange:
-    """Models a mutable `range`, with a .start and .stop attribute."""
+    """Models a mutable `range`, with .start and .stop attributes."""
 
     # I may get around to implementing __iter__, if calling code ever needs that.
     # We remedy the chief disadvantage of the builtin `range`: its immutability.
@@ -29,9 +29,6 @@ class MutRange:
     def __len__(self) -> int:
         assert self.stop >= self.start
         return self.stop - self.start
-
-    def __str__(self) -> str:
-        return f"MutableRange({self.start}, {self.stop})"
 
 
 def _monotonic(a: np.ndarray[int, np.dtype[np.int_]]) -> bool:
@@ -159,6 +156,13 @@ def _generate_list_pair(
 class SortedMedianTest(unittest.TestCase):
     def setUp(self, n: int = 1_101) -> None:
         self.rand = [randrange(int(1.5 * n)) for _ in range(n)]
+
+    def test_monotonic(self) -> None:
+        xs = np.array([0, 1, 1, 2, 3, 3, 3, 4, 5])
+        self.assertTrue(_monotonic(xs))
+
+        xs = np.array([0, 1, 1, 0, 5])
+        self.assertFalse(_monotonic(xs))
 
     def test_median_of_single_list(self) -> None:
         xs = np.array(sorted(self.rand))
