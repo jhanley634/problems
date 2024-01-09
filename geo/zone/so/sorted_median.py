@@ -129,7 +129,9 @@ def _median2(
 def _generate_list_pair(
     n: int,
 ) -> tuple[
-    np.ndarray[int, np.dtype[np.int_]], np.ndarray[int, np.dtype[np.int_]], ListName
+    np.ndarray[int, np.dtype[np.int_]],
+    np.ndarray[int, np.dtype[np.int_]],
+    ListName,
 ]:
     """Returns a pair of integer arrays, and the name of the one that contains the median.
 
@@ -137,7 +139,7 @@ def _generate_list_pair(
     We ensure the median value of "both" occurs in exactly one list.
     """
     med_val = 0.0
-    xs = ys = None
+    xs = ys = np.zeros(1).astype(np.int64)
     done = False
     while not done:
         xs = np.array(sorted(randrange(int(1.5 * n)) for _ in range(n)))
