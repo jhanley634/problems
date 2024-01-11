@@ -14,6 +14,7 @@ from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import requests
+import seaborn as sns
 import seaborn.objects as so
 
 PENGUIN_URL = (
@@ -66,7 +67,20 @@ def _get_fp_tp_rates() -> tuple[Any, Any, Any, Any]:
     # from https://www.sharpsightlabs.com/blog/plot-roc-curve-in-python-seaborn
 
     # Generate a binary classification problem.
-    X, y = make_classification(n_samples=10_000, n_classes=2, random_state=42)
+    X, y = make_classification(
+        n_samples=10_000,
+        class_sep=0.9,
+        n_classes=2,
+        n_clusters_per_class=2,
+        n_features=2,
+        n_redundant=0,
+        n_repeated=0,
+        random_state=42,
+    )
+    df_X = pd.DataFrame(X)
+    print(df_X.describe())
+    sns.scatterplot(data=df_X, x=0, y=1, hue=y)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=43
     )
