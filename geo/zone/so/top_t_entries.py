@@ -2,7 +2,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 # based on https://codereview.stackexchange.com/questions/287745/determine-top-t-values
-# cf https://stackoverflow.com/questions/52713266/most-efficient-way-to-get-the-largest-3-elements-of-an-array-using-no-comparison
+# cf https://stackoverflow.com/questions/52713266/most-efficient-way-to-get-the-largest-3-elements-using-no-comparison
 
 from collections import Counter
 from contextlib import contextmanager

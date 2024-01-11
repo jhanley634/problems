@@ -139,7 +139,7 @@ def _generate_list_pair(
     We ensure the median value of "both" occurs in exactly one list.
     """
     med_val = 0.0
-    xs = ys = np.zeros(1).astype(np.int64)
+    xs = ys = np.zeros(1, dtype=int)
     done = False
     while not done:
         xs = np.array(sorted(randrange(int(1.5 * n)) for _ in range(n)))

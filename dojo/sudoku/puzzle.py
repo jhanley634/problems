@@ -25,7 +25,7 @@ class Constraint(Enum):
 class Grid:
     """Models a Sudoku grid."""
 
-    def __init__(self, size: int = 3) -> None:
+    def __init__(self, size: int = 3):
         self.size = size  # width of a block (also, how many blocks across in a grid)
         self.grid = np.zeros((size**2, size**2), dtype=np.uint8)
 
