@@ -2,6 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://datascience.stackexchange.com/questions/126359/does-a-random-classifier-have-a-diagonal-roc
 
+from contextlib import contextmanager
 from pathlib import Path
 import re
 import warnings
@@ -42,18 +43,24 @@ def get_penguin_df() -> pd.DataFrame:
     return df
 
 
+
+
+@contextmanager
+def _filter_warnings():
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        message="use_inf_as_na option is deprecated and will be removed ",
+    )
+    yield
+
+
 def main():
     df = get_penguin_df()
     print(df)
     print(df.describe())
 
-    with warnings.catch_warnings():
-        # warnings.simplefilter("ignore")
-        warnings.filterwarnings(
-            "ignore",
-            category=FutureWarning,
-            message="use_inf_as_na option is deprecated and will be removed ",
-        )
+    with _filter_warnings():
         sns.pairplot(df, hue="species")
     plt.show()
 
