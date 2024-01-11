@@ -5,6 +5,7 @@
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+import datetime as dt
 import re
 import warnings
 
@@ -13,7 +14,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
 import pandas as pd
-import requests
+import requests_cache
 import seaborn as sns
 import seaborn.objects as so
 
@@ -26,17 +27,17 @@ PENGUIN_URL = (
 def fetch_df(url: str) -> pd.DataFrame:
     cache_dir = Path("/tmp")
     cache_dir.mkdir(exist_ok=True)
-    file = cache_dir / Path(url).name
-    if not file.exists():
-        file.write_text(requests.get(url).text)
-    return pd.read_csv(file)
+    expire = dt.timedelta(days=1)
+    requests_cache.install_cache(f"{cache_dir}/requests_cache", expire_after=expire)
+    requests_cache.delete(expired=True)
+    return pd.read_csv(url)
 
 
 def get_penguin_df() -> pd.DataFrame:
     df = fetch_df(PENGUIN_URL)
 
-    # Drop index, a pair of categorical columns, and unused measurements.
-    cols = "sample_number region study_name culmen_length flipper_length"
+    # Drop index, three categorical columns, and unused measurements.
+    cols = "sample_number sex region study_name culmen_length flipper_length"
     df = df.drop(columns=cols.split())
 
     species_re = re.compile(r"^(\w+) penguin .*", re.IGNORECASE)

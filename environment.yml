@@ -68,6 +68,7 @@ dependencies:
   - pytest-cov >= 4.1.0
   - python-Levenshtein >= 0.23.0
   - pywavelets >= 1.4.1
+  - requests_cache >= 1.1.1
   - roman >= 3.3
   - rouge_score >= 0.1.2
   - ruamel.yaml >= 0.18.5
