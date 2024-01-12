@@ -7,6 +7,7 @@ from random import randrange
 from time import time
 import unittest
 
+from beartype import beartype
 import numpy as np
 
 
@@ -31,10 +32,12 @@ class MutRange:
         return self.stop - self.start
 
 
+@beartype
 def _monotonic(a: np.ndarray[int, np.dtype[np.int_]]) -> bool:
     return bool(np.all(np.diff(a) >= 0))
 
 
+@beartype
 def median_idx_of_single_list(xs: np.ndarray[int, np.dtype[np.int_]]) -> int:
     assert len(xs) > 0
     assert len(xs) % 2 == 1
@@ -45,6 +48,7 @@ def median_idx_of_single_list(xs: np.ndarray[int, np.dtype[np.int_]]) -> int:
     return mid
 
 
+@beartype
 def median_of_list_pair(
     xs: np.ndarray[int, np.dtype[np.int_]],
     ys: np.ndarray[int, np.dtype[np.int_]],
@@ -68,6 +72,7 @@ def median_of_list_pair(
     )
 
 
+@beartype
 def _median2(
     arrays: tuple[
         np.ndarray[int, np.dtype[np.int_]],
@@ -101,6 +106,9 @@ def _median2(
         # There's more work to be done.
 
         # Loop variant: at least one of the two ranges _will_ shrink.
+        print(len(ys), r1)
+        if len(ys) - 1 == r1.start:
+            breakpoint()
         small_val = min(
             int(xs[r0.start]),
             int(ys[r1.start]),
@@ -114,18 +122,19 @@ def _median2(
         assert big_val >= small_val
 
         if r0.start + r1.start < target:
-            if len(r0) > 0 and xs[r0.start] == small_val:
+            if len(r0) > 0 and xs[r0.start] == small_val and r0.start + 1 < len(xs):
                 r0.start += 1
-            if len(r1) > 0 and ys[r1.start] == small_val:
+            if len(r1) > 0 and ys[r1.start] == small_val and r1.start + 1 < len(ys):
                 r1.start += 1
 
         if (len(xs) - 1 - r0.start) + (len(ys) - 1 - r1.start) < target:
-            if len(r0) > 0 and xs[r0.stop - 1] == big_val:
+            if len(r0) > 0 and xs[r0.stop - 1] == big_val and r0.stop > 1:
                 r0.stop -= 1
-            if len(r1) > 0 and ys[r1.stop - 1] == big_val:
+            if len(r1) > 0 and ys[r1.stop - 1] == big_val and r1.stop > 0:
                 r1.stop -= 1
 
 
+@beartype
 def _generate_list_pair(
     n: int,
 ) -> tuple[
@@ -155,6 +164,7 @@ def _generate_list_pair(
     return xs, ys, name
 
 
+@beartype
 class SortedMedianTest(unittest.TestCase):
     def setUp(self, n: int = 1_101) -> None:
         self.rand = [randrange(int(1.5 * n)) for _ in range(n)]
@@ -177,6 +187,18 @@ class SortedMedianTest(unittest.TestCase):
         i, name = median_of_list_pair(xs, ys)
         # TODO self.assertEqual(1050, i)
         self.assertEqual(true_name, name)
+
+        both = xs.tolist() + ys.tolist()
+        small = np.array([min(both) - 1] * (1 + len(both)))
+        i, name = median_of_list_pair(small, xs)
+        small.resize(len(small) - 1)
+        i, name = median_of_list_pair(small, ys)
+        big = np.array([max(both) + 1] * (1 + len(both)))
+        return
+
+        i, name = median_of_list_pair(big, xs)
+        big.resize(len(big) - 1)
+        i, name = median_of_list_pair(big, ys)
 
     def test_enum_values(self) -> None:
         self.assertEqual(0, ListName.X.value)
