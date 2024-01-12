@@ -51,6 +51,7 @@ dependencies:
   - osmnx >= 1.8.1
   - palettable >= 3.3.3
   - pandas >= 2.1.4
+  - pandas-stubs >= 2.1.4.231227
   - pillow >= 10.2.0
   - plotnine >= 0.12.4
   - polars >= 0.20.3
