@@ -2,7 +2,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from pathlib import Path
-from subprocess import PIPE, Popen
+from subprocess import run
 from typing import Generator
 import csv
 import io
@@ -20,7 +20,7 @@ def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
     expected = "Date|Time|Systolic (mmHg)|Diastolic (mmHg)|Pulse (bpm)|Symptoms|Consumed|TruRead|Notes"
     assert expected == "|".join(df.columns), df.columns
 
-    with open(in_file) as fin:
+    with open(in_file, encoding="utf8") as fin:
         sheet = csv.reader(fin)
         next(sheet)  # skip headers
         for row in sheet:
@@ -28,10 +28,10 @@ def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
                 continue  # ignore final blank line
             stamp = row[0] + " " + row[1]
             s, d, p = map(int, row[2:5])
-            yield dict(time=stamp, systolic=s, diastolic=d, pulse=p)
+            yield {"time": stamp, "systolic": s, "diastolic": d, "pulse": p}
 
 
-def main(in_file: Path = IN_FILE, out_file: Path = OUT_FILE) -> None:
+def get_bp_table(in_file: Path = IN_FILE, out_file: Path = OUT_FILE) -> str:
     df = pl.DataFrame(list(_get_rows(in_file)))
     df = df.with_columns(pl.col("time").str.to_datetime("%b %d %Y %I:%M %p"))
     df = df.with_columns(df["time"].dt.strftime("%Y-%m-%dT%H:%M"))
@@ -40,10 +40,11 @@ def main(in_file: Path = IN_FILE, out_file: Path = OUT_FILE) -> None:
     df.write_csv(buf)
     txt = buf.getvalue().decode().replace(",", ", ")  # now we have words
 
-    p = Popen(["column", "-t"], stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    result = p.communicate(input=txt.encode())[0].decode()
-    print(result.replace("T", " "))  # turns timestamp into two words
+    p = run(["column", "-t"], input=txt, capture_output=True, text=True, check=True)
+    result = p.stdout.replace("T", " ")  # turns timestamp into two words
+    out_file.write_text(result)
+    return result
 
 
 if __name__ == "__main__":
-    main()
+    print(get_bp_table())
