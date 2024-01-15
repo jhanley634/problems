@@ -6,6 +6,7 @@
 from pathlib import Path
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 import typer
 
 url = "https://gist.github.com/sachinruk/9b0aaf5c134aa398f7f201c2b298210a"
@@ -18,10 +19,13 @@ raw = (
 def parse(in_file: Path) -> None:
     hrule = "=" * 60
     soup = BeautifulSoup(in_file.read_text(), "html.parser")
-    ol = soup.find("ol", {"class": "messageList", "id": "messageList"})
+    tag = soup.find("ol", {"class": "messageList", "id": "messageList"})
+    assert isinstance(tag, Tag)
+    ol: Tag = tag
     for li in ol.find_all("li"):
         print(f"\n\n{hrule}\n\n{li}")
 
 
 if __name__ == "__main__":
+    print(raw)
     typer.run(parse)
