@@ -53,18 +53,10 @@ def median_of_list_pair(
     xs: np.ndarray[int, np.dtype[np.int_]],
     ys: np.ndarray[int, np.dtype[np.int_]],
 ) -> tuple[int, ListName]:
-    # assert len(xs) > 0
     assert _monotonic(xs)
-
-    # assert len(ys) > 0
     assert _monotonic(ys)
-
+    assert len(xs) + len(ys) > 0, "empty input not allowed"
     assert (len(xs) + len(ys)) % 2 == 1  # The answer is definitely one of the elements.
-
-    x_mid = len(xs) // 2
-    y_mid = len(ys) // 2
-    both_mid = x_mid + y_mid
-    assert len(np.concatenate((xs, ys))) == both_mid + 1 + both_mid
 
     return _median2(
         (xs, ys),
@@ -104,26 +96,22 @@ def _median2(
 
         # While feasible, squish both ranges.
         if left_elim < target and len(r0) > 0 and len(r1) > 0:
-            min_y = ys[r1.start]
-            if xs[r0.start] <= min_y:
+            if xs[r0.start] <= ys[r1.start]:  # min_y
                 r0.start += 1
                 left_elim += 1
 
         if left_elim < target and len(r0) > 0 and len(r1) > 0:
-            min_x = xs[r0.start]
-            if ys[r1.start] <= min_x:
+            if ys[r1.start] <= xs[r0.start]:  # min_x
                 r1.start += 1
                 left_elim += 1
 
         if right_elim < target and len(r0) > 0 and len(r1) > 0:
-            max_y = ys[r1.stop - 1]
-            if xs[r0.stop - 1] >= max_y:
+            if xs[r0.stop - 1] >= ys[r1.stop - 1]:  # max_y
                 r0.stop -= 1
                 right_elim += 1
 
         if right_elim < target and len(r0) > 0 and len(r1) > 0:
-            max_x = xs[r0.stop - 1]
-            if ys[r1.stop - 1] >= max_x:
+            if ys[r1.stop - 1] >= xs[r0.stop - 1]:  # max_x
                 r1.stop -= 1
                 right_elim += 1
 
@@ -207,7 +195,6 @@ class SortedMedianTest(unittest.TestCase):
         def check(x_in, y_in):
             i, name = median_of_list_pair(x_in, y_in)
             zs = [x_in, y_in][name.value]
-            # print(i, name, true_name, zs[i - 2 : i + 3])
             self.assertEqual(med_val, zs[i])
             self.assertEqual(true_name, name)
 
@@ -223,6 +210,14 @@ class SortedMedianTest(unittest.TestCase):
 
         small.resize(len(small) - 1)
         check(small, ys)
+
+        small.resize(0)
+        med_val = np.quantile(xs.tolist(), 0.5)
+        check(xs, small)
+        true_name = ListName.Y
+        check(small, xs)
+        with self.assertRaisesRegex(AssertionError, "empty input not allowed"):
+            check(small, small)
 
         big = np.array([max(both) + 1] * (1 + len(both)))
         med_val = np.quantile(big.tolist() + xs.tolist(), 0.5)
