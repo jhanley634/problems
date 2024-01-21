@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 import typer
 
-url = "https://gist.github.com/sachinruk/9b0aaf5c134aa398f7f201c2b298210a"
-raw = (
+URL = "https://gist.github.com/sachinruk/9b0aaf5c134aa398f7f201c2b298210a"
+RAW = (
     "https://gist.githubusercontent.com/sachinruk/9b0aaf5c134aa398f7f201c2b298210a"
     "/raw/2b255fe028f723ed2afbfa7e2679cd0de56b4685/property.html"
 )
@@ -27,5 +27,5 @@ def parse(in_file: Path) -> None:
 
 
 if __name__ == "__main__":
-    print(raw)
+    print(RAW)
     typer.run(parse)

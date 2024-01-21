@@ -68,7 +68,7 @@ def _get_fp_tp_rates() -> tuple[Any, Any, Any, Any]:
     # from https://www.sharpsightlabs.com/blog/plot-roc-curve-in-python-seaborn
 
     # Generate a binary classification problem.
-    X, y = make_classification(
+    x, y = make_classification(
         n_samples=10_000,
         class_sep=0.9,
         n_classes=2,
@@ -78,20 +78,20 @@ def _get_fp_tp_rates() -> tuple[Any, Any, Any, Any]:
         n_repeated=0,
         random_state=42,
     )
-    df_X = pd.DataFrame(X)
-    print(df_X.describe())
-    sns.scatterplot(data=df_X, x=0, y=1, hue=y)
+    df_x = pd.DataFrame(x)
+    print(df_x.describe())
+    sns.scatterplot(data=df_x, x=0, y=1, hue=y)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=43
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.2, random_state=43
     )
 
     noskill_probabilities: list[int] = [0] * len(y_test)
 
     lr_model = LogisticRegression()
-    lr_model.fit(X_train, y_train)
+    lr_model.fit(x_train, y_train)
 
-    probabilities_lr = lr_model.predict_proba(X_test)
+    probabilities_lr = lr_model.predict_proba(x_test)
 
     # Filter, retaining just the positive case.
     probabilities_logistic_posclass = probabilities_lr[:, 1]

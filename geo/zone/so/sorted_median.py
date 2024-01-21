@@ -66,14 +66,14 @@ def median_of_list_pair(
     both_mid = x_mid + y_mid
     assert len(np.concatenate((xs, ys))) == both_mid + 1 + both_mid
 
-    return _median3(
+    return _median2(
         (xs, ys),
         (MutRange(0, len(xs)), MutRange(0, len(ys))),
     )
 
 
 @beartype
-def _median3(
+def _median2(
     arrays: tuple[
         np.ndarray[int, np.dtype[np.int_]],
         np.ndarray[int, np.dtype[np.int_]],
@@ -101,7 +101,6 @@ def _median3(
 
     while len(r0) + len(r1) > 1:
         # Loop variant: at least one of the two ranges _will_ shrink.
-        print(r0, r1, left_elim, right_elim, target)
 
         # While feasible, squish both ranges.
         if left_elim < target and len(r0) > 0 and len(r1) > 0:
@@ -208,6 +207,7 @@ class SortedMedianTest(unittest.TestCase):
         def check(x_in, y_in):
             i, name = median_of_list_pair(x_in, y_in)
             zs = [x_in, y_in][name.value]
+            # print(i, name, true_name, zs[i - 2 : i + 3])
             self.assertEqual(med_val, zs[i])
             self.assertEqual(true_name, name)
 
@@ -216,17 +216,22 @@ class SortedMedianTest(unittest.TestCase):
 
         both = xs.tolist() + ys.tolist()
         small = np.array([min(both) - 1] * (1 + len(both)))
-        # check(small, xs)
+        med_val = np.quantile(small.tolist() + xs.tolist(), 0.5)
+        assert med_val == small[0]
+        true_name = ListName.X
+        check(small, xs)
 
         small.resize(len(small) - 1)
-        # check(small, ys)
+        check(small, ys)
 
         big = np.array([max(both) + 1] * (1 + len(both)))
-        return
+        med_val = np.quantile(big.tolist() + xs.tolist(), 0.5)
+        assert med_val == big[0]
+        true_name = ListName.X
+        check(big, xs)
 
-        i, name = median_of_list_pair(big, xs)
         big.resize(len(big) - 1)
-        i, name = median_of_list_pair(big, ys)
+        check(big, ys)
 
     def test_enum_values(self) -> None:
         self.assertEqual(0, ListName.X.value)
