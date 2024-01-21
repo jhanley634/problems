@@ -94,6 +94,27 @@ def _median2(
     while len(r0) + len(r1) > 1:
         # Loop variant: at least one of the two ranges _will_ shrink.
 
+        # One of the ranges has been exhausted, so squish the other.
+        if left_elim < target and len(r0) > 0 and len(r1) == 0:
+            m = max(1, len(r0) // 2)  # midpoint
+            r0.start += m
+            left_elim += m
+
+        if left_elim < target and len(r0) == 0 and len(r1) > 0:
+            m = max(1, len(r1) // 2)
+            r1.start += m
+            left_elim += m
+
+        if right_elim < target and len(r0) > 0 and len(r1) == 0:
+            m = max(1, len(r0) // 2)
+            r0.stop -= m
+            right_elim += m
+
+        if right_elim < target and len(r0) == 0 and len(r1) > 0:
+            m = max(1, len(r1) // 2)
+            r1.stop -= m
+            right_elim += m
+
         # While feasible, squish both ranges.
         if left_elim < target and len(r0) > 0 and len(r1) > 0:
             if xs[r0.start] <= ys[r1.start]:  # min_y
@@ -114,23 +135,6 @@ def _median2(
             if ys[r1.stop - 1] >= xs[r0.stop - 1]:  # max_x
                 r1.stop -= 1
                 right_elim += 1
-
-        # One of the ranges has been exhausted, so squish the other.
-        if left_elim < target and len(r0) > 0 and len(r1) == 0:
-            r0.start += 1
-            left_elim += 1
-
-        if left_elim < target and len(r0) == 0 and len(r1) > 0:
-            r1.start += 1
-            left_elim += 1
-
-        if right_elim < target and len(r0) > 0 and len(r1) == 0:
-            r0.stop -= 1
-            right_elim += 1
-
-        if right_elim < target and len(r0) == 0 and len(r1) > 0:
-            r1.stop -= 1
-            right_elim += 1
 
     assert len(r0) + len(r1) == 1  # Found it!
 
