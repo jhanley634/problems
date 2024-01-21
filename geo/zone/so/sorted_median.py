@@ -53,10 +53,10 @@ def median_of_list_pair(
     xs: np.ndarray[int, np.dtype[np.int_]],
     ys: np.ndarray[int, np.dtype[np.int_]],
 ) -> tuple[int, ListName]:
-    assert len(xs) > 0
+    # assert len(xs) > 0
     assert _monotonic(xs)
 
-    assert len(ys) > 0
+    # assert len(ys) > 0
     assert _monotonic(ys)
 
     assert (len(xs) + len(ys)) % 2 == 1  # The answer is definitely one of the elements.
@@ -66,10 +66,84 @@ def median_of_list_pair(
     both_mid = x_mid + y_mid
     assert len(np.concatenate((xs, ys))) == both_mid + 1 + both_mid
 
-    return _median2(
+    return _median3(
         (xs, ys),
         (MutRange(0, len(xs)), MutRange(0, len(ys))),
     )
+
+
+@beartype
+def _median3(
+    arrays: tuple[
+        np.ndarray[int, np.dtype[np.int_]],
+        np.ndarray[int, np.dtype[np.int_]],
+    ],
+    ranges: tuple[MutRange, MutRange],
+) -> tuple[int, ListName]:
+    xs, ys = arrays
+    r0, r1 = ranges
+
+    assert sorted(xs.tolist()) == xs.tolist()
+    assert sorted(ys.tolist()) == ys.tolist()
+    assert len(xs) == len(r0)
+    assert len(ys) == len(r1)
+    assert (len(r0) + len(r1)) % 2 == 1  # The answer is definitely one of the elements.
+
+    # If an entry has been eliminated, it is ruled out as a median candidate.
+    left_elim = right_elim = 0
+    target = (len(r0) + len(r1)) // 2
+
+    while len(r0) + len(r1) > 1:
+        print(r0, r1, left_elim, right_elim, target)
+
+        # While feasible, squish both ranges.
+        if left_elim < target and len(r0) > 0 and len(r1) > 0:
+            min_y = ys[r1.start]
+            if xs[r0.start] <= min_y:
+                r0.start += 1
+                left_elim += 1
+
+        if left_elim < target and len(r0) > 0 and len(r1) > 0:
+            min_x = xs[r0.start]
+            if ys[r1.start] <= min_x:
+                r1.start += 1
+                left_elim += 1
+
+        if right_elim < target and len(r0) > 0 and len(r1) > 0:
+            max_y = ys[r1.stop - 1]
+            if xs[r0.stop - 1] >= max_y:
+                r0.stop -= 1
+                right_elim += 1
+
+        if right_elim < target and len(r0) > 0 and len(r1) > 0:
+            max_x = xs[r0.stop - 1]
+            if ys[r1.stop - 1] >= max_x:
+                r1.stop -= 1
+                right_elim += 1
+
+        # One of the ranges has been exhausted, so squish the other.
+        if left_elim < target and len(r0) > 0 and len(r1) == 0:
+            r0.start += 1
+            left_elim += 1
+
+        if left_elim < target and len(r0) == 0 and len(r1) > 0:
+            r1.start += 1
+            left_elim += 1
+
+        if right_elim < target and len(r0) > 0 and len(r1) == 0:
+            r0.stop -= 1
+            right_elim += 1
+
+        if right_elim < target and len(r0) == 0 and len(r1) > 0:
+            r1.stop -= 1
+            right_elim += 1
+
+    assert len(r0) + len(r1) == 1  # Found it!
+
+    if len(r0) == 1:
+        return r0.start, ListName.X
+    else:
+        return r1.start, ListName.Y
 
 
 @beartype
@@ -106,7 +180,9 @@ def _median2(
         # There's more work to be done.
 
         # Loop variant: at least one of the two ranges _will_ shrink.
-        print(len(ys), r1)
+        verbose = False
+        if verbose:
+            print(len(ys), r1)
         if len(ys) - 1 == r1.start:
             breakpoint()
         small_val = min(
