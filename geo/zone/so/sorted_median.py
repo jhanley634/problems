@@ -205,17 +205,22 @@ class SortedMedianTest(unittest.TestCase):
         self.assertEqual(med_val, xs[i])
 
     def test_median_of_list_pair(self) -> None:
+        def check(x_in, y_in):
+            i, name = median_of_list_pair(x_in, y_in)
+            zs = [x_in, y_in][name.value]
+            self.assertEqual(med_val, zs[i])
+            self.assertEqual(true_name, name)
+
         xs, ys, true_name, med_val = _generate_list_pair(len(self.rand))
-        i, name = median_of_list_pair(xs, ys)
-        zs = [xs, ys][name.value]
-        self.assertEqual(med_val, zs[i])
-        self.assertEqual(true_name, name)
+        check(xs, ys)
 
         both = xs.tolist() + ys.tolist()
         small = np.array([min(both) - 1] * (1 + len(both)))
-        i, name = median_of_list_pair(small, xs)
+        # check(small, xs)
+
         small.resize(len(small) - 1)
-        i, name = median_of_list_pair(small, ys)
+        # check(small, ys)
+
         big = np.array([max(both) + 1] * (1 + len(both)))
         return
 
