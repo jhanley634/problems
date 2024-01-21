@@ -91,9 +91,16 @@ def _median3(
 
     # If an entry has been eliminated, it is ruled out as a median candidate.
     left_elim = right_elim = 0
+    # The total of the range .start's needs to hit this target.
+    # So does the total amount of .stop .. len() elements.
     target = (len(r0) + len(r1)) // 2
 
+    # invariant: the median index is always within the ranges.
+    # (A range _can_ get squished to zero length,
+    # indicating the median index is within the other range.)
+
     while len(r0) + len(r1) > 1:
+        # Loop variant: at least one of the two ranges _will_ shrink.
         print(r0, r1, left_elim, right_elim, target)
 
         # While feasible, squish both ranges.
@@ -147,76 +154,13 @@ def _median3(
 
 
 @beartype
-def _median2(
-    arrays: tuple[
-        np.ndarray[int, np.dtype[np.int_]],
-        np.ndarray[int, np.dtype[np.int_]],
-    ],
-    ranges: tuple[MutRange, MutRange],
-) -> tuple[int, ListName]:
-    assert len(arrays) == len(ranges) == 2
-    xs, ys = arrays
-    r0, r1 = ranges
-
-    # The total of the range .start's needs to hit this target.
-    # So does the total amount of .stop .. len() elements.
-    target = (len(xs) + len(ys)) // 2
-
-    # invariant: the median index is always within the ranges.
-    # (A range _can_ get squished to zero length,
-    # indicating the median index is within the other range.)
-
-    while True:
-        assert sum(map(len, ranges)) >= 1  # The answer is in there!
-
-        # Two ways to win; two base cases.
-        for a in range(len(arrays)):
-            # A length of zero indicates that we have "squeezed out"
-            # the median index from the other array.
-            if len(ranges[a]) == 1 and len(ranges[1 - a]) == 0:
-                return ranges[a].start, list(ListName.__members__.values())[a]
-
-        # Haven't narrowed it down to a unique answer, yet.
-        # There's more work to be done.
-
-        # Loop variant: at least one of the two ranges _will_ shrink.
-        verbose = False
-        if verbose:
-            print(len(ys), r1)
-        if len(ys) - 1 == r1.start:
-            breakpoint()
-        small_val = min(
-            int(xs[r0.start]),
-            int(ys[r1.start]),
-        )
-        big_val = float("-inf")
-        if len(r0) > 0 and r0.stop - 1 >= 0:
-            big_val = max(big_val, int(xs[r0.stop - 1]))
-        if len(r1) > 0 and r1.stop - 1 >= 0:
-            big_val = max(big_val, int(ys[r1.stop - 1]))
-        # print(r0, r1)
-        assert big_val >= small_val
-
-        if r0.start + r1.start < target:
-            if len(r0) > 0 and xs[r0.start] == small_val and r0.start + 1 < len(xs):
-                r0.start += 1
-            if len(r1) > 0 and ys[r1.start] == small_val and r1.start + 1 < len(ys):
-                r1.start += 1
-
-        if (len(xs) - 1 - r0.start) + (len(ys) - 1 - r1.start) < target:
-            if len(r0) > 0 and xs[r0.stop - 1] == big_val and r0.stop > 1:
-                r0.stop -= 1
-            if len(r1) > 0 and ys[r1.stop - 1] == big_val and r1.stop > 0:
-                r1.stop -= 1
-
-
-@beartype
 def _generate_list_pair(
     n: int,
 ) -> tuple[
     np.ndarray[int, np.dtype[np.int_]],
     np.ndarray[int, np.dtype[np.int_]],
     ListName,
+    float,
 ]:
     """Returns a pair of integer arrays, and the name of the one that contains the median.
 
@@ -236,8 +180,10 @@ def _generate_list_pair(
         if (med_val in xs) != (med_val in ys):
             done = True
 
+    assert med_val in xs or med_val in ys
+    assert not (med_val in xs and med_val in ys)  # (XOR)
     name = ListName.X if med_val in xs else ListName.Y
-    return xs, ys, name
+    return xs, ys, name, med_val
 
 
 @beartype
@@ -259,9 +205,10 @@ class SortedMedianTest(unittest.TestCase):
         self.assertEqual(med_val, xs[i])
 
     def test_median_of_list_pair(self) -> None:
-        xs, ys, true_name = _generate_list_pair(len(self.rand))
+        xs, ys, true_name, med_val = _generate_list_pair(len(self.rand))
         i, name = median_of_list_pair(xs, ys)
-        # TODO self.assertEqual(1050, i)
+        zs = [xs, ys][name.value]
+        self.assertEqual(med_val, zs[i])
         self.assertEqual(true_name, name)
 
         both = xs.tolist() + ys.tolist()
