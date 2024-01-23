@@ -3,8 +3,6 @@
 
 from csv import DictReader
 from typing import Generator
-import io
-import re
 
 from matplotlib import pyplot as plt
 import pandas as pd
@@ -31,6 +29,7 @@ def _get_rows() -> Generator[dict[str, int], None, None]:
 def main(meas: str = "measurement") -> None:
     df = pd.DataFrame(_get_rows())
     df["time"] = pd.to_datetime(df.time)
+    df = df.drop(columns="pulse")
     tidy = df.melt("time", var_name=meas, value_name="value")
 
     sns.scatterplot(data=tidy, x="time", y="value", hue=meas)
