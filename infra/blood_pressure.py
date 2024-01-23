@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# Copyright 2023 John Hanley. MIT licensed.
+# Copyright 2024 John Hanley. MIT licensed.
 
 from pathlib import Path
 from subprocess import run

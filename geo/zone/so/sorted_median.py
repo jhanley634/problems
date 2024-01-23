@@ -96,7 +96,7 @@ def _median2(
 
         # One of the ranges has been exhausted, so squish the other.
         if left_elim < target and len(r0) > 0 and len(r1) == 0:
-            m = max(1, len(r0) // 2)  # midpoint
+            m = max(1, len(r0) // 2)  # midpoint XXX
             r0.start += m
             left_elim += m
 
@@ -113,7 +113,7 @@ def _median2(
         if right_elim < target and len(r0) == 0 and len(r1) > 0:
             m = max(1, len(r1) // 2)
             r1.stop -= m
-            right_elim += m
+            right_elim += m  # XXX
 
         # While feasible, squish both ranges.
         if left_elim < target and len(r0) > 0 and len(r1) > 0:
@@ -258,3 +258,11 @@ class SortedMedianTest(unittest.TestCase):
             a.sort()
         # print(f"\n array sort: {time() - t0:.3f} sec")
         self.assertLess(time() - t0, 0.250)
+
+
+@beartype
+def foo(c: str) -> None:
+    print("ab " + c + " cd")
+
+
+foo("xy")
