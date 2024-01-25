@@ -10,10 +10,10 @@ dependencies:
 - py-opencv >= 4.6.0
 - py-xgboost >= 1.7.1
 - python >= 3.11.4
-- scipy >= 1.12.0
+- scipy >= 1.11.4
 - torchvision >= 0.16.1
 - pip:
-  - beartype >= 0.16.4
+  - beartype >= 0.17.0
   - beautifulsoup4 >= 4.12.3
   - bitarray >= 2.9.2
   - black[jupyter] >= 23.12.1
@@ -31,7 +31,7 @@ dependencies:
   - gpxpy >= 1.6.2
   - html2text >= 2020.1.16
   - huggingface_hub >= 0.16.4
-  - hypothesis >= 6.96.4
+  - hypothesis >= 6.97.0
   - imbalanced-learn >= 0.12.0
   - ipyleaflet >= 0.18.2
   - isort >= 5.13.2
