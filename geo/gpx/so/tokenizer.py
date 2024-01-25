@@ -15,11 +15,20 @@ import spacy
 import spacy.tokens
 import typer
 
-punctuation = str.maketrans("", "", '.,;:!?"()[]{}')
+punctuation = str.maketrans(
+    '.,;:!?"()[]{}',
+    "             ",
+)
 
 
 def _get_simple_words(line: str) -> Generator[str, None, None]:
-    for word in line.translate(punctuation).split():
+    for word in line.rstrip().translate(punctuation).split():
+        # strip possessives
+        if word.endswith("'"):
+            word = word[:-1]
+        if word.endswith("'s"):
+            word = word[:-2]
+
         if word.isalpha():
             yield word
 
@@ -34,7 +43,7 @@ def spacy_wordlist(
     spcy_out: TextIO,
 ) -> None:
     nlp = spacy.load("en_core_web_sm")
-    simp_seen = set()
+    simp_seen = {"cannot"}
     spcy_seen = set()
     cnt: Counter[str] = Counter()
     dups = 0
