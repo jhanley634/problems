@@ -4,9 +4,8 @@
 # from https://codereview.stackexchange.com/questions/289102/tokenize-a-file
 
 from collections import Counter
-from sys import stdin
-import inspect
 import pprint
+import sys
 
 import spacy
 
@@ -16,7 +15,7 @@ def spacy_wordlist() -> None:
     seen = set()
     cnt = Counter()
 
-    for line in stdin:
+    for line in sys.stdin:
         doc = (word for word in nlp(line.strip()) if word.is_alpha)
 
         for token in doc:
