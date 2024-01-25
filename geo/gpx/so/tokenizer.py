@@ -15,7 +15,7 @@ import spacy
 import spacy.tokens
 import typer
 
-punctuation = str.maketrans("", "", ".,;:!?()[]{}'\"")
+punctuation = str.maketrans("", "", '.,;:!?"()[]{}')
 
 
 def _get_simple_words(line: str) -> Generator[str, None, None]:
@@ -57,7 +57,6 @@ def spacy_wordlist(
                 spcy_seen.add(token.text)
                 spcy_out.write(f"{token}\n")
 
-    # print("\n".join(sorted(spcy_seen)))
     cnt = Counter({k: v for k, v in cnt.items() if v >= 3})
     pp(sorted(cnt.items(), key=itemgetter(1)))
     print(len(spcy_seen), dups)
