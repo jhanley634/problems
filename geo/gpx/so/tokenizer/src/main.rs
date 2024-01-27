@@ -46,13 +46,13 @@ fn _downcase_line(line: String) {
         r = m.range();
         assert!(r.len() == 1);
         if r.start > i {
-            print!("{}", s[i..r.start].to_string());
+            print!("{}", &s[i..r.start])
         }
         i = r.end;
         print!("{}", s[r].to_string().to_ascii_lowercase())
     }
     if i < s.len() {
-        print!("{}", s[i..s.len()].to_string())
+        print!("{}", &s[i..s.len()])
     }
 }
 
