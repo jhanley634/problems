@@ -28,17 +28,30 @@ fn _cat_n() {
 
 /// Filter that emulates `tr A-Z a-z`.
 fn downcase_stdin() {
-    let upper_re = Regex::new(r"([A-Z])").unwrap();
+    let _upper_re = Regex::new(r"([A-Z])").unwrap();
     loop {
         let line = read_line();
         if line.is_empty() {
             break;
         }
-        print!("{}", _downcase_line(line, &upper_re))
+        print!("{}", _downcase_line(line))
+        // print!("{}", _downcase_line_with_regex(line, &_upper_re))
     }
 }
 
-fn _downcase_line(line: String, upper_re: &Regex) -> String {
+fn _downcase_line(line: String) -> String {
+    line.to_ascii_lowercase()
+}
+
+fn _downcase_line_by_char_slowly(line: String) -> String {
+    let mut result = String::new();
+    for ch in line.chars() {
+        result += &ch.to_ascii_lowercase().to_string()
+    }
+    result
+}
+
+fn _downcase_line_with_regex(line: String, upper_re: &Regex) -> String {
     let mut result = String::new();
     let mut i = 0;
     let mut r: std::ops::Range<usize>;
