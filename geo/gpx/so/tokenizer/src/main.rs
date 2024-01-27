@@ -28,15 +28,31 @@ fn _cat_n() {
 
 /// Filter that emulates `tr A-Z a-z`.
 fn downcase_stdin() {
-    let upper_re = Regex::new(r"([A-Z])").unwrap();
     loop {
         let line = read_line();
         if line.is_empty() {
             break;
         }
-        for (_, [upper]) in upper_re.captures_iter(line.as_str()).map(|c| c.extract()) {
-            println!("{}.", upper.to_string().to_lowercase())
+        _downcase_line(line);
+    }
+}
+
+fn _downcase_line(line: String) {
+    let upper_re = Regex::new(r"([A-Z])").unwrap();
+    let mut i = 0;
+    let mut r: std::ops::Range<usize>;
+    let s = line.as_str();
+    for m in upper_re.find_iter(s) {
+        r = m.range();
+        assert!(r.len() == 1);
+        if r.start > i {
+            print!("{}", s[i..r.start].to_string());
         }
+        i = r.end;
+        print!("{}", s[r].to_string().to_ascii_lowercase())
+    }
+    if i < s.len() {
+        print!("{}", s[i..s.len()].to_string())
     }
 }
 
