@@ -2,19 +2,24 @@
 use std::io::{self, Write};
 
 fn get_input() -> String {
-    print!("Plain text:  ");
     io::stdout().flush().unwrap();
-
-    let mut buf = String::new();
-    io::stdin().read_line(&mut buf).unwrap();
-    buf
+    let mut buffer = String::new();
+    io::stdin().read_line(&mut buffer).unwrap();
+    buffer
 }
 
+/// Filter that emulates `/bin/cat -n`.
+fn cat_n() {
+    let mut i = 0;
+    let mut line;
+    line = get_input();
+    while !line.is_empty() {
+        i += 1;
+        println!("{:>6}  {}", i, line.trim_end());
+        line = get_input();
+    }
+}
 
 fn main() {
-    let i = 42;
-    println!("Hello, world!");
-    let line = get_input();
-    println!(">{}<", line.trim_end());
-    println!("{}", i);
+    cat_n()
 }
