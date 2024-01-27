@@ -33,12 +33,13 @@ fn downcase_stdin() {
         if line.is_empty() {
             break;
         }
-        _downcase_line(line);
+        print!("{}", _downcase_line(line))
     }
 }
 
-fn _downcase_line(line: String) {
+fn _downcase_line(line: String) -> String {
     let upper_re = Regex::new(r"([A-Z])").unwrap();
+    let mut result = String::new();
     let mut i = 0;
     let mut r: std::ops::Range<usize>;
     let s = line.as_str();
@@ -46,14 +47,15 @@ fn _downcase_line(line: String) {
         r = m.range();
         assert!(r.len() == 1);
         if r.start > i {
-            print!("{}", &s[i..r.start])
+            result += &s[i..r.start]
         }
         i = r.end;
-        print!("{}", s[r].to_string().to_ascii_lowercase())
+        result += s[r].to_string().to_ascii_lowercase().as_str()
     }
     if i < s.len() {
-        print!("{}", &s[i..s.len()])
+        result += &s[i..s.len()]
     }
+    result
 }
 
 fn main() {
