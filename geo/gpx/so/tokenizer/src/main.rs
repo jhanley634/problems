@@ -2,7 +2,7 @@
 
 use std::io::{self};
 
-// use regex::Regex;
+use regex::Regex;
 
 /// Returns a line from stdin.
 /// It will typically end with \n.
@@ -14,7 +14,7 @@ fn read_line() -> String {
 }
 
 /// Filter that emulates `/bin/cat -n`.
-fn cat_n() {
+fn _cat_n() {
     let mut i = 0;
     loop {
         let line = read_line();
@@ -28,14 +28,18 @@ fn cat_n() {
 
 /// Filter that emulates `tr A-Z a-z`.
 fn downcase_stdin() {
-    // let upper_re = Regex::new(r"[A-Z]").unwrap();
-    let mut line;
-    line = read_line();
-    while !line.is_empty() {
-        line = read_line();
+    let upper_re = Regex::new(r"([A-Z])").unwrap();
+    loop {
+        let line = read_line();
+        if line.is_empty() {
+            break;
+        }
+        for (_, [upper]) in upper_re.captures_iter(line.as_str()).map(|c| c.extract()) {
+            println!("{}.", upper.to_string().to_lowercase())
+        }
     }
 }
 
 fn main() {
-    cat_n()
+    downcase_stdin()
 }
