@@ -1,8 +1,11 @@
+//! Copyright 2024 John Hanley. MIT licensed.
 
-use std::io::{self, Write};
+use std::io::{self};
 
-fn get_input() -> String {
-    io::stdout().flush().unwrap();
+/// Returns a line from stdin.
+/// It will typically end with \n.
+/// A zero-length result means EOF.
+fn read_line() -> String {
     let mut buffer = String::new();
     io::stdin().read_line(&mut buffer).unwrap();
     buffer
@@ -12,11 +15,11 @@ fn get_input() -> String {
 fn cat_n() {
     let mut i = 0;
     let mut line;
-    line = get_input();
+    line = read_line();
     while !line.is_empty() {
         i += 1;
         println!("{:>6}  {}", i, line.trim_end());
-        line = get_input();
+        line = read_line();
     }
 }
 
