@@ -46,7 +46,11 @@ fn _downcase_line(line: String) -> String {
 fn _downcase_line_by_char_slowly(line: String) -> String {
     let mut result = String::new();
     for ch in line.chars() {
-        result += &ch.to_ascii_lowercase().to_string()
+        if ch.is_uppercase() {
+            result += &ch.to_ascii_lowercase().to_string()
+        } else {
+            result += &ch.to_string()
+        }
     }
     result
 }
