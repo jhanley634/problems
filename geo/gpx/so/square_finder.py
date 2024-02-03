@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 
+from dataclasses import dataclass
 # based on https://stackoverflow.com/questions/77902878/problem-with-opencv-to-recognize-numbers-and-digits-on-video
 from pathlib import Path
 from pprint import pp
@@ -48,40 +49,26 @@ def main() -> None:
     img.show()
 
 
-if __name__ == "__main__":
-    df = pd.DataFrame(
-        [
-            dict(PassengerId=1, age=10),
-            dict(PassengerId=2, age=20),
-        ]
-    ).set_index("PassengerId")
-    df_new = pd.DataFrame(
-        [
-            dict(Pid=1, age=12),
-        ]
-    ).set_index("Pid")
+@dataclass
+class Foo:
+    def __init__(self):
+        self._open: float = 2.718
 
-    print(df)
-    print()
-    print(df_new)
-    print()
-    print(
-        df.merge(
-            right=df_new,
-            right_on="Pid",
-            left_on="PassengerId",
-            how="inner",
-        )
-    )
-    print(
-        df.merge(
-            df_new,
-            right_on="Pid",
-            left_on="PassengerId",
-            how="inner",
-            copy=True,
-        )
-    )
-    print(df)
+    @property
+    def open(self) -> float:
+        return self._open
+
+    @open.setter
+    def open(self, value: float) -> None:
+        if value < 0.0:
+            raise ValueError("Open value must be positive.")
+        self._open = value
+
+
+if __name__ == "__main__":
+    f = Foo()
+    assert 2.718 == f.open
+    f.open = 3.14
+    assert 3.14 == f.open
 
     # main()
