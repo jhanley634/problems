@@ -7,11 +7,12 @@
 from array import array
 from hashlib import sha3_512
 from time import time
+import sys
 import unittest
 
 
-def generate_crc32_table(poly: int) -> dict[int, int]:
-    custom_crc_table: dict[int, int] = {}
+def generate_crc32_table(poly: int) -> array:
+    custom_crc_table = array("I", b"A" * 256 * 4)
     for i in range(256):
         c = i << 24
 
@@ -87,7 +88,8 @@ def crc32_stm_bis(bytes_arr: bytes) -> int:
     crc = 0xFFFF_FFFF
 
     a = array("I", bytes_arr[: length - length % 4])
-    a.byteswap()
+    if sys.byteorder == "little":
+        a.byteswap()
     for v in a:
         crc = ((crc << 8) & 0xFFFF_FFFF) ^ custom_crc_table[0xFF & ((crc >> 24) ^ v)]
         crc = ((crc << 8) & 0xFFFF_FFFF) ^ custom_crc_table[
@@ -144,7 +146,7 @@ class StmCrc32Test(unittest.TestCase):
         t0 = time()
         self.assertEqual(0xAB30_8DE0, crc32_stm(b"123456788"))
         self.assertEqual(0xAFF1_9057, crc32_stm(b"123456789"))
-        for _ in range(10):
+        for _ in range(100):
             self.assertEqual(0x957C_B03E, crc32_stm(self.buf))
         print(f"\nelapsed: {time() - t0:.6f}")
 
@@ -152,6 +154,6 @@ class StmCrc32Test(unittest.TestCase):
         t0 = time()
         self.assertEqual(0xAB30_8DE0, crc32_stm_bis(b"123456788"))
         self.assertEqual(0xAFF1_9057, crc32_stm_bis(b"123456789"))
-        for _ in range(10):
+        for _ in range(100):
             self.assertEqual(0x957C_B03E, crc32_stm_bis(self.buf))
-        print(f"\nelapsed: {time() - t0:.6f}")
+        print(f"\nElapsed: {time() - t0:.6f}")
