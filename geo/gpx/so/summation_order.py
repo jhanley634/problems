@@ -8,7 +8,7 @@ from typing import Generator, Iterable
 from numpy.random import permutation, seed
 
 
-def _get_nums(k: int, r: Iterable[int]) -> Generator[float, None, None]:
+def _get_fractions(k: int, r: Iterable[int]) -> Generator[float, None, None]:
     for i in r:
         yield i / k
 
@@ -24,8 +24,8 @@ def add_doubles(n: int = 5_000_000) -> None:
     for k in [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]:
         expected = n * (n - 1) / 2 / k
         print()
-        _display("asc", k, expected - sum(_get_nums(k, range(n))))
-        _display("dec", k, expected - sum(_get_nums(k, reversed(range(n)))))
+        _display("asc", k, expected - sum(_get_fractions(k, range(n))))
+        _display("dec", k, expected - sum(_get_fractions(k, reversed(range(n)))))
         _display("rnd", k, expected - sum(permutation(range(n)) / k))
 
 
