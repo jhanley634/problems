@@ -35,7 +35,7 @@ df = pd.DataFrame(
 ).set_index("plant")
 
 graph = graphviz.Digraph(
-    name="treatment_flow",
+    name="/tmp/treatment_flow",
     format="svg",
     engine="dot",
     graph_attr={
@@ -105,4 +105,5 @@ for i, (flow, contam) in enumerate(zip(w, Cuntreat)):
             label=f"{flow:.1f} ({contam*flow:.1f})",
         )
 
-graph.view()
+if __name__ == "__main__":
+    graph.view()
