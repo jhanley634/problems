@@ -5,6 +5,7 @@
 # based on https://stackoverflow.com/questions/77902878/problem-with-opencv-to-recognize-numbers-and-digits-on-video
 from pathlib import Path
 from pprint import pp
+import io
 
 from beartype import beartype
 from PIL import Image, ImageEnhance, ImageOps
