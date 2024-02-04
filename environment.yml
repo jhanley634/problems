@@ -29,6 +29,7 @@ dependencies:
   - geoviews >= 1.11.0
   - glom >= 23.5.0
   - gpxpy >= 1.6.2
+  - graphviz >= 0.20.1
   - html2text >= 2020.1.16
   - huggingface_hub >= 0.16.4
   - hypothesis >= 6.97.0
