@@ -37,7 +37,7 @@ df = pd.DataFrame(
 graph = graphviz.Digraph(
     name="treatment_flow",
     format="svg",
-    engine="neato",
+    engine="dot",
     graph_attr={
         "rankdir": "LR",
         "overlap": "false",
@@ -67,6 +67,9 @@ for plant in plants:
         + "}"
         "}",
     )
+graph.edge("1", "2", label="fake", style="invis")
+graph.edge("2", "3", label="fake", style="invis")
+graph.edge("4", "5", label="fake", style="invis")
 
 for i, a_slice in enumerate(a):
     for j, a_row in enumerate(a_slice):
@@ -76,6 +79,7 @@ for i, a_slice in enumerate(a):
                     tail_name=f"{i}:treat_{treatment}_out",
                     head_name=f"{j}:treat_in",
                     label=f"{flow:.1f} ({contam*flow:.1f})",
+                    constraint="false",
                 )
 for i, (e_row, contam) in enumerate(zip(e, Cuntreat)):
     for j, flow in enumerate(e_row):
@@ -84,6 +88,7 @@ for i, (e_row, contam) in enumerate(zip(e, Cuntreat)):
                 tail_name=f"{i}:untreat_out",
                 head_name=f"{j}:untreat_in",
                 label=f"{flow:.1f} ({contam*flow:.1f})",
+                constraint="false",
             )
 for j, flow in enumerate(f):
     if flow > 0:
