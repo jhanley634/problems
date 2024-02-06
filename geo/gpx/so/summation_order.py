@@ -14,7 +14,7 @@ def _get_fractions(k: int, r: Iterable[int]) -> Generator[float, None, None]:
 
 
 def _display(label: str, k: int, result: float) -> None:
-    print(f"{label} {k:4}   {float.hex(result):22s}   {result}")
+    print(f"{label} {k:4}   {result.hex():22s}   {result}")
 
 
 def add_doubles(n: int = 5_000_000) -> None:
