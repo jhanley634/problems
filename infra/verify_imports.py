@@ -116,7 +116,6 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer  # noqa F401
 from typer import Option  # noqa F401
 from typing_extensions import Annotated  # noqa F401
 from uszipcode import SearchEngine  # noqa F401
-from ydata_profiling import ProfileReport  # noqa F401
 import click  # noqa F401
 import cv2  # noqa F401
 import geopandas  # noqa F401
