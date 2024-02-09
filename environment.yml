@@ -9,8 +9,7 @@ dependencies:
 - pip >= 24.0
 - py-opencv >= 4.6.0
 - py-xgboost >= 1.7.1
-- python >= 3.11.4
-- torchvision >= 0.16.1
+- python == 3.11.7
 - pip:
   - beartype >= 0.17.0
   - beautifulsoup4 >= 4.12.3
@@ -93,4 +92,4 @@ dependencies:
   - uszipcode >= 1.0.1
   - watchdog >= 4.0.0
   - xlsx2csv >= 0.8.2
-#  - ydata-profiling >= 4.5
+  - ydata-profiling >= 4.6.4
