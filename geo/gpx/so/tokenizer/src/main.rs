@@ -1,13 +1,13 @@
 //! Copyright 2024 John Hanley. MIT licensed.
 
-use std::io::{self};
-
+use lazy_regex::{regex, Lazy};
 use regex::Regex;
+use std::io::{self, BufRead, BufReader};
 
 /// Returns a line from stdin.
 /// It will typically end with \n.
 /// A zero-length result means EOF.
-fn read_line() -> String {
+fn _read_line() -> String {
     let mut buffer = String::new();
     io::stdin().read_line(&mut buffer).unwrap();
     buffer
@@ -17,7 +17,7 @@ fn read_line() -> String {
 fn _cat_n() {
     let mut i = 0;
     loop {
-        let line = read_line();
+        let line = _read_line();
         if line.is_empty() {
             break;
         }
@@ -27,10 +27,10 @@ fn _cat_n() {
 }
 
 /// Filter that emulates `tr A-Z a-z`.
-fn downcase_stdin() {
+fn _downcase_stdin() {
     let _upper_re = Regex::new(r"([A-Z])").unwrap();
     loop {
-        let line = read_line();
+        let line = _read_line();
         if line.is_empty() {
             break;
         }
@@ -75,6 +75,21 @@ fn _downcase_line_with_regex(line: String, upper_re: &Regex) -> String {
     result
 }
 
+fn tokenize_stdin() {
+    let stdin = BufReader::new(io::stdin());
+    for line in stdin.lines() {
+        print!("{}\n", _tokenize_line(line.unwrap()))
+    }
+}
+
+static _PUNCTUATION_RE: &Lazy<Regex> = regex!(r#"([.,;:!?”'"()\[\]{}_-])"#);
+
+fn _tokenize_line(line: String) -> String {
+    let line = _PUNCTUATION_RE.replace_all(&line, " ").to_string();
+    // for word in txt.split_whitespace() {}
+    line
+}
+
 fn main() {
-    downcase_stdin()
+    tokenize_stdin()
 }
