@@ -78,17 +78,17 @@ fn _downcase_line_with_regex(line: String, upper_re: &Regex) -> String {
 fn tokenize_stdin() {
     let stdin = BufReader::new(io::stdin());
     for line in stdin.lines() {
-        print!("{}\n", _tokenize_line(line.unwrap()))
+        for word in _tokenize_line(line.unwrap()).split_whitespace() {
+            print!("{}\n", word)
+        }
     }
 }
 
 static _PUNCTUATION_RE: &Lazy<Regex> = regex!(r#"([.,;:!?”'"()\[\]{}_-])"#);
 
 fn _tokenize_line(line: String) -> String {
-    let line = _PUNCTUATION_RE.replace_all(&line, " ").to_string();
-    // for word in txt.split_whitespace() {}
-    line
-}
+     _PUNCTUATION_RE.replace_all(&line, " ").to_lowercase()
+ }
 
 fn main() {
     tokenize_stdin()
