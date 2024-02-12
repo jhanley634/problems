@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter
+from itertools import zip_longest
 from operator import itemgetter
 from pathlib import Path
 from time import time
@@ -59,26 +60,27 @@ def main() -> None:
 
 
 def publish(both: Counter[str], tom: str, huck: str, topic: str = "word-event") -> None:
-    # This takes 13.6 seconds to publish, or .250 msec ignoring redis.
+    # This takes ~ 12 seconds to publish, or .250 msec ignoring redis.
 
     r = redis.Redis()
     tom_cnt = both.copy()
     huck_cnt = both.copy()
     t0 = time()
+    sent = 0
     print("Publishing...")
-    assert tom_cnt["xyzzy"] == 0
 
-    for word in get_words(tom):
-        if tom_cnt[word] > 0:
-            tom_cnt[word] -= 1
-            r.publish(topic, word)
-
-    for word in get_words(huck):
-        if huck_cnt[word] > 0:
-            huck_cnt[word] -= 1
-            r.publish(topic, word)
+    for tw, hw in zip_longest(get_words(tom), get_words(huck)):
+        if tom_cnt[tw] > 0:
+            tom_cnt[tw] -= 1
+            r.publish(topic, tw)
+            sent += 1
+        if huck_cnt[hw] > 0:
+            huck_cnt[hw] -= 1
+            r.publish(topic, hw)
+            sent += 1
 
     print(f"elapsed: {time()-t0:.3f} sec")
+    assert 116_940 == sent, sent
 
 
 def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[str]:
