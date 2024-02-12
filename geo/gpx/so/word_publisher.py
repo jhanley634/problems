@@ -72,15 +72,16 @@ def publish(both: Counter[str], tom: str, huck: str, topic: str = "word-event") 
     for tw, hw in zip_longest(get_words(tom), get_words(huck)):
         if tom_cnt[tw] > 0:
             tom_cnt[tw] -= 1
-            r.publish(topic, tw)
+            r.publish(topic, f"item:     {tw}")
             sent += 1
         if huck_cnt[hw] > 0:
             huck_cnt[hw] -= 1
-            r.publish(topic, hw)
+            r.publish(topic, f"request:  {hw}")
             sent += 1
 
     print(f"elapsed: {time()-t0:.3f} sec")
     assert 116_940 == sent, sent
+    r.publish(topic, "request:  EOF")
 
 
 def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[str]:
