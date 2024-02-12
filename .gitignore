@@ -19,3 +19,4 @@ vision/loadtxt/pythran_lib/hello.egg-info/
 vision/loadtxt/pythran_lib/hello/hello.cpp
 vision/loadtxt/rust_lib/Cargo.lock
 vision/loadtxt/rust_lib/target
+dump.rdb
