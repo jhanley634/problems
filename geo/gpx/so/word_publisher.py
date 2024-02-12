@@ -3,6 +3,7 @@
 from collections import Counter
 from operator import itemgetter
 from pathlib import Path
+from time import time
 from typing import Generator
 import io
 import json
@@ -54,6 +55,30 @@ def main() -> None:
         Counter(get_words(tom)),
         Counter(get_words(huck)),
     )
+    publish(both, tom, huck)
+
+
+def publish(both: Counter[str], tom: str, huck: str, topic: str = "word-event") -> None:
+    # This takes 13.6 seconds to publish, or .250 msec ignoring redis.
+
+    r = redis.Redis()
+    tom_cnt = both.copy()
+    huck_cnt = both.copy()
+    t0 = time()
+    print("Publishing...")
+    assert tom_cnt["xyzzy"] == 0
+
+    for word in get_words(tom):
+        if tom_cnt[word] > 0:
+            tom_cnt[word] -= 1
+            r.publish(topic, word)
+
+    for word in get_words(huck):
+        if huck_cnt[word] > 0:
+            huck_cnt[word] -= 1
+            r.publish(topic, word)
+
+    print(f"elapsed: {time()-t0:.3f} sec")
 
 
 def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[str]:
