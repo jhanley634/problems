@@ -3,17 +3,23 @@
 from collections import Counter
 from time import sleep
 from typing import Generator
+import re
 
 import redis
 
 
 def read_words(topic: str = "word-event") -> Counter[str]:
-    for _ in word_consumer(topic, category := Counter()):
-        pass
+    id_re = re.compile(r"^\w+$")
+    for cat, word in word_consumer(topic, category := Counter()):
+        assert id_re.match(cat)
+        assert id_re.match(word)
+
     return category
 
 
-def word_consumer(topic: str, category: Counter[str]) -> Generator[str, None, None]:
+def word_consumer(
+    topic: str, category: Counter[str]
+) -> Generator[tuple[str, str], None, None]:
     ps = redis.Redis().pubsub()
     ps.subscribe(topic)
     sleep(0.010)
@@ -30,9 +36,9 @@ def word_consumer(topic: str, category: Counter[str]) -> Generator[str, None, No
             if data == "request:  EOF":
                 print("\nBye!")
                 return
-            cat, _ = data.split(":")  # e.g. "item:     the"
+            cat, word = data.split(":")  # e.g. "item:     the"
             category[cat] += 1
-            yield data
+            yield cat, word.lstrip()
 
 
 if __name__ == "__main__":

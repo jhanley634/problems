@@ -11,6 +11,7 @@ import json
 import re
 
 from requests_cache import CachedSession
+import numpy as np
 import redis
 
 from geo.gpx.so.tokenizer_simple import get_simple_words
@@ -109,9 +110,28 @@ def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[st
     assert tom_cnt["the"] == both["the"]
     assert tom_cnt["and"] == both["and"]
 
+    both = popularity(both)
+
     with open(Path("/tmp/both.json"), "w") as fout:
         json.dump(both, fout, indent=2)
     return both
+
+
+def _get_ranks(both):
+    for rank, count in enumerate(both.values()):
+        for _ in range(count):
+            yield rank
+
+
+def popularity(both: Counter[str]) -> Counter[str]:
+    # words = [(f"{word} " * both[word]).rstrip() for word in both]
+    # hashes = list(map(str.__hash__, (" ".join(words)).split()))
+    # assert len(set(hashes)) == len(set(words))  # collision free
+
+    ranks = np.array(list(_get_ranks(both)))
+    pctile = list(map(int, np.percentile(ranks, list(range(100)))))
+    for x in pctile:
+        print(x)
 
 
 if __name__ == "__main__":
