@@ -1,15 +1,21 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter
+from pathlib import Path
 from time import sleep
 from typing import Generator
 import re
 
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+from tqdm import tqdm
 import redis
+import sqlalchemy as sa
 
 
 def read_words(topic: str = "word-event") -> Counter[str]:
     id_re = re.compile(r"^\w+$")
+    category: Counter[str]
     for cat, word in word_consumer(topic, category := Counter()):
         assert id_re.match(cat)
         assert id_re.match(word)
@@ -18,7 +24,9 @@ def read_words(topic: str = "word-event") -> Counter[str]:
 
 
 def word_consumer(
-    topic: str, category: Counter[str]
+    topic: str,
+    category: Counter[str],
+    verbose: bool = False,
 ) -> Generator[tuple[str, str], None, None]:
     ps = redis.Redis().pubsub()
     ps.subscribe(topic)
@@ -32,7 +40,8 @@ def word_consumer(
             # assert msg["channel"].decode() == topic
 
             data = msg["data"].decode()
-            print(data.ljust(23), end="\t")
+            if verbose:
+                print(data.ljust(23), end="\t")
             if data == "request:  EOF":
                 print("\nBye!")
                 return
@@ -41,7 +50,39 @@ def word_consumer(
             yield cat, word.lstrip()
 
 
+def create_engine() -> sa.engine:
+    DB_FILE = Path("/tmp/words.db")
+    DB_URL = f"sqlite:///{DB_FILE}"
+    return sa.create_engine(DB_URL)
+
+
+def create_table() -> None:
+    ddl = text(
+        """
+        CREATE TABLE  IF NOT EXISTS  word (
+            id INTEGER PRIMARY KEY,
+            category TEXT,
+            word TEXT
+        )"""
+    )
+    with Session(engine) as sess:
+        sess.execute(ddl)
+
+
+def populate_rows() -> None:
+    ins = text("INSERT INTO word (category, word) VALUES (:cat, :word)")
+
+    with Session(engine) as sess:
+        category: Counter[str]
+        for cat, word in tqdm(word_consumer("word-event", category := Counter())):
+            sess.execute(ins, dict(cat=cat, word=word))
+        sess.commit()
+
+
 if __name__ == "__main__":
-    category = read_words()
-    assert 2 == len(category)
-    assert 58_470 == category["item"] == category["request"]
+    engine = create_engine()
+    create_table()
+    populate_rows()
+    # category = read_words()
+    # assert 2 == len(category)
+    # assert 58_470 == category["item"] == category["request"]

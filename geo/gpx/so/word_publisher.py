@@ -110,7 +110,7 @@ def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[st
     assert tom_cnt["the"] == both["the"]
     assert tom_cnt["and"] == both["and"]
 
-    both = popularity(both)
+    # both = popularity(both)
 
     with open(Path("/tmp/both.json"), "w") as fout:
         json.dump(both, fout, indent=2)
@@ -132,6 +132,7 @@ def popularity(both: Counter[str]) -> Counter[str]:
     pctile = list(map(int, np.percentile(ranks, list(range(100)))))
     for x in pctile:
         print(x)
+    return Counter()
 
 
 if __name__ == "__main__":
