@@ -73,6 +73,7 @@ dependencies:
   - pytest-cov >= 4.1.0
   - python-Levenshtein >= 0.24.0
   - requests_cache >= 1.1.1
+  - requests_html >= 0.10.0
   - rouge_score >= 0.1.2
   - ruamel.yaml >= 0.18.6
   - ruff >= 0.2.1
