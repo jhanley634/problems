@@ -3,6 +3,7 @@
 # from https://codereview.stackexchange.com/questions/289724/digit-ocr-using-tesseract
 
 from pathlib import Path
+import re
 
 import cv2
 import matplotlib.pyplot as plt
@@ -45,17 +46,28 @@ def main(folder_path: Path) -> None:
     # 8: Treat the image as a single word.
     # 13: Treat the image as a single text line,
     #     bypassing hacks that are Tesseract-specific.
-    for psm in [6, 7, 8, 13]:
+    for psm in [6, 7, 8]:
         for filename in folder_path.glob("ocr*.png"):
             image, text = apply_tesseract(folder_path / filename, psm)
             images.append(image)
-            text = text.rstrip()
-            match = ""
-            if len(text) >= 15 and text != "986368798212196":
-                match = "X"
+            match = "" if _is_match(text.rstrip(), filename.name) else "X"
             texts.append(f"{match} [{psm}]: {text}")
 
     display_images_with_text(images, texts)
+
+
+_filename_re = re.compile(r"ocr-\d+-(\d+)\.png")
+
+
+def _is_match(text: str, filename: str) -> bool:
+    expected = None
+    if len(text) >= 15:
+        expected = "986368798212196"
+    m = _filename_re.match(f"{filename}")  # extracts Ground Truth value
+    if m:
+        expected = m[1]
+    print(f"{filename}\t{expected}\t{text}")
+    return text == expected
 
 
 if __name__ == "__main__":
