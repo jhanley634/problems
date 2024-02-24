@@ -4,7 +4,8 @@
 # from https://docs.python.org/3/library/itertools.html#itertools.accumulate
 
 
-from doctest import run_docstring_examples, testmod
+from doctest import run_docstring_examples
+from doctest import testmod as run_doctests
 import operator
 
 
@@ -44,4 +45,4 @@ if __name__ == "__main__":
     # this amounts to running with `python -m doctest`
     run_docstring_examples(accumulate1, globals())
 
-    testmod()  # same thing
+    run_doctests()  # same thing
