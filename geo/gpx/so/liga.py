@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 
-# from https://stackoverflow.com/questions/77949670/scraping-data-using-python-and-requests-html-and-export-in-excel-file
+# from https://stackoverflow.com/questions/77949670/scraping-data-using-python-and-requests-and-export-in-excel-file
 
 
 from typing import Generator

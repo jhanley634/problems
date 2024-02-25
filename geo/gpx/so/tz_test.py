@@ -1,11 +1,11 @@
 # Copyright 2024 John Hanley. MIT licensed.
-# from https://codereview.stackexchange.com/questions/289635/goal-writing-effective-unit-tests-to-ensure-a-datetime-conversion-to-from-local/289643
+# from https://codereview.stackexchange.com/questions/289635/goal-writing-effective-unit-tests-for-a-datetime-conversion
 
-from datetime import timezone as tz
+
 import datetime as dt
 import unittest
 
-from dateutil.tz import UTC, gettz, tz, tzutc
+from dateutil.tz import gettz
 
 
 class TzTest(unittest.TestCase):
@@ -13,20 +13,17 @@ class TzTest(unittest.TestCase):
         lax = gettz("America/Los_Angeles")
         den = gettz("America/Denver")
         phx = gettz("America/Phoenix")
-        fmt = "%Y-%m-%dT%H:%M"
-        before = "2024-03-10T12:30"  # half-hour before start of DST
-        after = "2024-03-10T04:30"  # half-hour after start of DST
-        t1 = dt.datetime.strptime(before, fmt)
-        self.assertEqual("2024-03-10 12:30:00", str(t1))  # naïve
-        t1 = t1.replace(tzinfo=lax)  # now it is TZ aware
-        self.assertEqual("2024-03-10 12:30:00-07:00", str(t1))
-        self.assertEqual("2024-03-10 12:30:00-07:00", str(t1.astimezone(lax)))
-        self.assertEqual("2024-03-10 19:30:00+00:00", str(t1.astimezone(UTC)))
-        utc = dt.datetime(2023, 12, 7, 22, 20, 2, tzinfo=UTC)
-        local = utc.astimezone(dt.timezone(dt.timedelta(hours=-8)))
-        self.assertEqual(
-            local,
-            dt.datetime(
-                2023, 12, 7, 14, 20, 2, tzinfo=dt.timezone(dt.timedelta(hours=-8))
-            ),
-        )
+
+        # half-hour before start of any DST transitions, PHX matches DEN
+        t1 = dt.datetime.fromisoformat("2024-03-10T07:30Z")
+        self.assertEqual("2024-03-10 07:30:00+00:00", str(t1))
+        self.assertEqual("2024-03-10 00:30:00-07:00", str(t1.astimezone(den)))
+        self.assertEqual("2024-03-10 00:30:00-07:00", str(t1.astimezone(phx)))
+        self.assertEqual("2024-03-09 23:30:00-08:00", str(t1.astimezone(lax)))
+
+        # after all DST transitions have happened, PHX matches LAX
+        t2 = t1 + dt.timedelta(hours=3)
+        self.assertEqual("2024-03-10 10:30:00+00:00", str(t2))
+        self.assertEqual("2024-03-10 04:30:00-06:00", str(t2.astimezone(den)))
+        self.assertEqual("2024-03-10 03:30:00-07:00", str(t2.astimezone(phx)))
+        self.assertEqual("2024-03-10 03:30:00-07:00", str(t2.astimezone(lax)))

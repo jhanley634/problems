@@ -199,7 +199,7 @@ class GreenWave:
     def handle_events(self) -> None:
         for event in pygame.event.get():
             match event.type:
-                case (pygame.QUIT | pygame.KEYDOWN):
+                case pygame.QUIT | pygame.KEYDOWN:
                     if event.type == pygame.KEYDOWN and event.key != pygame.K_q:
                         continue
                     self.running = False
