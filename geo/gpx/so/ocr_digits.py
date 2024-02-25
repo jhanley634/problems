@@ -15,8 +15,28 @@ pytesseract.pytesseract.tesseract_cmd = r"tesseract"
 
 def apply_tesseract(image_path: Path, psm: int) -> tuple[np.ndarray, str]:
     image = cv2.imread(f"{image_path}")
-    text = pytesseract.image_to_string(image, config=f"--psm {psm} digits")
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    assert np.max(image) <= 255
+    h, w = image.shape
+    both = np.concatenate((_get_hello(h), image), axis=1)
+    text = pytesseract.image_to_string(both, config=f"--psm {psm} digits")
     return image, text
+
+
+def _get_hello(height: int, word: str = "Hello"):
+    font = cv2.FONT_HERSHEY_PLAIN
+    bottom_left = 6, height - 3
+    font_scale = 1.35
+    font_color = (0, 0, 0)
+    thickness = 1
+    line_type = cv2.LINE_AA
+
+    img = 255 * np.ones((height, 70), dtype=np.uint8)
+    cv2.putText(
+        img, word, bottom_left, font, font_scale, font_color, thickness, line_type
+    )
+
+    return img
 
 
 def display_images_with_text(images: list[np.ndarray], texts: list[str]) -> None:
@@ -46,7 +66,7 @@ def main(folder_path: Path) -> None:
     # 8: Treat the image as a single word.
     # 13: Treat the image as a single text line,
     #     bypassing hacks that are Tesseract-specific.
-    for psm in [6, 7, 8]:
+    for psm in [6, 7]:
         for filename in folder_path.glob("ocr*.png"):
             image, text = apply_tesseract(folder_path / filename, psm)
             images.append(image)
