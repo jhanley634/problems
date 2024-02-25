@@ -3,10 +3,7 @@
 # from https://datascience.stackexchange.com/questions/126359/does-a-random-classifier-have-a-diagonal-roc
 
 from contextlib import contextmanager
-from pathlib import Path
 from typing import Any
-import datetime as dt
-import re
 import warnings
 
 from sklearn.datasets import make_classification
@@ -14,44 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
 import pandas as pd
-import requests_cache
 import seaborn as sns
 import seaborn.objects as so
-
-PENGUIN_URL = (
-    "https://raw.githubusercontent.com/allisonhorst"
-    "/esm-206-2018/master/week_6/penguins.csv"
-)
-
-
-def fetch_df(url: str) -> pd.DataFrame:
-    cache_dir = Path("/tmp")
-    cache_dir.mkdir(exist_ok=True)
-    expire = dt.timedelta(days=1)
-    requests_cache.install_cache(f"{cache_dir}/requests_cache", expire_after=expire)
-    requests_cache.delete(expired=True)
-    return pd.read_csv(url)
-
-
-def get_penguin_df() -> pd.DataFrame:
-    df = fetch_df(PENGUIN_URL)
-
-    # Drop index, three categorical columns, and unused measurements.
-    cols = "sample_number sex region study_name culmen_length flipper_length"
-    df = df.drop(columns=cols.split())
-
-    species_re = re.compile(r"^(\w+) penguin .*", re.IGNORECASE)
-    df["species"] = df.species.apply(lambda s: species_re.sub(r"\1", s))
-    assert 3 == df.species.nunique()
-    assert 344 == len(df)
-
-    df = df.sample(frac=1).reset_index(drop=True)  # shuffle the rows
-    # Adelie & Chinstrap are indistinguishably mixed at this point.
-
-    df["is_gentoo"] = df.species == "Gentoo"
-    df = df.drop(columns="species")
-
-    return df
 
 
 @contextmanager
@@ -111,7 +72,8 @@ def _get_fp_tp_rates() -> tuple[Any, Any, Any, Any]:
 
 
 def main():
-    # df = get_penguin_df()
+    # df = fetch_penguin_df()
+    # sns.pairplot(df, hue="species")
 
     (
         falseposrate_noskill,
@@ -120,7 +82,6 @@ def main():
         trueposrate_logistic,
     ) = _get_fp_tp_rates()
 
-    # sns.pairplot(df, hue="species")
     with _filter_warnings():
         (
             so.Plot()

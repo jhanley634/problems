@@ -62,6 +62,7 @@ dependencies:
   - psutil >= 5.9.8
   - pyarrow >= 15.0.0
   - pyaudioanalysis >= 0.3.14
+  - pycaret >= 3.3.0
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
   - pygame >= 2.5.2

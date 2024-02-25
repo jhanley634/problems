@@ -7,10 +7,12 @@
 .pytype/
 __pycache__/
 cache/
+dump.rdb
 geo/ski/so/Cargo.lock
 geo/ski/so/median
 geo/ski/so/target/
 htmlcov/
+logs.log
 mprofile_2023*.dat
 target/
 vision/loadtxt/pythran_lib/build/
@@ -19,4 +21,3 @@ vision/loadtxt/pythran_lib/hello.egg-info/
 vision/loadtxt/pythran_lib/hello/hello.cpp
 vision/loadtxt/rust_lib/Cargo.lock
 vision/loadtxt/rust_lib/target
-dump.rdb
