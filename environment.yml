@@ -32,9 +32,9 @@ dependencies:
   - glom >= 23.5.0
   - gpxpy >= 1.6.2
   - graphviz >= 0.20.1
-  - html2text >= 2020.1.16
+  - html2text >= 2024.2.25
   - huggingface_hub >= 0.20.2
-  - hypothesis >= 6.98.10
+  - hypothesis >= 6.98.12
   - imbalanced-learn >= 0.12.0
   - ipyleaflet >= 0.18.2
   - isort >= 5.13.2
@@ -64,12 +64,12 @@ dependencies:
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
   - pygame >= 2.5.2
-  - pylint >= 3.0.4
+  - pylint >= 3.1.0
   - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
   - pyspark >= 3.5.0
   - pytesseract >= 0.3.10
-  - pytest >= 8.0.1
+  - pytest >= 8.0.2
   - pytest-cov >= 4.1.0
   - python-Levenshtein >= 0.25.0
   - redis >= 5.0.1
