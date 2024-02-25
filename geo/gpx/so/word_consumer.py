@@ -77,6 +77,7 @@ def populate_rows() -> None:
         for cat, word in tqdm(word_consumer("word-event", category := Counter())):
             sess.execute(ins, dict(cat=cat, word=word))
         sess.commit()
+        print(len(category), category)
 
 
 if __name__ == "__main__":

@@ -129,8 +129,8 @@ def popularity(both: Counter[str]) -> Counter[str]:
     # assert len(set(hashes)) == len(set(words))  # collision free
 
     ranks = np.array(list(_get_ranks(both)))
-    pctile = list(map(int, np.percentile(ranks, list(range(100)))))
-    for x in pctile:
+    percentile = list(map(int, np.percentile(ranks, list(range(100)))))
+    for x in percentile:
         print(x)
     return Counter()
 
