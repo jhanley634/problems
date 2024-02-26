@@ -3,13 +3,7 @@
 
 import unittest
 
-from pycaret.classification import (
-    compare_models,
-    evaluate_model,
-    predict_model,
-    save_model,
-    setup,
-)
+from pycaret.classification import ClassificationExperiment
 from pycaret.datasets import get_data
 import pandas as pd
 import polars as pl
@@ -37,27 +31,27 @@ def describe_titanic_dataset() -> None:
     print(df1.describe())
 
 
-def main() -> None:
-    data = get_data("juice")
-
-    s = setup(data, target="Purchase", session_id=123)
+def pycaret_oop_api(data) -> None:
+    s = ClassificationExperiment()
+    s.setup(data, target="Purchase", session_id=123)
 
     # model training and selection
-    best = compare_models()
+    best = s.compare_models()
 
     # evaluate trained model
-    evaluate_model(best)
+    s.evaluate_model(best)
 
     # predict on hold-out/test set
-    pred_holdout = predict_model(best)
+    pred_holdout = s.predict_model(best)
 
-    # predict on new data
     new_data = data.copy().drop("Purchase", axis=1)
-    predictions = predict_model(best, data=new_data)
+    predictions = s.predict_model(best, data=new_data)
 
-    # save model
-    save_model(best, "/tmp/best_pipeline")
+    s.save_model(best, "/tmp/best_pipeline")
+
+    assert pred_holdout
+    assert predictions
 
 
 if __name__ == "__main__":
-    main()
+    pycaret_oop_api(data=get_data("juice"))
