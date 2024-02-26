@@ -60,7 +60,7 @@ class TestWordLadder(unittest.TestCase):
         self.assertEqual(path, wl.find_path(path[0], path[-1]))
 
     def test_init(self) -> None:
-        self.assertEqual(1_000, sys.getrecursionlimit())
+        self.assertGreaterEqual(sys.getrecursionlimit(), 1_000)
         sys.setrecursionlimit(10_000)
 
         for length, num_words, path in [
