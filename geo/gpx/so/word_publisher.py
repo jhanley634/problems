@@ -18,14 +18,18 @@ from geo.gpx.so.tokenizer_simple import get_simple_words
 
 
 def get_words(url: str) -> Generator[str, None, None]:
-    for line in get_document(url).lower().splitlines():
+    for line in get_stripped_document(url).lower().splitlines():
         for word in get_simple_words(line):
             yield word
 
 
 def get_document(url: str, expire: int = 86400) -> str:
     session = CachedSession(cache_name="/tmp/requests_cache", expire_after=expire)
-    return no_bom(dumb_quotes(session.get(url).text))
+    return session.get(url).text
+
+
+def get_stripped_document(url: str) -> str:
+    return no_bom(dumb_quotes(get_document(url)))
 
 
 def no_bom(s: str) -> str:

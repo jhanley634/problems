@@ -4,6 +4,7 @@
 from pathlib import Path
 import datetime as dt
 import re
+import unittest
 
 import pandas as pd
 import requests_cache
@@ -42,3 +43,10 @@ def fetch_penguin_df() -> pd.DataFrame:
     df = df.drop(columns="species")
 
     return df
+
+
+class TestFetchPenguins(unittest.TestCase):
+    def test_fetch_penguins(self):
+        df = fetch_penguin_df()
+        self.assertEqual(344, len(df))
+        self.assertEqual(3, len(df.columns))
