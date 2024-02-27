@@ -10,7 +10,7 @@ from geo.zone.law_parser import LawParser
 
 
 class TestLawParser(unittest.TestCase):
-    temp = Path("/tmp/k")
+    temp = Path("/tmp")
 
     def test_parse(self) -> None:
         desktop = Path("~/Desktop").expanduser()

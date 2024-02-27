@@ -3,7 +3,7 @@
 # from https://stackoverflow.com/questions/78067735/statically-inspect-a-python-test-suite
 
 from importlib import import_module
-from inspect import isfunction, isgenerator
+from inspect import getsource, isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
 from typing import Callable, Generator, Iterable, NamedTuple
@@ -27,15 +27,19 @@ def find_callable_functions(module: ModuleType | type) -> list[Callable]:
 
 
 def find_callable_matches(
-    module: ModuleType | type, needle: str
+    module: ModuleType | type, needle: str, verbose: bool = False
 ) -> Generator[Callable, None, None]:
     for obj in module.__dict__.values():
         if callable(obj) and isinstance(obj, (FunctionType, MethodType, type)):
             if not isgenerator(obj) and isfunction(obj):
                 buf = io.StringIO()
                 dis.dis(obj, file=buf)
-                if needle in buf.getvalue():
+                names = obj.__code__.co_names
+                if needle in buf.getvalue() and needle in names:
                     yield obj
+                    if verbose:
+                        print(getsource(obj))
+                    # print(dis._disassemble_bytes(code, names=names))
                     # lines, start = findsource(obj)
                     # print("".join(lines[start : start + 5]), "\n")
                     # dis.disassemble(obj.__code__)
