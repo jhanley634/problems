@@ -24,7 +24,6 @@ class TestTitanic(unittest.TestCase):
 def describe_titanic_dataset() -> None:
     df = pd.read_csv(titanic_url)
     print(df.describe())
-    print(df.info())
 
     df1 = pl.DataFrame(pd.read_csv(titanic_url))
     print(df1)
