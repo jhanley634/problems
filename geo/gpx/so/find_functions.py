@@ -2,11 +2,13 @@
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/78067735/statically-inspect-a-python-test-suite
 
+from importlib import import_module
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
 from typing import Callable, Generator, Iterable, NamedTuple
 from unittest import TestCase
 from unittest.main import TestProgram
+import os
 import re
 import sys
 
@@ -18,13 +20,13 @@ def find_callable_functions(module: ModuleType | type) -> list[Callable]:
         for obj in module.__dict__.values()
         if callable(obj) and isinstance(obj, (FunctionType, MethodType, type))
     ]
-
-
-# cf inspect.{isfunction, ismethod, isclass}
+    # cf inspect.{isfunction, ismethod, isclass}
 
 
 class Source(NamedTuple):
     """coordinates of a source code location"""
+
+    # cf inspect.findsource
 
     file: Path
     line: int
@@ -55,6 +57,8 @@ def find_functions_under(
             for record in find_functions_in(path):
                 if needle in "".join(record.src):
                     yield record
+            # file = f"{record.file.relative_to(os.getcwd())}"
+            # m = import_module(file.replace("/", ".").removesuffix(".py"))
 
 
 class FirstClass:
@@ -91,6 +95,11 @@ class TestFindFunctions(TestCase):
             [TestProgram],
             find_callable_functions(sys.modules["__main__"]),
         )
+        self.assertEqual(
+            "<class '_frozen_importlib.FrozenImporter'>",
+            str(find_callable_functions(os)[0]),
+        )
+        self.assertEqual(os, import_module("os"))
         self.assertEqual(
             [
                 FirstClass.__init__,
