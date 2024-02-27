@@ -3,11 +3,14 @@
 # from https://stackoverflow.com/questions/78067735/statically-inspect-a-python-test-suite
 
 from importlib import import_module
+from inspect import isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
 from typing import Callable, Generator, Iterable, NamedTuple
 from unittest import TestCase
 from unittest.main import TestProgram
+import dis
+import io
 import os
 import re
 import sys
@@ -23,10 +26,23 @@ def find_callable_functions(module: ModuleType | type) -> list[Callable]:
     # cf inspect.{isfunction, ismethod, isclass}
 
 
+def find_callable_matches(
+    module: ModuleType | type, needle: str
+) -> Generator[Callable, None, None]:
+    for obj in module.__dict__.values():
+        if callable(obj) and isinstance(obj, (FunctionType, MethodType, type)):
+            if not isgenerator(obj) and isfunction(obj):
+                buf = io.StringIO()
+                dis.dis(obj, file=buf)
+                if needle in buf.getvalue():
+                    yield obj
+                    # lines, start = findsource(obj)
+                    # print("".join(lines[start : start + 5]), "\n")
+                    # dis.disassemble(obj.__code__)
+
+
 class Source(NamedTuple):
     """coordinates of a source code location"""
-
-    # cf inspect.findsource
 
     file: Path
     line: int
@@ -62,31 +78,31 @@ def find_functions_under(
 
 
 class FirstClass:
-    def __init__(self):
-        self.x = 1
-
-    def get_x(self):
-        return self.x
+    def __init__(self, x):
+        self.x = x
 
     def generate_scenario(self, a, b, c):
         self.x += a + b + c
 
     def run_scenario(self):
+        self.generate_scenario(1, 2, 3)
         print(self.x)
 
 
 class SecondClass:
-    def __init__(self):
-        self.y = 2
-
-    def get_y(self):
-        return self.y
+    def __init__(self, y):
+        self.y = y
 
     def generate_scenario(self, a, b, c):
         self.y += a * b * c
 
     def run_scenario(self):
         print(self.y)
+
+
+class UnrelatedClass:
+    def __init__(self):
+        self.z = None
 
 
 class TestFindFunctions(TestCase):
@@ -103,23 +119,28 @@ class TestFindFunctions(TestCase):
         self.assertEqual(
             [
                 FirstClass.__init__,
-                FirstClass.get_x,
                 FirstClass.generate_scenario,
                 FirstClass.run_scenario,
             ],
             find_callable_functions(FirstClass),
         )
 
+    def test_find_callable_matches(self) -> None:
+        self.assertEqual(
+            [FirstClass.run_scenario],
+            list(find_callable_matches(FirstClass, "generate_scenario")),
+        )
+
     def test_find_functions(self) -> None:
         source_records = list(find_functions_in(Path(__file__)))
-        self.assertEqual(14, len(source_records))
+        self.assertEqual(15, len(source_records))
 
     def test_find_functions_under(self, verbose: bool = False) -> None:
         source_folder = Path(__file__).parent
         glob = source_folder.glob("**/*.py")
 
         records = list(find_functions_under(glob, "generate_scenario"))
-        self.assertEqual(4, len(records))
+        self.assertEqual(6, len(records))
 
         if verbose:
             for record in records:
