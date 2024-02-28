@@ -22,7 +22,7 @@ name3,,
 """
 
 
-def shift_upwards(in_file: TextIOWrapper) -> list:
+def shift_upwards(in_file: TextIOWrapper) -> pd.DataFrame:
     in_df = pd.read_csv(in_file)
     result = pd.DataFrame(
         {col: in_df[col].dropna().reset_index(drop=True) for col in in_df.columns}

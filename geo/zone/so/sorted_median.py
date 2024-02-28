@@ -8,7 +8,13 @@ from time import time
 import unittest
 
 from beartype import beartype
+from hypothesis import Verbosity, given, settings
+from hypothesis import strategies as st
 import numpy as np
+
+# easily fits within FP 53-bit signficand
+BIG = 2**52
+ST_FINITE_INTEGERS = st.integers(min_value=-BIG, max_value=BIG)
 
 
 class ListName(Enum):
@@ -58,14 +64,14 @@ def median_of_list_pair(
     assert len(xs) + len(ys) > 0, "empty input not allowed"
     assert (len(xs) + len(ys)) % 2 == 1  # The answer is definitely one of the elements.
 
-    return _median2(
+    return _median1(
         (xs, ys),
         (MutRange(0, len(xs)), MutRange(0, len(ys))),
     )
 
 
 @beartype
-def _median2(
+def _median1(
     arrays: tuple[
         np.ndarray[int, np.dtype[np.int_]],
         np.ndarray[int, np.dtype[np.int_]],
@@ -75,11 +81,8 @@ def _median2(
     xs, ys = arrays
     r0, r1 = ranges
 
-    assert sorted(xs.tolist()) == xs.tolist()
-    assert sorted(ys.tolist()) == ys.tolist()
     assert len(xs) == len(r0)
     assert len(ys) == len(r1)
-    assert (len(r0) + len(r1)) % 2 == 1  # The answer is definitely one of the elements.
 
     # If an entry has been eliminated, it is ruled out as a median candidate.
     left_elim = right_elim = 0
@@ -258,3 +261,24 @@ class SortedMedianTest(unittest.TestCase):
             a.sort()
         # print(f"\n array sort: {time() - t0:.3f} sec")
         self.assertLess(time() - t0, 0.250)
+
+    @settings(max_examples=500, verbosity=Verbosity.quiet)
+    @given(
+        xs=st.lists(ST_FINITE_INTEGERS, min_size=1, max_size=70),
+        ys=st.lists(ST_FINITE_INTEGERS, min_size=1, max_size=70),
+    )
+    def test_with_hypothesis(self, xs: list[int], ys: list[int]) -> None:
+        if (len(xs) + len(ys)) % 2 == 0:
+            xs.append(0)
+        xs.sort()
+        ys.sort()
+
+        both = np.array(sorted(np.concatenate((xs, ys))))
+        med_val = int(np.quantile(both, 0.5))
+        assert med_val in both
+
+        idx, name = median_of_list_pair(np.array(xs), np.array(ys))
+        if name == ListName.X:
+            assert xs[idx] == med_val
+        else:
+            assert ys[idx] == med_val
