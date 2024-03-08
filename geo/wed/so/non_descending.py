@@ -23,23 +23,11 @@ def _get_non_descending_runs_at(idx: int, a: list[int]) -> Iterable[tuple[int, i
     initial_value = a[idx]
     count = 1
 
-    direction = 1
-    idx += 1
-    if idx < len(a):
-        direction = _sgn(a[idx] - a[idx - 1])
-
-    while idx < len(a) and direction == _sgn(a[idx] - a[idx - 1]):
+    while idx + 1 < len(a) and a[idx + 1] >= a[idx]:
         idx += 1
         count += 1
 
     yield initial_value, count
-
-
-@beartype
-def _sgn(x: int) -> int:
-    return int(math.copysign(1.0, x))
-    # """Returns math.copysign(1, x) for nonzero x (±1), else 0."""
-    # return (x > 0) - (x < 0)
 
 
 @beartype
@@ -86,15 +74,13 @@ class NonDescendingTest(unittest.TestCase):
 
     def test_get_monotonic_runs(self) -> None:
         with self.assertRaises(IndexError):
-            list(get_monotonic_runs([]))
+            list(get_non_descending_runs([]))
 
-        self.assertEqual([(42, 1)], list(get_monotonic_runs([42])))
-        self.assertEqual([(42, 2)], list(get_monotonic_runs([42, 43])))
-        self.assertEqual([(42, 2)], list(get_monotonic_runs([42, 42])))
-        self.assertEqual([(42, 2)], list(get_monotonic_runs([42, 41])))
-        self.assertEqual([(42, 3)], list(get_monotonic_runs([42, 41, 40])))
+        self.assertEqual([(42, 1)], list(get_non_descending_runs([42])))
+        self.assertEqual([(42, 2)], list(get_non_descending_runs([42, 43])))
+        self.assertEqual([(42, 2)], list(get_non_descending_runs([42, 42])))
+        self.assertEqual([(42, 1)], list(get_non_descending_runs([42, 41])))
+        self.assertEqual([(42, 1)], list(get_non_descending_runs([42, 41, 40])))
 
-        self.assertEqual(
-            [(10, 2)],
-            list(get_monotonic_runs([10, 1, 2, 3, 4, 5, 6, 1, 2, 3])),
-        )
+        up_twice = [10, 1, 2, 3, 4, 5, 6, 1, 2, 3]
+        self.assertEqual([(10, 1)], list(get_non_descending_runs(up_twice)))
