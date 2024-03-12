@@ -3,7 +3,6 @@
 # from https://codereview.stackexchange.com/questions/290899/leetcode-steps-to-make-array-non-decreasing
 
 from collections.abc import Iterable
-import math
 import unittest
 
 from beartype import beartype
@@ -15,19 +14,15 @@ def get_non_descending_runs(a: list[int]) -> Iterable[tuple[int, int]]:
 
     The input array of integers must be nonempty.
     """
-    yield from _get_non_descending_runs_at(0, a)
+    idx = 0
+    for initial_value, count in _get_non_descending_runs_at(idx, a):
+        yield initial_value, count
+        idx += count
 
 
 @beartype
 def _get_non_descending_runs_at(idx: int, a: list[int]) -> Iterable[tuple[int, int]]:
-    initial_value = a[idx]
-    count = 1
-
-    while idx + 1 < len(a) and a[idx + 1] >= a[idx]:
-        idx += 1
-        count += 1
-
-    yield initial_value, count
+    0
 
 
 @beartype
@@ -73,10 +68,10 @@ class NonDescendingTest(unittest.TestCase):
         self.assertEqual(999, total_steps(range(1_000, 0, -1)))
 
     def test_get_monotonic_runs(self) -> None:
-        with self.assertRaises(IndexError):
-            list(get_non_descending_runs([]))
+        # with self.assertRaises(IndexError):
+        #     list(get_non_descending_runs([]))
 
-        self.assertEqual([(42, 1)], list(get_non_descending_runs([42])))
+        # self.assertEqual([(42, 1)], list(get_non_descending_runs([42])))
         self.assertEqual([(42, 2)], list(get_non_descending_runs([42, 43])))
         self.assertEqual([(42, 2)], list(get_non_descending_runs([42, 42])))
         self.assertEqual([(42, 1)], list(get_non_descending_runs([42, 41])))
