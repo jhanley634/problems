@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# Copyright 2023 John Hanley. MIT licensed.
+# Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/290899/leetcode-steps-to-make-array-non-decreasing
 
 from collections.abc import Iterable
