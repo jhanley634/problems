@@ -8,18 +8,18 @@ from graph_tool import Graph, topology
 
 class Grimoire:
     def __init__(self, in_file: io.TextIOWrapper):
-        """Deserialize a graph, from its specified contest format.
+        """Deserialize a graph.
 
         First line of text gives `n`, the number of nodes.
-        Then we see `n` distinct 1-origin node names, each in the range 1 through n.
+        Then we see `n` distinct 0-origin node names, each in the range 0 through n-1.
         """
         n = int(in_file.readline())
-        pairs = [(i, int(in_file.readline()) - 1) for i in range(n)]
+        pairs = [(i, int(in_file.readline())) for i in range(n)]
         self.g = Graph(g=pairs)
 
     def serialize(self) -> str:
         n = len(self.g)
-        lines = [str(1 + self.g.vertex_index[self.g.vertex(i)]) for i in range(n)]
+        lines = [str(self.g.vertex_index[self.g.vertex(i)]) for i in range(n)]
         return "\n".join([f"{n}"] + lines) + "\n"
 
     def longest_spell(self) -> int:
