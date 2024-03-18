@@ -6,12 +6,14 @@ import unittest
 from geo.wed.so.spell_d.grimoire import Grimoire
 
 
-def generate_grimoire() -> Grimoire:
-    return Grimoire(io.StringIO("1\n1\n"))
+def generate_grimoire(n: int = 2) -> Grimoire:
+    nums = reversed(range(1, n + 1))
+    pages = map(str, nums)
+    return Grimoire(io.StringIO(f"{n}\n" + "\n".join(pages) + "\n"))
 
 
 class GrimoireTest(unittest.TestCase):
     def test_longest_spell(self) -> None:
         g = generate_grimoire()
-        self.assertEqual("1\n1\n", g.serialize())
-        self.assertEqual(1, g.longest_spell())
+        self.assertEqual("2\n1\n2\n", g.serialize())
+        self.assertEqual(2, g.longest_spell())

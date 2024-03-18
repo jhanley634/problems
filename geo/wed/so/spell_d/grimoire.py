@@ -3,7 +3,7 @@
 # from https://codereview.stackexchange.com/questions/291086/longest-spell-to-cast-from-pages-of-spellbook-follow-up
 import io
 
-from graph_tool import Graph
+from graph_tool import Graph, topology
 
 
 class Grimoire:
@@ -24,4 +24,6 @@ class Grimoire:
 
     def longest_spell(self) -> int:
         """Returns the longest spell that can be cast from the pages of the grimoire."""
+        for c in topology.all_circuits(self.g):
+            print(c)
         return len(self.g)
