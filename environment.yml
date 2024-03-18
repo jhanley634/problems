@@ -6,6 +6,7 @@ channels:
 
 dependencies:
 - cython >= 3.0.8
+- graph-tool >= 2.59
 - numpy >= 1.25.2  # ydata needs <1.26
 - pip >= 24.0
 - py-opencv >= 4.9.0
@@ -55,7 +56,7 @@ dependencies:
   - openpyxl >= 3.1.2
   - osmnx >= 1.9.1
   - palettable >= 3.3.3
-  - pandas >= 2.2.1
+  - pandas >= 2.1.0
   - pandas-stubs >= 2.2.0.240218
   - pillow >= 10.2.0
   - plotnine >= 0.13.0
