@@ -1,6 +1,6 @@
-from random import randint, shuffle
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from random import randint
 import io
 import unittest
 
