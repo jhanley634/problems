@@ -13,4 +13,6 @@ from geo.zone.so.sorted_medians import median_of_k_sorted_vectors
 class SortedMediansTest(unittest.TestCase):
     def test_odd_n(self) -> None:
         with self.assertRaises(ValueError):
-            median_of_k_sorted_vectors([[1, 2], [3, 4, 5, 6]])
+            median_of_k_sorted_vectors([1, 2], [3, 4, 5, 6])
+
+        median_of_k_sorted_vectors([1, 2], [3, 4, 5], verify=True)
