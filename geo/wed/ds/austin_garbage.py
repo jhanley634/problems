@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-# from https://datascience.stackexchange.com/questions/128430/univariate-time-series-forecasting-with-bimodal-distribution
+# from https://datascience.stackexchange.com/questions/128430/univariate-time-series-forecasting-with-bimodal-distrib
 from pathlib import Path
 
 from pycaret.regression import RegressionExperiment
