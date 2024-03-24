@@ -15,6 +15,7 @@ def main():
     df = pd.read_csv(CSV)
     df["ticket_date"] = pd.to_datetime(df.ticket_date)
     df = df[df.ticket_date > "2003-01-13"]  # filter an isolated outlier date
+    df["elapsed"] = (df.ticket_date - df.ticket_date.min()).dt.days
     df["weekday"] = df.ticket_date.dt.weekday
     df["month"] = df.ticket_date.dt.month
     print(df)

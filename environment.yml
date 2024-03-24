@@ -7,7 +7,7 @@ channels:
 dependencies:
 - cython >= 3.0.8
 - graph-tool >= 2.59
-- numpy >= 1.25.2  # ydata needs <1.26
+- numpy >= 1.25.2
 - onnx >= 1.15.0
 - pip >= 24.0
 - py-opencv >= 4.9.0
@@ -15,7 +15,6 @@ dependencies:
 - python >= 3.11.7
 - pywavelets >= 1.5.0
 - scipy >= 1.11.4
-- ydata-profiling >= 4.6.0
 - pip:
   - beartype >= 0.17.2
   - beautifulsoup4 >= 4.12.3
@@ -64,7 +63,6 @@ dependencies:
   - psutil >= 5.9.8
   - pyarrow >= 15.0.2
   - pyaudioanalysis >= 0.3.14
-#  - pycaret >= 3.3.0
   - pydeck >= 0.8.0
   - pydub >= 0.25.1
   - pygame >= 2.5.2
