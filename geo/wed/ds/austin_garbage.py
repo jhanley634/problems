@@ -4,22 +4,20 @@
 from pathlib import Path
 
 from pycaret.regression import RegressionExperiment
-import pandas as pd
+from ydata_profiling import ProfileReport
 
-KAGGLE_DATASET = "https://www.kaggle.com/datasets/ivantha/daily-solid-waste-dataset"
-ARCHIVE = Path("~/Desktop/archive").expanduser()
-CSV = ARCHIVE / "open_source_austin_daily_waste_2003_jan_2021_jul.csv"
+from geo.wed.ds.austin_gbr import get_garbage_df
 
 
-def main():
-    df = pd.read_csv(CSV)
-    df["ticket_date"] = pd.to_datetime(df.ticket_date)
-    df = df[df.ticket_date > "2003-01-13"]  # filter an isolated outlier date
-    df["elapsed"] = (df.ticket_date - df.ticket_date.min()).dt.days
-    df["weekday"] = df.ticket_date.dt.weekday
-    df["month"] = df.ticket_date.dt.month
+def main() -> None:
+    df = get_garbage_df()
     print(df)
     print(df.describe())
+
+    html = Path("/tmp/k/austin_garbage.html")
+    if not html.exists():
+        ProfileReport(df).to_file(html)
+
     s = RegressionExperiment()
     s.setup(df, target="net_weight_kg", session_id=42)
     print(s)

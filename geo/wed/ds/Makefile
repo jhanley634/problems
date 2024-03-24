@@ -8,6 +8,6 @@ ACTIVATE = source $(BIN)/activate $(ENV)
 
 all:
 	black .
-	$(ACTIVATE) && time ./austin_garbage.py
+	$(ACTIVATE) && time env PYTHONPATH=../../..:. ./austin_garbage.py
 	isort .
 	ruff check
