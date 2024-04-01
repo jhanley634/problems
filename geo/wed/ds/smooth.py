@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from typing import Any
 
+from beartype import beartype
 from scipy.interpolate import BSpline, splrep
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,6 +10,7 @@ import pandas as pd
 import seaborn as sns
 
 
+@beartype
 def get_df() -> pd.DataFrame:
     df = pd.DataFrame(
         columns=["stamp", "close"],
@@ -30,25 +33,30 @@ def get_df() -> pd.DataFrame:
     return df
 
 
-def get_x(ser: pd.Series) -> np.ndarray:
+def get_x(ser: pd.Series) -> np.ndarray[Any, Any]:
     NANOSEC_PER_SEC = 1e9
-    return ser.astype("int64") // NANOSEC_PER_SEC
+    return np.array(ser.astype("int64") // NANOSEC_PER_SEC)
 
 
+@beartype
 def get_spline_fit(df: pd.DataFrame) -> pd.Series:
     x = get_x(df.stamp)
     tck = splrep(x, df.close, s=len(df))
-    return pd.Series(BSpline(*tck)(x))
+    ser = pd.Series(BSpline(*tck)(x))
+    # Deal with: Returning Any from function declared to return "Series[Any]"  [no-any-return]
+    assert isinstance(ser, pd.Series)
+    return ser
 
 
-def get_polynomial_fit(df: pd.DataFrame, order=3) -> pd.Series:
+@beartype
+def get_polynomial_fit(df: pd.DataFrame, order: int = 3) -> pd.Series:
     """Use e.g. order=3 for a cubic fit."""
     x = get_x(df.stamp)
     model = np.poly1d(np.polyfit(x, df.close, order))
     return pd.Series(model(x))
 
 
-def main():
+def main() -> None:
     df = get_df()
     df["spline"] = get_spline_fit(df)
     df["cubic"] = get_polynomial_fit(df)
