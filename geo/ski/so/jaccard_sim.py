@@ -1,5 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # https://stackoverflow.com/questions/75714434/computing-jaccard-similarity-between-dataframe-columns
+
+from typing import Any
 import unittest
 
 import pandas as pd
@@ -13,8 +15,8 @@ class JaccardTest(unittest.TestCase):
 
 
 def jaccard_similarity(
-    a: pd.Series,
-    b: pd.Series,
+    a: "pd.Series[Any]",
+    b: "pd.Series[Any]",
 ) -> float:
     assert len(a) == len(b)  # must be a pair of columns from same dataframe
     total_size = len(a) + len(b)

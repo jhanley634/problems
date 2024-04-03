@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 import datetime as dt
 import logging
 
+from sqlalchemy.sql.elements import TextClause
 import pandas as pd
 import requests
 import sqlalchemy as sa
@@ -123,7 +124,7 @@ class TidyClimate:
             df.to_sql(elt, self.engine, index=False, if_exists="append")
 
     @staticmethod
-    def _get_create(elt: str) -> sa.text:
+    def _get_create(elt: str) -> TextClause:
         """Arrange for a compound primary key."""
         return sa.text(
             f"""
@@ -188,7 +189,7 @@ class PastAndRecentClimate:
             session.commit()
 
     @staticmethod
-    def _get_create_temperatures() -> sa.text:
+    def _get_create_temperatures() -> TextClause:
         return sa.text(
             """
             CREATE TABLE IF NOT EXISTS temperatures (

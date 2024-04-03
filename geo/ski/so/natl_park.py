@@ -3,6 +3,8 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/76028510/convert-regularly-geographic-points-into-a-matrix
 
+from geopandas import GeoDataFrame
+from geopandas.array import GeometryArray
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -104,9 +106,9 @@ def main(show: bool = False) -> None:
     print(make_grid(df))
 
     crs = {"init": "epsg:4326"}
-    gps_data = gpd.GeoDataFrame(
-        df, geometry=gpd.points_from_xy(df.longitude, df.latitude, crs=crs)
-    )
+    points = gpd.points_from_xy(df.longitude, df.latitude, crs=crs)
+    assert isinstance(points, GeometryArray)
+    gps_data = GeoDataFrame(df, geometry=points)  # pyright: ignore [reportCallIssue]
     gps_data.plot()
     if show:
         plt.show()

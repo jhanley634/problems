@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any, Generator
 import datetime as dt
 
-from geopy import Point
 from gpxpy.gpx import GPX
 import gpxpy
 import matplotlib.pyplot as plt

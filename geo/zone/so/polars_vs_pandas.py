@@ -6,11 +6,10 @@ from io import BytesIO
 from pathlib import Path
 from time import sleep, strftime
 from types import FunctionType
-from typing import Any, Callable, TypeVar, cast
+from typing import Callable
 import logging
 
 from memory_profiler import profile
-from typing_extensions import Concatenate, ParamSpec
 import pandas as pd
 import polars as pl
 import requests

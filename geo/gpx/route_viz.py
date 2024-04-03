@@ -61,8 +61,6 @@ def _display(df: pd.DataFrame, verbose: bool = False) -> None:
         st.dataframe(disp)
 
 
-
-
 @beartype
 @st.cache_data
 def _get_scatter_plot(begin: int, end: int, df: pd.DataFrame) -> BytesIO:
