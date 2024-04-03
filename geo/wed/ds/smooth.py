@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from typing import Any
 
 from beartype import beartype
 from numpy.typing import NDArray
@@ -33,14 +34,12 @@ def get_df() -> pd.DataFrame:
     return df
 
 
-@beartype
-def get_x(ser: pd.Series) -> NDArray[np.int_]:
+def get_x(ser: "pd.Series[Any]") -> NDArray[np.int_]:
     NANOSEC_PER_SEC = int(1e9)
     return np.array(ser.astype("int64") // NANOSEC_PER_SEC)
 
 
-@beartype
-def get_spline_fit(df: pd.DataFrame) -> pd.Series:
+def get_spline_fit(df: pd.DataFrame) -> "pd.Series[Any]":
     x = get_x(df.stamp)
     tck = splrep(x, df.close, s=len(df))
     ser = pd.Series(BSpline(*tck)(x))
@@ -49,8 +48,7 @@ def get_spline_fit(df: pd.DataFrame) -> pd.Series:
     return ser
 
 
-@beartype
-def get_polynomial_fit(df: pd.DataFrame, order: int = 3) -> pd.Series:
+def get_polynomial_fit(df: pd.DataFrame, order: int = 3) -> "pd.Series[Any]":
     """Use e.g. order=3 for a cubic fit."""
     x = get_x(df.stamp)
     model = np.poly1d(np.polyfit(x, df.close, order))
