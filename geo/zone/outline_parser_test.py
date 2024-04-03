@@ -21,7 +21,7 @@ class TestRoman(unittest.TestCase):
 
 
 class TestReverseEnumerate(unittest.TestCase):
-    def test_reverse_enumerate(self):
+    def test_reverse_enumerate(self) -> None:
         self.assertEqual([(0, "a"), (1, "b"), (2, "c")], list(enumerate("abc")))
         self.assertEqual(
             [(2, "c"), (1, "b"), (0, "a")], list(_reverse_enumerate("abc"))

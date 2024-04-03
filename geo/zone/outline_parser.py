@@ -24,7 +24,7 @@ def _upper_val(s: str) -> int:
 
 
 def _from_roman(s: str) -> int:
-    return fromRoman(s.upper())
+    return int(fromRoman(s.upper()))
 
 
 def _reverse_enumerate(seq: list[Any]) -> Generator[tuple[int, Any], None, None]:
