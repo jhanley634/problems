@@ -8,16 +8,15 @@ from hashlib import sha3_224
 from pathlib import Path
 from random import shuffle
 from time import time
-from typing import Any, Callable, Type
+from typing import Any, Callable
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.schema import PrimaryKeyConstraint
 from tqdm import tqdm
 import pandas as pd
 import sqlalchemy as sa
-import sqlalchemy.orm.decl_api as decl_api
 
 
 def timed(
@@ -42,7 +41,11 @@ def insert_with_orm() -> None:
         session.commit()
 
 
-Base: Type[decl_api.DeclarativeMeta] = declarative_base()
+class Base(DeclarativeBase):
+    # sqlalchemy.exc.InvalidRequestError:
+    # Cannot use 'DeclarativeBase' directly as a declarative base class.
+    # Create a Base by creating a subclass of it.
+    pass
 
 
 class WorldFact(Base):
@@ -62,8 +65,7 @@ class Fact(Base):
 def create_engine() -> Engine:
     DB_FILE = Path("/tmp/article.db")
     DB_URL = f"sqlite:///{DB_FILE}"
-    engine = sa.create_engine(DB_URL)
-    return engine
+    return sa.create_engine(DB_URL)
 
 
 # It takes 1 second to INSERT 188_000 rows into world_facts.

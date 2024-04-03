@@ -69,6 +69,7 @@ dependencies:
   - pylint >= 3.1.0
   - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
+  - pyright >= 1.1.357
   - pyspark >= 3.5.1
   - pytesseract >= 0.3.10
   - pytest >= 8.1.1
@@ -84,7 +85,7 @@ dependencies:
   - seaborn >= 0.13.2
   - sentencepiece >= 0.2.0
   - spacy >= 3.7.4
-  - sqlalchemy >= 1.4.51
+  - sqlalchemy >= 2.0.29
   - streamlit >= 1.32.2
   - streamlit-image-coordinates >= 0.1.6
   - sympy >= 1.12

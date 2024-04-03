@@ -1,7 +1,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
 from collections import deque
-from typing import Any, Generator, Iterable
+from typing import Any, Generator, Iterable, Sequence
 import re
 
 from roman import fromRoman
@@ -27,7 +27,7 @@ def _from_roman(s: str) -> int:
     return int(fromRoman(s.upper()))
 
 
-def _reverse_enumerate(seq: list[Any]) -> Generator[tuple[int, Any], None, None]:
+def _reverse_enumerate(seq: Sequence[Any]) -> Generator[tuple[int, Any], None, None]:
     # The roman regex is at the end; going in reverse helps it to win.
     for i, val in enumerate(reversed(seq)):
         yield len(seq) - i - 1, val
