@@ -4,6 +4,7 @@
 #
 # from https://stackoverflow.com/questions/77294679/split-a-row-with-conditional
 
+
 import pandas as pd
 
 
@@ -28,7 +29,7 @@ def split_on_q(df_in: pd.DataFrame) -> pd.DataFrame:
     return df_out
 
 
-def prepend_q(series: pd.Series) -> pd.Series:
+def prepend_q(series: "pd.Series[str]") -> "pd.Series[str]":
     return series.apply(lambda s: None if s is None else f"q{s}")
 
 

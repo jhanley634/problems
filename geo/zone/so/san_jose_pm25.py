@@ -7,7 +7,7 @@ from ydata_profiling import ProfileReport
 import pandas as pd
 
 
-def main(in_file="/tmp/k/san_jose_pm25.csv"):
+def main(in_file: str = "/tmp/k/san_jose_pm25.csv") -> None:
     # data from:
     # https://www.epa.gov/outdoor-air-quality-data/download-daily-data
     df = pd.read_csv(in_file)

@@ -134,7 +134,8 @@ class StringToArrayTest(unittest.TestCase):
 def roundtrip(s: str) -> str:
     """This is the identity function."""
     _, _, codec = _get_codec(s)
-    return string_to_array(s).tobytes().decode(codec)
+    b = bytes(string_to_array(s).tobytes())  # redundant bytes(), for mypy
+    return b.decode(codec)
 
 
 # pytest --capture=tee-sys

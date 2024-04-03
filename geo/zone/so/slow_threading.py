@@ -9,7 +9,7 @@ import sys
 N = 100_000_000
 
 
-def count(n):
+def count(n: int) -> None:
     while n > 0:
         n -= 1
 

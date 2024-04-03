@@ -4,10 +4,13 @@ from io import BytesIO
 from typing import Any, Iterator
 import struct
 
+from beartype import beartype
 from numpy import dtype
+from numpy.typing import NDArray
 import numpy as np
 
 
+@beartype
 def _get_codec(s: str) -> tuple[int, int, str]:
     """Returns (bytes_per_char, bom_bytes_to_strip, codec)"""
     if s == "" or (max_val := max(map(ord, s))) < 128:
@@ -21,12 +24,14 @@ def _get_codec(s: str) -> tuple[int, int, str]:
         return 4, 4, "utf-32"
 
 
-def string_to_array(s: str) -> np.ndarray[Any, dtype[np.uint]]:
+@beartype
+def string_to_array(s: str) -> NDArray[np.uint8]:
     _, strip, codec = _get_codec(s)
     buf = BytesIO(s.encode(codec)).getbuffer()
     return np.frombuffer(buf[strip:], dtype=np.uint8)
 
 
+@beartype
 class TombstoneString:
     SENTINEL: int = 255
 
@@ -127,7 +132,7 @@ class TombstoneString:
 
 
 def lorem_ipsum_article(
-    *, size: int = 1_000_000, bad_word="moo", boiler_size: int = 1_000
+    *, size: int = 1_000_000, bad_word: str = "moo", boiler_size: int = 1_000
 ) -> str:
     """Generates (boring) article text of at least the specified size."""
     # cf https://codereview.stackexchange.com/questions/286290/repeatedly-remove-a-substring-quickly
