@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup, Tag
 
 
 class TestCurrencyParser(unittest.TestCase):
-    def test_parse(self):
+    def test_parse(self) -> None:
         doc1 = """
 <span class="sc-7ebdc9db-1 dAVCtE _137P- _35DXM P4PEa" data-qa-id="aditem_price">
  <span>

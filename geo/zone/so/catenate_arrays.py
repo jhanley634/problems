@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/76592758/any-faster-way-to-concatenate-arrays
+# type: ignore
 
 from time import time
 
