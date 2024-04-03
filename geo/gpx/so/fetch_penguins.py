@@ -20,7 +20,7 @@ def fetch_df(url: str) -> pd.DataFrame:
     cache_dir.mkdir(exist_ok=True)
     expire = dt.timedelta(days=1)
     requests_cache.install_cache(f"{cache_dir}/requests_cache", expire_after=expire)
-    requests_cache.delete(expired=True)
+    requests_cache.delete(expired=True)  # type: ignore [no-untyped-call]
     return pd.read_csv(url)
 
 
@@ -46,7 +46,7 @@ def fetch_penguin_df() -> pd.DataFrame:
 
 
 class TestFetchPenguins(unittest.TestCase):
-    def test_fetch_penguins(self):
+    def test_fetch_penguins(self) -> None:
         df = fetch_penguin_df()
         self.assertEqual(344, len(df))
         self.assertEqual(3, len(df.columns))

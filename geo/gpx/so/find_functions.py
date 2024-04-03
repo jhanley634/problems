@@ -6,7 +6,7 @@ from importlib import import_module
 from inspect import getsource, isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
-from typing import Callable, Generator, Iterable, NamedTuple
+from typing import Any, Callable, Generator, Iterable, NamedTuple
 from unittest import TestCase
 from unittest.main import TestProgram
 import dis
@@ -16,7 +16,7 @@ import re
 import sys
 
 
-def find_callable_functions(module: ModuleType | type) -> list[Callable]:
+def find_callable_functions(module: ModuleType | type) -> list[Callable[[Any], Any]]:
     """Finds callables within a module, including functions and classes."""
     return [
         obj
@@ -28,7 +28,7 @@ def find_callable_functions(module: ModuleType | type) -> list[Callable]:
 
 def find_callable_matches(
     module: ModuleType | type, needle: str, verbose: bool = False
-) -> Generator[Callable, None, None]:
+) -> Generator[Callable[[Any], Any], None, None]:
     for obj in module.__dict__.values():
         if callable(obj) and isinstance(obj, (FunctionType, MethodType, type)):
             if not isgenerator(obj) and isfunction(obj):
@@ -70,7 +70,7 @@ def find_functions_in(source_file: Path) -> Generator[Source, None, None]:
 
 
 def find_functions_under(
-    paths: Iterable[Path], needle
+    paths: Iterable[Path], needle: str
 ) -> Generator[Source, None, None]:
     for path in paths:
         if path.is_file() and path.suffix == ".py":
@@ -82,30 +82,30 @@ def find_functions_under(
 
 
 class FirstClass:
-    def __init__(self, x):
+    def __init__(self, x: int) -> None:
         self.x = x
 
-    def generate_scenario(self, a, b, c):
+    def generate_scenario(self, a: int, b: int, c: int) -> None:
         self.x += a + b + c
 
-    def run_scenario(self):
+    def run_scenario(self) -> None:
         self.generate_scenario(1, 2, 3)
         print(self.x)
 
 
 class SecondClass:
-    def __init__(self, y):
+    def __init__(self, y: int) -> None:
         self.y = y
 
-    def generate_scenario(self, a, b, c):
+    def generate_scenario(self, a: int, b: int, c: int) -> None:
         self.y += a * b * c
 
-    def run_scenario(self):
+    def run_scenario(self) -> None:
         print(self.y)
 
 
 class UnrelatedClass:
-    def __init__(self):
+    def __init__(self) -> None:
         self.z = None
 
 
