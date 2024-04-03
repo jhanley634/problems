@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-from typing import Any
 
 from beartype import beartype
+from numpy.typing import NDArray
 from scipy.interpolate import BSpline, splrep
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,8 +33,9 @@ def get_df() -> pd.DataFrame:
     return df
 
 
-def get_x(ser: pd.Series) -> np.ndarray[Any, Any]:
-    NANOSEC_PER_SEC = 1e9
+@beartype
+def get_x(ser: pd.Series) -> NDArray[np.int_]:
+    NANOSEC_PER_SEC = int(1e9)
     return np.array(ser.astype("int64") // NANOSEC_PER_SEC)
 
 
