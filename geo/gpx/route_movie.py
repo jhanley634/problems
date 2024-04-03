@@ -3,7 +3,7 @@
 
 from io import BytesIO
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator
 import datetime as dt
 
 from geopy import Point
@@ -48,7 +48,7 @@ def _get_fn_points() -> Generator[dict[str, float], None, None]:
         yield dict(lat=lat, lng=fn(lat))
 
 
-def _get_gpx_points(in_file: Path) -> Generator[Point, None, None]:
+def _get_gpx_points(in_file: Path) -> Generator[dict[str, Any], None, None]:
     # Similar to _get_breadcrumbs()
     with open(in_file) as fin:
         gpx: GPX = gpxpy.parse(fin)

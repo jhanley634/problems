@@ -3,19 +3,21 @@
 
 # from https://stackoverflow.com/questions/77949670/scraping-data-using-python-and-requests-and-export-in-excel-file
 
-
 from typing import Generator
 
-from requests_html import HTMLSession
+from beartype import beartype
+from requests_html import HTMLResponse, HTMLSession
 import pandas as pd
 
 matchlink = "https://www.betexplorer.com/football/serbia/prva-liga/results/"
 
 
+@beartype
 def _get_rows(url: str) -> Generator[dict[str, str], None, None]:
     session = HTMLSession()
 
     r = session.get(matchlink)
+    assert isinstance(r, HTMLResponse)
 
     allmatch = r.html.find(".in-match")
     results = r.html.find(".h-text-center a")
