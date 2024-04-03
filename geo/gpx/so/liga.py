@@ -6,7 +6,7 @@
 from typing import Generator
 
 from beartype import beartype
-from requests_html import HTMLResponse, HTMLSession
+from requests_html import HTML, HTMLResponse, HTMLSession
 import pandas as pd
 
 matchlink = "https://www.betexplorer.com/football/serbia/prva-liga/results/"
@@ -17,12 +17,17 @@ def _get_rows(url: str) -> Generator[dict[str, str], None, None]:
     session = HTMLSession()
 
     r = session.get(matchlink)
-    assert isinstance(r, HTMLResponse)
+    assert isinstance(r, HTMLResponse) and isinstance(r.html, HTML)
 
     allmatch = r.html.find(".in-match")
+    assert isinstance(allmatch, list)
+
     results = r.html.find(".h-text-center a")
+    assert isinstance(results, list)
+
     # search for elements containing "data-odd" attribute
     matchodds = r.html.find("[data-odd]")
+    assert isinstance(matchodds, list)
 
     odds = [matchodd.attrs["data-odd"] for matchodd in matchodds]
 
