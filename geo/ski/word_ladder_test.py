@@ -63,6 +63,8 @@ class TestWordLadder(unittest.TestCase):
         self.assertGreaterEqual(sys.getrecursionlimit(), 1_000)
         sys.setrecursionlimit(10_000)
 
+        wl = WordLadder(length=3)
+        assert wl
         for length, num_words, path in [
             (10, 303_762, ["blistering", "blustering", "clustering"]),
             (7, 154_820, ["blister", "bluster", "cluster"]),

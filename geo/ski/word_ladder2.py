@@ -7,7 +7,11 @@ from typing import TextIO
 
 
 class WordLadder:
-    def __init__(self, length: int = 3, input_words: str = "/usr/share/dict/words"):
+    def __init__(
+        self,
+        length: int = 3,
+        input_words: list[str] | str = "/usr/share/dict/words",
+    ):
         self.length = length
         self.words: defaultdict[int, set[int]] = defaultdict(set)
         if isinstance(input_words, str):

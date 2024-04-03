@@ -29,7 +29,11 @@ class Proto(str):
 
 
 class WordLadder:
-    def __init__(self, length: int = 3, input_words: str = "/usr/share/dict/words"):
+    def __init__(
+        self,
+        length: int = 3,
+        input_words: list[str] | str = "/usr/share/dict/words",
+    ):
         self.words: defaultdict[Proto, set[Word]] = defaultdict(set)
         if isinstance(input_words, str):
             with open(input_words) as fin:
