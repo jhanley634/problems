@@ -41,8 +41,10 @@ def get_x(ser: "pd.Series[Any]") -> NDArray[np.int_]:
 
 def get_spline_fit(df: pd.DataFrame) -> "pd.Series[Any]":
     x = get_x(df.stamp)
-    tck = splrep(x, df.close, s=len(df))
-    ser = pd.Series(BSpline(*tck)(x))
+    t, c, k, *_ = splrep(x, df.close, s=len(df))
+    y = BSpline(t, c, k)(x)
+    print(y)
+    ser = pd.Series(BSpline(t, c, k)(x))
     # Deal with: Returning Any from function declared to return "Series[Any]"  [no-any-return]
     assert isinstance(ser, pd.Series)
     return ser
