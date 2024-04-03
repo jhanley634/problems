@@ -45,7 +45,7 @@ class LawParser:
         for p in self.soup.find_all("p"):
             yield p.text.translate(xlate_table).strip()
 
-    def _get_outline(self):
+    def _get_outline(self) -> list[tuple[str, str]]:
         return [
             (levels, text)
             for levels, text in OutlineParser(self.get_paragraphs())

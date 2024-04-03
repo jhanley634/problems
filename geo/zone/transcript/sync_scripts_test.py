@@ -17,7 +17,7 @@ from geo.zone.transcript.sync_scripts import (
 class SyncScriptsTest(unittest.TestCase):
     fuego_url = "https://clarkesworldmagazine.com/buckell_07_09/"
 
-    def test_sync_scripts(self):
+    def test_sync_scripts(self) -> None:
         # Force a cache miss.
         fspec = _cache_file_for(self.fuego_url)
         fspec.unlink(missing_ok=True)

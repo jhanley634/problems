@@ -16,7 +16,7 @@ import seaborn as sns
 import typer
 
 
-def demo_350_440_hz(input_file: Path):
+def demo_350_440_hz(input_file: Path) -> None:
     Fs, x = audioBasicIO.read_audio_file(input_file)
     F, f_names = ShortTermFeatures.feature_extraction(x, Fs, 0.050 * Fs, 0.025 * Fs)
     pp(f_names)
@@ -47,7 +47,7 @@ def demo_350_440_hz(input_file: Path):
     plt.show()
 
 
-def demo():
+def demo() -> None:
     n = 2048
     x = np.sin(2 * np.pi * 10 * np.linspace(0, 10, n)) + np.random.random(n) * 0.1
 
@@ -60,7 +60,9 @@ def demo():
     plt.show()
 
 
-def main(mp3_file: Annotated[Path, Option(help="input audio file", default=None)]):
+def main(
+    mp3_file: Annotated[Path, Option(help="input audio file", default=None)]
+) -> None:
     return demo()
     sound1 = AudioSegment.from_file(mp3_file.expanduser())
     msec_per_sec = 1000

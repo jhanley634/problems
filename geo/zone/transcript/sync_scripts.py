@@ -53,7 +53,7 @@ def trim_postamble(html: str) -> str:
 
 def get_markdown_text(url: str) -> str:
     html = trim_preamble(trim_postamble(get_html_text(url)))
-    return markdownify(html).strip()
+    return str(markdownify(html)).strip()
 
 
 def get_markdown_words(url: str) -> Generator[str, None, None]:

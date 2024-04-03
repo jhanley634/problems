@@ -28,7 +28,7 @@ def load_language_model(name: str = "en_core_web_sm") -> Language:
         return _downlod_then_load_model(name, do_download=True)
 
 
-def _downlod_then_load_model(name, do_download: bool):
+def _downlod_then_load_model(name: str, do_download: bool) -> Language:
     if do_download:
         download(name)
     return spacy.load(name)
