@@ -2,12 +2,14 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285312/streaming-parquet-file-in-chunks-for-write-operation
 
+from io import BytesIO
 from pathlib import Path
 from time import sleep, strftime
-import io
+from typing import Any, Callable, TypeVar, cast
 import logging
 
 from memory_profiler import profile
+from typing_extensions import Concatenate, ParamSpec
 import pandas as pd
 import polars as pl
 import requests
@@ -25,15 +27,22 @@ def _get_file(url: str) -> Path:
     return fspec
 
 
-def _get_buf(year: int):
+def _get_buf(year: int) -> BytesIO:
     # url to fetch NY Taxi data from https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
     url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-01.parquet"
     fspec = _get_file(url)
-    return io.BytesIO(fspec.read_bytes())
+    return BytesIO(fspec.read_bytes())
 
 
-@profile
-def fetch_ny_data(parquet_buffer: io.BytesIO):
+# F = TypeVar("F", bound=Callable[..., Any])
+P = ParamSpec("P")
+T = TypeVar("T")
+
+profile1: Callable[[Callable[P, T]], Callable[P, T]] = profile
+
+
+@profile1
+def fetch_ny_data(parquet_buffer: BytesIO) -> None:
     # Direct reading of parquet file using read_parquet_file leads to high memory consumption
     pause()
     log.info("1: Reading into polars")
@@ -51,11 +60,11 @@ def fetch_ny_data(parquet_buffer: io.BytesIO):
     print(df1.describe())
 
 
-def pause(secs: float = 0.2):
+def pause(secs: float = 0.2) -> None:
     sleep(secs)
 
 
-def logging_basic_config(level=logging.INFO):
+def logging_basic_config(level: int = logging.INFO) -> None:
     tz = strftime("%z")
     fmt = f"%(asctime)s.%(msecs)03d{tz} %(levelname)s %(relativeCreated)d %(name)s  %(message)s"
     logging.basicConfig(level=level, datefmt="%Y-%m-%d %H:%M:%S", format=fmt)
