@@ -10,7 +10,7 @@ import io
 import pandas as pd
 
 
-def main():
+def main() -> None:
     s = """Time (s)\tLength (m)\tAcel (s)
 2\t3\t0.3"""
     df = pd.read_csv(io.StringIO(s), sep="\t").set_index("Time (s)")

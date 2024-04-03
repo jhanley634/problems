@@ -121,7 +121,7 @@ def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[st
     return both
 
 
-def _get_ranks(both):
+def _get_ranks(both: Counter[str]) -> Generator[int, None, None]:
     for rank, count in enumerate(both.values()):
         for _ in range(count):
             yield rank

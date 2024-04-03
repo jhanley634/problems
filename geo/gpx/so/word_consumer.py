@@ -31,7 +31,9 @@ def word_consumer(
     ps = redis.Redis().pubsub()
     ps.subscribe(topic)
     sleep(0.010)
-    assert ps.get_message()["type"] == "subscribe"
+    msg = ps.get_message()
+    assert msg
+    assert msg["type"] == "subscribe"
 
     while True:
         msg = ps.get_message(timeout=0.1)

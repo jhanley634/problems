@@ -9,7 +9,7 @@ from dateutil.tz import gettz
 
 
 class TzTest(unittest.TestCase):
-    def test_verify_dst_behavior(self):
+    def test_verify_dst_behavior(self) -> None:
         lax = gettz("America/Los_Angeles")
         den = gettz("America/Denver")
         phx = gettz("America/Phoenix")

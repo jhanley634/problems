@@ -3,8 +3,10 @@
 # from https://codereview.stackexchange.com/questions/289724/digit-ocr-using-tesseract
 
 from pathlib import Path
+from typing import Any
 import re
 
+from numpy.typing import NDArray
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,7 +15,7 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r"tesseract"
 
 
-def apply_tesseract(image_path: Path, psm: int) -> tuple[np.ndarray, str]:
+def apply_tesseract(image_path: Path, psm: int) -> tuple[NDArray[Any], str]:
     image = cv2.imread(f"{image_path}")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     assert np.max(image) <= 255
@@ -23,7 +25,7 @@ def apply_tesseract(image_path: Path, psm: int) -> tuple[np.ndarray, str]:
     return image, text
 
 
-def _get_hello(height: int, word: str = "Hello"):
+def _get_hello(height: int, word: str = "Hello") -> NDArray[np.int_]:
     font = cv2.FONT_HERSHEY_PLAIN
     bottom_left = 6, height - 3
     font_scale = 1.35
@@ -39,7 +41,7 @@ def _get_hello(height: int, word: str = "Hello"):
     return img
 
 
-def display_images_with_text(images: list[np.ndarray], texts: list[str]) -> None:
+def display_images_with_text(images: list[NDArray[Any]], texts: list[str]) -> None:
     num_images = len(images)
     num_rows = min(3, num_images)
     num_cols = (num_images + num_rows - 1) // num_rows

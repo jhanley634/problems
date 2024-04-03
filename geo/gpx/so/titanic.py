@@ -1,12 +1,10 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 
-from typing import Any
 import unittest
 
 from pycaret.classification import ClassificationExperiment
 from pycaret.datasets import get_data
-import numpy.typing as npt
 import pandas as pd
 import polars as pl
 
