@@ -8,6 +8,7 @@ from hashlib import sha3_224
 from pathlib import Path
 from typing import Generator
 
+from openpyxl.worksheet.worksheet import Worksheet
 import openpyxl
 import typer
 
@@ -23,6 +24,8 @@ def hash_spreadsheet(
     """
     wb = openpyxl.load_workbook(in_file)
     ws = wb.active
+    assert isinstance(ws, Worksheet), type(ws)
+
     for row in ws.iter_rows(values_only=True):
         yield sha3_224(str(row).encode()).hexdigest()[:birthday_nybbles]
 
