@@ -29,12 +29,12 @@ def single_number(nums: list[int]) -> int:
 
 
 class TestLeet137(unittest.TestCase):
-    def test_leet137(self):
+    def test_leet137(self) -> None:
         self.assertEqual(3, single_number([2, 2, 3, 2]))
         self.assertEqual(0, single_number([2, 1, 2, 1, 2, 1, 0]))
         self.assertEqual(-99, single_number([0, 1, 0, 1, 0, 1, -99]))
 
-    def test_negative_binary(self):
+    def test_negative_binary(self) -> None:
         num = -6
         self.assertEqual("-00000000000000000000000000000110", f"{num:033b}")
 
@@ -45,7 +45,7 @@ HI = 2**31 - 1
 
 
 @given(st.lists(st.integers(min_value=LO, max_value=HI), min_size=1))
-def test_leet(randoms: list[int]):
+def test_leet(randoms: list[int]) -> None:
     target, *distractors = randoms
     arg = [target] + distractors * 3
     assert single_number(arg) == target

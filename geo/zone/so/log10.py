@@ -15,7 +15,7 @@ from hypothesis import strategies as st
 BASE = 10
 
 
-def division_based_log10(x):
+def division_based_log10(x: float) -> float:
     assert x > 0
     return math.log(x) / math.log(BASE)
 
@@ -140,6 +140,6 @@ class LogTest(unittest.TestCase):
                 j *= 2
 
     @given(st.floats(min_value=1 + 1e-15, max_value=3.4e38))
-    def test_log_hypothesis(self, x):
+    def test_log_hypothesis(self, x: float) -> None:
         self.assertAlmostEqual(math.log2(x), log2(x))
         self.assertAlmostEqual(math.log10(x), log10(x))

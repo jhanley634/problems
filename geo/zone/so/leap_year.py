@@ -33,7 +33,7 @@ def is_leap_year_student(year: int) -> bool:
 
 
 class LeapYearTest(unittest.TestCase):
-    def test_leap_year(self):
+    def test_leap_year(self) -> None:
         for year in range(1, 2525):
             self.assertEqual(isleap(year), is_leap_year_instructor(year))
             self.assertEqual(
