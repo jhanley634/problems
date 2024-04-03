@@ -1,6 +1,7 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2024 John Hanley. MIT licensed.
 
+from io import BytesIO
 from pathlib import Path
 from typing import Generator
 import datetime as dt
@@ -25,13 +26,13 @@ def _display(df: pd.DataFrame) -> None:
     st.image(_scatterplot(df))
 
 
-def _scatterplot(df: pd.DataFrame) -> bytes:
+def _scatterplot(df: pd.DataFrame) -> BytesIO:
     sns.scatterplot(data=df, x="lat", y="lng")
 
     path = Path("/tmp/scatter_plot.png")
     path.unlink(missing_ok=True)
     plt.savefig(path)
-    return path.read_bytes()
+    return BytesIO(path.read_bytes())
 
 
 def _get_df(in_file: Path) -> pd.DataFrame:
@@ -40,7 +41,7 @@ def _get_df(in_file: Path) -> pd.DataFrame:
 
 
 def _get_fn_points() -> Generator[dict[str, float], None, None]:
-    def fn(x: float):
+    def fn(x: float) -> float:
         return 0.01 * x**2
 
     for lat in range(-100, 100):

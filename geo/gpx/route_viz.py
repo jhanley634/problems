@@ -1,5 +1,6 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2024 John Hanley. MIT licensed.
+from io import BytesIO
 from operator import attrgetter
 from pathlib import Path
 
@@ -42,7 +43,6 @@ def _get_df(in_file: Path, ssf_filter: bool = False) -> pd.DataFrame:
 
 @beartype
 def _display(df: pd.DataFrame, verbose: bool = False) -> None:
-    # Unrecognized type: "Duration" (18)
     df["delta_t"] = df.delta_t.apply(attrgetter("seconds"))
 
     elapsed_minutes = df.elapsed.max() / 60
@@ -62,7 +62,7 @@ def _display(df: pd.DataFrame, verbose: bool = False) -> None:
 
 @beartype
 @st.cache_data
-def _get_scatter_plot(begin: int, end: int, df: pd.DataFrame) -> bytes:
+def _get_scatter_plot(begin: int, end: int, df: pd.DataFrame) -> BytesIO:
     df["hue"] = ((df.elapsed % (5 * 60)) / 60).astype(int)
 
     disp = _get_scatter_plot_display_df(begin, end, df)
@@ -72,7 +72,7 @@ def _get_scatter_plot(begin: int, end: int, df: pd.DataFrame) -> bytes:
     path = Path("/tmp/scatter_plot.png")
     path.unlink(missing_ok=True)
     plt.savefig(path)
-    return path.read_bytes()
+    return BytesIO(path.read_bytes())
 
 
 def _get_scatter_plot_display_df(
