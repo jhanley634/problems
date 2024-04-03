@@ -35,7 +35,7 @@ def median_of_k_sorted_vectors(
     return _median_k([SortedList(vec) for vec in vecs])
 
 
-def _median_k(vecs: list[SortedList[int]]) -> tuple[int, int]:
+def _median_k(vecs: list[SortedList]) -> tuple[int, int]:
 
     n = sum(map(len, vecs))
     if n % 2 == 0:
@@ -120,9 +120,12 @@ def _median_k(vecs: list[SortedList[int]]) -> tuple[int, int]:
 
     sizes = [hi - lo for lo, hi in rng]
     assert sum(sizes) == 1
-    answer = 0, 0
+    answer: tuple[int, int] = 0, 0
 
     for i, (lo, hi) in enumerate(rng):
         if hi - lo == 1:
-            answer = i, vecs[i][lo]
+            assert isinstance(vecs[i], SortedList)
+            val = vecs[i][lo]
+            assert isinstance(val, int)
+            answer = i, val
     return answer
