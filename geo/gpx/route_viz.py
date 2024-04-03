@@ -3,6 +3,7 @@
 from io import BytesIO
 from operator import attrgetter
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from beartype import beartype
 import gpxpy
@@ -60,14 +61,19 @@ def _display(df: pd.DataFrame, verbose: bool = False) -> None:
         st.dataframe(disp)
 
 
+
+
 @beartype
 @st.cache_data
 def _get_scatter_plot(begin: int, end: int, df: pd.DataFrame) -> BytesIO:
+    legend = "brief"
+    if not TYPE_CHECKING:
+        legend = None
     df["hue"] = ((df.elapsed % (5 * 60)) / 60).astype(int)
 
     disp = _get_scatter_plot_display_df(begin, end, df)
 
-    sns.scatterplot(data=disp, x="lng", y="lat", hue="hue", legend=None)
+    sns.scatterplot(data=disp, x="lng", y="lat", legend=legend, hue="hue")
 
     path = Path("/tmp/scatter_plot.png")
     path.unlink(missing_ok=True)
