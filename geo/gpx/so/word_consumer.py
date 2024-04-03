@@ -7,6 +7,7 @@ from typing import Generator
 import re
 
 from sqlalchemy import text
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 from tqdm import tqdm
 import redis
@@ -52,7 +53,7 @@ def word_consumer(
             yield cat, word.lstrip()
 
 
-def create_engine() -> sa.engine:
+def create_engine() -> Engine:
     DB_FILE = Path("/tmp/words.db")
     DB_URL = f"sqlite:///{DB_FILE}"
     return sa.create_engine(DB_URL)

@@ -2,8 +2,8 @@
 from typing import Generator
 import re
 
-from spacy import Language
-from spacy.cli import download
+from spacy import Language  # type: ignore [attr-defined]
+from spacy.cli import download  # type: ignore [attr-defined]
 from spacy.tokens import Span
 import spacy
 
