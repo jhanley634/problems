@@ -5,7 +5,7 @@
 from collections import namedtuple
 from enum import Enum, auto
 from time import time
-from typing import Tuple
+from typing import Any, Generator, Tuple
 
 from pygame import Rect, Surface, Vector2
 from sortedcontainers import SortedList
@@ -17,42 +17,6 @@ GRID_SIZE_PX: int = 3
 DURATION = 4.0
 
 
-class City:
-    """Terrain that cars drive through.
-
-    Comprised of WIDTH x HEIGHT city blocks,
-    with 4-way traffic signals.
-    Traffic flows seamlessly into neighboring cities,
-    which appear to be infinite sinks or sources.
-    """
-
-    BLOCK_SIZE: float = 50.0  # number of grids per (square) block
-
-    def __init__(self, width: int, height: int):
-        scale = self.BLOCK_SIZE * GRID_SIZE_PX
-        self.blocks = [
-            Block(
-                150 + scale * i + GRID_SIZE_PX,
-                100 + scale * j,
-                self.BLOCK_SIZE * GRID_SIZE_PX - 3 * GRID_SIZE_PX,
-            )
-            for i in range(width)
-            for j in range(height)
-        ]
-        western_road_segment = self.blocks[0].road_segments[0]
-        western_road_segment.obstacles.add(
-            Car(western_road_segment, self.BLOCK_SIZE * GRID_SIZE_PX / DURATION)
-        )
-
-    @property
-    def cars(self):
-        for block in self.blocks:
-            for segment in block.road_segments:
-                for item in segment.obstacles:
-                    if isinstance(item, Car):
-                        yield item
-
-
 class Block:
     """A city block."""
 
@@ -62,7 +26,7 @@ class Block:
         self.size = size
         self.road_segments = [RoadSegment((x, y), (x + size, y))]
 
-    def render(self, screen):
+    def render(self, screen: Surface) -> None:
         rect = Rect((self.x, self.y), (self.size, self.size))
         pygame.draw.rect(screen, "white", rect)
         for segment in self.road_segments:
@@ -89,11 +53,11 @@ class Obstacle:
         self.serial = Obstacle.serial
         Obstacle.fleet[self.serial] = self
 
-    def __eq__(self, other) -> bool:
-        return self.position == other.position
+    def __eq__(self, other: Any) -> bool:
+        return bool(self.position == other.position)
 
-    def __lt__(self, other) -> bool:
-        return self.position < other.position
+    def __lt__(self, other: Any) -> bool:
+        return bool(self.position < other.position)
 
 
 # position in px from road segment start, for a given obstacle
@@ -118,7 +82,7 @@ class RoadSegment:
     def add_obstacle_position(self, obstacle: Obstacle) -> None:
         self.obstacles.add(obstacle)
 
-    def render(self, screen) -> None:
+    def render(self, screen: Surface) -> None:
         pygame.draw.line(screen, "black", self.start, self.end, GRID_SIZE_PX)
 
 
@@ -150,10 +114,10 @@ class Car(Obstacle):
     def update(self, dt: float) -> None:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
+        obs, i = None, 0
         for i, obs in enumerate(seg.obstacles):
             if obs is self:
                 break
-        # assert obs is self
         print(obs, i, self)
         print(seg.obstacles[i])
         print(obs)
@@ -171,12 +135,48 @@ class Car(Obstacle):
         pygame.draw.circle(screen, "red", pos, 2 * GRID_SIZE_PX)
 
 
+class City:
+    """Terrain that cars drive through.
+
+    Comprised of WIDTH x HEIGHT city blocks,
+    with 4-way traffic signals.
+    Traffic flows seamlessly into neighboring cities,
+    which appear to be infinite sinks or sources.
+    """
+
+    BLOCK_SIZE: float = 50.0  # number of grids per (square) block
+
+    def __init__(self, width: int, height: int):
+        scale = self.BLOCK_SIZE * GRID_SIZE_PX
+        self.blocks = [
+            Block(
+                150 + scale * i + GRID_SIZE_PX,
+                100 + scale * j,
+                self.BLOCK_SIZE * GRID_SIZE_PX - 3 * GRID_SIZE_PX,
+            )
+            for i in range(width)
+            for j in range(height)
+        ]
+        western_road_segment = self.blocks[0].road_segments[0]
+        western_road_segment.obstacles.add(
+            Car(western_road_segment, self.BLOCK_SIZE * GRID_SIZE_PX / DURATION)
+        )
+
+    @property
+    def cars(self) -> Generator[Car, None, None]:
+        for block in self.blocks:
+            for segment in block.road_segments:
+                for item in segment.obstacles:
+                    if isinstance(item, Car):
+                        yield item
+
+
 class GreenWave:
-    def __init__(self, city_size=(2, 1)) -> None:
+    def __init__(self, city_size: tuple[int, int] = (2, 1)) -> None:
         self.city: City = City(*city_size)
         self.running: bool = True
 
-    def main_loop(self, window_size=(1280, 720)) -> None:
+    def main_loop(self, window_size: tuple[int, int] = (1280, 720)) -> None:
         pygame.init()
         self.screen: Surface = pygame.display.set_mode(window_size)
         clock = pygame.time.Clock()
