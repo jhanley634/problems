@@ -3,13 +3,21 @@
 
 # from https://docs.python.org/3/library/itertools.html#itertools.accumulate
 
-
 from doctest import run_docstring_examples
 from doctest import testmod as run_doctests
 import operator
 
+from beartype import beartype
+from beartype.typing import Callable, Generator, Iterable
 
-def accumulate1(iterable, func=operator.add, *, initial=None):
+
+@beartype
+def accumulate1(
+    iterable: Iterable[int],
+    func: Callable[[int, int], int] = operator.add,
+    *,
+    initial: int | None = None
+) -> Generator[int, None, None]:
     """Return running totals -- from the python documentation.
 
     >>> list(accumulate1([1,2,3,4,5]))
@@ -35,6 +43,7 @@ def accumulate1(iterable, func=operator.add, *, initial=None):
             total = next(it)
         except StopIteration:
             return
+    assert total is not None
     yield total
     for element in it:
         total = func(total, element)

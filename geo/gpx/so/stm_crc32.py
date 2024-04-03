@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
-
 # from https://codereview.stackexchange.com/questions/176032/python-code-to-calculate-stm-crc32
 
 from array import array
@@ -11,7 +9,7 @@ import sys
 import unittest
 
 
-def generate_crc32_table(poly: int) -> array:
+def generate_crc32_table(poly: int) -> array[int]:
     custom_crc_table = array("I", b"A" * 256 * 4)
     for i in range(256):
         c = i << 24

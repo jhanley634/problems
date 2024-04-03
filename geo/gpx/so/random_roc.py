@@ -3,7 +3,7 @@
 # from https://datascience.stackexchange.com/questions/126359/does-a-random-classifier-have-a-diagonal-roc
 
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, Generator
 import warnings
 
 from sklearn.datasets import make_classification
@@ -16,7 +16,7 @@ import seaborn.objects as so
 
 
 @contextmanager
-def _filter_warnings():
+def _filter_warnings() -> Generator[None, None, None]:
     warnings.filterwarnings(
         "ignore",
         category=FutureWarning,
@@ -71,7 +71,7 @@ def _get_fp_tp_rates() -> tuple[Any, Any, Any, Any]:
     )
 
 
-def main():
+def main() -> None:
     # df = fetch_penguin_df()
     # sns.pairplot(df, hue="species")
 
