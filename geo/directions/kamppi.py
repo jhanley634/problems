@@ -20,7 +20,9 @@ def show_locale(place_name: str = "Kamppi, Helsinki, Finland") -> None:
     # fig, ax = ox.plot_graph(graph); print(fig, ax)
     nodes, edges = ox.graph_to_gdfs(graph)
     center = (60.16607, 24.93116)
-    carto_db = basemaps.CartoDB
+    # pyright would say: "CartoDB" is not a known member of module "xyzservices.providers"
+    # (reportAttributeAccessIssue)
+    carto_db = getattr(basemaps, "CartoDB")
     assert isinstance(carto_db, Bunch)
     m = Map(center=center, basemap=carto_db.Positron, zoom=15)
     to_marker_style = AwesomeIcon(

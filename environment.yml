@@ -99,6 +99,7 @@ dependencies:
   - types-python-dateutil >= 2.9.0.20240316
   - types-redis >= 4.6.0.20240311
   - types-requests >= 2.31.0.20240403
+  - types-tqdm >= 4.66.0.20240106
   - unidecode >= 1.3.8
   - uszipcode >= 1.0.1
   - watchdog >= 4.0.0

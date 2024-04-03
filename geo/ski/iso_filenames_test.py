@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from geo.ski.iso_filenames import GPX_DIR, copy_all, iso
 
-tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
+tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
 class IsoFilenamesTest(unittest.TestCase):
