@@ -8,24 +8,26 @@ from collections import Counter
 from contextlib import contextmanager
 from functools import partial
 from random import shuffle
+from typing import Generator
 import unittest
 
 from beartype import beartype
 from hypothesis import given
 from hypothesis import strategies as st
+from numpy.typing import NDArray
 import numpy as np
 
-cnt: Counter = Counter()  # an event counter
+cnt: Counter[str] = Counter()  # an event counter
 
 
 @contextmanager
-def count_sort_calls():
+def count_sort_calls() -> Generator[Counter[str], None, None]:
     cnt["sort"] = 0
     yield cnt
 
 
 @beartype
-def roll_some_numbers(n: int = 1000) -> np.ndarray[int, np.dtype[np.int_]]:
+def roll_some_numbers(n: int = 1000) -> NDArray[np.int_]:
     """Produces N distinct random integers that are conveniently small."""
     # Leaving room between entries deals with pigeonhole principle & birthday paradox.
     big_n = int(1.5 * n)
@@ -40,7 +42,7 @@ K = 5
 
 
 @beartype
-def sort_k(a: np.ndarray, start: int, k: int) -> None:
+def sort_k(a: NDArray[np.int_], start: int, k: int) -> None:
     """Puts K elements into descending order."""
     # The "top" elements will appear at the front.
     # This is convenient for truncated displays of large arrays.
@@ -51,7 +53,7 @@ def sort_k(a: np.ndarray, start: int, k: int) -> None:
 
 
 @beartype
-def find_top_t(t: int, a: np.ndarray, k: int = K) -> np.ndarray:
+def find_top_t(t: int, a: NDArray[np.int_], k: int = K) -> NDArray[np.int_]:
     assert t < K
     assert t <= len(a)
     tombstone = a.min() - 1  # sentinel value
@@ -110,7 +112,7 @@ class TestTopT(unittest.TestCase):
         sort_k(a, 6, K)  # Partial sort, at end of array, works as expected.
         self.assertEqual([0, 1, 2, 3, 4, 5, 7, 6], a.tolist())
 
-    def test_top_t(self, t=T) -> None:
+    def test_top_t(self, t: int = T) -> None:
         a = roll_some_numbers(10)
         with count_sort_calls() as cnt:
             xs = find_top_t(t, a.copy()).tolist()
@@ -118,14 +120,14 @@ class TestTopT(unittest.TestCase):
         self.assertEqual(xs, sorted(xs, reverse=True))
         self.assertEqual(xs, sorted(a, reverse=True)[:t])
 
-    def test_with_dups(self, t=T, n=10_000) -> None:
+    def test_with_dups(self, t: int = T, n: int = 10_000) -> None:
         a = np.random.randint(0, n // 2, n)
         self.assertLess(len(set(a)), len(a) / 2)
         xs = find_top_t(t, a.copy()).tolist()
         self.assertEqual(xs, sorted(xs, reverse=True))
         self.assertEqual(xs, sorted(a, reverse=True)[:t])
 
-    def test_imbalanced(self, t=T, num_distractors=10_000) -> None:
+    def test_imbalanced(self, t: int = T, num_distractors: int = 10_000) -> None:
         with count_sort_calls() as cnt:
             a = np.array(shuffled([1] * t + [0] * num_distractors))
             self.assertEqual([1] * t, find_top_t(t, a).tolist())
