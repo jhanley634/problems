@@ -9,6 +9,7 @@ import unittest
 from beartype import beartype
 from hypothesis import Verbosity, given, settings
 from hypothesis import strategies as st
+from numpy.typing import NDArray
 import numpy as np
 
 from geo.zone.so.sorted_median import (
@@ -53,7 +54,7 @@ def _generate_list_pair(
     assert med_val in xs or med_val in ys
     assert not (med_val in xs and med_val in ys)  # (XOR)
     name = ListName.X if med_val in xs else ListName.Y
-    return xs, ys, name, med_val
+    return xs, ys, name, float(med_val)
 
 
 @beartype
@@ -75,7 +76,7 @@ class SortedMedianTest(unittest.TestCase):
         self.assertEqual(med_val, xs[i])
 
     def test_median_of_list_pair(self) -> None:
-        def check(x_in, y_in):
+        def check(x_in: NDArray[np.int_], y_in: NDArray[np.int_]) -> None:
             i, name = median_of_list_pair(x_in, y_in)
             zs = [x_in, y_in][name.value]
             self.assertEqual(med_val, zs[i])

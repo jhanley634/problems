@@ -8,6 +8,7 @@ from time import time
 from typing import Any
 
 from numba import njit
+from numpy.typing import NDArray
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,22 +16,19 @@ import numpy as np
 NaN = np.nan
 
 
-@njit
-def trough(
-    n: np.ndarray[Any, np.dtype[np.float64]]
-) -> np.ndarray[Any, np.dtype[np.float64]]:
+@njit  # type: ignore [misc]
+def trough(n: NDArray[np.float64]) -> NDArray[np.float64]:
     w, h = np.shape(n)
     nt = np.concatenate((np.ones((w, 1)) * NaN, n, np.ones((w, 1)) * NaN), axis=1)
     nt = np.concatenate(
         (np.ones((1, h + 2)) * NaN, nt, np.ones((1, h + 2)) * NaN), axis=0
     )
+    assert isinstance(nt, np.ndarray)
     return nt
 
 
-@njit
-def topple(
-    n: np.ndarray[Any, np.dtype[np.float64]]
-) -> np.ndarray[Any, np.dtype[np.float64]]:
+@njit  # type: ignore [misc]
+def topple(n: NDArray[np.float64]) -> NDArray[np.float64]:
     p = trough(n)
     s_p = np.shape(p)
     while np.nanmax(p) > 3:
@@ -41,6 +39,7 @@ def topple(
                 p[i - 1, j] += 1
                 p[i, j + 1] += 1
                 p[i, j - 1] += 1
+    assert isinstance(p, np.ndarray)
     return p[1:-1, 1:-1]
 
 

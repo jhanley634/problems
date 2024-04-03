@@ -15,7 +15,10 @@ def argmax(vec: list[int]) -> int:
 
 
 @beartype
-def median_of_k_sorted_vectors(*vecs: list[int], verify: bool = False) -> int:
+def median_of_k_sorted_vectors(
+    *vecs: list[int],
+    verify: bool = False,
+) -> tuple[int, int]:
     """Given K sorted vectors containing a total of N numbers, returns the
     index of the median, as (vec_idx, idx), with vec_idx in range(k).
 
