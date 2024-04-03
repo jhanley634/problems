@@ -5,6 +5,8 @@
 # from https://stackoverflow.com/questions/77318785/how-do-i-detect-use-of-a-contextmanager
 
 from io import StringIO
+from types import TracebackType
+from typing import Any
 import dis
 import inspect
 
@@ -13,13 +15,17 @@ class MyManager:
     def __enter__(self) -> None:
         print("enter")
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+    def __exit__(
+        self,
+        exc_type: Exception,
+        exc_value: Any,
+        traceback: TracebackType,
+    ) -> None:
         print("exit")
 
 
 def app() -> None:
-    with MyManager() as m:
-        assert m
+    with MyManager():
         report_on_ctx_mgr()
 
 
