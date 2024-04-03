@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 
+from typing import Any
 import unittest
 
 from pycaret.classification import ClassificationExperiment
 from pycaret.datasets import get_data
+import numpy.typing as npt
 import pandas as pd
 import polars as pl
 
@@ -15,7 +17,7 @@ titanic_url = "https://raw.githubusercontent.com/Geoyi/Cleaning-Titanic-Data/mas
 
 
 class TestTitanic(unittest.TestCase):
-    def test_verify_dst_behavior(self):
+    def test_verify_dst_behavior(self) -> None:
         df = fetch_df(titanic_url)
         self.assertEqual(1310, len(df))
         self.assertEqual(14, len(df.columns))
@@ -30,7 +32,7 @@ def describe_titanic_dataset() -> None:
     print(df1.describe())
 
 
-def pycaret_oop_api(data) -> None:
+def pycaret_oop_api(data: pd.DataFrame) -> None:
     s = ClassificationExperiment()
     s.setup(data, target="Purchase", session_id=123)
 
