@@ -11,6 +11,7 @@ from time import time
 from typing import Any, Callable, Type
 
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session, declarative_base
 from sqlalchemy.schema import PrimaryKeyConstraint
 from tqdm import tqdm
@@ -33,7 +34,7 @@ def timed(
     return wrapped
 
 
-def insert_with_orm():
+def insert_with_orm() -> None:
     with Session(engine) as session:
         for i in range(NUM_FACTS):
             name = sha3_224(f"Earth {i}".encode()).hexdigest()
@@ -58,7 +59,7 @@ class Fact(Base):
     PrimaryKeyConstraint(user_id, fact_id)
 
 
-def create_engine():
+def create_engine() -> Engine:
     DB_FILE = Path("/tmp/article.db")
     DB_URL = f"sqlite:///{DB_FILE}"
     engine = sa.create_engine(DB_URL)
@@ -70,7 +71,7 @@ NUM_FACTS = 40_000
 NUM_USERS = 10_000
 
 
-def get_fact_df():
+def get_fact_df() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "name": [
@@ -90,7 +91,7 @@ def insert_user_facts(user_df: pd.DataFrame) -> None:
     user_df.to_sql("fact", engine, index=False, if_exists="append")
 
 
-def main():
+def main() -> None:
     fact_df = get_fact_df()
     insert_world_facts(fact_df)
 

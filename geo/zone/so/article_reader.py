@@ -4,6 +4,7 @@
 # from https://softwareengineering.stackexchange.com/questions/450146/designing-a-graph-database-structure
 
 from random import randrange
+from typing import Generator, Iterable
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -12,20 +13,20 @@ from tqdm import tqdm
 from geo.zone.so.article_db import NUM_FACTS, NUM_USERS, Fact, WorldFact, create_engine
 
 
-def fact_details_for(user_id: int):
+def fact_details_for(user_id: int) -> Generator[str, None, None]:
     with Session(engine) as session:
         yield from session.query(WorldFact.details).join(Fact).filter(
             Fact.user_id == user_id
         )
 
 
-def num_facts_for(user_id: int):
+def num_facts_for(user_id: int) -> Generator[Iterable[int], None, None]:
     select = "count(*)"  # or "sum(fact_id)"
     with Session(engine) as session:
         yield from session.query(text(select)).filter(Fact.user_id == user_id)
 
 
-def main(num_queries=1_000):
+def main(num_queries: int = 1_000) -> None:
     for _ in tqdm(range(num_queries), smoothing=1e-4):
         user_id = randrange(NUM_USERS)
         (n,) = next(num_facts_for(user_id))

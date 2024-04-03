@@ -38,7 +38,7 @@ connection_names = [
 ]
 
 
-def airline_connections(interactive=False) -> None:
+def airline_connections(interactive: bool = False) -> None:
     g = nx.Graph(sorted(connection_names, reverse=True))
     print(nx.shortest_path(g, "ATH", "LIS"))
 
