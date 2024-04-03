@@ -5,6 +5,7 @@
 from io import BytesIO
 from pathlib import Path
 from time import sleep, strftime
+from types import FunctionType
 from typing import Any, Callable, TypeVar, cast
 import logging
 
@@ -34,11 +35,9 @@ def _get_buf(year: int) -> BytesIO:
     return BytesIO(fspec.read_bytes())
 
 
-# F = TypeVar("F", bound=Callable[..., Any])
-P = ParamSpec("P")
-T = TypeVar("T")
+assert isinstance(profile, FunctionType)
 
-profile1: Callable[[Callable[P, T]], Callable[P, T]] = profile
+profile1: Callable[[Callable[..., None]], Callable[..., None]] = profile
 
 
 @profile1
