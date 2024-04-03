@@ -16,7 +16,7 @@ def to_fp(num: str) -> float:
     acc = abs(_to_int(num[:i])) + _to_int(num[i + 1 :]) / 10 ** (len(num) - i - 1)
     if num.startswith("-"):
         acc *= -1
-    return acc
+    return float(acc)
 
     #   We would suffer round-off errors if we did it the hard way, digit-by-digit:
     # acc = 0
@@ -46,12 +46,12 @@ def _to_int(num: str) -> int:
 
 
 class TestFP(unittest.TestCase):
-    def test_to_int(self):
+    def test_to_int(self) -> None:
         self.assertEqual(0, _to_int(""))
         for i in range(-144, 144):
             self.assertEqual(i, _to_int(f"{i}"))
 
-    def test_to_fp(self):
+    def test_to_fp(self) -> None:
         self.assertEqual(1.0, to_fp("1"))
         self.assertEqual(1.0, to_fp("1."))
         self.assertEqual(1.0, to_fp("1.0"))
@@ -68,7 +68,7 @@ class TestFP(unittest.TestCase):
             n += "1"
             self.assertEqual(float(n), to_fp(n))
 
-    def test_round_off_issues(self):
+    def test_round_off_issues(self) -> None:
         self.assertEqual(0.1, to_fp(".1"))
         self.assertEqual(0.2, to_fp(".2"))
         self.assertEqual(0.3, to_fp(".3"))
@@ -96,7 +96,7 @@ class TestFP(unittest.TestCase):
         self.assertEqual("0x1.c00000007ffffp-1", (0.8750000000582076).hex())
         self.assertEqual("0x1.c000000080000p-1", (0.8750000000582077).hex())
 
-    def test_hex_representation(self):
+    def test_hex_representation(self) -> None:
         self.assertEqual("0x1.999999999999ap-4", (0.1).hex())
         self.assertEqual("0x1.999999999999ap-3", (0.2).hex())
         self.assertEqual("0x1.3333333333333p-2", (0.3).hex())
@@ -111,7 +111,7 @@ class TestFP(unittest.TestCase):
         self.assertEqual("0x1.0000000000000p-2", (0.25).hex())
 
     @given(st.floats(allow_infinity=False, allow_nan=False))
-    def test_torture(self, f: float):
+    def test_torture(self, f: float) -> None:
         num = str(f)
         with contextlib.suppress(ValueError):
             if "+" in num or num.rindex("-") > 0:

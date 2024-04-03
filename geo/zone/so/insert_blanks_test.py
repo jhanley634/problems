@@ -1,9 +1,10 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # An answer to https://stackoverflow.com/questions/76503323/format-a-string-to-have-same-spaces-as-another-string
+from typing import Generator
 import unittest
 
 
-def insert_blanks(input, target):
+def insert_blanks(input: str, target: str) -> Generator[str, None, None]:
     i = 0
     for tgt in target:
         if tgt == " ":
@@ -14,7 +15,7 @@ def insert_blanks(input, target):
 
 
 class InsertBlanksTest(unittest.TestCase):
-    def test_insert_blanks(self):
+    def test_insert_blanks(self) -> None:
         text = "abcabcabcabc"
         target = "foofoo foo fo o"
         self.assertEqual(
