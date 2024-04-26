@@ -1,10 +1,12 @@
 
-.coverage.*
 .coverage
+.coverage.*
+.dmypy.json
 .hypothesis/
 .idea/
 .ipynb_checkpoints/
 .pytype/
+Untitled.ipynb
 __pycache__/
 best_pipeline.pkl
 cache/
@@ -22,4 +24,3 @@ vision/loadtxt/pythran_lib/hello.egg-info/
 vision/loadtxt/pythran_lib/hello/hello.cpp
 vision/loadtxt/rust_lib/Cargo.lock
 vision/loadtxt/rust_lib/target
-Untitled.ipynb
