@@ -32,7 +32,7 @@ def generate_random_grimoire(n: int = 2) -> Grimoire:
     return Grimoire(io.StringIO(f"{n}\n" + "\n".join(map(str, pages)) + "\n"))
 
 
-def shuffle_slice(a, start, end):
+def shuffle_slice(a: list[int], start: int, end: int) -> None:
     for i in reversed(range(start + 1, end)):
         j = randint(start, i)
         a[i], a[j] = a[j], a[i]

@@ -2,16 +2,13 @@
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/291672/create-a-snail-matrix
 
-from array import array
 from typing import Generator
-import collections.abc
-import itertools
-import math
 
 import numpy as np
 import numpy.typing as npt
 
-type Matrix = list[list[int]]
+# type Matrix = list[list[int]]
+
 cw_direction = [
     # ESWN
     (1, 0),
@@ -26,10 +23,6 @@ ccw_direction = [
     (0, -1),
     (-1, 0),
 ]
-
-
-def game(game_num: int, verbose: bool = 0):
-    0
 
 
 def get_rect_spiral_coords(m: int, n: int) -> Generator[tuple[int, int], None, None]:
@@ -73,7 +66,10 @@ def get_square_spiral_matrix(size: int) -> list[list[int]]:
     """Create a size x size matrix arranged in a snail pattern."""
     m = get_rect_spiral_array(size, size)
     print(m, 7)
-    return m.tolist()
+    ret = []
+    for row in m.tolist():  # Grrr, mypy thinks m.tolist() is Any
+        ret.append([int(cell) for cell in row])
+    return ret
 
 
 square = get_square_spiral_matrix
