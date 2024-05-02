@@ -42,7 +42,7 @@ class Dataset:
             pq.write_table(pa.Table.from_pandas(df), cache)
 
         # Elapsed time is less than two seconds.
-        return pq.read_table(cache).to_pandas()
+        return pd.DataFrame(pq.read_table(cache).to_pandas())
 
     @staticmethod
     def filter_short_segments(df: pd.DataFrame, k: int = 4) -> pd.DataFrame:

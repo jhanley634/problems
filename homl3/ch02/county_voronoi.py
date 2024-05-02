@@ -9,7 +9,7 @@ import pandas as pd
 from homl3.ch02.show_counties import color_of, get_housing
 
 
-def show_voronoi(want_show=False):
+def show_voronoi(show: bool = False) -> None:
     housing = get_housing().to_pandas()  # We need pandas, for color support.
     housing["color"] = housing["county"].apply(color_of)
     assert len(set(housing.county)) == 58
@@ -25,7 +25,7 @@ def show_voronoi(want_show=False):
     assert vor.npoints == len(points)
     fig = voronoi_plot_2d(vor)
     fig.savefig("/tmp/voronoi.png")
-    if want_show:
+    if show:
         plt.show()
         print(housing[["county", "population"]].groupby("county").count())
         # San_Joaquin has 422 census tract observations; L.A. has 5861
@@ -46,7 +46,7 @@ def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
         for i in hull.vertices:
             print(sum(h.interior), i, h.loc[i].longitude, h.loc[i].latitude)
             h.loc[(h.longitude == h.loc[i].longitude), "interior"] = False
-        h = h[not h.interior]
+        h = pd.DataFrame(h[not h.interior])
 
         print(county.ljust(15), len(h), len(hull.vertices), hull.volume)
 
@@ -60,7 +60,7 @@ def _get_large_counties(
         housing[["county", "population"]].groupby("county").count().iterrows()
     ):
         num_districts = row.population
-        yield county, num_districts
+        yield str(county), num_districts
 
 
 if __name__ == "__main__":

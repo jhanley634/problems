@@ -1,8 +1,8 @@
 # Copyright 2023 John Hanley. MIT licensed.
-
+from builtins import _NotImplementedType
 from enum import Enum, auto
 from functools import total_ordering
-from typing import Generator, Self
+from typing import Any, Generator, Self
 
 import numpy as np
 import numpy.typing as npt
@@ -16,9 +16,9 @@ class Constraint(Enum):
     ROW = auto()
     COL = auto()
 
-    def __lt__(self, other):
+    def __lt__(self, other: Any) -> bool | _NotImplementedType:
         if self.__class__ is other.__class__:
-            return self.value < other.value
+            return bool(self.value < other.value)
         return NotImplemented
 
 
@@ -63,7 +63,7 @@ class Grid:
         tuples = [(len(v), k, v) for k, v in avail.items()]  # if v]
         self.avail = {k: v for _, k, v in sorted(tuples)}
 
-    def _available_values(self, vals) -> set[int]:
+    def _available_values(self, vals: npt.NDArray[np.uint8]) -> set[int]:
         return self._valid_cell_values() - set(vals[vals > 0])
 
     def _valid_cell_values(self) -> set[int]:
@@ -167,9 +167,8 @@ def solve(grid: Grid) -> Grid | None:
             return None  # caller will backtrack
 
     raise RuntimeError("no solution found")
-    return None
 
 
 if __name__ == "__main__":
-    if False:
-        solve(Grid(size=2).from_string("1234 1234  1234 1234"))
+    ...
+    # solve(Grid(size=2).from_string("1234 1234  1234 1234"))

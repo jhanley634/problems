@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
+from io import TextIOWrapper
 from pathlib import Path
 from typing import Generator
 import re
@@ -8,7 +8,7 @@ import re
 import typer
 
 
-def get_package_revs(fin: int) -> Generator[str, None, None]:
+def get_package_revs(fin: TextIOWrapper) -> Generator[str, None, None]:
     from_re = re.compile(r"^Requirement already satisfied: .*\(from (\w+)>=(\d+\.\d+)")
     using_cached_re = re.compile(r"^\s*Using cached (\w+)-(\d+\.\d+)")
     for line in fin:

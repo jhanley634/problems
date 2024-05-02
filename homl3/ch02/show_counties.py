@@ -12,7 +12,7 @@ import streamlit as st
 from homl3.ch02.find_nearest import join_on_location
 
 
-def get_housing(verbose=False) -> pl.DataFrame:
+def get_housing(verbose: bool = False) -> pl.DataFrame:
     housing_df = pd.DataFrame(join_on_location().drop(columns=["geometry"]))
     assert max(housing_df["pop_density"]) == 50_983
     mem_pandas = housing_df.memory_usage(deep=True).sum()
@@ -25,7 +25,7 @@ def get_housing(verbose=False) -> pl.DataFrame:
 
 
 @lru_cache
-def color_of(county: str, alpha=0.2) -> tuple[float, float, float, float]:
+def color_of(county: str, alpha: float = 0.2) -> tuple[float, float, float, float]:
     """Returns an RGBA color, including alpha transparency."""
     return (
         _hash("R", county),

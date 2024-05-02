@@ -6,7 +6,7 @@ from dojo.sudoku.puzzle import Grid, solve
 
 
 class PuzzleTest(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.puzzle = Grid(size=2).from_string(
             """
             12  34
@@ -36,7 +36,7 @@ class PuzzleTest(unittest.TestCase):
 
         self.assertTrue(Grid(size=2).from_string("34" + "-" * 14).is_valid())
 
-    def test_short_string(self):
+    def test_short_string(self) -> None:
         self.assertEqual(
             "34--------------",
             Grid(size=2).from_string("34" + "-" * 14).to_short_string(),

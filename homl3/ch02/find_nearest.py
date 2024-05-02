@@ -31,7 +31,7 @@ def get_cached(url: str) -> Path:
 
 
 @beartype
-def get_housing_df(filename="housing/housing.csv") -> pd.DataFrame:
+def get_housing_df(filename: str = "housing/housing.csv") -> pd.DataFrame:
     """Retrieves simplified 1990 housing data."""
     url = f"{AGERON_BASE_URL}/{filename}"
     cache_file = get_cached(url)
@@ -61,7 +61,7 @@ def _california_city_columns(row: SimpleZipcode) -> dict[str, Any]:
 
 
 @beartype
-def get_cities(limit=1600) -> pd.DataFrame:
+def get_cities(limit: int = 1600) -> pd.DataFrame:
     zip_se = SearchEngine()
     return pd.DataFrame(
         map(
@@ -80,7 +80,11 @@ def get_cities(limit=1600) -> pd.DataFrame:
 
 
 @beartype
-def _points_from_xy(lng: pd.Series, lat: pd.Series, eps=1e-9) -> GeometryArray:
+def _points_from_xy(
+    lng: pd.Series[float],
+    lat: pd.Series[float],
+    eps: float = 1e-9,
+) -> GeometryArray:
     """Fuzzes points by small random epsilon, so all locations are distinct."""
     assert len(lng) == len(lat)
     size = len(lng)

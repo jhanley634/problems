@@ -10,33 +10,34 @@ from dojo.sudoku.puzzle import Grid
 app = Flask(__name__)
 
 
-def web_page(messy_html: str, title="sudoku") -> str:
+def web_page(messy_html: str, title: str = "sudoku") -> str:
     return cleanup(f"<head><title>{title}</head><body>{messy_html}")
 
 
-def cleanup(messy_html: str, title="sudoku") -> str:
+def cleanup(messy_html: str, title: str = "sudoku") -> str:
     soup = BeautifulSoup(messy_html, "html.parser")
     return soup.prettify()
 
 
-@app.route("/hello")
+# Untyped decorator makes function "hello" untyped
+@app.route("/hello")  # type: ignore [misc]
 def hello() -> str:
     return web_page("<p>Hello world!")
 
 
-@app.route("/")
+@app.route("/")  # type: ignore [misc]
 def top() -> str:
     return web_page("hi")
 
 
-@app.route("/show/<grid>")
+@app.route("/show/<grid>")  # type: ignore [misc]
 def show(grid: str) -> str:
     size = int(len(grid) ** 0.25)
     g = Grid(size=size).from_string(grid)
     return web_page(f"<pre>\n{g}")
 
 
-@app.route("/edit/<grid>")
+@app.route("/edit/<grid>")  # type: ignore [misc]
 def edit(grid: str) -> str:
     form = """
     """

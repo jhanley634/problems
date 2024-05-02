@@ -17,7 +17,10 @@ def hello():
 
 @app.route("/mean", methods=["POST"])
 def mean():
-    d = request.json
+
+    # Argument 1 to "dict" has incompatible type "Any | None";
+    # expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
+    d = dict(request.json)  # type: ignore [arg-type]
     shape = d["shape"]
     data = np.asarray(d["data"]).reshape(shape)
 

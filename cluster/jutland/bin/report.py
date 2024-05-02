@@ -19,7 +19,7 @@ def _get_northern_subset() -> pd.DataFrame:
     if not cache.exists():
         df = Dataset.get_df().reset_index(drop=True)
         pq.write_table(pa.Table.from_pandas(df), cache)
-    return pq.read_table(cache).to_pandas()
+    return pd.DataFrame(pq.read_table(cache).to_pandas())
 
 
 def _train_and_test(ground_truth: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:

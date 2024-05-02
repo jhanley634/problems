@@ -6,7 +6,7 @@ import pandas as pd
 
 
 class CountyVoronoiTest(unittest.TestCase):
-    def test_serialize_df_as_list(self, verbose=False) -> None:
+    def test_serialize_df_as_list(self, verbose: bool = False) -> None:
         df = pd.DataFrame()
         df["county"] = ["L.A."] * 3 + ["San_Joaquin"] * 2
         if verbose:
@@ -20,5 +20,5 @@ class CountyVoronoiTest(unittest.TestCase):
                 "internal": [False, True, False, False, False],
             }
         )
-        df = df[not df.internal]
+        df = pd.DataFrame(df[not df.internal])
         self.assertEqual(4, len(df))

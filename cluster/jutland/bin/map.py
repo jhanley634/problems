@@ -10,7 +10,7 @@ from cluster.jutland.dataset import Dataset
 
 @st.cache
 def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
-    df = Dataset.get_df()
+    df = pd.DataFrame(Dataset.get_df())
 
     # These are simply the first couple, in sorted order.
     favorite_roads = {
@@ -21,7 +21,9 @@ def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
         df = df[df.osm_id.isin(favorite_roads)]
 
     colors = qualitative.Paired_12.colors
-    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)
+    # Argument 1 to "hash_array" has incompatible type "Series[Any]";
+    # expected "ExtensionArray | ndarray[Any, Any]"  [arg-type]
+    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)  # type: ignore [arg-type]
 
     # In https://discuss.streamlit.io/t/tooltip-and-labels-in-pydeck-chart/1727
     # godot63 suggests we may need an annoying 3 (r,g,b) color columns.
