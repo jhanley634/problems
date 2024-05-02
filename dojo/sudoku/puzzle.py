@@ -1,5 +1,4 @@
 # Copyright 2023 John Hanley. MIT licensed.
-from builtins import _NotImplementedType
 from enum import Enum, auto
 from functools import total_ordering
 from typing import Any, Generator, Self
@@ -16,7 +15,7 @@ class Constraint(Enum):
     ROW = auto()
     COL = auto()
 
-    def __lt__(self, other: Any) -> bool | _NotImplementedType:
+    def __lt__(self, other: Any) -> bool | type(NotImplemented):
         if self.__class__ is other.__class__:
             return bool(self.value < other.value)
         return NotImplemented

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env PYARROW_IGNORE_TIMEZONE=1 PYGAME_HIDE_SUPPORT_PROMPT=1 python
 # Copyright 2022 John Hanley. MIT licensed.
 """
 Verifies that packages load without error, e.g. due to missing deps.
@@ -152,10 +152,8 @@ import typer  # noqa F401
 import unidecode  # noqa F401
 
 from autoencode.util.projection import _hash_col, feature_subset  # noqa F401
-from cluster.jutland.dataset import Dataset  # noqa F401
 from dojo.sudoku.puzzle import Grid  # noqa F401
 from dojo.sudoku.puzzle import solve  # noqa F401
-from feature_sel.ozone.ozone import COLS, get_df  # noqa F401
 from gen.news_summary import Summarizer  # noqa F401
 from gen.news_summary import get_cache_filespec  # noqa F401
 from gen.news_summary_test import get_article_text_file  # noqa F401
