@@ -5,7 +5,13 @@ from pathlib import Path
 from pprint import pp
 from typing import Any
 
-from transformers import T5ForConditionalGeneration, T5Tokenizer
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    CodeGenTokenizerFast,
+    T5ForConditionalGeneration,
+    T5Tokenizer,
+)
 import requests
 
 CACHE_DIR = Path("/tmp/cache")
@@ -49,7 +55,7 @@ class Summarizer:
         if verbose:
             print(text, "\n\n\n")
 
-        tokenizer, model = get_t5_model()
+        tokenizer, model = get_llm_model()
         input_ids = tokenizer(text, return_tensors="pt").input_ids
         outputs = model.generate(input_ids, max_new_tokens=limit)
         return str(tokenizer.decode(outputs[0], skip_special_tokens=True))
@@ -58,17 +64,31 @@ class Summarizer:
 
 
 def get_t5_model() -> tuple[T5Tokenizer, T5ForConditionalGeneration]:
-    tokenizer = T5Tokenizer.from_pretrained("t5-small", legacy=False)
+    t5 = "t5-small"
+    tokenizer = T5Tokenizer.from_pretrained(t5, legacy=False)
     assert isinstance(tokenizer, T5Tokenizer)
 
-    model = T5ForConditionalGeneration.from_pretrained("t5-small")
+    model = T5ForConditionalGeneration.from_pretrained(t5)
     assert isinstance(model, T5ForConditionalGeneration)
 
     return tokenizer, model
 
 
+def get_llm_model() -> tuple[CodeGenTokenizerFast, Any]:
+    phi = "microsoft/phi-2"
+    tokenizer = AutoTokenizer.from_pretrained(phi)
+    assert isinstance(tokenizer, CodeGenTokenizerFast)
+
+    breakpoint()
+    model = AutoModelForCausalLM.from_pretrained(phi)
+    print(type(model))
+    # assert isinstance(model, T5ForConditionalGeneration)
+
+    return tokenizer, model
+
+
 def translate() -> None:
-    tokenizer, model = get_t5_model()
+    tokenizer, model = get_llm_model()
     text = "translate English to German: The house is wonderful."
     input_ids = tokenizer(text, return_tensors="pt").input_ids
     outputs = model.generate(input_ids, max_new_tokens=20)
