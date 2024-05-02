@@ -35,8 +35,8 @@ def get_df() -> pd.DataFrame:
 
 
 def get_x(ser: "pd.Series[Any]") -> NDArray[np.int_]:
-    NANOSEC_PER_SEC = int(1e9)
-    return np.array(ser.astype("int64") // NANOSEC_PER_SEC)
+    nanosec_per_sec = int(1e9)
+    return np.array(ser.astype("int64") // nanosec_per_sec)
 
 
 def get_spline_fit(df: pd.DataFrame) -> "pd.Series[Any]":

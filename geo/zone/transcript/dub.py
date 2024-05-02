@@ -63,11 +63,11 @@ def demo() -> None:
 def main(
     mp3_file: Annotated[Path, Option(help="input audio file", default=None)]
 ) -> None:
-    return demo()
+    # return demo()
     sound1 = AudioSegment.from_file(mp3_file.expanduser())
     msec_per_sec = 1000
     start = 3 * msec_per_sec
-    end = 3.25 * msec_per_sec
+    end = int(3.25 * msec_per_sec)
     sound = AudioSegment.from_mono_audiosegments(sound1[start:end])
     print(sound.frame_rate)  # CD quality, 44100 Hz
 

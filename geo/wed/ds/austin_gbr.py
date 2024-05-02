@@ -35,12 +35,12 @@ def main() -> None:
     df = get_garbage_df()
     y = df.net_weight_kg
     df = df.drop(columns=["net_weight_kg", "ticket_date"])
-    X = df
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+    x = df
+    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
     reg = GradientBoostingRegressor(random_state=0)
-    reg.fit(X_train, y_train)
-    print(int(reg.predict(X_test[1:2])[0]))
-    print(reg.score(X_test, y_test))
+    reg.fit(x_train, y_train)
+    print(int(reg.predict(x_test[1:2])[0]))
+    print(reg.score(x_test, y_test))
 
 
 if __name__ == "__main__":
