@@ -39,8 +39,8 @@ def get_article_text_file(
     return txt_fspec
 
 
-def get_cached_html_file(url: str, verbose=False) -> Path:
-    fspec = get_cache_filespec(url)
+def get_cached_html_file(url: str, verbose: bool = False) -> Path:
+    fspec = Path(get_cache_filespec(url))
     if not fspec.exists():
         ua = "Wget/1.21.4"
         resp = requests.get(url, headers={"User-Agent": ua})
@@ -65,7 +65,7 @@ class SummarizerTest(unittest.TestCase):
             self.s.add_doc_file(get_article_text_file(), limit=27),
         )
 
-    def test_summarize_deal(self):
+    def test_summarize_deal(self) -> None:
         html_fspec = get_cached_html_file(
             "https://www.nytimes.com/2023/08/10/us/politics/iran-us-prisoner-swap.html"
         )
@@ -79,7 +79,7 @@ class SummarizerTest(unittest.TestCase):
             self.s.add_doc(text),
         )
 
-    def test_load_dataset(self):
+    def test_load_dataset(self) -> None:
         billsum = load_dataset("billsum", split="ca_test")
         self.assertIsInstance(billsum, Dataset)
         self.assertEqual(

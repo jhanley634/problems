@@ -15,7 +15,7 @@ class Constraint(Enum):
     ROW = auto()
     COL = auto()
 
-    def __lt__(self, other: Any) -> bool | type(NotImplemented):
+    def __lt__(self, other: Any) -> Any:
         if self.__class__ is other.__class__:
             return bool(self.value < other.value)
         return NotImplemented

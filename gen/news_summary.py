@@ -3,6 +3,7 @@
 
 from pathlib import Path
 from pprint import pp
+from typing import Any
 
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import requests
@@ -20,7 +21,7 @@ def get_cache_filespec(url: str) -> Path:
 
 
 class Summarizer:
-    def add_doc_url(self, url: str, verbose=True) -> str:
+    def add_doc_url(self, url: str, verbose: bool = True) -> str:
         fspec = get_cache_filespec(url)
         if not fspec.exists():
             ua = "Wget/1.21.4"
@@ -35,11 +36,15 @@ class Summarizer:
 
         return self.add_doc(fspec.read_text(encoding="UTF-8"))
 
-    def add_doc_file(self, in_file: Path, **kwargs) -> str:
+    def add_doc_file(self, in_file: Path, **kwargs: Any) -> str:
         return self.add_doc(in_file.read_text(encoding="UTF-8"), **kwargs)
 
     @staticmethod
-    def add_doc(text: str, limit: int = 24, verbose: bool = False) -> str:
+    def add_doc(
+        text: str,
+        limit: int = 24,
+        verbose: bool = False,
+    ) -> str:
         text = "summarize: " + text[:1800]
         if verbose:
             print(text, "\n\n\n")
@@ -47,18 +52,22 @@ class Summarizer:
         tokenizer, model = get_t5_model()
         input_ids = tokenizer(text, return_tensors="pt").input_ids
         outputs = model.generate(input_ids, max_new_tokens=limit)
-        return tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return str(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
     # model = T5ForConditionalGeneration.from_pretrained("google/t5-v1_1-base")
 
 
-def get_t5_model():
+def get_t5_model() -> tuple[T5Tokenizer, T5ForConditionalGeneration]:
     tokenizer = T5Tokenizer.from_pretrained("t5-small", legacy=False)
+    assert isinstance(tokenizer, T5Tokenizer)
+
     model = T5ForConditionalGeneration.from_pretrained("t5-small")
+    assert isinstance(model, T5ForConditionalGeneration)
+
     return tokenizer, model
 
 
-def translate():
+def translate() -> None:
     tokenizer, model = get_t5_model()
     text = "translate English to German: The house is wonderful."
     input_ids = tokenizer(text, return_tensors="pt").input_ids
