@@ -9,6 +9,7 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     CodeGenTokenizerFast,
+    PhiForCausalLM,
     T5ForConditionalGeneration,
     T5Tokenizer,
 )
@@ -66,23 +67,21 @@ class Summarizer:
 def get_t5_model() -> tuple[T5Tokenizer, T5ForConditionalGeneration]:
     t5 = "t5-small"
     tokenizer = T5Tokenizer.from_pretrained(t5, legacy=False)
-    assert isinstance(tokenizer, T5Tokenizer)
+    assert isinstance(tokenizer, T5Tokenizer), type(tokenizer)
 
     model = T5ForConditionalGeneration.from_pretrained(t5)
-    assert isinstance(model, T5ForConditionalGeneration)
+    assert isinstance(model, T5ForConditionalGeneration), type(model)
 
     return tokenizer, model
 
 
 def get_llm_model() -> tuple[CodeGenTokenizerFast, Any]:
-    phi = "microsoft/phi-2"
+    phi = "microsoft/phi-1.5"
     tokenizer = AutoTokenizer.from_pretrained(phi)
-    assert isinstance(tokenizer, CodeGenTokenizerFast)
+    assert isinstance(tokenizer, CodeGenTokenizerFast), type(tokenizer)
 
-    breakpoint()
     model = AutoModelForCausalLM.from_pretrained(phi)
-    print(type(model))
-    # assert isinstance(model, T5ForConditionalGeneration)
+    assert isinstance(model, PhiForCausalLM), type(model)
 
     return tokenizer, model
 
