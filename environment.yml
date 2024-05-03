@@ -13,7 +13,7 @@ dependencies:
 - pip >= 24.0
 - py-opencv >= 4.9.0
 - py-xgboost >= 2.0.3
-- python >= 3.11.7
+- python >= 3.12.3
 - pytorch::pytorch >= 2.2.2
 - pywavelets >= 1.5.0
 - scipy >= 1.13.0
