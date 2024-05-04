@@ -51,11 +51,43 @@ def main() -> None:
     y = df.price.dropna()
     assert 1 == ndiffs(y, test="adf") == ndiffs(y, test="kpss") == ndiffs(y, test="pp")
 
-    plot(df)
-
-
-def plot(df):
     df["value"] = df.price
+    # a barrel cost -$37 on 20th April 2020
+    df["value"] = np.array([max(8, p) for p in df.price])
+    _plot_acf(df)
+
+
+def _plot_acf(df):
+    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
+
+    # Import data
+    df = pd.read_csv(
+        "https://raw.githubusercontent.com/selva86/datasets/master/austa.csv"
+    )
+
+    fig, axes = plt.subplots(1, 2, sharex=True)
+    axes[0].plot(df.value.diff())
+    axes[0].set_title("1st Differencing")
+    axes[1].set(ylim=(0, 1.2))
+    plot_acf(df.value.diff().dropna(), ax=axes[1])
+
+    plt.show()
+
+
+def _plot_pacf(df):
+    # PACF plot of 1st differenced series
+    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
+
+    fig, axes = plt.subplots(1, 2, sharex=True)
+    axes[0].plot(df.value.diff())
+    axes[0].set_title("1st Differencing")
+    axes[1].set(ylim=(0, 5))
+    plot_pacf(df.value.diff().dropna(), ax=axes[1])
+
+    plt.show()
+
+
+def _plot_differences(df):
     plt.rcParams.update({"figure.figsize": (9, 7), "figure.dpi": 120})
 
     # Import data
