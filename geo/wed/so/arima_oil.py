@@ -1,13 +1,13 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/291850/forecast-volatility-of-monthly-crude-oil-prices-using-garch
+# with material from https://www.machinelearningplus.com/time-series/arima-model-time-series-forecasting-python
 from pathlib import Path
 import datetime as dt
 
-from numpy import log
 from pmdarima.arima.utils import ndiffs
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
+from statsmodels.tsa.arima.model import ARIMA, ARIMAResultsWrapper
 from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,15 +31,15 @@ def get_oil_df(id_: str = "DCOILWTICO", since_year: int = 2010) -> pd.DataFrame:
     df = df[df.index.year >= since_year]
     return pd.DataFrame(
         {"price": df.price.astype(float)},
-        pd.to_datetime(df.reset_index().DATE.rename("date")),
+        df.reset_index().DATE.rename("date"),
     )
 
 
 def main() -> None:
     df = get_oil_df().asfreq("D")
-    print(df)
     model = ARIMA(df, order=(1, 0, 0))
     fit = model.fit()
+    assert isinstance(fit, ARIMAResultsWrapper), type(fit)
     print(model)
     print(fit.summary())
 
@@ -54,48 +54,12 @@ def main() -> None:
     df["value"] = df.price
     # a barrel cost -$37 on 20th April 2020
     df["value"] = np.array([max(8, p) for p in df.price])
-    _plot_acf(df)
+    # _plot_acf(df)
+    # _plot_residuals(fit)
 
 
-def _plot_acf(df):
-    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
-
-    # Import data
-    df = pd.read_csv(
-        "https://raw.githubusercontent.com/selva86/datasets/master/austa.csv"
-    )
-
-    fig, axes = plt.subplots(1, 2, sharex=True)
-    axes[0].plot(df.value.diff())
-    axes[0].set_title("1st Differencing")
-    axes[1].set(ylim=(0, 1.2))
-    plot_acf(df.value.diff().dropna(), ax=axes[1])
-
-    plt.show()
-
-
-def _plot_pacf(df):
-    # PACF plot of 1st differenced series
-    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
-
-    fig, axes = plt.subplots(1, 2, sharex=True)
-    axes[0].plot(df.value.diff())
-    axes[0].set_title("1st Differencing")
-    axes[1].set(ylim=(0, 5))
-    plot_pacf(df.value.diff().dropna(), ax=axes[1])
-
-    plt.show()
-
-
-def _plot_differences(df):
+def _plot_differences(df: pd.DataFrame) -> None:
     plt.rcParams.update({"figure.figsize": (9, 7), "figure.dpi": 120})
-
-    # Import data
-    df1 = pd.read_csv(
-        "https://raw.githubusercontent.com/selva86/datasets/master/wwwusage.csv",
-        names=["value"],
-        header=0,
-    )
 
     # Original Series
     fig, axes = plt.subplots(3, 2, sharex=True)
@@ -113,6 +77,38 @@ def _plot_differences(df):
     axes[2, 0].set_title("2nd Order Differencing")
     plot_acf(df.value.diff().diff().dropna(), ax=axes[2, 1])
 
+    plt.show()
+
+
+def _plot_pacf(df: pd.DataFrame) -> None:
+    # PACF plot of 1st differenced series
+    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
+
+    fig, axes = plt.subplots(1, 2, sharex=True)
+    axes[0].plot(df.value.diff())
+    axes[0].set_title("1st Differencing")
+    axes[1].set(ylim=(0, 5))
+    plot_pacf(df.value.diff().dropna(), ax=axes[1])
+
+    plt.show()
+
+
+def _plot_acf(df: pd.DataFrame) -> None:
+    plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
+    fig, axes = plt.subplots(1, 2, sharex=True)
+    axes[0].plot(df.value.diff())
+    axes[0].set_title("1st Differencing")
+    axes[1].set(ylim=(0, 1.2))
+    plot_acf(df.value.diff().dropna(), ax=axes[1])
+
+    plt.show()
+
+
+def _plot_residuals(fit: ARIMAResultsWrapper) -> None:
+    residuals = pd.DataFrame(fit.resid)
+    fig, ax = plt.subplots(1, 2)
+    residuals.plot(title="Residuals", ax=ax[0])
+    residuals.plot(kind="kde", title="Density", ax=ax[1])
     plt.show()
 
 
