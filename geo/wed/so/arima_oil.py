@@ -12,6 +12,7 @@ from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pmdarima as pm
 import requests
 
 
@@ -112,5 +113,31 @@ def _plot_residuals(fit: ARIMAResultsWrapper) -> None:
     plt.show()
 
 
+def _auto_arima() -> None:
+    df = get_oil_df()
+    df["value"] = np.array([max(8, p) for p in df.price])
+
+    model = pm.auto_arima(
+        df.value,
+        start_p=1,
+        start_q=1,
+        test="adf",  #   to find optimal 'd'
+        max_p=3,
+        max_q=3,
+        m=1,  # frequency of series
+        d=None,  # let model determine 'd'
+        seasonal=False,  # No Seasonality
+        start_P=0,
+        D=0,
+        trace=True,
+        error_action="ignore",
+        suppress_warnings=True,
+        stepwise=True,
+    )
+
+    print(model.summary())
+
+
 if __name__ == "__main__":
-    main()
+    _auto_arima()
+    # main()
