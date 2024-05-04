@@ -4,6 +4,13 @@
 from pathlib import Path
 import datetime as dt
 
+from numpy import log
+from pmdarima.arima.utils import ndiffs
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
+from statsmodels.tsa.stattools import adfuller
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import requests
 
@@ -29,7 +36,52 @@ def get_oil_df(id_: str = "DCOILWTICO", since_year: int = 2010) -> pd.DataFrame:
 
 
 def main() -> None:
-    print(get_oil_df())
+    df = get_oil_df().asfreq("D")
+    print(df)
+    model = ARIMA(df, order=(1, 0, 0))
+    fit = model.fit()
+    print(model)
+    print(fit.summary())
+
+    result = adfuller(df.price.dropna())
+    print("ADF Statistic: %f" % result[0])
+    p_value = result[1]
+    assert 0.05 < 0.17 < p_value, p_value
+
+    y = df.price.dropna()
+    assert 1 == ndiffs(y, test="adf") == ndiffs(y, test="kpss") == ndiffs(y, test="pp")
+
+    plot(df)
+
+
+def plot(df):
+    df["value"] = df.price
+    plt.rcParams.update({"figure.figsize": (9, 7), "figure.dpi": 120})
+
+    # Import data
+    df1 = pd.read_csv(
+        "https://raw.githubusercontent.com/selva86/datasets/master/wwwusage.csv",
+        names=["value"],
+        header=0,
+    )
+
+    # Original Series
+    fig, axes = plt.subplots(3, 2, sharex=True)
+    axes[0, 0].plot(df.value)
+    axes[0, 0].set_title("Original Series")
+    plot_acf(df.value, ax=axes[0, 1])
+
+    # 1st Differencing
+    axes[1, 0].plot(df.value.diff())
+    axes[1, 0].set_title("1st Order Differencing")
+    plot_acf(df.value.diff().dropna(), ax=axes[1, 1])
+
+    # 2nd Differencing
+    axes[2, 0].plot(df.value.diff().diff())
+    axes[2, 0].set_title("2nd Order Differencing")
+    plot_acf(df.value.diff().diff().dropna(), ax=axes[2, 1])
+
+    plt.show()
 
 
 if __name__ == "__main__":
