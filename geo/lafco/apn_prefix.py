@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+"""
+Datasource is CSV exports from https://gis.smcgov.org/Html5Viewer/?viewer=raster
+"""
 import pandas as pd
 
 from geo.lafco.lafco_util import LAFCO_DIR, clean_column_names
@@ -15,8 +18,8 @@ def _with_dashes(apn: str) -> str:
     return f"{apn[:3]}-{apn[3:6]}-{apn[6:]}"
 
 
-def get_apn_prefix_df() -> pd.DataFrame:
-    df = pd.read_csv(LAFCO_DIR / "apn-prefix-063-4.csv", dtype=str)
+def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
+    df = pd.read_csv(LAFCO_DIR / f"apn-prefix-{pfx}.csv", dtype=str)
     df = clean_column_names(df).drop(columns=["geometry"])
     df["apn"] = df.apn.map(_with_dashes)
     df = df[~df.situs_addr.str.fullmatch(" , ")]  # discards 3 empty situs_city values
