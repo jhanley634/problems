@@ -2,9 +2,26 @@
 from pathlib import Path
 import re
 
+from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import Session
 import pandas as pd
+import sqlalchemy as sa
 
 LAFCO_DIR = Path("/Users/jhanley/Desktop/lafco")
+
+
+_engine: Engine | None = None
+
+
+def get_engine() -> Engine:
+    global _engine
+    db_file = Path("/tmp/apn.db")
+    _engine = _engine or sa.create_engine(f"sqlite:///{db_file}")
+    return _engine
+
+
+def get_session() -> Session:
+    return Session(get_engine())
 
 
 def _clean_column_name(name: str) -> str:
