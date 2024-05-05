@@ -10,15 +10,22 @@ import pandas as pd
 from geo.lafco.lafco_util import LAFCO_DIR, clean_column_names
 
 
-def distinct_owner_report() -> None:
+def get_owner() -> pd.DataFrame:
     csv = LAFCO_DIR / "EPS093KO.xlsx"
     df = pd.read_excel(csv)
     df = clean_column_names(df)
     df = df.rename(columns={"1st_owner": "first_owner"})
+    df["units"] = df.units.fillna(1).astype(int)
     assert 4272 == len(df), len(df)
     assert 3594 == df["first_owner"].nunique()
+    return df
+
+
+def distinct_owner_report() -> None:
 
     # trim_trust_synonyms = re.compile(r" (TR|TRS|TRUST)$")
+
+    df = get_owner()
 
     for i, row in df.iterrows():
         print(row.first_owner)  # pipe to | sort | uniq -c
