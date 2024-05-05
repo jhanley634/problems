@@ -92,6 +92,7 @@ dependencies:
   - seaborn >= 0.13.2
   - sentencepiece >= 0.2.0
   - spacy >= 3.7.4
+  - sqlacodegen-v2 >= 0.1.4
   - sqlalchemy >= 2.0.29
   - streamlit >= 1.33.0, < 1.34.0  # streamlit_image_coordinates import dies
   - streamlit-image-coordinates >= 0.1.6
