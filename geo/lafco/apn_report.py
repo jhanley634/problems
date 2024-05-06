@@ -29,7 +29,7 @@ def verify_apns() -> None:
             continue
         assert 11 == len(row.apn), row
         with get_session() as sess:
-            aa = sess.query(ApnAddress).filter(ApnAddress.apn == row.apn).one()
+            aa = sess.get(ApnAddress, row.apn)
             # Just compare the house numbers, to avoid e.g. Bayshore != E Bayshore
             sn = aa.situs_addr.split()[0]
             n = row.addr.split()[0]
