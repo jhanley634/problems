@@ -14,6 +14,7 @@ from geo.lafco.parcel_owner import get_owner
 _drop_columns = [
     "charge",
     "rate",
+    "location",
     "premis",
     "prevwtr",
     "water",
@@ -27,7 +28,8 @@ _drop_columns = [
 
 
 def create_table_owner() -> None:
-    df = get_owner().drop(columns=_drop_columns)
+    df = get_owner()
+    df = df.drop(columns=_drop_columns)
     df = df.drop_duplicates(subset=["apn"])  # discard ~ 50 dup rows
     engine = get_engine()
     metadata = MetaData()
@@ -36,7 +38,6 @@ def create_table_owner() -> None:
         sess.query(Owner).delete()
         sess.commit()
     print(df)
-    print(df.describe())
     print(df.info())
     df.to_sql("owner", engine, if_exists="append", index=False)
 

@@ -21,7 +21,6 @@ class Owner(Base):  # type: ignore [misc, valid-type]
     units = mapped_column(Integer, nullable=False)
     first_owner = mapped_column(Text, index=True, nullable=False)
     bus_name = mapped_column(Text)
-    location = mapped_column(Text)
     address = mapped_column(Text, index=True, nullable=False)
     city = mapped_column(Text)
     st = mapped_column(Text)

@@ -11,7 +11,7 @@ from geo.lafco.lafco_util import LAFCO_DIR, clean_column_names
 
 
 def get_owner() -> pd.DataFrame:
-    csv = LAFCO_DIR / "EPS093KO.xlsx"
+    csv = LAFCO_DIR / "EPS093KO.xlsx"  # the District Database
     df = pd.read_excel(csv)
     df = clean_column_names(df)
     df = df.rename(columns={"1st_owner": "first_owner"})
