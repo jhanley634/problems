@@ -4,7 +4,8 @@ from gspread.auth import READONLY_SCOPES
 import gspread
 import pandas as pd
 
-from geo.lafco.lafco_util import clean_column_names
+from geo.lafco.lafco_util import clean_column_names, get_session
+from geo.lafco.model import ApnAddress
 
 
 def read_google_sheet() -> pd.DataFrame:
@@ -27,6 +28,12 @@ def verify_apns() -> None:
         if not row.addr:
             continue
         assert 11 == len(row.apn), row
+        with get_session() as sess:
+            aa = sess.query(ApnAddress).filter(ApnAddress.apn == row.apn).one()
+            # Just compare the house numbers, to avoid e.g. Bayshore != E Bayshore
+            sn = aa.situs_addr.split()[0]
+            n = row.addr.split()[0]
+            assert sn == n, (aa.apn, aa.situs_addr, row.addr)
 
 
 if __name__ == "__main__":
