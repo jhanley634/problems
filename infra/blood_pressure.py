@@ -22,8 +22,9 @@ def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
 
     with open(in_file, encoding="utf8") as fin:
         sheet = csv.reader(fin)
-        next(sheet)  # skip headers
-        for row in sheet:
+        for i, row in enumerate(sheet):
+            if i == 0:
+                continue  # skip headers
             if not row:
                 continue  # ignore final blank line
             stamp = row[0] + " " + row[1]
@@ -34,7 +35,7 @@ def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
 def get_bp_table(in_file: Path = IN_FILE, out_file: Path = OUT_FILE) -> str:
     df = pl.DataFrame(list(_get_rows(in_file)))
     df = df.with_columns(pl.col("time").str.to_datetime("%b %d %Y %I:%M %p"))
-    df = df.with_columns(df["time"].dt.strftime("%Y-%m-%dT%H:%M"))
+    df = df.with_columns(df.to_pandas()["time"].dt.strftime("%Y-%m-%dT%H:%M"))
 
     buf = io.BytesIO()
     df.write_csv(buf)

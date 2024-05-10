@@ -21,7 +21,7 @@ def main() -> None:
     day = int_to_mm_dd(randrange(365))
     n = randrange(int(1e4))
     print(f"{day}   {n:04d}\n")
-    pp(dict(day=day, n=n), width=16)
+    pp({"day": day, "n": n}, width=16)
 
 
 if __name__ == "__main__":

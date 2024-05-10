@@ -15,11 +15,11 @@ def get_package_revs(fin: TextIOWrapper) -> Generator[str, None, None]:
         m = from_re.search(line) or using_cached_re.search(line)
         if m:
             pkg, rev = map(str.lower, m.groups())
-            yield (f"{pkg:<12} >= {rev}")
+            yield f"{pkg:<12} >= {rev}"
 
 
 def main(log_file_in: Path) -> None:
-    with open(log_file_in) as fin:
+    with open(log_file_in, encoding="utf8") as fin:
         pkg_versions = sorted(set(get_package_revs(fin)))
     print("\n".join(pkg_versions))
 

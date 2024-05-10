@@ -2,6 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
 from csv import DictReader
+from enum import Enum, auto
 from typing import Generator
 
 from matplotlib import pyplot as plt
@@ -9,6 +10,31 @@ import pandas as pd
 import seaborn as sns
 
 from infra.blood_pressure import get_bp_table
+
+
+class BpCategory(Enum):
+    NORMAL = auto()
+    ELEVATED = auto()
+    STAGE1 = auto()
+    STAGE2 = auto()
+    HYPERTENSIVE_CRISIS = auto()
+
+
+def get_bp_category(systole: int, diastole: int) -> BpCategory:
+    # https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings
+    if systole > 180 or diastole > 120:
+        return BpCategory.HYPERTENSIVE_CRISIS
+
+    if systole > 140 or diastole > 90:
+        return BpCategory.STAGE2
+
+    if systole > 130 or diastole > 80:
+        return BpCategory.STAGE1
+
+    if systole > 120:
+        return BpCategory.ELEVATED
+
+    return BpCategory.NORMAL
 
 
 def _to_int(s: str) -> int | str:
