@@ -5,6 +5,7 @@ from csv import DictReader
 from enum import Enum, auto
 from typing import Generator
 
+from beartype import beartype
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -19,7 +20,11 @@ class BpCategory(Enum):
     STAGE2 = auto()
     HYPERTENSIVE_CRISIS = auto()
 
+    def __str__(self) -> str:
+        return f"{self.value * 10}"
 
+
+@beartype
 def get_bp_category(systole: int, diastole: int) -> BpCategory:
     # https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings
     if systole > 180 or diastole > 120:
@@ -49,6 +54,7 @@ def _to_int(s: str) -> int | str:
 def _get_rows() -> Generator[dict[str, int], None, None]:
     for row in DictReader(get_bp_table().splitlines()):
         row = {k.strip(): _to_int(v.strip()) for k, v in row.items()}
+        row["category"] = str(get_bp_category(row["systolic"], row["diastolic"]))
         yield row
 
 
