@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-from sqlalchemy import Integer, Text
+from sqlalchemy import Float, Integer, Text
 from sqlalchemy.orm import declarative_base, mapped_column
 
 Base = declarative_base()
@@ -25,3 +25,13 @@ class Owner(Base):  # type: ignore [misc, valid-type]
     city = mapped_column(Text)
     st = mapped_column(Text)
     zip = mapped_column(Text, nullable=False)
+
+
+class Location(Base):  # type: ignore [misc, valid-type]
+    __tablename__ = "location"
+
+    addr_upper = mapped_column(Text, primary_key=True)
+    addr = mapped_column(Text, index=True, nullable=False)
+    zipcode = mapped_column(Text)
+    lat = mapped_column(Float, nullable=False)
+    lon = mapped_column(Float, nullable=False)

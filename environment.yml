@@ -112,3 +112,4 @@ dependencies:
   - uszipcode >= 1.0.1
   - watchdog >= 4.0.0
   - xlsx2csv >= 0.8.2
+  - scrapy >= 2.11.1
