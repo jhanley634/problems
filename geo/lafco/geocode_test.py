@@ -1,23 +1,21 @@
 # Copyright 2024 John Hanley. MIT licensed.
 import unittest
 
-from geopy.geocoders import Nominatim
-
-from geo.lafco.geocode import UA, Geocoder
+from geo.lafco.geocode import Geocoder
 
 
 class GeocodeTest(unittest.TestCase):
 
     oconnor = "217 O'Connor St, Menlo Park CA"
 
-    def ZZtest_nominatum(self) -> None:
-        loc = Nominatim(user_agent=UA).geocode(self.oconnor)
-        self.assertEqual(
-            "217, O'Connor Street, Menlo Park,"
-            " San Mateo County, California, 94301, United States",
-            loc.address,
-        )
-        self.assertEqual(37.461, round(loc.latitude, 3))
+    # def test_nominatum(self) -> None:
+    #     loc = Nominatim(user_agent=UA).geocode(self.oconnor)
+    #     self.assertEqual(
+    #         "217, O'Connor Street, Menlo Park,"
+    #         " San Mateo County, California, 94301, United States",
+    #         loc.address,
+    #     )
+    #     self.assertEqual(37.461, round(loc.latitude, 3))
 
     def test_canonical(self) -> None:
         returned_address = (

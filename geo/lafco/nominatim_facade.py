@@ -4,41 +4,51 @@ This module is a facade for the Nominatim geocoder, enforcing some pre-condition
 1. Cache results, that is, never send the geocoder the same address twice.
 2. Rate limit requests to one per second, to avoid being banned.
 """
-from collections import namedtuple
 from pathlib import Path
+from time import sleep, time
 import json
-import random
+import logging
 import re
-import unittest
 
 from geopy.geocoders import Nominatim
 from geopy.location import Location
-from sqlalchemy import Float, Integer, Text
+from sqlalchemy import JSON, Text
 from sqlalchemy.orm import Session, declarative_base, mapped_column
 import sqlalchemy as sa
 
 Base = declarative_base()
 
+console = logging.StreamHandler()
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s:  %(message)s",
+    level=logging.INFO,
+    handlers=[console],
+)
+logger = logging.Logger(__name__)
+logger.addHandler(console)
+
 
 class NominatimQuery(Base):  # type: ignore [misc, valid-type]
     __tablename__ = "nominatim_query"
 
-    query = mapped_column(Text, primary_key=True)
-    display_name = mapped_column(Text, index=True)
-    lat = mapped_column(Float, index=True)
-    lon = mapped_column(Float, index=True)
-    json_result = mapped_column(Text)
+    addr = mapped_column(Text, primary_key=True)
+    json_result = mapped_column(JSON)
+    # display_name = mapped_column(Text, index=True)
+    # lat = mapped_column(Float, index=True)
+    # lon = mapped_column(Float, index=True)
 
 
-class NominatimGeocoder:
+class NominatimCached:
 
     lafco_dir = Path("~/Desktop/lafco").expanduser()
     UA = "SMClafco"
 
-    def __init__(self) -> None:
+    def __init__(self, user_agent: str = UA) -> None:
         assert self.lafco_dir.is_dir()
+        self.queried_at = time()
+        self.query_count = 0  # cumulative number of API requests
         self.engine = sa.create_engine(f"sqlite:///{self.lafco_dir}/nominatim.db")
-        self.geolocator = Nominatim(user_agent=self.UA)
+        self._geolocator = Nominatim(user_agent=user_agent)
         metadata = sa.MetaData()
         metadata.create_all(self.engine, tables=[NominatimQuery.__table__])
 
@@ -46,35 +56,28 @@ class NominatimGeocoder:
     def canonical(addr: str) -> str:
         return addr.replace("'", "").upper()
 
-    def geocode(self, addr: str) -> dict[str, str] | None:
+    query_delay_secs = 1.1  # Nominatim's rate limit is 1 per second
+    addr_re = re.compile(r"^\d[\wA-Z ,]+ \d{5}$")
+
+    def geocode(self, addr: str) -> NominatimQuery | None:
         addr = self.canonical(addr)
+        assert self.addr_re.match(addr), addr
         with Session(self.engine) as sess:
             result = sess.get(NominatimQuery, addr)
             if not result:
-                geo_result: Location = self.geolocator.geocode(addr)
+                logger.info(f"sending query for {addr}")
+                sleep(max(0.0, self.query_delay_secs - (time() - self.queried_at)))
+                self.query_count += 1
+                geo_result: Location = self._geolocator.geocode(addr)
+                logger.info(f"received: {geo_result}")
+                self.queried_at = time()
                 if geo_result:
-                    lat, lon = geo_result.raw["lat"], geo_result.raw["lon"]
-                    j = json.dumps(geo_result.raw)
+                    # lat, lon = geo_result.raw["lat"], geo_result.raw["lon"]
                     sess.add(
                         NominatimQuery(
-                            query=addr,
-                            display_name=geo_result.address,
-                            lat=lat,
-                            lon=lon,
-                            json_result=j,
+                            addr=addr,
+                            json_result=json.dumps(geo_result.raw),
                         )
                     )
-            return sess.get(NominatimQuery, addr) or {"": ""}
-
-    def get_random_test_addr(self) -> str:
-        house_num = random.randint(100, int(1e6))
-        return f"{house_num} O'Connor St, Menlo Park CA 94025"
-
-
-class TestNominatimFacade(unittest.TestCase):
-
-    def test_get_random_test_addr(self):
-        geocoder = NominatimGeocoder()
-        addr = geocoder.get_random_test_addr()
-        print(addr)
-        print(geocoder.geocode(addr))
+                    sess.commit()
+            return sess.get(NominatimQuery, addr)

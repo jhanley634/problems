@@ -5,14 +5,13 @@ from collections import namedtuple
 import re
 
 # from geopy.extra.rate_limiter import RateLimiter
-from geopy.geocoders import Nominatim
 from sqlalchemy.orm import Session
 import sqlalchemy as sa
 
 from geo.lafco.model import Location
+from geo.lafco.nominatim_facade import NominatimCached
 
 LocTuple = namedtuple("LocTuple", "house_num street city county state zip country")
-UA = "SMClafco2"
 
 
 class Geocoder:
@@ -26,7 +25,7 @@ class Geocoder:
     # df['location'] = df['name'].apply(geocode)
 
     def __init__(self) -> None:
-        self.geolocator = Nominatim(user_agent=UA)
+        self.geolocator = NominatimCached()
         self.engine = sa.create_engine("sqlite:////tmp/geocode.db")
         metadata = sa.MetaData()
         metadata.create_all(self.engine, tables=[Location.__table__])

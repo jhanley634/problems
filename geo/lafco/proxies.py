@@ -9,13 +9,13 @@ import pandas as pd
 import requests
 
 
-def parse_out_proxies(soup: str) -> pd.DataFrame:
+def parse_out_proxies(soup: BeautifulSoup) -> pd.DataFrame:
     table = soup.find_all("table")[0]
     return pd.read_html(StringIO(str(table)))[0]
 
 
 def proxy_report(url: str = "https://free-proxy-list.net/") -> None:
-    countries = re.compile(r"^(US|CA)$")
+    countries = r"^(US|CA)$"
     resp = requests.get(url)
     soup = BeautifulSoup(resp.content, "html.parser")
     prox = parse_out_proxies(soup)

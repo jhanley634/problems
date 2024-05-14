@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-from time import sleep
+
 
 from gspread.auth import READONLY_SCOPES
 import gspread
