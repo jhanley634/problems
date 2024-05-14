@@ -1,10 +1,8 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
-
 from collections import namedtuple
 import re
 
-# from geopy.extra.rate_limiter import RateLimiter
 from sqlalchemy.orm import Session
 import sqlalchemy as sa
 

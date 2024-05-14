@@ -33,21 +33,19 @@ class NominatimQuery(Base):  # type: ignore [misc, valid-type]
 
     addr = mapped_column(Text, primary_key=True)
     json_result = mapped_column(JSON)
-    # display_name = mapped_column(Text, index=True)
-    # lat = mapped_column(Float, index=True)
-    # lon = mapped_column(Float, index=True)
 
 
 class NominatimCached:
 
     lafco_dir = Path("~/Desktop/lafco").expanduser()
+    db_cache_file = lafco_dir / "nominatim.db"
     UA = "SMClafco"
 
     def __init__(self, user_agent: str = UA) -> None:
         assert self.lafco_dir.is_dir()
         self.queried_at = time()
         self.query_count = 0  # cumulative number of API requests
-        self.engine = sa.create_engine(f"sqlite:///{self.lafco_dir}/nominatim.db")
+        self.engine = sa.create_engine(f"sqlite:///{self.db_cache_file}")
         self._geolocator = Nominatim(user_agent=user_agent)
         metadata = sa.MetaData()
         metadata.create_all(self.engine, tables=[NominatimQuery.__table__])

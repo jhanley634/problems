@@ -13,16 +13,17 @@ class NominatimFacadeTest(unittest.TestCase):
         return f"{house_num} O'Connor St, Menlo Park CA 94025"
 
     def unused_test_get_random_test_addr(self) -> None:
-        geo = NominatimCached()
-        c = geo.query_count
-        print(geo.geocode(self.get_random_test_addr()))
-        self.assertEqual(c + 1, geo.query_count)
+        c = self.geo.query_count
+        print(self.geo.geocode(self.get_random_test_addr()))
+        self.assertEqual(c + 1, self.geo.query_count)
+
+    def setUp(self) -> None:
+        self.geo = NominatimCached()
+        self.assertTrue(self.geo.db_cache_file.exists())
 
     def test_query(self) -> None:
-        geo = NominatimCached()
-        c = geo.query_count
-
-        row = geo.geocode("500 West Elm Street, Carbondale, IL 62901")
+        c = self.geo.query_count
+        row = self.geo.geocode("500 West Elm Street, Carbondale, IL 62901")
         assert row
         self.assertEqual(
             (
@@ -31,4 +32,4 @@ class NominatimFacadeTest(unittest.TestCase):
             ),
             json.loads(row.json_result)["display_name"],
         )
-        self.assertEqual(c + 0, geo.query_count)  # local db cache hit
+        self.assertEqual(c + 0, self.geo.query_count)  # local db cache hit
