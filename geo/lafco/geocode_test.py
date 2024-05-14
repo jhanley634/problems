@@ -27,9 +27,10 @@ class GeocodeTest(unittest.TestCase):
             Geocoder.canonical(returned_address),
         )
 
-        # def test_geocode(self) -> None:
+    def test_geocode(self) -> None:
         g = Geocoder()
-        loc = g.get_location(f"217 O'Connor St, {g.menlo}")
-        # loc = g.get_location(f"140 Elliot St, {g.menlo}")
+        loc = g.get_location(f"101 Donohoe St, {g.menlo}")
+        # loc = g.get_location(f"217 O'Connor St, {g.menlo}")
+        print(loc)
 
         self.assertEqual(37.453, round(loc.lat, 3))
