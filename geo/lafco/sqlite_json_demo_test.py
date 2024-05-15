@@ -1,7 +1,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 import unittest
 
-from sqlalchemy import JSON, Text
+from sqlalchemy import JSON, Text, text
 from sqlalchemy.orm import Session, declarative_base, mapped_column
 import requests
 import sqlalchemy as sa
@@ -69,3 +69,29 @@ class JsonDemoTest(unittest.TestCase):
         self.assertEqual("94025", places[0]["post code"])
         self.assertEqual("94026", places[1]["post code"])
         self.assertEqual("94029", places[2]["post code"])
+
+    def test_json_deref_operator(self) -> None:
+        self.demo.fetch_and_store_city()
+
+        select = (
+            "SELECT json_result ->> 'place name'"
+            " FROM json_demo"
+            " WHERE st_city = 'CA/BELMONT'"
+        )
+        with Session(self.demo.engine) as sess:
+            self.assertEqual(
+                ("Belmont",),
+                sess.execute(text(select)).fetchone(),
+            )
+            self.assertEqual(
+                ('"Belmont"',),
+                sess.execute(text(select.replace(">>", ">"))).fetchone(),
+            )
+
+            q = sa.select(JsonDemo.json_result["place name"]).filter(
+                JsonDemo.st_city == "CA/BELMONT"
+            )
+            self.assertEqual(
+                ("Belmont",),
+                sess.execute(q).fetchone(),
+            )
