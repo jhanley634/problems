@@ -42,7 +42,6 @@ class Geocoder:
         # addr = addr.replace(", SAN MATEO COUNTY, ", " ")
         addr = addr.replace(", CALIFORNIA", ", CA")
         # addr = addr.removesuffix(", UNITED STATES")
-        print(addr)
         return LocTuple(*addr.split(", "))
 
     @staticmethod
@@ -59,10 +58,15 @@ class Geocoder:
             loc = sess.get(Location, self.upper(addr))
             if not loc:
                 self._deal_with(sess, addr)
-            print(addr)
             return sess.get(Location, addr)
 
     def _deal_with(self, sess: Session, addr: str) -> None:
+        def clean_street(street: str) -> str:
+            return re.sub(r" STREET$", " ST", street)
+
+        def clean_state(state: str) -> str:
+            return re.sub(r"^CALIFORNIA$", "CA", state)
+
         geo_loc = self.geolocator.geocode(addr)
         if not geo_loc:
             print(f"Could not geocode {addr}")
@@ -72,7 +76,7 @@ class Geocoder:
         assert m, addr
         j = json.loads(geo_loc.json_result)
         tup = LocTuple(*(self.upper(j["display_name"]).split(", ")))
-        addr = f"{tup.house_num} {tup.street}, {tup.city} {tup.state} {tup.zip}"
+        addr = f"{tup.house_num} {clean_street(tup.street)}, {tup.city} {clean_state(tup.state)} {tup.zip}"
         loc = Location(
             addr_upper=self.upper(addr),
             addr=addr,

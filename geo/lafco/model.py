@@ -12,6 +12,9 @@ class ApnAddress(Base):  # type: ignore [misc, valid-type]
     apn = mapped_column(Text, primary_key=True)
     situs_addr = mapped_column(Text, index=True, nullable=False)
 
+    def __repr__(self) -> str:
+        return f"{self.apn} {self.situs_addr}"
+
 
 class Owner(Base):  # type: ignore [misc, valid-type]
     __tablename__ = "owner"
@@ -26,6 +29,9 @@ class Owner(Base):  # type: ignore [misc, valid-type]
     st = mapped_column(Text)
     zip = mapped_column(Text, nullable=False)
 
+    def __repr__(self) -> str:
+        return f"{self.apn}  {self.first_owner}:  {self.address}, {self.city} {self.st} {self.zip})"
+
 
 class Location(Base):  # type: ignore [misc, valid-type]
     __tablename__ = "location"
@@ -35,3 +41,6 @@ class Location(Base):  # type: ignore [misc, valid-type]
     zipcode = mapped_column(Text)
     lat = mapped_column(Float, nullable=False)
     lon = mapped_column(Float, nullable=False)
+
+    def __repr__(self) -> str:
+        return f"{self.addr} ({self.lat}, {self.lon})"

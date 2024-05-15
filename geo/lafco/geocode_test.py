@@ -29,8 +29,18 @@ class GeocodeTest(unittest.TestCase):
 
     def test_geocode(self) -> None:
         g = Geocoder()
-        loc = g.get_location(f"101 Donohoe St, {g.menlo}")
-        # loc = g.get_location(f"217 O'Connor St, {g.menlo}")
-        print(loc)
+        loc = g.get_location(f"101 Donohoe St, {g.menlo}".replace("94025", "94301"))
+        # loc = g.get_location(f"173 Oak Ct, {g.menlo}")
+        self.assertEqual(
+            "101 DONOHOE ST, MENLO PARK CA 94301 (37.46389, -122.15122)",
+            str(loc),
+        )
+        self.assertEqual(37.464, round(loc.lat, 3))
 
-        self.assertEqual(37.453, round(loc.lat, 3))
+        loc = g.get_location(f"325 Oak Ct, {g.menlo}".replace("94025", "94301"))
+        print(loc)
+        breakpoint()
+        self.assertEqual(
+            "325 OAK CT, MENLO PARK CA 94025 (37.46389, -122.15122)",
+            str(loc),
+        )

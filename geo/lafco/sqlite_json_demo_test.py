@@ -23,7 +23,6 @@ class Demo:
         metadata.create_all(self.engine, tables=[JsonDemo.__table__])
         self.base_url = "https://api.zippopotam.us"
 
-    # def fetch_and_store_city(self, st_city: str = "ca/menlo%20park") -> None:
     def fetch_and_store_city(self, st_city: str = "ca/belmont") -> JsonDemo:
         st_city = st_city.upper()
         url = self.base_url + "/us/" + st_city
@@ -61,6 +60,7 @@ class JsonDemoTest(unittest.TestCase):
             sorted(places[0].keys()),
         )
 
+    def test_city_with_spaces(self) -> None:
         r = self.demo.fetch_and_store_city("ca/menlo park")
         self.assertEqual("CA/MENLO PARK", r.st_city)
         self.assertEqual("Menlo Park", r.json_result["place name"])
@@ -95,3 +95,33 @@ class JsonDemoTest(unittest.TestCase):
                 ("Belmont",),
                 sess.execute(q).fetchone(),
             )
+
+    def test_api_json_content(self) -> None:
+        resp = requests.get("https://api.zippopotam.us/us/CA/BELMONT")
+        resp.raise_for_status()
+        self.assertEqual("application/json", resp.headers["Content-Type"])
+        self.assertEqual("utf-8", resp.encoding)
+        self.assertEqual("Belmont", resp.json()["place name"])
+
+        d = {
+            "country abbreviation": "US",
+            "places": [
+                {
+                    "place name": "Belmont",
+                    "longitude": "-122.2927",
+                    "post code": "94002",
+                    "latitude": "37.5174",
+                },
+                {
+                    "place name": "Belmont",
+                    "longitude": "-122.3348",
+                    "post code": "94003",
+                    "latitude": "37.3811",
+                },
+            ],
+            "country": "United States",
+            "place name": "Belmont",
+            "state": "California",
+            "state abbreviation": "CA",
+        }
+        self.assertEqual(d, resp.json())
