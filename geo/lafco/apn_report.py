@@ -9,20 +9,27 @@ import pandas as pd
 from geo.lafco.lafco_util import clean_column_names, get_session
 from geo.lafco.model import ApnAddress
 
+workbook_name = "completed-forms"
+
 
 def read_google_sheet(sheet_name: str = "laura-2024-05-05") -> pd.DataFrame:
+    # sheet_name="sandy-2024-04-29"
     gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
-    workbook = gc.open("completed-forms")
+    workbook = gc.open(workbook_name)
     assert [["completed forms"]] == workbook.sheet1.get("A1")
 
-    # sheet_name="sandy-2024-04-29"
-    sheet_name = "laura-2024-05-05"
     sheet = workbook.worksheet(sheet_name)  # type: ignore [no-untyped-call]
     values = sheet.get_all_values()
     df = pd.DataFrame(values[1:], columns=values[0])
     df = clean_column_names(df)
     return pd.concat([df.apn, df.addr, df.city, df.date_signed], axis=1)
     # drop_cols = ["form_type", "apn2", "addr2", "color", "form_changes"]
+
+
+def get_sheet_names() -> list[str]:
+    gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
+    workbook = gc.open(workbook_name)
+    return [sheet.title for sheet in workbook.worksheets()][1:]
 
 
 def verify_apns() -> None:

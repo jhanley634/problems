@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-from geo.lafco.apn_report import read_google_sheet
+import pandas as pd
+
+from geo.lafco.apn_report import get_sheet_names, read_google_sheet
 
 
 def _get_house_num(s: str) -> int:
@@ -12,7 +14,8 @@ def _get_street(s: str) -> str:
 
 
 def main() -> None:
-    df = read_google_sheet()
+    names = get_sheet_names()
+    df = pd.concat([read_google_sheet(name) for name in names])
     df["house_num"] = df.addr.apply(_get_house_num)
     df["street"] = df.addr.apply(_get_street)
     df = df.sort_values(["city", "street", "house_num"])
