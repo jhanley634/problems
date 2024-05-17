@@ -10,7 +10,7 @@ from geo.lafco.lafco_util import clean_column_names, get_session
 from geo.lafco.model import ApnAddress
 
 
-def read_google_sheet() -> pd.DataFrame:
+def read_google_sheet(sheet_name: str = "laura-2024-05-05") -> pd.DataFrame:
     gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
     workbook = gc.open("completed-forms")
     assert [["completed forms"]] == workbook.sheet1.get("A1")
