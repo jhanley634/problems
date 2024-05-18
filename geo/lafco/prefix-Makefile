@@ -1,0 +1,14 @@
+
+# Copyright 2024 John Hanley. MIT licensed.
+
+OUT = apn-prefix-all.csv
+
+all: $(OUT)
+
+apn-prefix-all.csv:
+	rm -f $@
+	sed -n 1p  < apn-prefix-063-0.csv  > $@
+	for part in apn-prefix-{063,113}-?.csv; do sed 1d  < $$part  >> $@; done
+
+clean:
+	rm -f $(OUT)
