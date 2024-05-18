@@ -31,12 +31,11 @@ def read_google_sheet(sheet_name: str = "through-100") -> pd.DataFrame:
 def get_sheet_names() -> list[str]:
     gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
     workbook = gc.open(workbook_name)
-    return [sheet.title for sheet in workbook.worksheets()][1:]
+    return [sheet.title for sheet in workbook.worksheets()][1:-1]
 
 
 odd_apns = {
     "114-370-020",
-    # "113-740-080",
 }
 
 

@@ -20,7 +20,9 @@ def main() -> None:
     df["street"] = df.addr.apply(_get_street)
     df = df.sort_values(["city", "street", "house_num"])
     df = df.drop(columns=["street", "house_num"])
+    df = df.drop_duplicates(subset=['apn'])
     print(df)
+    df.to_csv("/tmp/sorted.csv", index=False)
 
 
 if __name__ == "__main__":

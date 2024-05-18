@@ -8,7 +8,6 @@ import pandas as pd
 from geo.lafco.lafco_util import LAFCO_DIR, _with_dashes, clean_column_names
 
 nearby_cities = {
-    "ATHERTON",
     "EAST PALO ALTO",
     "FOSTER CITY",
     "MENLO PARK",
@@ -23,6 +22,8 @@ def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
     df["apn"] = df.apn.map(_with_dashes)
     df = df[~df.situs_addr.str.fullmatch(" , ")]  # discards 3 empty situs_city values
     df = df[~df.situs_addr.str.startswith(" ")]  # discards 16 empty address values
+
+    print(df.situs_city.value_counts())
 
     for i, row in df.iterrows():
         assert row.situs_city in nearby_cities, row
