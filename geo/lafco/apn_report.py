@@ -12,8 +12,10 @@ from geo.lafco.model import ApnAddress
 workbook_name = "completed-forms"
 
 
-def read_google_sheet(sheet_name: str = "laura-2024-05-05") -> pd.DataFrame:
+def read_google_sheet(sheet_name: str = "through-100") -> pd.DataFrame:
     # sheet_name="sandy-2024-04-29"
+    # sheet_name="laura-2024-05-05"
+    # sheet_name="chuck-2024-05-12"
     gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
     workbook = gc.open(workbook_name)
     assert [["completed forms"]] == workbook.sheet1.get("A1")
@@ -32,6 +34,12 @@ def get_sheet_names() -> list[str]:
     return [sheet.title for sheet in workbook.worksheets()][1:]
 
 
+odd_apns = {
+    "114-370-020",
+    # "113-740-080",
+}
+
+
 def verify_apns() -> None:
     df = read_google_sheet()
     print(df)
@@ -44,8 +52,9 @@ def verify_apns() -> None:
                 aa = sess.get(ApnAddress, row.apn)
                 # Just compare the house numbers, to avoid e.g. Bayshore != E Bayshore
                 if aa is None:
-                    print(i, aa, row.apn, dict(row))
-                    print()
+                    if row.apn not in odd_apns:
+                        print(i, aa, row.apn, dict(row))
+                        print()
                 else:
                     sn = aa.situs_addr.split()[0]
                     n = row.addr.split()[0]

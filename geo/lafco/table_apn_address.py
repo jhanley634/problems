@@ -13,6 +13,10 @@ from geo.lafco.model import ApnAddress
 
 def create_table_apn_address() -> None:
     df = get_apn_prefix_df("063")
+    assert 5825 == len(df), len(df)
+    df = df.drop_duplicates(subset=["apn"])
+    assert 5479 == len(df), len(df)
+
     engine = get_engine()
     metadata = MetaData()
     metadata.create_all(engine, tables=[ApnAddress.__table__])

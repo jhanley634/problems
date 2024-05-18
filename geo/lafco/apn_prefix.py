@@ -7,6 +7,15 @@ import pandas as pd
 
 from geo.lafco.lafco_util import LAFCO_DIR, _with_dashes, clean_column_names
 
+nearby_cities = {
+    "ATHERTON",
+    "EAST PALO ALTO",
+    "FOSTER CITY",
+    "MENLO PARK",
+    "REDWOOD CITY",
+    "SAN CARLOS",
+}
+
 
 def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
     df = pd.read_csv(LAFCO_DIR / f"prefix/apn-prefix-{pfx}.csv", dtype=str)
@@ -16,9 +25,9 @@ def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
     df = df[~df.situs_addr.str.startswith(" ")]  # discards 16 empty address values
 
     for i, row in df.iterrows():
-        assert row.situs_city in ("EAST PALO ALTO", "MENLO PARK"), row
+        assert row.situs_city in nearby_cities, row
         assert row.situs_addr.endswith(row.situs_city)
-        assert row.uninc == "Incorporated"
+        assert row.uninc in ("Incorporated", "Unincorporated"), row
 
     return df.drop(columns=["geometry", "situs_city", "uninc"])
 

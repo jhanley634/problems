@@ -41,6 +41,6 @@ def _with_dashes(apn: str) -> str:
     >>> _with_dashes("063492490")
     '063-492-490'
     """
-    assert apn.startswith("063"), apn
+    assert apn.startswith("063") or apn.startswith("113"), apn
     assert 9 == len(apn), apn
     return f"{apn[:3]}-{apn[3:6]}-{apn[6:]}"
