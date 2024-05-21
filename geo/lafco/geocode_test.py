@@ -39,7 +39,6 @@ class GeocodeTest(unittest.TestCase):
 
         loc = g.get_location(f"325 Oak Ct, {g.menlo}".replace("94025", "94301"))
         print(loc)
-        breakpoint()
         self.assertEqual(
             "325 OAK CT, MENLO PARK CA 94025 (37.46389, -122.15122)",
             str(loc),

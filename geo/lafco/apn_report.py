@@ -1,23 +1,28 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
-
 from gspread.auth import READONLY_SCOPES
+from gspread.spreadsheet import Spreadsheet
 import gspread
 import pandas as pd
 
 from geo.lafco.lafco_util import clean_column_names, get_session
 from geo.lafco.model import ApnAddress
 
-workbook_name = "completed-forms"
+
+def open_workbook(
+    workbook_name: str = "completed-forms",
+    scopes: list[str] | None = None,
+) -> Spreadsheet:
+    scopes = scopes or READONLY_SCOPES
+    gc = gspread.auth.service_account(scopes=scopes)
+    return gc.open(workbook_name)
 
 
 def read_google_sheet(sheet_name: str = "through-100") -> pd.DataFrame:
     # sheet_name="sandy-2024-04-29"
     # sheet_name="laura-2024-05-05"
     # sheet_name="chuck-2024-05-12"
-    gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
-    workbook = gc.open(workbook_name)
+    workbook = open_workbook()
     assert [["completed forms"]] == workbook.sheet1.get("A1")
 
     sheet = workbook.worksheet(sheet_name)  # type: ignore [no-untyped-call]
@@ -29,8 +34,7 @@ def read_google_sheet(sheet_name: str = "through-100") -> pd.DataFrame:
 
 
 def get_sheet_names() -> list[str]:
-    gc = gspread.auth.service_account(scopes=READONLY_SCOPES)
-    workbook = gc.open(workbook_name)
+    workbook = open_workbook()
     return [sheet.title for sheet in workbook.worksheets()][1:-1]
 
 

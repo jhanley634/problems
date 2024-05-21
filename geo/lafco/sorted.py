@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from gspread.auth import DEFAULT_SCOPES
 import pandas as pd
 
-from geo.lafco.apn_report import get_sheet_names, read_google_sheet
+from geo.lafco.apn_report import get_sheet_names, open_workbook, read_google_sheet
 
 
 def _get_house_num(s: str) -> int:
@@ -20,9 +21,15 @@ def main() -> None:
     df["street"] = df.addr.apply(_get_street)
     df = df.sort_values(["city", "street", "house_num"])
     df = df.drop(columns=["street", "house_num"])
-    df = df.drop_duplicates(subset=['apn'])
+    df = df.drop_duplicates(subset=["apn"])
     print(df)
     df.to_csv("/tmp/sorted.csv", index=False)
+
+
+def _replace_sheet(df: pd.DataFrame, sheet_name: str = "combined-and-sorted") -> None:
+    workbook = open_workbook(scopes=DEFAULT_SCOPES)
+    sheet = workbook.worksheet(sheet_name)
+    sheet.batch_clear("A2:D7")
 
 
 if __name__ == "__main__":
