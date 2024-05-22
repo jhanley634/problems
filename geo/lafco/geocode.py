@@ -1,6 +1,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
 from collections import namedtuple
+from time import sleep
 import json
 import re
 
@@ -54,12 +55,14 @@ class Geocoder:
 
     def get_location(self, addr: str) -> Location | None:
         addr = self.upper(addr)
-        m = self.valid_addr_re.search(addr)
-        assert m, addr
+        # m = self.valid_addr_re.search(addr)
+        # assert m, addr
         with Session(self.engine) as sess:
             loc = sess.get(Location, addr)
             if not loc:
+                sleep(1)
                 result = self.geolocator.geocode(addr)
+                assert result, addr
                 loc = Location(
                     addr_upper=self.upper(addr),
                     addr=addr,

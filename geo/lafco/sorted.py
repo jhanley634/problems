@@ -4,6 +4,7 @@ from gspread.auth import DEFAULT_SCOPES
 import pandas as pd
 
 from geo.lafco.apn_report import get_sheet_names, open_workbook, read_google_sheet
+from geo.lafco.geocode import Geocoder
 
 
 def _get_house_num(s: str) -> int:
@@ -23,7 +24,17 @@ def main() -> None:
     df = df.drop(columns=["street", "house_num"])
     df = df.drop_duplicates(subset=["apn"])
     print(df)
+    df["point"] = df.apply(_get_point, axis=1)
     df.to_csv("/tmp/sorted.csv", index=False)
+
+
+geocoder = Geocoder()
+
+
+def _get_point(row) -> str:
+    loc = geocoder.get_location(f"{row.addr}, {row.city} CA")
+    print(loc)
+    return f"{loc.lat},{loc.lon}"
 
 
 def _replace_sheet(df: pd.DataFrame, sheet_name: str = "combined-and-sorted") -> None:
