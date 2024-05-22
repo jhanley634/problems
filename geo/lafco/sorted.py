@@ -24,7 +24,7 @@ def main() -> None:
     df = df.drop(columns=["street", "house_num"])
     df = df.drop_duplicates(subset=["apn"])
     print(df)
-    df["point"] = df.apply(_get_point, axis=1)
+    df[["lat", "lon"]] = df.apply(_get_point, axis=1, result_type="expand")
     df.to_csv("/tmp/sorted.csv", index=False)
 
 
@@ -34,7 +34,7 @@ geocoder = Geocoder()
 def _get_point(row) -> str:
     loc = geocoder.get_location(f"{row.addr}, {row.city} CA")
     print(loc)
-    return f"{loc.lat},{loc.lon}"
+    return loc.lat, loc.lon
 
 
 def _replace_sheet(df: pd.DataFrame, sheet_name: str = "combined-and-sorted") -> None:
