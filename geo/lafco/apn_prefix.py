@@ -25,7 +25,7 @@ def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
 
     print(df.situs_city.value_counts())
 
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
         assert row.situs_city in nearby_cities, row
         assert row.situs_addr.endswith(row.situs_city)
         assert row.uninc in ("Incorporated", "Unincorporated"), row

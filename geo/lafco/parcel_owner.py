@@ -27,7 +27,7 @@ def distinct_owner_report() -> None:
 
     df = get_owner()
 
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
         print(row.first_owner)  # pipe to | sort | uniq -c
         # print(trim_trust_synonyms.sub("", row.first_owner))
 

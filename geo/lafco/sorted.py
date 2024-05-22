@@ -41,6 +41,7 @@ def _get_point(row: "Series[Any]") -> tuple[float, float]:
 
 
 def _replace_sheet(df: pd.DataFrame, sheet_name: str = "combined-and-sorted") -> None:
+    assert df
     workbook = open_workbook(scopes=DEFAULT_SCOPES)
     sheet = workbook.worksheet(sheet_name)
     sheet.batch_clear("A2:D7")

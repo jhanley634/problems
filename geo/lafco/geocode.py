@@ -59,7 +59,7 @@ class Geocoder:
         with Session(self.engine) as sess:
             loc = sess.get(Location, addr)
             if not loc:
-                sleep(1)
+                sleep(0.1)
                 result = self.geolocator.geocode(addr)
                 assert result, addr
                 loc = Location(
