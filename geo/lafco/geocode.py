@@ -4,6 +4,7 @@ from collections import namedtuple
 import json
 import re
 
+from geopy import ArcGIS
 from sqlalchemy.orm import Session
 import sqlalchemy as sa
 
@@ -22,13 +23,14 @@ class Geocoder:
     # df['location'] = df['name'].apply(geocode)
 
     def __init__(self) -> None:
-        self.geolocator = NominatimCached()
+        # self.geolocator = NominatimCached()
+        self.geolocator = ArcGIS()
         self.engine = sa.create_engine("sqlite:////tmp/geocode.db")
         metadata = sa.MetaData()
         metadata.create_all(self.engine, tables=[Location.__table__])
 
     @staticmethod
-    def round(n: float) -> float:
+    def round5(n: float) -> float:
         return round(n, 5)
 
     @classmethod
@@ -55,7 +57,26 @@ class Geocoder:
         m = self.valid_addr_re.search(addr)
         assert m, addr
         with Session(self.engine) as sess:
-            loc = sess.get(Location, self.upper(addr))
+            loc = sess.get(Location, addr)
+            if not loc:
+                result = self.geolocator.geocode(addr)
+                loc = Location(
+                    addr_upper=self.upper(addr),
+                    addr=addr,
+                    lat=self.round5(result.latitude),
+                    lon=self.round5(result.longitude),
+                )
+                sess.add(loc)
+                sess.commit()
+
+            return sess.get(Location, addr)
+
+    def get_nominatim_location(self, addr: str) -> Location | None:
+        addr = self.upper(addr)
+        m = self.valid_addr_re.search(addr)
+        assert m, addr
+        with Session(self.engine) as sess:
+            loc = sess.get(Location, addr)
             if not loc:
                 self._deal_with(sess, addr)
             return sess.get(Location, addr)
@@ -81,8 +102,8 @@ class Geocoder:
             addr_upper=self.upper(addr),
             addr=addr,
             zipcode=tup.zip,
-            lat=self.round(float(j["lat"])),
-            lon=self.round(float(j["lon"])),
+            lat=self.round5(float(j["lat"])),
+            lon=self.round5(float(j["lon"])),
         )
         sess.add(loc)
         sess.commit()

@@ -38,7 +38,6 @@ class Location(Base):  # type: ignore [misc, valid-type]
 
     addr_upper = mapped_column(Text, primary_key=True)
     addr = mapped_column(Text, index=True, nullable=False)
-    zipcode = mapped_column(Text)
     lat = mapped_column(Float, nullable=False)
     lon = mapped_column(Float, nullable=False)
 
