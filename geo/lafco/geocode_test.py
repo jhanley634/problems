@@ -1,5 +1,4 @@
 # Copyright 2024 John Hanley. MIT licensed.
-from pprint import pp
 import unittest
 
 from geopy.geocoders import ArcGIS

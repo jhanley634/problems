@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 import sqlalchemy as sa
 
 from geo.lafco.model import Location
-from geo.lafco.nominatim_facade import NominatimCached
 
 LocTuple = namedtuple("LocTuple", "house_num street city county state zip country")
 

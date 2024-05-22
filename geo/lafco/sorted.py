@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from typing import Any
+
 from gspread.auth import DEFAULT_SCOPES
+from pandas import Series
 import pandas as pd
 
 from geo.lafco.apn_report import get_sheet_names, open_workbook, read_google_sheet
@@ -31,7 +34,7 @@ def main() -> None:
 geocoder = Geocoder()
 
 
-def _get_point(row) -> str:
+def _get_point(row: "Series[Any]") -> tuple[float, float]:
     loc = geocoder.get_location(f"{row.addr}, {row.city} CA")
     print(loc)
     return loc.lat, loc.lon
