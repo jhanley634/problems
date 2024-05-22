@@ -34,6 +34,6 @@ def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    df = get_apn_prefix_df("063")
-    assert 4313 == len(df), len(df)
+    df = get_apn_prefix_df("all")
+    assert 5825 == len(df), len(df)
     print(df)
