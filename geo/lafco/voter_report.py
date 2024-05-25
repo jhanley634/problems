@@ -9,7 +9,7 @@ from geo.lafco.model import ApnAddress
 VOTER_FORMS = "voter-forms"
 
 
-def read_google_sheet(sheet_name: str = "Sheet1") -> pd.DataFrame:
+def read_google_sheet(sheet_name: str = "Woodland") -> pd.DataFrame:
 
     workbook = open_workbook(VOTER_FORMS)
 
