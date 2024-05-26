@@ -290,10 +290,69 @@ def tip12_filterfalse_no_intermediate_lists():
     )
 
 
+## #9. Use Python's built-in map() function
+
+
+def some_function_performing_some_logic(x):
+    # This would normally be a function containing application logic which
+    # required it to be made into a separate function (for test, return square)
+    return x**2
+
+
+def test_09_v0(numbers):
+    # Baseline version (Inefficient way)
+    def _test_09_v0():
+        output = []
+        for i in numbers:
+            output.append(some_function_performing_some_logic(i))
+
+        return output
+
+    return _test_09_v0
+
+
+def test_09_v1(numbers):
+    # Improved version
+    # (Using Python's built-in map() function)
+    def _test_09_v1():
+        output = map(some_function_performing_some_logic, numbers)
+        return list(output)
+
+    return _test_09_v1
+
+
+def tip9_map():
+    # Run the test 0 (inefficient version)
+
+    t = timeit.Timer(test_09_v0(numbers=num1K))
+    result_0 = t.repeat(repeat=num_runs, number=num_runs)
+    result_0_np = np.array(result_0) * num_ns_per_sec
+    result_0_ns = result_0_np.tolist()  # Convert back to list
+    test_0_avg = calculate_and_display_test_run_numbers(
+        result_ns=result_0_ns, num_loops_used_for_tests=num_loops
+    )
+
+    # Run the test 1 (efficient version)
+    # Using Python's built-in map() function
+
+    t = timeit.Timer(test_09_v1(numbers=num1K))
+    result_1 = t.repeat(repeat=num_runs, number=num_runs)
+    result_1_np = np.array(result_1) * num_ns_per_sec
+    result_1_ns = result_1_np.tolist()  # Convert back to list
+    test_1_avg = calculate_and_display_test_run_numbers(
+        result_ns=result_1_ns, num_loops_used_for_tests=num_loops
+    )
+
+    # Compare Test 0 with Test 1
+    compare_test_0_with_test_1(
+        test_0_avg, test_1_avg, num_loops_used_for_tests=num_loops
+    )
+
+
 num_loops = num_loops_default  # Reset it back to the usual 100K loops - it was reduce since the tests (for this tip) take too long
 
 if __name__ == "__main__":
     # tip03_use_sets()
     # tip10_memoize()
-
-    tip12_filterfalse_no_intermediate_lists()
+    # tip12_filterfalse_no_intermediate_lists()
+    tip9_map()
