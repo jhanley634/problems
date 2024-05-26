@@ -61,8 +61,13 @@ def _get_rows() -> Generator[dict[str, int], None, None]:
 def main(meas: str = "measurement") -> None:
     df = pd.DataFrame(_get_rows())
     df["time"] = pd.to_datetime(df.time)
+    df["day"] = df.time.dt.date
+    df = df.sort_values(["day", "category", "diastolic"])
+    df = df.groupby("day").head(3)
+    df = df.drop(columns="day")
     df = df.drop(columns="pulse")
-    df = df.sort_values("time")
+    with pd.option_context("display.max_rows", None):
+        print(df)
     tidy = df.melt("time", var_name=meas, value_name="value")
 
     sns.scatterplot(data=tidy, x="time", y="value", hue=meas)
