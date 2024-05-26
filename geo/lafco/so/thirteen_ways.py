@@ -3,6 +3,7 @@
 # see https://codereview.stackexchange.com/questions/291896/performance-tuning-project-euler-566-cake-icing-puzzle
 # which cites https://medium.com/@nirmalya.ghosh/13-ways-to-speedup-python-loops-e3ee56cd6b73
 # and https://colab.research.google.com/drive/1fPJv4zt_zQIBX1okJ0-IGW0JRxpj9yI
+import functools
 import random
 import timeit
 
@@ -136,5 +137,86 @@ def tip03_use_sets():
     )
 
 
+## #10. Use Memoization
+
+
+def fibonacci(n):
+    if n == 0 or n == 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+@functools.lru_cache()
+def fibonacci_v2(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    return fibonacci_v2(n - 1) + fibonacci_v2(n - 2)
+
+
+def test_10_v0(numbers):
+    # Baseline version (Inefficient way)
+    def _test_10_v0():
+        output = []
+        for i in numbers:
+            output.append(fibonacci(i))
+
+        return output
+
+    return _test_10_v0
+
+
+def test_10_v1(numbers):
+    # Improved version
+    # (Using functools' lru_cache function)
+    def _test_10_v1():
+        output = []
+        for i in numbers:
+            output.append(fibonacci_v2(i))
+
+        return output
+
+    return _test_10_v1
+
+
+def tip10_memoize():
+
+    num_loops = 1500  # Reduce this from the usual 100K loops, since the tests (for this tip) take too long
+
+    # Run the test 0 (inefficient version)
+
+    t = timeit.Timer(test_10_v0(numbers=range(10)))
+    result_0 = t.repeat(repeat=num_runs, number=num_runs)
+    result_0_np = np.array(result_0) * num_ns_per_sec
+    result_0_ns = result_0_np.tolist()  # Convert back to list
+    test_0_avg = calculate_and_display_test_run_numbers(
+        result_ns=result_0_ns, num_loops_used_for_tests=num_loops
+    )
+
+    # Run the test 1 (efficient version)
+    # Using functools' lru_cache function
+
+    t = timeit.Timer(test_10_v1(numbers=range(10)))
+    result_1 = t.repeat(repeat=num_runs, number=num_runs)
+    result_1_np = np.array(result_1) * num_ns_per_sec
+    result_1_ns = result_1_np.tolist()  # Convert back to list
+    test_1_avg = calculate_and_display_test_run_numbers(
+        result_ns=result_1_ns, num_loops_used_for_tests=num_loops
+    )
+
+    # Compare Test 0 with Test 1
+    compare_test_0_with_test_1(
+        test_0_avg, test_1_avg, num_loops_used_for_tests=num_loops
+    )
+
+
+# Reset it back to the usual 100K loops - it was reduced since the tests (for this tip) take too long
+num_loops = num_loops_default
+
+
 if __name__ == "__main__":
-    tip03_use_sets()
+    # tip03_use_sets()
+
+    print(num_loops)
+    tip10_memoize()
