@@ -18,9 +18,9 @@ OUT_FILE = FOLDER / "blood_pressure.csv"
 def _first_spreadsheet(in_file: Path) -> io.StringIO:
     """Strips out the 2nd and 3rd (empty) spreadsheets from the input file."""
     lines = list(filter(None, in_file.read_text().splitlines()))
-    assert lines[-2].startswith('"Date","Total steps","Total distance (mi)",')
-    assert lines[-1].startswith('"Date","Time","Weight (kg)","BMI",')
-    return io.StringIO("\n".join(lines[:-3]))
+    # assert lines[-2].startswith('"Date","Total steps","Total distance (mi)",')
+    # assert lines[-1].startswith('"Date","Time","Weight (kg)","BMI",')
+    return io.StringIO("\n".join(lines))
 
 
 def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
