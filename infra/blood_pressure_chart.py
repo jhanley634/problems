@@ -54,7 +54,7 @@ def _to_int(s: str) -> int | str:
 def _get_rows() -> Generator[dict[str, int], None, None]:
     for row in DictReader(get_bp_table().splitlines()):
         row = {k.strip(): _to_int(v.strip()) for k, v in row.items()}
-        row["category"] = str(get_bp_category(row["systolic"], row["diastolic"]))
+        row["category"] = get_bp_category(row["systolic"], row["diastolic"]).value * 10
         yield row
 
 
@@ -62,6 +62,7 @@ def main(meas: str = "measurement") -> None:
     df = pd.DataFrame(_get_rows())
     df["time"] = pd.to_datetime(df.time)
     df = df.drop(columns="pulse")
+    df = df.sort_values("time")
     tidy = df.melt("time", var_name=meas, value_name="value")
 
     sns.scatterplot(data=tidy, x="time", y="value", hue=meas)
