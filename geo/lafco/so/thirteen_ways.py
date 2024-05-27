@@ -3,6 +3,7 @@
 # see https://codereview.stackexchange.com/questions/291896/performance-tuning-project-euler-566-cake-icing-puzzle
 # which cites https://medium.com/@nirmalya.ghosh/13-ways-to-speedup-python-loops-e3ee56cd6b73
 # and https://colab.research.google.com/drive/1fPJv4zt_zQIBX1okJ0-IGW0JRxpj9yI
+# type: ignore
 from itertools import filterfalse
 import functools
 import random
