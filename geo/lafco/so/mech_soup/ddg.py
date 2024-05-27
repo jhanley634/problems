@@ -21,7 +21,7 @@ def get_browser() -> StatefulBrowser:
 
 
 def search(
-    query: str,
+    query: str = "mechanical soup",
     engine: str = "https://lite.duckduckgo.com/lite/",
 ) -> Generator[Result, None, None]:
     browser = get_browser()
@@ -29,7 +29,7 @@ def search(
     assert browser.url == engine
     browser.select_form()
     assert isinstance(browser.get_current_form().form, Tag)
-    browser.form.set_input({"q": "mechanical soup"})
+    browser.form.set_input({"q": query})
     browser.submit_selected()
 
     tables = browser.page.find_all("table")
