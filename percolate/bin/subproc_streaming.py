@@ -1,10 +1,9 @@
 #! /usr/bin/env python
-
 # Copyright 2022 John Hanley. MIT licensed.
+from collections.abc import Generator
 from pathlib import Path
 from select import PIPE_BUF, select
 from subprocess import PIPE, Popen
-from typing import Generator
 import datetime as dt
 import io
 import os

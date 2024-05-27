@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
 # based on https://codereview.stackexchange.com/questions/289321/demonstrate-effects-of-summation-order
-
-from typing import Generator, Iterable
+from collections.abc import Generator, Iterable
 
 from numpy.random import permutation, seed
 

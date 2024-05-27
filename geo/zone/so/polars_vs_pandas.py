@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/285312/streaming-parquet-file-in-chunks-for-write-operation
-
+from collections.abc import Callable
 from io import BytesIO
 from pathlib import Path
 from time import sleep, strftime
 from types import FunctionType
-from typing import Callable
 import logging
 
 from memory_profiler import profile

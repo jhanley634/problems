@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 # cf https://stackabuse.com/kernel-density-estimation-in-python-using-scikit-learn
-from typing import Callable
+from collections.abc import Callable
 
 from numpy.typing import NDArray
 from sklearn.model_selection import GridSearchCV

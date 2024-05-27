@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-from typing import Generator
+
+
+from collections.abc import Generator
 
 from scipy.spatial import ConvexHull, Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt

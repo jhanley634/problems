@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/291672/create-a-snail-matrix
-
-from typing import Generator
+from collections.abc import Generator
 
 import numpy as np
 import numpy.typing as npt

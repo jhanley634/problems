@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter
+from collections.abc import Generator
 from itertools import zip_longest
 from operator import itemgetter
 from pathlib import Path
 from time import time
-from typing import Generator
 import io
 import json
 import re

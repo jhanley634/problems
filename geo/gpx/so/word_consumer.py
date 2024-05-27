@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter
+from collections.abc import Generator
 from pathlib import Path
 from time import sleep
-from typing import Generator
 import re
 
 from sqlalchemy import text

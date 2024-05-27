@@ -3,7 +3,8 @@ from collections import defaultdict
 from collections.abc import Generator
 from functools import partial
 from io import StringIO
-from typing import TextIO
+
+from typing_extensions import TextIO
 
 
 def hamming_distance(a: str, b: str) -> int:

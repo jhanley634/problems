@@ -1,18 +1,16 @@
 #! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/284448/matching-from-a-big-list-of-keywords
-
 from pprint import pp
-from typing import Any, Optional
 import re
 
+from typing_extensions import Any
 import regex
 import unidecode
 
 
 class Drug:
-    def __init__(self, name: str, atc: str, position: Optional[tuple[int, int]]):
+    def __init__(self, name: str, atc: str, position: tuple[int, int] | None):
         # normalize name make it capitalize
         self.name = re.escape(name.upper())
         self.atc = atc
@@ -35,7 +33,7 @@ NUM_DRUGS = 150_000
 US_DRUGS = [Drug(f"MED{i:05d}", f"{i}", None) for i in range(NUM_DRUGS)]
 
 
-def _extract_drugs_from_prescription_text(prescription_text: str) -> list[int]:
+def _extract_drugs_from_prescription_text(prescription_text: str) -> list[Drug]:
     # normalize prescription text (remove accents)
     normalized_prescription_text = unidecode.unidecode(prescription_text)
 
@@ -69,9 +67,9 @@ def _extract_drugs_from_prescription_text(prescription_text: str) -> list[int]:
     return list(set(matched_drugs_without_substring))
 
 
-if __name__ == "__main__":
+def main() -> None:
     # an ATC, https://en.wikipedia.org/wiki/Anatomical_Therapeutic_Chemical_Classification_System
-    vitamin_c = "A11GA01"
+    # vitamin_c = "A11GA01"
 
     prescription_text = (
         "- TEST -  medication names like"
@@ -88,3 +86,7 @@ if __name__ == "__main__":
         for match in regex.finditer(DRUG.name, normalized_prescription_text):
             matched_drugs.append(Drug(DRUG.name, DRUG.atc, match.span()))
     pp(matched_drugs)
+
+
+if __name__ == "__main__":
+    main()

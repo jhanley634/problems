@@ -1,14 +1,13 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
-
 # Copyright 2023 John Hanley. MIT licensed.
-
 from collections import namedtuple
+from collections.abc import Generator
 from enum import Enum, auto
 from time import time
-from typing import Any, Generator, Tuple
 
 from pygame import Rect, Surface, Vector2
 from sortedcontainers import SortedList
+from typing_extensions import Any
 import pygame
 
 GRID_SIZE_PX: int = 3
@@ -70,7 +69,7 @@ class RoadSegment:
     A long "road" may consist of several linked segments.
     """
 
-    def __init__(self, start: Tuple[float, float], end: Tuple[float, float]) -> None:
+    def __init__(self, start: tuple[float, float], end: tuple[float, float]) -> None:
         self.start = Vector2(*start)
         self.end = Vector2(*end)
         self.length = self.start.distance_to(self.end)
@@ -172,13 +171,17 @@ class City:
 
 
 class GreenWave:
-    def __init__(self, city_size: tuple[int, int] = (2, 1)) -> None:
+    def __init__(
+        self,
+        city_size: tuple[int, int] = (2, 1),
+        window_size: tuple[int, int] = (1280, 720),
+    ) -> None:
+        pygame.init()
         self.city: City = City(*city_size)
+        self.screen = pygame.display.set_mode(window_size)
         self.running: bool = True
 
-    def main_loop(self, window_size: tuple[int, int] = (1280, 720)) -> None:
-        pygame.init()
-        self.screen: Surface = pygame.display.set_mode(window_size)
+    def main_loop(self) -> None:
         clock = pygame.time.Clock()
 
         # while self.running:

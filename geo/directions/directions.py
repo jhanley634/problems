@@ -1,9 +1,10 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2022 John Hanley. MIT licensed.
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator
 
 from gpxpy.gpx import GPXTrackSegment
+from typing_extensions import Any
 import gpxpy
 import pandas as pd
 import pydeck as pdk

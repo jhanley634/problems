@@ -1,5 +1,5 @@
 # Copyright 2021 John Hanley. MIT licensed.
-from typing import Generator
+from collections.abc import Generator
 
 import matplotlib.pyplot as plt
 import networkit as nk

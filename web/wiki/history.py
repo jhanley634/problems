@@ -3,8 +3,8 @@
 """
 Retrieves article history from Wikipedia's RESTful API.
 """
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 import datetime as dt
 import os
 import re

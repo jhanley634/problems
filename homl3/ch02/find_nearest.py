@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-
 from pathlib import Path
-from typing import Any
 import re
 
 from beartype import beartype
 from geopandas.array import GeometryArray
+from typing_extensions import Any
 from uszipcode import SearchEngine, SimpleZipcode
 import geopandas as gpd
 import numpy as np

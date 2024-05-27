@@ -1,14 +1,13 @@
 #! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
 #
 # from https://stackoverflow.com/questions/77318785/how-do-i-detect-use-of-a-contextmanager
-
 from io import StringIO
 from types import TracebackType
-from typing import Any
 import dis
 import inspect
+
+from typing_extensions import Any
 
 
 class MyManager:

@@ -1,6 +1,6 @@
 # Copyright 2023 John Hanley. MIT licensed.
 # An answer to https://stackoverflow.com/questions/76503323/format-a-string-to-have-same-spaces-as-another-string
-from typing import Generator
+from collections.abc import Generator
 import unittest
 
 

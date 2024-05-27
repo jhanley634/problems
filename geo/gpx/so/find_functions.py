@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/78067735/statically-inspect-a-python-test-suite
-
+from collections.abc import Callable, Generator, Iterable
 from importlib import import_module
 from inspect import getsource, isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
-from typing import Any, Callable, Generator, Iterable, NamedTuple
 from unittest import TestCase
 from unittest.main import TestProgram
 import dis
@@ -14,6 +13,8 @@ import io
 import os
 import re
 import sys
+
+from typing_extensions import Any, NamedTuple
 
 
 def find_callable_functions(module: ModuleType | type) -> list[Callable[[Any], Any]]:

@@ -1,16 +1,15 @@
 #! /usr/bin/env _TYPER_STANDARD_TRACEBACK=1 python
 # Copyright 2024 John Hanley. MIT licensed.
-
 # from https://codereview.stackexchange.com/questions/289102/tokenize-a-file
-
 from collections import Counter
+from collections.abc import Generator
 from operator import itemgetter
 from pathlib import Path
 from pprint import pp
-from typing import Generator, TextIO
 
 from spacy.language import Language
 from spacy.tokens.token import Token
+from typing_extensions import TextIO
 import spacy
 import spacy.tokens
 import typer

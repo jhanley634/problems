@@ -1,12 +1,10 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-
 # from https://codereview.stackexchange.com/questions/288493/comparison-of-two-excel-files-ignoring-line-order
-
 from collections import Counter
+from collections.abc import Generator
 from hashlib import sha3_224
 from pathlib import Path
-from typing import Generator
 
 from openpyxl.worksheet.worksheet import Worksheet
 import openpyxl
@@ -14,7 +12,8 @@ import typer
 
 
 def hash_spreadsheet(
-    in_file: Path, birthday_nybbles: int = 16
+    in_file: Path,
+    birthday_nybbles: int = 16,
 ) -> Generator[str, None, None]:
     """Turns rows of first sheet into hashes.
 

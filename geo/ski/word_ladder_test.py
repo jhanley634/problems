@@ -1,5 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
-from typing import Generator
+from collections.abc import Generator
 import datetime as dt
 import sys
 import unittest

@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2022 John Hanley. MIT licensed.
 from collections import namedtuple
+from collections.abc import Generator
 from queue import PriorityQueue
-from typing import Generator
 import datetime as dt
 
 import numpy as np

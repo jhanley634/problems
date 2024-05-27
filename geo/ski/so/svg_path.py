@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 # https://codereview.stackexchange.com/questions/283558/processing-a-very-long-single-line-of-comma-separated-FPs
-
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 import json
 
 import typer

@@ -1,12 +1,12 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2024 John Hanley. MIT licensed.
-
+from collections.abc import Generator
 from io import BytesIO
 from pathlib import Path
-from typing import Any, Generator
 import datetime as dt
 
 from gpxpy.gpx import GPX
+from typing_extensions import Any
 import gpxpy
 import matplotlib.pyplot as plt
 import pandas as pd

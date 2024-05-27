@@ -1,11 +1,9 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2024 John Hanley. MIT licensed.
-#
-#
 from pathlib import Path
-from typing import Any
 
 from pandas import Series
+from typing_extensions import Any
 import numpy as np
 import pandas as pd
 import streamlit as st

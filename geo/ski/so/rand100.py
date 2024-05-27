@@ -1,7 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
-
 from collections import Counter
-from typing import Optional
 import unittest
 
 from numpy.random import default_rng
@@ -14,7 +12,7 @@ def rand100(size: int = 100_000) -> list[float]:
 
 
 class RandomIntGenerator:
-    def __init__(self, bits: Optional[list[bool]] = None, size: int = 750_000):
+    def __init__(self, bits: list[bool] | None = None, size: int = 750_000):
         self._bits = bits or self._get_random_bits(size)
 
     @staticmethod
@@ -53,7 +51,7 @@ class TestRand100(unittest.TestCase):
     def test_rand100(self, verbose: bool = False) -> None:
         xs = rand100()
         counts = Counter(xs)
-        delta = max(counts.values()) - min(counts.values())
+        delta: float = max(counts.values()) - min(counts.values())
         if verbose:
             print("  ", delta)
         self.assertLess(delta, 0.2 * len(xs))

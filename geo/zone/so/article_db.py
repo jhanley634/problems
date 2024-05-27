@@ -1,20 +1,19 @@
 #! /usr/bin/env SQLALCHEMY_WARN_20=1 python
 # Copyright 2023 John Hanley. MIT licensed.
-
 # from https://softwareengineering.stackexchange.com/questions/450146/designing-a-graph-database-structure
-
 from array import array
+from collections.abc import Callable
 from hashlib import sha3_224
 from pathlib import Path
 from random import shuffle
 from time import time
-from typing import Any, Callable
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.schema import PrimaryKeyConstraint
 from tqdm import tqdm
+from typing_extensions import Any
 import pandas as pd
 import sqlalchemy as sa
 

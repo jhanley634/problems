@@ -1,14 +1,12 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-
 # from https://codereview.stackexchange.com/questions/286327/generating-abelian-sandpile
-
 from pathlib import Path
 from time import time
-from typing import Any
 
 from numba import njit
 from numpy.typing import NDArray
+from typing_extensions import Any
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np

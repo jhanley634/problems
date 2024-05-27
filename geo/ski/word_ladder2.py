@@ -3,7 +3,8 @@ from collections import defaultdict
 from collections.abc import Generator
 from functools import partial
 from io import StringIO
-from typing import TextIO
+
+from typing_extensions import TextIO
 
 
 class WordLadder:
@@ -85,7 +86,7 @@ class WordLadder:
                     yield other
 
         if False:
-            i = j = node = g = 0
+            i = j = node = g = 0  # type: ignore [unreachable]
             while (
                 i < len(self.pfx_nodes)
                 and self.pfx_nodes[i].prefix == node.prefix

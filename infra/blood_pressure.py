@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
+from collections.abc import Generator
 from pathlib import Path
 from subprocess import run
-from typing import Generator
 import csv
 import io
 

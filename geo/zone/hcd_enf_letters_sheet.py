@@ -1,10 +1,11 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2023 John Hanley. MIT licensed.
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator, NamedTuple
 import re
 
 from polars import Utf8
+from typing_extensions import NamedTuple
 import pandas as pd
 import polars as pl
 import streamlit as st

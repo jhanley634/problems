@@ -1,13 +1,12 @@
 # Copyright 2023 John Hanley. MIT licensed.
-
 from io import BytesIO
-from typing import Any
 import struct
 
 from beartype import beartype
 from beartype.typing import Iterator
 from numpy import dtype
 from numpy.typing import NDArray
+from typing_extensions import Any
 import numpy as np
 
 

@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
 # from https://stackoverflow.com/questions/77817417/how-to-add-a-column-in-a-csv-file-to-count-the-amount-of-classes
-
-from typing import Generator
+from collections.abc import Generator
 import datetime as dt
 
 import pandas as pd

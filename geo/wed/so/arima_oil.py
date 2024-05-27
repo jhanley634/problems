@@ -139,7 +139,7 @@ def _auto_arima() -> None:
     _plot_forecast(df, model)
 
 
-def _plot_forecast(df: pd.DataFrame, model) -> None:
+def _plot_forecast(df: pd.DataFrame, model: ARIMA) -> None:
     n_periods = 24
     fc, confint = model.predict(n_periods=n_periods, return_conf_int=True)
     index_of_fc = np.arange(len(df.value), len(df.value) + n_periods)

@@ -1,7 +1,7 @@
 #! /usr/bin/env _TYPER_STANDARD_TRACEBACK=1 python
 # Copyright 2023 John Hanley. MIT licensed.
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 import re
 
 from bs4 import BeautifulSoup

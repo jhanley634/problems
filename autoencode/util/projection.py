@@ -1,6 +1,5 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from hashlib import blake2b
-from typing import Optional
 
 import pandas as pd
 
@@ -19,7 +18,7 @@ def _random_permutation(pairs: list[tuple[str, str]]) -> list[str]:
 def feature_subset(
     df: pd.DataFrame,
     *,
-    num_features: Optional[int] = None,
+    num_features: int | None = None,
     fraction: float = 1.0,
     keep: int = 1
 ) -> pd.DataFrame:

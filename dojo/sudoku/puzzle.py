@@ -1,8 +1,9 @@
 # Copyright 2023 John Hanley. MIT licensed.
+from collections.abc import Generator
 from enum import Enum, auto
 from functools import total_ordering
-from typing import Any, Generator, Self
 
+from typing_extensions import Any, Self
 import numpy as np
 import numpy.typing as npt
 

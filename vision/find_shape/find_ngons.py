@@ -2,8 +2,7 @@
 # Copyright 2021 John Hanley. MIT licensed.
 # usage:
 #   python -m vision.find_shape.find_ngons
-from typing import Any
-
+from typing_extensions import Any
 import cv2
 
 from .web_image import WebImage

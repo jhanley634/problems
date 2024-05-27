@@ -1,12 +1,10 @@
 #! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
-
 # https://stackoverflow.com/questions/75549599/how-to-efficiently-read-pq-files-python
 # $ python -m cProfile -s tottime geo/ski/bench_parquet.py
+from collections.abc import Generator
 from pathlib import Path
 from time import time
-from typing import Generator
 
 from tqdm import tqdm
 import numpy as np

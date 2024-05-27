@@ -3,7 +3,7 @@
 
 # from https://stackoverflow.com/questions/77949670/scraping-data-using-python-and-requests-and-export-in-excel-file
 
-from typing import Generator
+from collections.abc import Generator
 
 from beartype import beartype
 from requests_html import HTML, HTMLResponse, HTMLSession

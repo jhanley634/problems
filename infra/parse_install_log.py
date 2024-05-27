@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from collections.abc import Generator
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Generator
 import re
 
 import typer

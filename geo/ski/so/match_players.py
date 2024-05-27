@@ -1,12 +1,12 @@
 #! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
 # https://stackoverflow.com/questions/76016826/algorithm-to-match-a-pool-of-players-by-rating
-
+from collections.abc import Generator
 from dataclasses import dataclass
 from itertools import pairwise
-from typing import Any, Generator
 import unittest
+
+from typing_extensions import Any
 
 
 @dataclass

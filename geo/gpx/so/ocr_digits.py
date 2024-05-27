@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/289724/digit-ocr-using-tesseract
-
 from pathlib import Path
-from typing import Any
 import re
 
 from numpy.typing import NDArray
+from typing_extensions import Any
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np

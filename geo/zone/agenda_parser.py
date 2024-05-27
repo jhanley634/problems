@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
+from collections.abc import Generator
 from pathlib import Path
 from subprocess import check_output
-from typing import Generator
 
 
 class AgendaParser:

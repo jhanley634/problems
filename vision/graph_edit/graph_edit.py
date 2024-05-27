@@ -1,5 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
-from typing import Generator, Optional
+from collections.abc import Generator
 
 import numpy as np
 import numpy.typing as npt
@@ -11,7 +11,7 @@ class GraphEdit:
     def __init__(
         self,
         edge: npt.NDArray[np.int_],
-        edit: Optional[dict[tuple[int, int], int]] = None,
+        edit: dict[tuple[int, int], int] | None = None,
         verify: bool = False,
     ):
         a, b = edge.shape

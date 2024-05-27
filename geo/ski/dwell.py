@@ -1,13 +1,13 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator, Optional
 import datetime as dt
 
 from geopy import Point
 from geopy.distance import great_circle
 from gpxpy.gpx import GPX
+from typing_extensions import Any
 import gpxpy
 import polars as pl
 import typer
@@ -41,8 +41,8 @@ def get_rows(gpx: GPX) -> Generator[dict[Any, Any], None, None]:
 def get_breadcrumbs(
     gpx: GPX, precision: int = 6, verbose: bool = False
 ) -> Generator[dict[Any, Any], None, None]:
-    prev_time: Optional[dt.datetime] = None
-    prev_loc: Optional[Point] = None
+    prev_time: dt.datetime | None = None
+    prev_loc: Point | None = None
     for track in gpx.tracks:
         for s, segment in enumerate(track.segments):
             for point in segment.points:

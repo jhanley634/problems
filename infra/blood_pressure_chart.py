@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
+from collections.abc import Generator
 from csv import DictReader
 from enum import Enum, auto
-from typing import Generator
 
 from beartype import beartype
 from matplotlib import pyplot as plt

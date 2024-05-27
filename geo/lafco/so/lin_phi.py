@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://stats.stackexchange.com/questions/647982/how-to-fix-errors-in-lins-1989-approximation-to-the-gaussian-cdf
-from typing import Generator
+from collections.abc import Generator
 import math
 
 from matplotlib import pyplot as plt

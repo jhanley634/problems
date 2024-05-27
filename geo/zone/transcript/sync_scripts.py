@@ -1,7 +1,6 @@
 # Copyright 2023 John Hanley. MIT licensed.
-
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 import re
 
 from bs4 import BeautifulSoup

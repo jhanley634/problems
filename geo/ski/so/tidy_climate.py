@@ -1,15 +1,14 @@
 #! /usr/bin/env SQLALCHEMY_WARN_20=1 python
-
 # Copyright 2023 John Hanley. MIT licensed.
 # https://codereview.stackexchange.com/questions/284557/mysql-creating-this-table-got-nasty
-
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator
 from urllib.parse import urlparse
 import datetime as dt
 import logging
 
 from sqlalchemy.sql.elements import TextClause
+from typing_extensions import Any
 import pandas as pd
 import requests
 import sqlalchemy as sa
