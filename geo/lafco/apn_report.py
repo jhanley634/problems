@@ -25,7 +25,7 @@ def read_google_sheet(sheet_name: str = "through-100") -> pd.DataFrame:
     workbook = open_workbook()
     assert [["completed forms"]] == workbook.sheet1.get("A1")
 
-    sheet = workbook.worksheet(sheet_name)  # type: ignore [no-untyped-call]
+    sheet = workbook.worksheet(sheet_name)
     values = sheet.get_all_values()
     df = pd.DataFrame(values[1:], columns=values[0])
     df = clean_column_names(df)
