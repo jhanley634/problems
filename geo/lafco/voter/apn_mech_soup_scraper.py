@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 """
+[doesn't work!]
 Downloads 4-digit APN prefixes from San Mateo County's assessor website.
 This gives us an APN --> address mapping.
 """
