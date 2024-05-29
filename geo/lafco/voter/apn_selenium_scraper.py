@@ -65,35 +65,6 @@ class ApnScraper:
             By.CSS_SELECTOR, "form:nth-child(2) .button:nth-child(1)"
         ).click()
 
-        if False:
-
-            # 8 | mouseOver | css=.view:nth-child(5) .panel-header-button:nth-child(1) |  |
-            element = self.driver.find_element(
-                By.CSS_SELECTOR, ".view:nth-child(5) .panel-header-button:nth-child(1)"
-            )
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element).perform()
-            # 9 | mouseOut | css=.view:nth-child(5) .panel-header-button:nth-child(1) |  |
-            element = self.driver.find_element(By.CSS_SELECTOR, "body")
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element, 0, 0).perform()
-            # 10 | mouseOver | css=.view:nth-child(5) .panel-header-button:nth-child(4) |  |
-            element = self.driver.find_element(
-                By.CSS_SELECTOR, ".view:nth-child(5) .panel-header-button:nth-child(4)"
-            )
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element).perform()
-            # 11 | mouseOut | css=.view:nth-child(5) .panel-header-button:nth-child(4) |  |
-            element = self.driver.find_element(By.CSS_SELECTOR, "body")
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element, 0, 0).perform()
-            # 12 | mouseOver | css=.view:nth-child(5) .panel-header-button:nth-child(4) |  |
-            element = self.driver.find_element(
-                By.CSS_SELECTOR, ".view:nth-child(5) .panel-header-button:nth-child(4)"
-            )
-            actions = ActionChains(self.driver)
-            actions.move_to_element(element).perform()
-
         # 13.1 await visible
         request_csv = ".view:nth-child(5) .panel-header-button:nth-child(4)"
         WebDriverWait(self.driver, 14).until(
