@@ -21,8 +21,10 @@ def lin_phi(x: float, mu: float = 0, sigma: float = 1) -> float:
 
 def gen_df(n: int = 1_000) -> Generator[dict[str, float | str], None, None]:
     for x in np.linspace(-3.0, 3.0, num=n):
+        cdf = norm.cdf(x)
+        assert isinstance(cdf, float), type(cdf)
         yield {"x": x, "value": lin_phi(x), "type": "cdf"}
-        yield {"x": x, "value": lin_phi(x) - norm.cdf(x), "type": "error"}
+        yield {"x": x, "value": lin_phi(x) - cdf, "type": "error"}
 
 
 if __name__ == "__main__":

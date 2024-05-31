@@ -6,7 +6,6 @@ Obtains Mechanical Soup resources from a popular search engine.
 from collections import namedtuple
 from collections.abc import Generator
 
-from bs4.element import Tag
 from mechanicalsoup import StatefulBrowser
 import pandas as pd
 
@@ -28,11 +27,12 @@ def search(
     browser.open(engine)
     assert browser.url == engine
     browser.select_form()
-    assert isinstance(browser.get_current_form().form, Tag)
     browser.form.set_input({"q": query})
     browser.submit_selected()
 
+    assert browser.page
     tables = browser.page.find_all("table")
+    assert len(tables) == 3
     table = tables[2]
     for a in table.find_all("a", class_="result-link", href=True):
         yield Result(a["href"], a.text)

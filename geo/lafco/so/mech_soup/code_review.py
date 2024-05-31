@@ -20,6 +20,7 @@ def scrape(
     browser = get_browser()
     browser.open(site)
 
+    assert browser.page
     posts = browser.page.find_all("div", class_="s-post-summary--content")
     for post in posts:
         title, mod = "", ""
