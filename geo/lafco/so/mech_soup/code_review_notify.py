@@ -68,6 +68,7 @@ def notify(delay: int = 60, jitter: int = 30) -> None:
         sleep(1)
         df = pd.DataFrame(scrape())
         if _is_new(df[:1].modified[0]):
+            print()
             txt = tabulate(df.to_records(index=False), maxcolwidths=98)
             popup_display(txt)
 

@@ -79,7 +79,7 @@ def generate_fake_names(count: int = 10000):
 fake_names = generate_fake_names(count=9995)
 
 
-## #3. Use sets for scenarios you'd otherwise use for loops for comparisons
+# #3. Use sets for scenarios you'd otherwise use for loops for comparisons
 
 cs_majors = ["John", "Jack", "Jerry", "Mary", "Richard"]
 ee_majors = ["Mary", "Sriram", "Ahmed", "Peter", "Nick"]
@@ -139,7 +139,7 @@ def tip03_use_sets():
     )
 
 
-## #10. Use Memoization
+# #10. Use Memoization
 
 
 def fibonacci(n):
@@ -216,7 +216,7 @@ def tip10_memoize():
 # Reset it back to the usual 100K loops - it was reduced since the tests (for this tip) take too long
 num_loops = num_loops_default
 
-## 12. Avoid Creating Intermediate Lists
+# 12. Avoid Creating Intermediate Lists
 # not much speedup, but less memory
 
 
@@ -291,7 +291,7 @@ def tip12_filterfalse_no_intermediate_lists():
     )
 
 
-## #9. Use Python's built-in map() function
+# #9. Use Python's built-in map() function
 
 
 def some_function_performing_some_logic(x):
@@ -350,7 +350,9 @@ def tip9_map():
     )
 
 
-num_loops = num_loops_default  # Reset it back to the usual 100K loops - it was reduce since the tests (for this tip) take too long
+# Reset it back to the usual 100K loops - it was reduce since the tests (for this tip) take too long
+num_loops = num_loops_default
+
 
 if __name__ == "__main__":
     # tip03_use_sets()

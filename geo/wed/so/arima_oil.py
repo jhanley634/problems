@@ -119,7 +119,7 @@ def _auto_arima() -> None:
 
     model = pm.auto_arima(
         df.value,
-        test="adf",  #   to find optimal 'd'
+        test="adf",  # to find optimal 'd'
         max_p=3,
         max_q=3,
         m=1,  # frequency of series

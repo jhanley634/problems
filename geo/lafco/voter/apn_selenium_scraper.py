@@ -45,11 +45,14 @@ class ApnScraper:
         self.driver.find_element(By.CSS_SELECTOR, accept_terms_ok).click()
 
         # 5.1 await visible
-        find_parcels_by_apn = ".toolbar-group:nth-child(1) .nested-group:nth-child(2) li:nth-child(1) .bound-visible-inline"
+        find_parcels_by_apn = (
+            ".toolbar-group:nth-child(1) .nested-group:nth-child(2)"
+            " li:nth-child(1) .bound-visible-inline"
+        )
         WebDriverWait(self.driver, 14).until(
             visibility_of_element_located((By.CSS_SELECTOR, find_parcels_by_apn))
         )
-        # 5.2 | click | css=.toolbar-group:nth-child(1) .nested-group:nth-child(2) li:nth-child(1) .bound-visible-inline |  |
+        # 5.2 | click | css=.toolbar-group:nth-child(1) .nested-group:nth-child(2) li:nth-child(1) .bound-visible-inline
         self.driver.find_element(By.CSS_SELECTOR, find_parcels_by_apn).click()
 
         # 6.1 await visible
