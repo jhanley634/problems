@@ -26,8 +26,9 @@ def get_session() -> Session:
 
 def _clean_column_name(name: str) -> str:
     """Converts raw multi-word column name to a clean identifier."""
-    xlate = str.maketrans(" .", "__", "?")
+    xlate = str.maketrans(" ./", "___", "()?")
     name = name.replace("$", "").strip().translate(xlate).lower()
+    name = re.sub(r"__+", "_", name)
     assert re.search(r"^[a-z0-9_]+$", name), name
     return name
 
