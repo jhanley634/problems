@@ -40,6 +40,8 @@ def shuffle_slice(a: list[int], start: int, end: int) -> None:
 
 class GrimoireTest(unittest.TestCase):
     def test_longest_spell(self) -> None:
+        gen_random_grimoire()
+
         gr = generate_grimoire()
         self.assertEqual("2\n0\n1\n", gr.serialize())
         self.assertEqual(2, gr.longest_spell())

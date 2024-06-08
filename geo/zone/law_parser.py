@@ -52,12 +52,12 @@ class LawParser:
             if not text.startswith("(")
         ]
 
-    def format_md(self) -> None:
+    def format_md(self) -> str:
         for levels, text in self._get_outline():
             hashes = "#" * len(levels)
             dots = ". . " * len(levels)
             levels = str(levels).replace(",)", ")")
-            print(f"{hashes} {levels}\n{dots} {text}\n")
+            return f"{hashes} {levels}\n{dots} {text}\n"
 
     def format_html(self) -> None:
         style = "font-family: sans-serif; line-height: 1.4; max-width: 50em; text-align: justify;"
@@ -76,11 +76,11 @@ class LawParser:
             )
 
         soup = BeautifulSoup("\n".join(html), "html.parser")
-        print(soup.prettify())
+        return soup.prettify()
 
 
 def main(input_html_file: Path) -> None:
-    LawParser(input_html_file).parse().format_html()
+    print(LawParser(input_html_file).parse().format_html())
 
 
 if __name__ == "__main__":
