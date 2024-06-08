@@ -30,7 +30,7 @@ class Owner(Base):  # type: ignore [misc, valid-type]
     zip = mapped_column(Text, nullable=False)
 
     def __repr__(self) -> str:
-        return f"{self.apn}  {self.first_owner}:  {self.address}, {self.city} {self.st} {self.zip})"
+        return f"{self.apn}  {self.first_owner}:  {self.address}, {self.city} {self.st} {self.zip}"
 
 
 class Location(Base):  # type: ignore [misc, valid-type]

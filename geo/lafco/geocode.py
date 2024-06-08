@@ -58,7 +58,7 @@ class Geocoder:
         # assert m, addr
         with Session(self.engine) as sess:
             loc = sess.get(Location, addr)
-            if not loc:
+            if not loc:  # pragma: no cover
                 sleep(0.1)
                 result = self.geolocator.geocode(addr)
                 assert result, addr
@@ -73,7 +73,7 @@ class Geocoder:
 
             return sess.get(Location, addr)
 
-    def get_nominatim_location(self, addr: str) -> Location | None:
+    def get_nominatim_location(self, addr: str) -> Location | None:  # pragma: no cover
         addr = self.upper(addr)
         m = self.valid_addr_re.search(addr)
         assert m, addr
@@ -83,7 +83,7 @@ class Geocoder:
                 self._deal_with(sess, addr)
             return sess.get(Location, addr)
 
-    def _deal_with(self, sess: Session, addr: str) -> None:
+    def _deal_with(self, sess: Session, addr: str) -> None:  # pragma: no cover
         def clean_street(street: str) -> str:
             return re.sub(r" STREET$", " ST", street)
 

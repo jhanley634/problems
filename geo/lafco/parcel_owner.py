@@ -21,7 +21,7 @@ def get_owner() -> pd.DataFrame:
     return df
 
 
-def distinct_owner_report() -> None:
+def distinct_owner_report() -> None:  # pragma: no cover
 
     # trim_trust_synonyms = re.compile(r" (TR|TRS|TRUST)$")
 

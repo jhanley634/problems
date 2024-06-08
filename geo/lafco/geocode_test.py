@@ -1,9 +1,14 @@
 # Copyright 2024 John Hanley. MIT licensed.
+import math
 import unittest
 
 from geopy.geocoders import ArcGIS
+from sqlalchemy.orm import Session
 
 from geo.lafco.geocode import Geocoder
+from geo.lafco.lafco_util import _with_dashes
+from geo.lafco.model import Owner
+from geo.lafco.table_owner import create_table_owner
 
 
 class GeocodeTest(unittest.TestCase):
@@ -50,3 +55,17 @@ class GeocodeTest(unittest.TestCase):
             "325 OAK CT, MENLO PARK CA 94025 (37.45914, -122.14845)",
             str(loc),
         )
+
+    def test_round5(self) -> None:
+        self.assertEqual(3.14159, Geocoder.round5(math.pi))
+
+    def test_owner(self) -> None:
+        self.assertEqual("063-492-490", _with_dashes("063492490"))
+
+        engine = create_table_owner()
+        with Session(engine) as sess:
+            owner = sess.get(Owner, "063-090-070")
+            self.assertEqual(
+                "063-090-070  ARCHDIOCESE OF S F PARISH:  1423 BAY RD, SAN FRANCISCO CA 94109",
+                repr(owner),
+            )

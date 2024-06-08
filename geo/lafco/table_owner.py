@@ -5,7 +5,7 @@ Datasource is the EPS093KO spreadsheet
 (from O'Connor Water?)
 """
 
-from sqlalchemy import MetaData
+from sqlalchemy import Engine, MetaData
 
 from geo.lafco.lafco_util import get_engine, get_session
 from geo.lafco.model import Owner
@@ -27,7 +27,7 @@ _drop_columns = [
 ]
 
 
-def create_table_owner() -> None:
+def create_table_owner() -> Engine:
     df = get_owner()
     df = df.drop(columns=_drop_columns)
     df = df.drop_duplicates(subset=["apn"])  # discard ~ 50 dup rows
@@ -37,9 +37,10 @@ def create_table_owner() -> None:
     with get_session() as sess:
         sess.query(Owner).delete()
         sess.commit()
-    print(df)
-    print(df.info())
+    # print(df)
+    # print(df.info())
     df.to_sql("owner", engine, if_exists="append", index=False)
+    return engine
 
 
 if __name__ == "__main__":
