@@ -31,7 +31,7 @@ def create_table_owner() -> Engine:
     df = get_owner()
     df = df.drop(columns=_drop_columns)
     df = df.drop_duplicates(subset=["apn"])  # discard ~ 50 dup rows
-    engine = get_engine()
+    engine: Engine = get_engine()
     metadata = MetaData()
     metadata.create_all(engine, tables=[Owner.__table__])
     with get_session() as sess:

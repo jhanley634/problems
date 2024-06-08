@@ -17,6 +17,7 @@ def get_engine() -> Engine:
     global _engine
     db_file = Path("/tmp/apn.db")
     _engine = _engine or sa.create_engine(f"sqlite:///{db_file}")
+    assert isinstance(_engine, Engine)
     return _engine
 
 

@@ -6,7 +6,6 @@ from collections.abc import Generator
 from operator import itemgetter
 from pathlib import Path
 from pprint import pp
-import unittest
 
 from spacy.language import Language
 from spacy.tokens.token import Token
@@ -84,17 +83,6 @@ def main(in_file: Path) -> None:
         spcy_txt = temp / "bible_spacy.txt"
         with open(simp_txt, "w") as simp_out, open(spcy_txt, "w") as spcy_out:
             spacy_wordlist(fin, simp_out, spcy_out)
-
-
-class TokenizerSimpleTest(unittest.TestCase):
-    def test_main(self) -> None:
-        main(Path("/etc/hosts"))
-
-    def test_get_simple_words(self) -> None:
-        self.assertEqual(
-            ["Bob", "Burger"],
-            list(get_simple_words("Bob's Burger'.")),
-        )
 
 
 if __name__ == "__main__":

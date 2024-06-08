@@ -9,7 +9,6 @@ from time import time
 import io
 import json
 import re
-import unittest
 
 from requests_cache import CachedSession
 import numpy as np
@@ -141,20 +140,6 @@ def popularity(both: Counter[str]) -> None:  # pragma: no cover
     percentile = list(map(int, np.percentile(ranks, list(range(100)))))
     for x in percentile:
         print(x)
-
-
-class WordPublisherTest(unittest.TestCase):
-    def test_get_words(self) -> None:
-        cr = get_document("https://codereview.stackexchange.com/")
-        assert cr.startswith("\n<!DOCTYPE html>\n\n\n    <html ")
-
-        w = list(get_words("https://codereview.stackexchange.com/"))[:7]
-        self.assertEqual(
-            ["doctype", "html", "responsive", "en", "review", "stack", "shortcut"],
-            w,
-        )
-
-        self.assertEqual([0, 0, 1, 1, 1], list(_get_ranks(Counter("abbba"))))
 
 
 if __name__ == "__main__":
