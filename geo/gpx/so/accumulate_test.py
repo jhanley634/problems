@@ -6,6 +6,7 @@
 from doctest import run_docstring_examples
 from doctest import testmod as run_doctests
 import operator
+import unittest
 
 from beartype import beartype
 from beartype.typing import Callable, Generator, Iterable
@@ -48,6 +49,14 @@ def accumulate1(
     for element in it:
         total = func(total, element)
         yield total
+
+
+class AccumulateTest(unittest.TestCase):
+    def test_accumulate(self) -> None:
+        self.assertEqual(
+            [7, 15],
+            list(accumulate1([8], initial=7)),
+        )
 
 
 if __name__ == "__main__":
