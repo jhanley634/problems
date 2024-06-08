@@ -45,7 +45,7 @@ def spacy_wordlist(
     english_model = "en_core_web_sm"
     try:
         nlp = spacy.load(english_model)
-    except OSError:
+    except OSError:  # pragma: no cover
         # $ python -m spacy download en_core_web_sm
         spacy.cli.download(english_model)
         nlp = spacy.load(english_model)
@@ -89,6 +89,12 @@ def main(in_file: Path) -> None:
 class TokenizerSimpleTest(unittest.TestCase):
     def test_main(self) -> None:
         main(Path("/etc/hosts"))
+
+    def test_get_simple_words(self) -> None:
+        self.assertEqual(
+            ["Bob", "Burger"],
+            list(get_simple_words("Bob's Burger'.")),
+        )
 
 
 if __name__ == "__main__":

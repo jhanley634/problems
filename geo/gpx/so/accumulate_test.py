@@ -57,6 +57,14 @@ class AccumulateTest(unittest.TestCase):
             [7, 15],
             list(accumulate1([8], initial=7)),
         )
+        self.assertEqual(
+            [8, 17],
+            list(accumulate1([8, 9], initial=None)),
+        )
+        self.assertEqual(
+            [],
+            list(accumulate1([], initial=None)),
+        )
 
 
 if __name__ == "__main__":
