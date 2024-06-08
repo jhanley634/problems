@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-import re
-
 import pandas as pd
 
 from geo.lafco.voter.voter_report import clean_column_names
