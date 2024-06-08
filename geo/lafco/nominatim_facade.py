@@ -62,7 +62,7 @@ class NominatimCached:
         assert self.addr_re.match(addr), addr
         with Session(self.engine) as sess:
             result = sess.get(NominatimQuery, addr)
-            if not result:
+            if not result:  # pragma: no cover
                 logger.info(f"sending query for {addr}")
                 sleep(max(0.0, self.query_delay_secs - (time() - self.queried_at)))
                 self.query_count += 1

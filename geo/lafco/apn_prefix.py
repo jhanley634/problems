@@ -23,7 +23,7 @@ def get_apn_prefix_df(pfx: str = "063-4") -> pd.DataFrame:
     df = df[~df.situs_addr.str.fullmatch(" , ")]  # discards 3 empty situs_city values
     df = df[~df.situs_addr.str.startswith(" ")]  # discards 16 empty address values
 
-    print(df.situs_city.value_counts())
+    # print(df.situs_city.value_counts())
 
     for _, row in df.iterrows():
         assert row.situs_city in nearby_cities, row

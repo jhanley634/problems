@@ -12,16 +12,13 @@ class NominatimFacadeTest(unittest.TestCase):
         house_num = random.randint(100, int(1e6))
         return f"{house_num} O'Connor St, Menlo Park CA 94025"
 
-    def unused_test_get_random_test_addr(self) -> None:
-        c = self.geo.query_count
-        print(self.geo.geocode(self.get_random_test_addr()))
-        self.assertEqual(c + 1, self.geo.query_count)
-
     def setUp(self) -> None:
         self.geo = NominatimCached()
         self.assertTrue(self.geo.db_cache_file.exists())
 
     def test_query(self) -> None:
+        self.get_random_test_addr()
+
         c = self.geo.query_count
         row = self.geo.geocode("500 West Elm Street, Carbondale, IL 62901")
         assert row

@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 from geo.lafco.geocode import Geocoder
 from geo.lafco.lafco_util import _with_dashes
-from geo.lafco.model import Owner
+from geo.lafco.model import ApnAddress, Owner
+from geo.lafco.table_apn_address import create_table_apn_address
 from geo.lafco.table_owner import create_table_owner
 
 
@@ -58,6 +59,15 @@ class GeocodeTest(unittest.TestCase):
 
     def test_round5(self) -> None:
         self.assertEqual(3.14159, Geocoder.round5(math.pi))
+
+    def test_apn_address(self) -> None:
+        engine = create_table_apn_address()
+        with Session(engine) as sess:
+            aa = sess.get(ApnAddress, "063-090-070")
+            self.assertEqual(
+                "063-090-070 1423 BAY RD, EAST PALO ALTO",
+                repr(aa),
+            )
 
     def test_owner(self) -> None:
         self.assertEqual("063-492-490", _with_dashes("063492490"))
