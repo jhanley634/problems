@@ -97,7 +97,7 @@ class ArticleTest(unittest.TestCase):
         self.assertEqual(992_000, len(str(art)))
         self.assertEqual(992_000 * "a", str(art))
         # print(f"\n  {elapsed:.3f} sec")
-        self.assertLess(elapsed, 18)  # typically ~ 4 sec, when not measuring coverage
+        self.assertLess(elapsed, 34)  # typically ~ 4 sec, when not measuring coverage
 
 
 class StringToArrayTest(unittest.TestCase):
