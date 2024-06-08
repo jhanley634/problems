@@ -9,6 +9,7 @@ from time import time
 import io
 import json
 import re
+import unittest
 
 from requests_cache import CachedSession
 import numpy as np
@@ -64,7 +65,9 @@ def main() -> None:
     publish(both, tom, huck)
 
 
-def publish(both: Counter[str], tom: str, huck: str, topic: str = "word-event") -> None:
+def publish(
+    both: Counter[str], tom: str, huck: str, topic: str = "word-event"
+) -> None:  # pragma: no cover
     # This takes ~ 12 seconds to publish, or .250 msec ignoring redis.
 
     r = redis.Redis()
@@ -89,7 +92,9 @@ def publish(both: Counter[str], tom: str, huck: str, topic: str = "word-event") 
     r.publish(topic, "request:  EOF")
 
 
-def words_in_common(tom_cnt: Counter[str], huck_cnt: Counter[str]) -> Counter[str]:
+def words_in_common(
+    tom_cnt: Counter[str], huck_cnt: Counter[str]
+) -> Counter[str]:  # pragma: no cover
     assert 3_985 == tom_cnt["the"]
     assert 3_190 == tom_cnt["and"]
     assert 7_528 == len(tom_cnt)
@@ -127,7 +132,7 @@ def _get_ranks(both: Counter[str]) -> Generator[int, None, None]:
             yield rank
 
 
-def popularity(both: Counter[str]) -> Counter[str]:
+def popularity(both: Counter[str]) -> None:  # pragma: no cover
     # words = [(f"{word} " * both[word]).rstrip() for word in both]
     # hashes = list(map(str.__hash__, (" ".join(words)).split()))
     # assert len(set(hashes)) == len(set(words))  # collision free
@@ -136,7 +141,20 @@ def popularity(both: Counter[str]) -> Counter[str]:
     percentile = list(map(int, np.percentile(ranks, list(range(100)))))
     for x in percentile:
         print(x)
-    return Counter()
+
+
+class WordPublisherTest(unittest.TestCase):
+    def test_get_words(self) -> None:
+        cr = get_document("https://codereview.stackexchange.com/")
+        assert cr.startswith("\n<!DOCTYPE html>\n\n\n    <html ")
+
+        w = list(get_words("https://codereview.stackexchange.com/"))[:7]
+        self.assertEqual(
+            ["doctype", "html", "responsive", "en", "review", "stack", "shortcut"],
+            w,
+        )
+
+        self.assertEqual([0, 0, 1, 1, 1], list(_get_ranks(Counter("abbba"))))
 
 
 if __name__ == "__main__":
