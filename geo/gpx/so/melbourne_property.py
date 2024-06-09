@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # Copyright 2024 John Hanley. MIT licensed.
 
 # from https://stackoverflow.com/questions/77768127/accessing-nested-element-using-beautifulsoup

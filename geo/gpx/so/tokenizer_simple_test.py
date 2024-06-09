@@ -1,6 +1,6 @@
+# Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter
 from pathlib import Path
-# Copyright 2024 John Hanley. MIT licensed.
 import unittest
 
 from geo.gpx.so.tokenizer_simple import get_simple_words, main
