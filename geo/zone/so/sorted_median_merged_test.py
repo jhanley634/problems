@@ -5,11 +5,11 @@ from geo.zone.so.sorted_median_merged import Elt, Merged, s_m_merged_median_inde
 
 
 def _get_a() -> list[int]:
-    return [2, 4, 6]
+    return [4, 6]
 
 
 def _get_b() -> list[int]:
-    return [1, 3]
+    return [1, 3, 5]
 
 
 class SortedMedianMergedTest(unittest.TestCase):
