@@ -6,13 +6,13 @@ from importlib import import_module
 from inspect import getsource, isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
-from unittest import TestCase
 from unittest.main import TestProgram
 import dis
 import io
 import os
 import re
 import sys
+import unittest
 
 from typing_extensions import Any, NamedTuple
 
@@ -110,7 +110,7 @@ class UnrelatedClass:
         self.z = None
 
 
-class TestFindFunctions(TestCase):
+class TestFindFunctions(unittest.TestCase):
     def test_find_callable_functions(self) -> None:
         self.assertEqual(
             [TestProgram],
