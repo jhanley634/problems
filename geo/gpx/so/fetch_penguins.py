@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-
 from pathlib import Path
 import datetime as dt
 import re
@@ -49,4 +48,7 @@ class TestFetchPenguins(unittest.TestCase):
     def test_fetch_penguins(self) -> None:
         df = fetch_penguin_df()
         self.assertEqual(344, len(df))
-        self.assertEqual(3, len(df.columns))
+        self.assertEqual(
+            ["culmen_depth", "body_mass", "is_gentoo"],
+            list(df.columns),
+        )
