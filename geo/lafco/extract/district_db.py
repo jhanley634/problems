@@ -30,36 +30,20 @@ def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
     street_to_city = _street_to_city(df)
 
     for i, row in df.iterrows():
-        if row.mail_address.startswith(row.address):
-            if m := _housenum_street_re.match(row.address):
-                row["housenum"] = int(m[1])
-                row["street"] = m[2]
-                del row["mail_address"]
+        if m := _housenum_street_re.match(row.address):
+            row["housenum"] = int(m[1])
+            row["street"] = m[2]
+            if row.mail_address.startswith(row.address):
                 assert row.zip in {"94025", "94301", "94303", "94306"}, row.zip
-                if row.city != street_to_city[row.street]:
-                    if False:
-                        print(
-                            row.address.ljust(30),
-                            row.city + "\t",
-                            street_to_city[row.street],
-                        )
-                yield dict(row)
-        else:
-            if m := _housenum_street_re.match(row.address):
-                row["housenum"] = int(m[1])
-                row["street"] = m[2]
                 del row["mail_address"]
+                yield dict(row)
+            else:
                 if row.street in street_to_city:
+                    row["city"] = street_to_city[row.street]
+                    row["st"] = "CA"
+                    row["zip"] = "94303"
+                    del row["mail_address"]
                     yield dict(row)
-                    if False:
-                        print(
-                            row.address.ljust(30),
-                            street_to_city[row.street] + "\t",
-                            row.mail_address,
-                            row.city,
-                            row.st,
-                            row.zip,
-                        )
 
 
 def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
