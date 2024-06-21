@@ -11,6 +11,33 @@ import typer
 
 from geo.lafco.lafco_util import clean_column_names
 
+_housenumber_missing = {
+    " BAY RD",
+    " DEMETER ST",
+    " DONOHOE ST",
+    " GARDEN ST",
+    " GREEN ST",
+    " MENALTO AVE",
+    " OAKDALE",
+    " RUNNYMEDE ST",
+    " ST",
+    " TARA RD",
+    " VACANT LAND",
+    " WEEKS ST",
+    " WOODLAND AVE",
+    "1958.5 MENALTO AVE",
+    "1960.5 MENALTO AVE",
+    "2033A PULGAS AVE",
+    "2192A COOLEY AVE",
+    "222A OAK CT",
+    "2325A CLARKE AVE",
+    "575A BELL ST",
+    "877-A DONOHOE ST",
+    "877-B DONOHOE ST",
+    "877-C DONOHOE ST",
+    "8881/2 GREEN ST",
+}
+
 
 def _get_df(in_csv: Path) -> Generator[dict[str, str], None, None]:
     csv = in_csv.read_text()
@@ -44,6 +71,8 @@ def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
                     row["zip"] = "94303"
                     del row["mail_address"]
                     yield dict(row)
+        else:
+            assert row.address in _housenumber_missing, row.address
 
 
 def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
@@ -59,13 +88,25 @@ def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
     What we really care about is that a Menalto address not
     be ascribed to San Francisco or Sacramento.
     """
-    city_count = defaultdict(Counter)
+    city_count: dict[str, Counter[str]] = defaultdict(Counter)
+    for street in [
+        "BLUE JAY CT",
+        "DEMETER ST",
+        "JAMIE LN",
+        "MANHATTAN AVE",
+        "NEWELL CT",
+        "PULGAS AV",
+        "SCOFIELD AVE",
+        "TARA RD",
+    ]:
+        city_count[street].update(["EAST PALO ALTO"])
+
     for i, row in df.iterrows():
         if row.mail_address.startswith(row.address):
             if m := _housenum_street_re.match(row.address):
                 street = m[2]
                 city_count[street].update([row.city])
-    assert 111 == len(city_count), len(city_count)
+    assert 119 == len(city_count), len(city_count)
     assert city_count["GLORIA WAY"] == Counter({"EAST PALO ALTO": 15, "PALO ALTO": 2})
     return {street: city_count[street].most_common(1)[0][0] for street in city_count}
 
@@ -74,7 +115,7 @@ def extract_all_customer_addrs(in_csv: Path = Path("lafco/district-db.csv")) -> 
     df = pd.DataFrame(_get_df(in_csv))
     df = df.sort_values(by=["city", "st", "street", "housenum"])
     df.to_csv("/tmp/resident_addr.csv", index=False)
-    assert 4079 == len(df), len(df)
+    assert 4123 == len(df), len(df)
 
 
 typer.run(extract_all_customer_addrs)
