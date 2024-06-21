@@ -37,12 +37,29 @@ def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
                 del row["mail_address"]
                 assert row.zip in {"94025", "94301", "94303", "94306"}, row.zip
                 if row.city != street_to_city[row.street]:
-                    print(
-                        row.address.ljust(30),
-                        row.city + "\t",
-                        street_to_city[row.street],
-                    )
+                    if False:
+                        print(
+                            row.address.ljust(30),
+                            row.city + "\t",
+                            street_to_city[row.street],
+                        )
                 yield dict(row)
+        else:
+            if m := _housenum_street_re.match(row.address):
+                row["housenum"] = int(m[1])
+                row["street"] = m[2]
+                del row["mail_address"]
+                if row.street in street_to_city:
+                    yield dict(row)
+                    if False:
+                        print(
+                            row.address.ljust(30),
+                            street_to_city[row.street] + "\t",
+                            row.mail_address,
+                            row.city,
+                            row.st,
+                            row.zip,
+                        )
 
 
 def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
@@ -73,7 +90,7 @@ def extract_all_customer_addrs(in_csv: Path = Path("lafco/district-db.csv")) -> 
     df = pd.DataFrame(_get_df(in_csv))
     df = df.sort_values(by=["city", "st", "street", "housenum"])
     df.to_csv("/tmp/resident_addr.csv", index=False)
-    assert 2097 == len(df), len(df)
+    assert 4079 == len(df), len(df)
 
 
 typer.run(extract_all_customer_addrs)
