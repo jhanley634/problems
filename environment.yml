@@ -93,6 +93,7 @@ dependencies:
   - scikit-learn >= 1.5.0
   - scrapy >= 2.11.1
   - seaborn >= 0.13.2
+  - selenium >= 4.22.0
   - sentencepiece >= 0.2.0
   - spacy >= 3.7.5
   - sqlacodegen-v2 >= 0.1.4
@@ -117,4 +118,3 @@ dependencies:
   - uszipcode >= 1.0.1
   - watchdog >= 4.0.1
   - xlsx2csv >= 0.8.2
-  - selenium >= 4.22.0
