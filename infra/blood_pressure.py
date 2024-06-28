@@ -11,7 +11,7 @@ import polars as pl
 FOLDER = Path("~/Desktop").expanduser()
 # Grab the most recent observations.
 IN_FILE = list(FOLDER.glob("Your Requested OMRON Report from *.csv"))[-1]
-OUT_FILE = FOLDER / "blood_pressure.csv"
+OUT_FILE = FOLDER / "blood-pressure.csv"
 
 
 def _first_spreadsheet(in_file: Path) -> io.StringIO:
