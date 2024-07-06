@@ -79,7 +79,7 @@ dependencies:
   - pylint >= 3.2.5
   - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
-  - pyright >= 1.1.369
+  - pyright >= 1.1.370
   - pyspark >= 3.5.1
   - pytesseract >= 0.3.10
   - pytest >= 8.2.2
