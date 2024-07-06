@@ -47,6 +47,7 @@ dependencies:
   - isort >= 5.13.2
   - jupyterlab >= 4.2.3
   - kaggle >= 1.6.14
+  - linetimer >= 0.1.5
   - lxml >= 5.2.2
   - markdownify >= 0.12.1
   - matplotlib >= 3.9.0
