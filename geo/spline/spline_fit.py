@@ -9,7 +9,7 @@ from requests_cache import CachedSession
 
 # https://www.prokerala.com/news/photos/philippines-albay-volcano-eruption-327315.html
 philippines = "https://files.prokerala.com/news/photos/imgs/1024/albay-jan-25-2018-a-fishing-boat-sails-as-mayon-640225.jpg"
-moon='https://c.pxhere.com/photos/20/86/volcano_erupting_full_moon_mountain_mt_merapi_indonesia_eruption_lava-1084711.jpg|d'
+moon = "https://c.pxhere.com/photos/20/86/volcano_erupting_full_moon_mountain_mt_merapi_indonesia_eruption_lava-1084711.jpg|d"
 chile = "https://www.mountainprofessor.com/images/osorno-volcano-Chile2.jpg"
 volcano = (
     "https://www.worldatlas.com/r/w1200/upload/2f/9b/57/shutterstock-787922728.jpg"
