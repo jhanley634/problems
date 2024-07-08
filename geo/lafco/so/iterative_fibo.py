@@ -3,6 +3,7 @@
 from functools import cache
 
 from linetimer import CodeTimer
+import typer
 
 
 def iterative_fibo(n: int) -> int:
@@ -24,8 +25,20 @@ def binet_fibo(n: int) -> int:
     return int((phi**n - (-phi) ** -n) / 5**0.5)
 
 
-if __name__ == "__main__":
+def main(n: int, reps: int = 2) -> None:
+    for _ in range(reps):
+        run(n)
 
+
+def run(n: int) -> None:
+    with CodeTimer(f"iterative {n}"):
+        iterative_fibo(n)
+
+    with CodeTimer(f"recursive {n}"):
+        recursive_fibo(n)
+
+
+def compare_timings() -> None:
     answer = 280571172992510140037611932413038677189525
 
     with CodeTimer("iterative"):
@@ -44,3 +57,7 @@ if __name__ == "__main__":
     n -= 1
     with CodeTimer("analytic "):
         assert binet_fibo(n) == iterative_fibo(n)
+
+
+if __name__ == "__main__":
+    typer.run(main)
