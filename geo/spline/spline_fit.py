@@ -29,7 +29,11 @@ def show_volcano(url: str = volcano) -> None:
     fig, ax = plt.subplots()
     img = get_image(url)
     ax.imshow(img)
-    print(img.size, "\n", ax.get_xlim(), "\n", ax.get_ylim())
+
+    assert (1100, 734) == img.size
+    assert (-0.5, 1099.5) == ax.get_xlim()
+    assert (733.5, -0.5) == ax.get_ylim()
+
     plt.show()
 
 
