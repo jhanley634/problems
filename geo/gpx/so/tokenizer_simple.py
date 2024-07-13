@@ -3,9 +3,7 @@
 # from https://codereview.stackexchange.com/questions/289102/tokenize-a-file
 from collections import Counter
 from collections.abc import Generator
-from operator import itemgetter
 from pathlib import Path
-from pprint import pp
 
 from spacy.language import Language
 from spacy.tokens.token import Token
@@ -72,8 +70,9 @@ def spacy_wordlist(
                 spcy_out.write(f"{token}\n")
 
     cnt = Counter({k: v for k, v in cnt.items() if v >= 3})
-    pp(sorted(cnt.items(), key=itemgetter(1)))
-    print(len(spcy_seen), dups)
+    assert len(cnt) > 0
+    # pp(sorted(cnt.items(), key=itemgetter(1)))
+    # print(len(spcy_seen), dups)
 
 
 def main(in_file: Path) -> None:
