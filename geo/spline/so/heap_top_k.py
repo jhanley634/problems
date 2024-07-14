@@ -3,10 +3,17 @@
 # from https://softwareengineering.stackexchange.com/questions/338730/find-k-max-integers-of-an-array-min-heap-vs-selection-algo
 from array import array
 from collections.abc import Generator
+from dataclasses import asdict, dataclass
+from heapq import heapify, heappop, heappushpop
+from pathlib import Path
 from random import shuffle
+from time import time
+from typing import Any
 
+from matplotlib import pyplot as plt
+from seaborn.palettes import SEABORN_PALETTES as palette
 import pandas as pd
-import typer
+import seaborn as sns
 
 
 def ratchet(ranks: array[int]) -> Generator[dict[str, int], None, None]:
@@ -26,12 +33,56 @@ def _get_xs(n: int) -> array[int]:
     return xs
 
 
-def main(n: int = 10_000_000) -> None:
-    for trial in range(2):
-        df = pd.DataFrame(ratchet(_get_xs(n)))
-        if trial < 1:
-            print(df.to_markdown(index=False, disable_numparse=True))
+@dataclass
+class Result:
+    pushes: int
+    elapsed: float
+
+
+def experiment(n: int, k: int) -> Result:
+    xs = list(_get_xs(n))
+    t0 = time()
+    h, xs = xs[:k], xs[k:]
+    heapify(h)
+    i = 0
+    for x in xs:
+        if x > h[0]:
+            heappushpop(h, x)
+            i += 1
+
+    elapsed = round(time() - t0, 6)
+
+    for x in range(n - k, n):
+        assert x == heappop(h)
+
+    return Result(i, elapsed)
+
+
+def run_experiments() -> Generator[dict[str, float], None, None]:
+    """Sweeps through a few decades of problem sizes."""
+    for trial in range(3):
+        n = 10_000
+        while n <= 10_000_000:
+            for k in [1, 10, 100, 1_000]:
+                param = {"n": n, "k": k}
+                result = experiment(**param)
+                yield {**param, **asdict(result)}
+            n *= 10
+
+
+def main(csv: Path = Path("/tmp/heap.csv")) -> None:
+    ratchet_df = pd.DataFrame(ratchet(_get_xs(int(1e7))))
+    no_scientific_notation: dict[str, Any] = {"disable_numparse": True}
+    print(ratchet_df.to_markdown(index=False, **no_scientific_notation))
+
+    if not csv.exists():
+        df = pd.DataFrame(run_experiments())
+        df.to_csv(csv, index=False)
+    df = pd.read_csv(csv)
+    print(df)
+    sns.catplot(data=df, x="n", y="pushes", hue="k", palette=palette["bright"])
+    plt.show()
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    main()
