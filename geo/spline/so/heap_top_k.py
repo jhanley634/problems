@@ -12,6 +12,7 @@ from typing import Any
 
 from matplotlib import pyplot as plt
 from seaborn.palettes import SEABORN_PALETTES as palette
+from tqdm import tqdm
 import pandas as pd
 import seaborn as sns
 
@@ -60,7 +61,7 @@ def experiment(n: int, k: int) -> Result:
 
 def run_experiments() -> Generator[dict[str, float], None, None]:
     """Sweeps through a few decades of problem sizes."""
-    for trial in range(3):
+    for trial in tqdm(range(12)):
         n = 10_000
         while n <= 10_000_000:
             for k in [1, 10, 100, 1_000]:
@@ -80,7 +81,9 @@ def main(csv: Path = Path("/tmp/heap.csv")) -> None:
         df.to_csv(csv, index=False)
     df = pd.read_csv(csv)
     print(df)
-    sns.catplot(data=df, x="n", y="pushes", hue="k", palette=palette["bright"])
+    df["ratio"] = df.n / df.k
+    sns.catplot(data=df, x="ratio", y="pushes", hue="k", palette=palette["bright"])
+    plt.gca().set(xscale="log", yscale="log")
     plt.show()
 
 
