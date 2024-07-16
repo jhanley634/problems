@@ -119,3 +119,5 @@ dependencies:
   - uszipcode >= 1.0.1
   - watchdog >= 4.0.1
   - xlsx2csv >= 0.8.2
+  - yahoofinancials >= 1.20
+  - yfinance[nospam] >= 0.2.40
