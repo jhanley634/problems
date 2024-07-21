@@ -24,8 +24,7 @@ def _get_geocoded_df() -> pd.DataFrame:
 
 def _get_streets() -> Generator[str, None, None]:
     for row in _get_geocoded_df().itertuples():
-        s = f"{row.zip} {row.street}"
-        yield s
+        yield f"{row.street} {row.city}"
 
 
 def report() -> None:
