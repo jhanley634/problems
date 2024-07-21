@@ -37,3 +37,31 @@ class JoinTest(unittest.TestCase):
 """.strip(),
             joined.to_markdown(index=False),
         )
+
+    def test_one_to_many_join(self) -> None:
+        df_email = pd.DataFrame(
+            [
+                {"name": "Carol", "email": "carol@y.com"},
+                {"name": "David", "email": "dave@w.com"},
+                {"name": "David", "email": "david@x.com"},
+                {"name": "David", "email": "davey@y.com"},
+                {"name": "Eve", "email": "evelynn@x.com"},
+                {"name": "Eve", "email": "eve@y.com"},
+            ]
+        )
+        joined = self.df_age.merge(df_email, on="name", how="outer")
+        self.assertEqual(
+            """
+| name   |   age | email         |
+|:-------|------:|:--------------|
+| Alice  |    21 | nan           |
+| Bob    |    22 | nan           |
+| Carol  |   nan | carol@y.com   |
+| David  |    24 | dave@w.com    |
+| David  |    24 | david@x.com   |
+| David  |    24 | davey@y.com   |
+| Eve    |   nan | evelynn@x.com |
+| Eve    |   nan | eve@y.com     |
+""".strip(),
+            joined.to_markdown(index=False),
+        )
