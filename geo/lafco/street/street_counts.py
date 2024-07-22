@@ -27,10 +27,25 @@ def _get_streets() -> Generator[str, None, None]:
         yield f"{row.street} {row.city}"
 
 
-def report() -> None:
+def report(min_houses: int = 6) -> None:
     c = Counter(_get_streets())
     print(c)
     pp(c.most_common(500))
+
+    lo: dict[str, int] = {}
+    for row in _get_geocoded_df().itertuples():
+        s = f"{row.street} {row.city}"
+        lo[s] = row.housenum
+    hi = lo.copy()
+
+    for row in _get_geocoded_df().itertuples():
+        s = f"{row.street} {row.city}"
+        lo[s] = min(lo[s], row.housenum)
+        hi[s] = max(hi[s], row.housenum)
+
+    for s in sorted(c):
+        if c[s] >= min_houses:
+            print(lo[s], "\t", hi[s], "\t", s)
 
 
 if __name__ == "__main__":
