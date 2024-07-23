@@ -13,15 +13,20 @@ url = "https://olympics.com/en/paris-2024/schedule/27-july?medalEvents=true"
 class OlympicMedals2024(scrapy.Spider):  # type: ignore [misc]
     name = "OlympicMedals2024"
     allowed_domains = ["olympics.com"]
-    custom_settings = {"REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7"}
-    # start_urls = ["https://olympics.com/en/paris-2024/schedule/27-july"]
-    start_urls = ["https://olympics.com"]
+    custom_settings = {
+        "REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7",
+        "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:128.0) Gecko/20100101 Firefox/128.0",
+    }
+    # start_urls = ["https://www.whatismybrowser.com/detect/what-is-my-user-agent/"]
+    start_urls = [
+        "https://olympics.com/en/paris-2024/schedule/27-july?medalEvents=true"
+    ]
 
     def parse(self, response: HtmlResponse) -> Generator[dict[str, str], None, None]:
-        print(response, type(response))
+        assert 200 == response.status, response
         soup = BeautifulSoup(response.body, "html.parser")
-        print(soup.prettify())
-        pp(type(response))
+        with open("/tmp/medal-events.html", "w") as fout:
+            fout.write(soup.prettify())
 
         option = response.css('#country-selector-country option[value="BG"]')
         if option:
