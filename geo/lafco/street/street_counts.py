@@ -3,11 +3,16 @@
 from collections import Counter
 from collections.abc import Generator
 from pprint import pp
+from typing import Any
 import io
 
 import pandas as pd
 
 from geo.gpx.so.word_publisher import get_document
+
+
+def integer(n: Any) -> int:  # n is already of int -- we're just telling mypy about that
+    return int(str(n))
 
 
 def _get_geocoded_df() -> pd.DataFrame:
@@ -35,14 +40,13 @@ def report(min_houses: int = 6) -> None:
     lo: dict[str, int] = {}
     for row in _get_geocoded_df().itertuples():
         s = f"{row.street} {row.city}"
-        lo[s] = row.housenum
+        lo[s] = integer(row.housenum)
     hi = lo.copy()
 
     for row in _get_geocoded_df().itertuples():
         s = f"{row.street} {row.city}"
-        lo[s] = min(lo[s], row.housenum)
-        hi[s] = max(hi[s], row.housenum)
-
+        lo[s] = min(lo[s], integer(row.housenum))
+        hi[s] = max(hi[s], integer(row.housenum))
     for s in sorted(c):
         if c[s] >= min_houses:
             print(lo[s], "\t", hi[s], "\t", s)

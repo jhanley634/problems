@@ -1,10 +1,9 @@
 #! /usr/bin/env scrapy runspider -o /tmp/games.jsonl
 # Copyright 2024 John Hanley. MIT licensed.
 from collections.abc import Generator
-from pprint import pp
 
 from bs4 import BeautifulSoup
-from scrapy.http import HtmlResponse
+from scrapy.http import Response
 import scrapy
 
 url = "https://olympics.com/en/paris-2024/schedule/27-july?medalEvents=true"
@@ -22,7 +21,7 @@ class OlympicMedals2024(scrapy.Spider):  # type: ignore [misc]
         "https://olympics.com/en/paris-2024/schedule/27-july?medalEvents=true"
     ]
 
-    def parse(self, response: HtmlResponse) -> Generator[dict[str, str], None, None]:
+    def parse(self, response: Response) -> Generator[dict[str, str], None, None]:
         assert 200 == response.status, response
         soup = BeautifulSoup(response.body, "html.parser")
         with open("/tmp/medal-events.html", "w") as fout:
