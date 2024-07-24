@@ -16,6 +16,7 @@ def sqrt_float(n: float, rel_tol=1e-9) -> float:
     x = 1  # initial guess
     while not isclose(x * x, n, rel_tol=rel_tol):
         x = (x + n / x) / 2
+    x = (x + n / x) / 2  # One more won't hurt, and it cleans up integer results.
     return x
 
 
@@ -25,14 +26,17 @@ def test_sqrt_float(n: float) -> None:
 
 
 if __name__ == "__main__":
-    assert sqrt_float(0) == 1.1113793747425387e-162
-    assert sqrt_float(1e-14) == 1.0000000000043957e-07
-    assert sqrt_float(1) == 1
-    assert sqrt_float(2) == 1.4142135623746899
-    assert sqrt_float(9) == 3.000000001396984
-    assert sqrt_float(16) == 4.000000000000051
-    assert sqrt_float(25) == 5.000000000053722
-    assert sqrt_float(36) == 6, sqrt_float(36)
-    assert sqrt_float(49) == 7.000000000000002
+    assert sqrt_float(0) == 5.556896873712694e-163
+    assert sqrt_float(1e-14) == 1e-7
+    assert sqrt_float(1e-12) == 1e-6
+    assert sqrt_float(1e-10) == 9.999999999999999e-06
+    assert sqrt_float(1e-8) == 9.999999999999999e-05
+    assert sqrt_float(1e-6) == 1e-3
+    assert sqrt_float(1e-4) == 1e-2
+    assert sqrt_float(1e-2) == 1e-1
+    assert sqrt_float(2) == 1.414213562373095
+
+    for i in range(1, 101):
+        assert sqrt_float(i**2) == i
 
     test_sqrt_float()
