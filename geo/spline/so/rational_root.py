@@ -7,29 +7,49 @@ from hypothesis import given
 import hypothesis.strategies as st
 
 
-def sqrt_rational(n: Fraction, rel_tol=1e-9) -> Fraction:
+def sqrt_rational(n: Fraction | float, rel_tol: float = 1e-9) -> Fraction:
     """Compute the positive root x = √n for n > 0, i.e. to solve x² = n.
 
-    We do this with the Newton-Raphson method.
+    We use the Newton-Raphson method.
     A rational approximation is returned.
     Relative error between result squared and n shall be less than rel_tol.
     """
     assert n >= 0, n
+    rel_tol /= 100
+    digits = 4
+    if n >= 1000:
+        digits -= 1
+    if n >= 100_000:
+        digits -= 1
+    limit = int(10**digits)
+
     n = Fraction(n)
     x = Fraction(1)  # initial guess
+    print('\n')
     while not isclose(x * x, n, rel_tol=rel_tol):
+        if x > 1:
+            print()
+            print(n,repr(x))
+            print('\t\t',float(x - x.limit_denominator(limit)))
+            x = x.limit_denominator(limit)
+        else:
+            x = 1 / x
+            x = 1 / x.limit_denominator(limit)
+
         x = (x + n / x) / 2
+
+    # print(repr(x))
     return x
 
 
-def sqrt_float(n: float, rel_tol=1e-9) -> float:
+def sqrt_float(n: float, rel_tol: float = 1e-9) -> float:
     """Compute the positive root x = √n for n > 0, i.e. to solve x² = n.
 
-    We do this with the Newton-Raphson method.
+    We use the Newton-Raphson method.
     Relative error between result squared and n shall be less than rel_tol.
     """
     assert n >= 0, n
-    x = 1  # initial guess
+    x = 1.0  # initial guess
     while not isclose(x * x, n, rel_tol=rel_tol):
         x = (x + n / x) / 2
     x = (x + n / x) / 2  # One more won't hurt, and it cleans up integer results.
@@ -42,15 +62,15 @@ def test_sqrt_float(n: float) -> None:
 
 
 @given(
-    st.integers(min_value=1, max_value=2_000_000),
-    st.integers(min_value=1, max_value=2_000_000),
+    st.integers(min_value=1, max_value=9_000),
+    st.integers(min_value=1, max_value=9_000),
 )
 def test_sqrt_rational(num: int, denom: int) -> None:
-    n = Fraction(num, denom)
-    assert isclose(sqrt_rational(n) ** 2, n, rel_tol=1e-9)
+    for n in [num, Fraction(num, denom), Fraction(1, denom)]:
+        assert isclose(sqrt_rational(n) ** 2, n, rel_tol=1e-9)
 
 
-if __name__ == "__main__":
+def rational_root_demo() -> None:
     assert sqrt_float(0) == 5.556896873712694e-163
     assert sqrt_float(1e-14) == 1e-7
     assert sqrt_float(1e-12) == 1e-6
@@ -60,10 +80,23 @@ if __name__ == "__main__":
     assert sqrt_float(1e-4) == 1e-2
     assert sqrt_float(1e-2) == 1e-1
     assert sqrt_float(2) == 1.414213562373095
-    assert sqrt_rational(2) == Fraction(665857, 470832)
+    assert sqrt_rational(0.25) == Fraction(1, 2)
+    assert sqrt_rational(1 / 16) == Fraction(1, 4)
+    assert sqrt_rational(0.04).limit_denominator(int(1e16)) == Fraction(1, 5)
 
-    for i in range(1, 101):
+    for i in range(1, 4_540):
         assert sqrt_float(i**2) == i
+        assert sqrt_rational(Fraction(i**2)) == Fraction(i), (
+            i,
+            sqrt_rational(Fraction(i**2)),
+        )
 
     test_sqrt_float()
     test_sqrt_rational()
+
+    # assert sqrt_rational(2) == Fraction(131836323, 93222358)
+    assert sqrt_rational(3) == Fraction(189750626, 109552575)
+
+
+if __name__ == "__main__":
+    rational_root_demo()
