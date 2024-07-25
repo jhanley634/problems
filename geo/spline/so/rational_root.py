@@ -4,6 +4,7 @@ from fractions import Fraction
 from math import isclose
 
 from hypothesis import given
+from tqdm import tqdm
 import hypothesis.strategies as st
 
 
@@ -15,30 +16,21 @@ def sqrt_rational(n: Fraction | float, rel_tol: float = 1e-9) -> Fraction:
     Relative error between result squared and n shall be less than rel_tol.
     """
     assert n >= 0, n
-    rel_tol /= 100
-    digits = 4
-    if n >= 1000:
-        digits -= 1
-    if n >= 100_000:
-        digits -= 1
-    limit = int(10**digits)
+    limit = 100_000
 
     n = Fraction(n)
     x = Fraction(1)  # initial guess
-    print('\n')
     while not isclose(x * x, n, rel_tol=rel_tol):
-        if x > 1:
-            print()
-            print(n,repr(x))
-            print('\t\t',float(x - x.limit_denominator(limit)))
+        # lots of digits in num and denom would lead to a slowdown
+        if x.denominator > 100_000_000_000:
             x = x.limit_denominator(limit)
-        else:
-            x = 1 / x
-            x = 1 / x.limit_denominator(limit)
-
         x = (x + n / x) / 2
 
-    # print(repr(x))
+    x = x.limit_denominator(limit)  # try to make it somewhat human readable
+
+    while not isclose(x * x, n, rel_tol=rel_tol):
+        x = (x + n / x) / 2
+
     return x
 
 
@@ -84,7 +76,7 @@ def rational_root_demo() -> None:
     assert sqrt_rational(1 / 16) == Fraction(1, 4)
     assert sqrt_rational(0.04).limit_denominator(int(1e16)) == Fraction(1, 5)
 
-    for i in range(1, 4_540):
+    for i in tqdm(range(1, 11_000)):
         assert sqrt_float(i**2) == i
         assert sqrt_rational(Fraction(i**2)) == Fraction(i), (
             i,
@@ -94,8 +86,8 @@ def rational_root_demo() -> None:
     test_sqrt_float()
     test_sqrt_rational()
 
-    # assert sqrt_rational(2) == Fraction(131836323, 93222358)
-    assert sqrt_rational(3) == Fraction(189750626, 109552575)
+    assert sqrt_rational(2) == Fraction(114243, 80782)
+    assert sqrt_rational(3) == Fraction(70226, 40545)
 
 
 if __name__ == "__main__":
