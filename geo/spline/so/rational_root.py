@@ -58,7 +58,7 @@ def test_sqrt_float(n: float) -> None:
     st.integers(min_value=1, max_value=9_000),
 )
 def test_sqrt_rational(num: int, denom: int) -> None:
-    for n in [num, Fraction(num, denom), Fraction(1, denom)]:
+    for n in [Fraction(num), Fraction(num, denom), Fraction(1, denom)]:
         assert isclose(sqrt_rational(n) ** 2, n, rel_tol=1e-9)
 
 

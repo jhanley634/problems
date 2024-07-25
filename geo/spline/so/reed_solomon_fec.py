@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+# Copyright 2024 John Hanley. MIT licensed.
+from decimal import Decimal
+import decimal
+
+from reedsolo import RSCodec
+
+rsc = RSCodec(10)
+
+
+# from https://en.wikipedia.org/wiki/Chudnovsky_algorithm
+def binary_split(a: int, b: int) -> tuple[int, int, int]:
+    if b == a + 1:
+        Pab = -(6 * a - 5) * (2 * a - 1) * (6 * a - 1)
+        Qab = 10939058860032000 * a**3
+        Rab = Pab * (545140134 * a + 13591409)
+    else:
+        m = (a + b) // 2
+        Pam, Qam, Ram = binary_split(a, m)
+        Pmb, Qmb, Rmb = binary_split(m, b)
+
+        Pab = Pam * Pmb
+        Qab = Qam * Qmb
+        Rab = Qmb * Ram + Pam * Rmb
+    return Pab, Qab, Rab
+
+
+def chudnovsky(n: int) -> Decimal:
+    P1n, Q1n, R1n = binary_split(1, n)
+    return (426880 * Decimal(10005).sqrt() * Q1n) / (13591409 * Q1n + R1n)
+
+
+def get_pi() -> Decimal:
+    decimal.getcontext().prec = 100
+    return chudnovsky(8)  # enough terms for all 100 digits to be accurate
+
+
+if __name__ == "__main__":
+    assert get_pi() == Decimal(
+        "3.1415926535897932384626433832795028841971693993751"
+        "05820974944592307816406286208998628034825342117068"
+    )
+    print(len(str(get_pi())))
