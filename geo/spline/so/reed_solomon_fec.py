@@ -1,11 +1,34 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from decimal import Decimal
+from pprint import pp
 import decimal
+import json
 
 from reedsolo import RSCodec
 
-rsc = RSCodec(10)
+
+def get_msg_chunks(msg: str, size: int = 12) -> bytes:
+    chunks = [(i // size, msg[i : i + size]) for i in range(0, len(msg), size)]
+    return json.dumps(chunks).encode()
+
+
+def demo(num_ecc_syms: int = 24) -> None:
+    msg = get_msg_chunks(str(get_pi()))
+    rsc = RSCodec(num_ecc_syms)
+    xmit = rsc.encode(msg)
+    assert len(xmit) == len(msg) + num_ecc_syms
+    xmit = xmit.replace(b"751058209749", b" " * 12)  # corrupted transmission
+
+    repaired, *_ = rsc.decode(xmit)
+    receive(repaired.decode())
+
+
+def receive(received_json: str) -> None:
+    d = dict(json.loads(received_json))
+    pp(d)
+    received_pi = "".join(d.values())
+    assert received_pi == str(get_pi())
 
 
 # from https://en.wikipedia.org/wiki/Chudnovsky_algorithm
@@ -40,4 +63,6 @@ if __name__ == "__main__":
         "3.1415926535897932384626433832795028841971693993751"
         "05820974944592307816406286208998628034825342117068"
     )
-    print(len(str(get_pi())))
+    assert 101 == len(str(get_pi()))
+
+    demo()
