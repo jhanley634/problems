@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-# from https://softwareengineering.stackexchange.com/questions/338730/find-k-max-integers-of-an-array-min-heap-vs-selection-algo
+# from https://softwareengineering.stackexchange.com/questions/338730/find-k-max-ints-of-an-array-min-heap-vs-selection
 from array import array
 from collections.abc import Generator
 from dataclasses import asdict, dataclass

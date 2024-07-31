@@ -35,13 +35,13 @@ class IntrospectionTest(unittest.TestCase):
             ],
             list(f()),
         )
-        self.assertEqual(
-            (
-                [],
-                [
-                    "Current invocation of function f was in line             ([f() for f in []], list(f())), at position 14.",
-                    "Current invocation of function f was in line             ([f() for f in []], list(f())), at position 37.",
-                ],
-            ),
-            ([f() for f in []], list(f())),
-        )
+        self.assertEqual(expected, ([f() for f in []], list(f())))
+
+
+expected = (
+    [],
+    [
+        "Current invocation of function f was in line             ([f() for f in []], list(f())), at position 14.",
+        "Current invocation of function f was in line             ([f() for f in []], list(f())), at position 37.",
+    ],
+)
