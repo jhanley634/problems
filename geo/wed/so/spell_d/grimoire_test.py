@@ -50,5 +50,5 @@ class GrimoireTest(unittest.TestCase):
         self.assertEqual(6, gr.longest_spell())
 
         gr = generate_random_grimoire(15)
-        graph_draw(gr.g, output="/tmp/k/gr.png")
+        graph_draw(gr.g, output="/tmp/gr.png")
         self.assertEqual(15, gr.longest_spell())

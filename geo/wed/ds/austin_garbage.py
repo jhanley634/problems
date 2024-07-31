@@ -14,7 +14,7 @@ def main() -> None:
     print(df)
     print(df.describe())
 
-    html = Path("/tmp/k/austin_garbage.html")
+    html = Path("/tmp/austin_garbage.html")
     if not html.exists():
         ProfileReport(df).to_file(html)
 

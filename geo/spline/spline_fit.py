@@ -20,7 +20,7 @@ moon = (
 
 
 def get_image(url: str) -> Image.Image:
-    cache_dir = Path("/tmp/k")
+    cache_dir = Path("/tmp")
     cache_dir.mkdir(exist_ok=True)
 
     session = CachedSession(cache_name=f"{cache_dir}/requests_cache", expire_after=7200)

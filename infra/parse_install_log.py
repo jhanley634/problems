@@ -25,5 +25,5 @@ def main(log_file_in: Path) -> None:
 
 
 if __name__ == "__main__":
-    # infra/parse_install_log.py  /tmp/k/req7-pip-install-log.txt
+    # infra/parse_install_log.py  /tmp/req7-pip-install-log.txt
     typer.run(main)

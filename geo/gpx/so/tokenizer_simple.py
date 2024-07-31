@@ -77,7 +77,7 @@ def spacy_wordlist(
 
 def main(in_file: Path) -> None:
     with open(in_file) as fin:
-        temp = Path("/tmp/k")
+        temp = Path("/tmp")
         simp_txt = temp / "bible_simple.txt"
         spcy_txt = temp / "bible_spacy.txt"
         with open(simp_txt, "w") as simp_out, open(spcy_txt, "w") as spcy_out:

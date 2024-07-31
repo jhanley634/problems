@@ -1,13 +1,15 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
-
 # based on https://datascience.stackexchange.com/questions/74125/how-to-add-a-calculated-column
+from pathlib import Path
 
 from ydata_profiling import ProfileReport
 import pandas as pd
 
+temp = Path("/tmp")
 
-def main(in_file: str = "/tmp/k/san_jose_pm25.csv") -> None:
+
+def main(in_file: Path = temp / "san_jose_pm25.csv") -> None:
     # data from:
     # https://www.epa.gov/outdoor-air-quality-data/download-daily-data
     df = pd.read_csv(in_file)
@@ -22,7 +24,7 @@ def main(in_file: str = "/tmp/k/san_jose_pm25.csv") -> None:
     df = df.drop_duplicates().sort_values("date")
     assert 482 == len(df)
 
-    ProfileReport(df).to_file("/tmp/k/san_jose_pm25.html")
+    ProfileReport(df).to_file(in_file.with_suffix(".html"))
 
     df["shift_conc"] = df["pm25_conc"].shift(1)
     df["delta"] = df["pm25_conc"] - df["shift_conc"]

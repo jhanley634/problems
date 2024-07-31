@@ -12,10 +12,12 @@ from requests_cache import CachedSession
 import cv2
 import numpy as np
 
+temp = Path("/tmp")
+
 
 @beartype
 def get_image(url: str = "https://i.stack.imgur.com/bhrAt.png") -> Image.Image:
-    cache_dir = Path("/tmp/k/url")
+    cache_dir = temp / "url"
     session = CachedSession(cache_name=f"{cache_dir}/requests_cache", expire_after=7200)
     buf = io.BytesIO(session.get(url).content)
     return Image.open(buf)
@@ -45,7 +47,7 @@ def main() -> None:
         aspect = round(w / h, 4)
         if w * h > 8_000 and 1.81 < aspect < 1.85:
             print(idx, roi.shape, aspect)
-            cv2.imwrite(f"/tmp/k/{idx}.jpg", roi)
+            cv2.imwrite(temp / f"{idx}.jpg", roi)
 
     cv2.imshow("img", thresh)
     cv2.waitKey(0)

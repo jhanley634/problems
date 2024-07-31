@@ -22,7 +22,7 @@ def proxy_report(url: str = "https://free-proxy-list.net/") -> None:
     prox = prox[prox.Https == "yes"]
     prox = prox[prox.Code.str.fullmatch(countries)]
     print(prox)
-    out_file = Path("/tmp/k/proxies.csv")
+    out_file = Path("/tmp/proxies.csv")
     prox.drop(columns=["Last Checked"]).to_csv(out_file, index=False)
 
 

@@ -29,7 +29,7 @@ def _get_df(
 
 def unicorn_report(url: str = URL) -> None:
     df = _get_df()
-    df.to_csv("/tmp/k/unicorns.csv", index=False)
+    df.to_csv("/tmp/unicorns.csv", index=False)
     with pd.option_context("display.max_rows", None):
         print(df.drop(columns=["founders"])[df.valuation >= 1])
 

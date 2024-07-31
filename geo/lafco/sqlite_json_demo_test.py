@@ -18,7 +18,7 @@ class JsonDemo(Base):  # type: ignore [misc, valid-type]
 
 class Demo:
     def __init__(self) -> None:
-        self.engine = sa.create_engine("sqlite:////tmp/k/json_demo.db")
+        self.engine = sa.create_engine("sqlite:////tmp/json_demo.db")
         metadata = sa.MetaData()
         metadata.create_all(self.engine, tables=[JsonDemo.__table__])
         self.base_url = "https://api.zippopotam.us"

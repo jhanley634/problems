@@ -18,7 +18,7 @@ import requests
 
 def get_oil_df(id_: str = "DCOILWTICO", since_year: int = 2010) -> pd.DataFrame:
     today = dt.datetime.today()
-    temp = Path("/tmp/k")
+    temp = Path("/tmp")
     csv = temp / f"{id_}.csv"
     if not csv.exists():
         base_url = "https://fred.stlouisfed.org/graph/fredgraph.csv"
