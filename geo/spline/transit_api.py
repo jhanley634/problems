@@ -34,13 +34,14 @@ def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
         d = query_transit(f"{TRANSIT}/StopMonitoring?agency={agency}")
         assert 1 == len(d), d
         assert d["ServiceDelivery"]["Status"], d
-        assert "CT" == d["ServiceDelivery"]["ProducerRef"], d
+        assert agency == d["ServiceDelivery"]["ProducerRef"], d
 
         deliv = d["ServiceDelivery"]["StopMonitoringDelivery"]
-        assert 4 == len(deliv), deliv
+        assert len(deliv) >= 4, deliv.keys()
         assert "1.4" == deliv["version"], deliv
         assert deliv["Status"], deliv
 
+        msgs = []
         visits = deliv["MonitoredStopVisit"]
         for visit in visits:
             if visit["RecordedAtTime"] < "1971-":  # invalid
@@ -49,26 +50,31 @@ def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
             journey = visit["MonitoredVehicleJourney"]
             assert 16 == len(journey.keys()), journey.keys()
             assert None is journey["InCongestion"], journey
-            print()
+            vehicle = journey["VehicleRef"]
+            call = journey["MonitoredCall"]
             msg = " ".join(
                 [
-                    journey["VehicleRef"],
+                    vehicle,
                     journey["DirectionRef"],
+                    call["StopPointRef"],  # cf StopPointName
                     journey["LineRef"],
                     journey["PublishedLineName"],
                     journey["DestinationName"],
                 ]
             )
-            print(msg)
-            pp(journey["VehicleLocation"])
+            msgs.append(msg)
+            # pp(journey["VehicleLocation"])
 
-            call = journey["MonitoredCall"]
             assert 10 == len(call.keys()), call.keys()
             aimed = dt.datetime.fromisoformat(call["AimedArrivalTime"])
+            if call["ExpectedArrivalTime"] is None:
+                continue
             expected = dt.datetime.fromisoformat(call["ExpectedArrivalTime"])
-            print("aimed:   ", aimed)
-            print("expected:", expected, "  ", expected - aimed)
+            # print("aimed:   ", aimed)
+            # print("expected:", expected, "  ", expected - aimed)
+            assert expected - aimed < dt.timedelta(days=1), call
 
+        print("\n".join(sorted(msgs)), "\n")
         sleep(polling_delay_sec)
 
 
