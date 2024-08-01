@@ -1,0 +1,76 @@
+#! /usr/bin/env python
+# Copyright 2024 John Hanley. MIT licensed.
+from pprint import pp
+from time import sleep
+from typing import Any
+import datetime as dt
+import json
+import os
+
+import requests
+
+TRANSIT = "http://api.511.org/transit"
+
+
+def query_transit(url: str) -> dict[str, Any]:
+    """Given a URL with no credential, returns an API result."""
+    assert "?" in url, url
+    api_key = os.environ["KEY511"]
+    url += f"&api_key={api_key}"
+    resp = requests.get(url)
+    resp.raise_for_status()
+    bom = "\ufeff"
+    hdr = resp.headers
+    assert hdr["Content-Type"] == "application/json; charset=utf-8"
+    assert hdr["Server"] == "Microsoft-IIS/10.0"
+    assert resp.text.startswith(bom)  # Grrr. Gee, thanks, μsoft!
+    d = json.loads(resp.text.lstrip(bom))
+    assert isinstance(d, dict), d
+    return d
+
+
+def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
+    while True:
+        d = query_transit(f"{TRANSIT}/StopMonitoring?agency={agency}")
+        assert 1 == len(d), d
+        assert d["ServiceDelivery"]["Status"], d
+        assert "CT" == d["ServiceDelivery"]["ProducerRef"], d
+
+        deliv = d["ServiceDelivery"]["StopMonitoringDelivery"]
+        assert 4 == len(deliv), deliv
+        assert "1.4" == deliv["version"], deliv
+        assert deliv["Status"], deliv
+
+        visits = deliv["MonitoredStopVisit"]
+        for visit in visits:
+            if visit["RecordedAtTime"] < "1971-":  # invalid
+                continue
+
+            journey = visit["MonitoredVehicleJourney"]
+            assert 16 == len(journey.keys()), journey.keys()
+            assert None is journey["InCongestion"], journey
+            print()
+            msg = " ".join(
+                [
+                    journey["VehicleRef"],
+                    journey["DirectionRef"],
+                    journey["LineRef"],
+                    journey["PublishedLineName"],
+                    journey["DestinationName"],
+                ]
+            )
+            print(msg)
+            pp(journey["VehicleLocation"])
+
+            call = journey["MonitoredCall"]
+            assert 10 == len(call.keys()), call.keys()
+            aimed = dt.datetime.fromisoformat(call["AimedArrivalTime"])
+            expected = dt.datetime.fromisoformat(call["ExpectedArrivalTime"])
+            print("aimed:   ", aimed)
+            print("expected:", expected, "  ", expected - aimed)
+
+        sleep(polling_delay_sec)
+
+
+if __name__ == "__main__":
+    query_stop()
