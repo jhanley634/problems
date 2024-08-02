@@ -78,5 +78,12 @@ def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
         sleep(polling_delay_sec)
 
 
+def query_vehicle(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
+    d = query_transit(f"{TRANSIT}/VehicleMonitoring?agency={agency}")
+    assert 1 == len(d), d
+    siri = d["Siri"]
+    breakpoint()
+
+
 if __name__ == "__main__":
-    query_stop()
+    query_vehicle()
