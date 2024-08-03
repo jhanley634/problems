@@ -54,6 +54,8 @@ def query_stop(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
 
             call = journey["MonitoredCall"]
             assert 10 == len(call.keys()), call.keys()
+            if not call["AimedArrivalTime"]:
+                continue
             aimed = dt.datetime.fromisoformat(call["AimedArrivalTime"])
             if call["ExpectedArrivalTime"] is None:
                 continue
@@ -68,10 +70,9 @@ def query_stop(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
 
 
 def fmt_lat_lng(location: dict[str, str]) -> str:
-    lat, lng = map(
-        float,
-        (location["Latitude"], location["Longitude"]),
-    )
+    latitude = location["Latitude"] or "0.0"
+    longitude = location["Longitude"] or "0.0"
+    lat, lng = map(float, (latitude, longitude))
     return f"{lat:.6f}, {lng:.6f}"
 
 
@@ -105,11 +106,11 @@ def _fmt_msg(journey: dict[str, Any], width: int = 38) -> str:
     return " ".join(
         [
             journey["VehicleRef"],
-            journey["DirectionRef"],
+            (journey["DirectionRef"] or "-"),
             call["StopPointRef"],  # cf StopPointName
-            journey["LineRef"].ljust(10),
-            (journey["PublishedLineName"] + pad)[:width],
-            journey["DestinationName"].ljust(46),
+            (journey.get("LineRef") or "-").ljust(10),
+            ((journey.get("PublishedLineName") or "-") + pad)[:width],
+            (journey["DestinationName"] or "-").ljust(46),
             fmt_lat_lng(journey["VehicleLocation"]),
         ]
     )
