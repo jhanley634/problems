@@ -9,7 +9,7 @@ import cv2
 lena = Path("/tmp/Q3hecnZb.png")
 
 
-def main():
+def main() -> None:
     img = cv2.imread(lena)
     height, width, depth = img.shape
     assert depth == 3

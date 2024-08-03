@@ -29,7 +29,7 @@ def query_transit(url: str) -> dict[str, Any]:
     return d
 
 
-def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
+def query_stop(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
     while True:
         d = query_transit(f"{TRANSIT}/StopMonitoring?agency={agency}")
         assert 1 == len(d), d
@@ -50,21 +50,9 @@ def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
             journey = visit["MonitoredVehicleJourney"]
             assert 16 == len(journey.keys()), journey.keys()
             assert None is journey["InCongestion"], journey
-            vehicle = journey["VehicleRef"]
-            call = journey["MonitoredCall"]
-            msg = " ".join(
-                [
-                    vehicle,
-                    journey["DirectionRef"],
-                    call["StopPointRef"],  # cf StopPointName
-                    journey["LineRef"],
-                    journey["PublishedLineName"],
-                    journey["DestinationName"],
-                ]
-            )
-            msgs.append(msg)
-            # pp(journey["VehicleLocation"])
+            msgs.append(_fmt_msg(journey))
 
+            call = journey["MonitoredCall"]
             assert 10 == len(call.keys()), call.keys()
             aimed = dt.datetime.fromisoformat(call["AimedArrivalTime"])
             if call["ExpectedArrivalTime"] is None:
@@ -74,15 +62,57 @@ def query_stop(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
             # print("expected:", expected, "  ", expected - aimed)
             assert expected - aimed < dt.timedelta(days=1), call
 
+        pp(journey["VehicleLocation"])
         print("\n".join(sorted(msgs)), "\n")
         sleep(polling_delay_sec)
 
 
-def query_vehicle(agency: str = "CT", polling_delay_sec: float = 20.0) -> None:
+def fmt_lat_lng(location: dict[str, str]) -> str:
+    lat, lng = map(
+        float,
+        (location["Latitude"], location["Longitude"]),
+    )
+    return f"{lat:.6f}, {lng:.6f}"
+
+
+def query_vehicle(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
     d = query_transit(f"{TRANSIT}/VehicleMonitoring?agency={agency}")
     assert 1 == len(d), d
-    siri = d["Siri"]
-    breakpoint()
+    assert 1 == len(d["Siri"]), d
+
+    svc = d["Siri"]["ServiceDelivery"]
+    keys = ["ProducerRef", "ResponseTimestamp", "Status", "VehicleMonitoringDelivery"]
+    assert keys == sorted(svc.keys()), svc.keys()
+    assert svc["Status"]
+    assert agency == svc["ProducerRef"]
+
+    deliv = svc["VehicleMonitoringDelivery"]
+    assert 3 == len(deliv.keys()), deliv.keys()
+    assert "1.4" == deliv["version"]
+
+    msgs = [
+        _fmt_msg(record["MonitoredVehicleJourney"])
+        for record in deliv["VehicleActivity"]
+        if record["MonitoredVehicleJourney"].get("MonitoredCall")
+    ]
+    assert sorted(msgs) == msgs, msgs
+    print("\n".join(msgs))
+
+
+def _fmt_msg(journey: dict[str, Any], width: int = 38) -> str:
+    pad = " " * width
+    call = journey["MonitoredCall"]
+    return " ".join(
+        [
+            journey["VehicleRef"],
+            journey["DirectionRef"],
+            call["StopPointRef"],  # cf StopPointName
+            journey["LineRef"].ljust(10),
+            (journey["PublishedLineName"] + pad)[:width],
+            journey["DestinationName"].ljust(46),
+            fmt_lat_lng(journey["VehicleLocation"]),
+        ]
+    )
 
 
 if __name__ == "__main__":
