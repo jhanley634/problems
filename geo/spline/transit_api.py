@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from pathlib import Path
 from pprint import pp
 from time import sleep
 from typing import Any
@@ -76,7 +77,7 @@ def fmt_lat_lng(location: dict[str, str]) -> str:
     return f"{lat:.6f}, {lng:.6f}"
 
 
-def query_vehicle(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
+def query_vehicle(agency: str = "SC", polling_delay_sec: float = 20.0) -> list[str]:
     d = query_transit(f"{TRANSIT}/VehicleMonitoring?agency={agency}")
     assert 1 == len(d), d
     assert 1 == len(d["Siri"]), d
@@ -98,6 +99,7 @@ def query_vehicle(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
     ]
     assert sorted(msgs) == msgs, msgs
     print("\n".join(msgs))
+    return msgs
 
 
 def _fmt_msg(journey: dict[str, Any], width: int = 38) -> str:
@@ -114,6 +116,20 @@ def _fmt_msg(journey: dict[str, Any], width: int = 38) -> str:
             fmt_lat_lng(journey["VehicleLocation"]),
         ]
     )
+
+
+def vehicle_timeseries(agency: str = "SC", polling_delay_sec: float = 20.0) -> None:
+    route_folder = Path("/tmp/route")
+    route_folder.mkdir(exist_ok=True)
+
+    for _ in range(10):
+        now = dt.datetime.now().isoformat()
+        for msg in query_vehicle(agency, polling_delay_sec):
+            route = msg.split()[0]
+            lat, lng = msg.replace(",", " ").split()[-2:]
+            with open(route_folder / f"{route}.csv", "a") as fout:
+                fout.write(f"{now},{lat},{lng}\n")
+        sleep(polling_delay_sec)
 
 
 if __name__ == "__main__":
