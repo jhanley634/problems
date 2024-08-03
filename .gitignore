@@ -13,6 +13,7 @@ __pycache__/
 best_pipeline.pkl
 cache/
 dump.rdb
+geo/htmx/htmx.db
 geo/ski/so/Cargo.lock
 geo/ski/so/median
 geo/ski/so/target/
