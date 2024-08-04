@@ -1,5 +1,10 @@
 # Copyright 2024 John Hanley. MIT licensed.
-from flask import render_template, request
+from collections import deque
+from collections.abc import Generator
+from time import sleep
+import datetime as dt
+
+from flask import Response, render_template, request
 
 from geo.htmx import app, db
 from geo.htmx.models import Author, Book
@@ -141,3 +146,16 @@ def update_book(id: str) -> str:
     </tr>
     """
     return response
+
+
+@app.route("/sse", methods=["GET"])  # type: ignore [misc]
+def sse() -> Response:
+    def event_stream() -> Generator[str, None, None]:
+        while messages:
+            msg = messages.popleft()
+            counter = repr({"time": dt.datetime.now().isoformat(), "counter": msg})
+            yield f"event: count\ndata: {counter}\n\n"
+            sleep(2)
+
+    messages = deque(["one", "two", "three"])
+    return Response(event_stream(), mimetype="text/event-stream")

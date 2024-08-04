@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Apple macOS version 5.8.0">
+  <title>Server Side Event demo</title>
+  <script>
+var sse = $.SSE("http://localhost:5000/sse", {
+  onMessage: function (e) {
+    console.log("Message");
+    console.log(e);
+  },
+});
+sse.start();
+  </script>
+</head>
+<body>
+  <p>Hello.</p>
+</body>
+</html>
