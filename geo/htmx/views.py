@@ -1,4 +1,5 @@
 # Copyright 2024 John Hanley. MIT licensed.
+# based on https://github.com/codecapsules-io/codecapsules-docs/blob/main/docs/tutorials/build-flask-htmx-app.md
 from collections import deque
 from collections.abc import Generator
 from time import sleep
@@ -157,5 +158,10 @@ def sse() -> Response:
             yield f"event: count\ndata: {counter}\n\n"
             sleep(2)
 
-    messages = deque(["one", "two", "three"])
+    messages = deque(["one", "two", "three", "four", "five"])
     return Response(event_stream(), mimetype="text/event-stream")
+
+
+@app.route("/sse-jq", methods=["GET"])  # type: ignore [misc]
+def sse_jq() -> str:
+    return render_template("sse.html")

@@ -4,14 +4,21 @@
   <meta name="generator" content=
   "HTML Tidy for HTML5 for Apple macOS version 5.8.0">
   <title>Server Side Event demo</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-sse@0.1.5/jquery.sse.min.js"></script>
   <script>
-var sse = $.SSE("http://localhost:5000/sse", {
+var sse = $.SSE("/sse", {
   onMessage: function (e) {
     console.log("Message");
     console.log(e);
   },
 });
 sse.start();
+console.log("starting...");
+console.log(sse._settings);
+for (var i in sse) {
+  console.log(i);
+};
   </script>
 </head>
 <body>

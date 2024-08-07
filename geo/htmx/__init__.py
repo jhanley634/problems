@@ -4,6 +4,7 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Connection
 
 
 def _get_persistent_path() -> Path:
@@ -24,3 +25,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy()
 db.init_app(app)
+
+
+def get_conn() -> Connection:
+    return db.engine.connect()
