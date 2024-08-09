@@ -68,6 +68,7 @@ dependencies:
   - openml >= 0.14.2
   - openpyxl >= 3.1.5
   - osmnx >= 1.9.3
+  - paddleocr >= 2.8.1
   - palettable >= 3.3.3
   - pandas >= 2.2.2
   - pandas-stubs >= 2.2.2.240603

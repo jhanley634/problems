@@ -1,15 +1,12 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/293180/difference-of-gaussian-function
-from pathlib import Path
-
 import cv2
-
-# lena = "https://i.sstatic.net/Q3hecnZb.png"
-lena = Path("/tmp/Q3hecnZb.png")
 
 
 def main() -> None:
+    # lena = "https://i.sstatic.net/Q3hecnZb.png"
+    lena = "/tmp/Q3hecnZb.png"
     img = cv2.imread(lena)
     height, width, depth = img.shape
     assert depth == 3
