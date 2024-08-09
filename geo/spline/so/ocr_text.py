@@ -2,6 +2,8 @@
 # Copyright 2024 John Hanley. MIT licensed.
 from pathlib import Path
 
+from doctr.io import DocumentFile
+from doctr.models import ocr_predictor
 from PIL import Image
 import pytesseract as tess
 import requests
@@ -18,6 +20,11 @@ def ocr_text() -> None:
     img = Image.open(img_file)
     s = tess.image_to_string(img, config=f"--psm {psm}")
     print(s)
+
+    model = ocr_predictor(pretrained=True)
+    doc = DocumentFile.from_images([img_file])
+    result = model(doc)
+    print(result.render())
 
 
 if __name__ == "__main__":
