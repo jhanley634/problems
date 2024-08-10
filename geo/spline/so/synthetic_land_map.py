@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/78857047/optimizing-numpy-vectorization-for-map-generation
+import time
+
+from matplotlib import colors
+from matplotlib import pyplot as plt
 import numpy as np
 
 
@@ -118,7 +122,7 @@ class MapDataGen:
                         # Store it because it is still a border tile.
                         self.newborders.append(new_tile_index)
 
-    def default_procedure(self):
+    def default_procedure(self) -> None:
         """
         Default procedure: upscale (or zoom into) the map and texturize borders.
 
@@ -129,3 +133,28 @@ class MapDataGen:
         self.borders = self.newborders
         self.newborders = []
         self.world_map = self.newmap
+
+
+if __name__ == "__main__":
+
+    wmg = MapDataGen(13, 3)
+    wmg.add_land(1, (1, 1), (7, 7))
+    wmg.add_land(1, (8, 8), (12, 12))
+    plt.title("Starting Map")
+    colormap = colors.ListedColormap(
+        [
+            [21.0 / 255, 128.0 / 255, 209.0 / 255],
+            [227.0 / 255, 217.0 / 255, 159.0 / 255],
+        ]
+    )
+    plt.imshow(wmg.world_map, interpolation="nearest", cmap=colormap)
+    plt.savefig(f"iteration {0}.png")
+    plt.show()
+    for i in range(7):
+        start = time.time()
+        wmg.default_procedure()
+        end = time.time()
+        plt.title(f"iteration {i+1} took {end-start} seconds")
+        plt.imshow(wmg.world_map, interpolation="nearest", cmap=colormap)
+        plt.savefig(f"{i}.png")
+        plt.show()
