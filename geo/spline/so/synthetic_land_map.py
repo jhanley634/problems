@@ -6,8 +6,9 @@ import time
 
 from beartype import beartype
 from matplotlib import colors
-from matplotlib import pyplot as plt
 from numpy.typing import NDArray
+from scipy import ndimage
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -165,5 +166,21 @@ def main(n: int = 6) -> None:
     print()
 
 
+def haberland(n: int = 10) -> None:
+    rng = np.random.default_rng(1)
+    a = np.zeros((4, 4)).astype(bool)
+    a[1:3, 1:3] = 1
+
+    for j in range(n):
+        a = ndimage.zoom(a, 2, order=0)
+        b = ndimage.uniform_filter(a.astype(np.float32))
+        z = rng.random(a.sum())
+        a[a] = b[a] > z
+
+    plt.imshow(a)
+    plt.show()
+
+
 if __name__ == "__main__":
+    haberland()
     main()
