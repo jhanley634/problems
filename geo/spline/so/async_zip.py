@@ -8,18 +8,18 @@ import shutil
 import tempfile
 
 
-def create_zip(dir_to_zip: Path, output_dir: Path):
+def create_zip(dir_to_zip: Path, output_dir: Path) -> None:
     """Zip a directory.
 
-    Args:
-        dir_to_zip (Path): Directory to zip.
-        output_dir (Path): Dir where the zip will be written.
+    dir_to_zip (Path): Directory to zip.
+    output_dir (Path): Dir where the zip will be written.
+
     """
     try:
         dest_file_no_ext = output_dir.joinpath(dir_to_zip.name)
         print(
             f"{datetime.now()}: Creating ZIP archive: {dest_file_no_ext.name}.zip from "
-            f"{dir_to_zip.name}"
+            f"{dir_to_zip.name}",
         )
 
         # You could swap the call below with
@@ -32,22 +32,24 @@ def create_zip(dir_to_zip: Path, output_dir: Path):
             dir_to_zip.name,  # Dir to include in the zip
         )
         print(f"{datetime.now()}: Created: {dest_file_no_ext.name}.zip.")
-    except Exception as e:
+    except Exception:
         print(
             "asyncio.TaskGroup fails in its entirety if any exceptions occur "
-            "but I would simply swallow and log any exceptions here."
+            "but I would simply swallow and log any exceptions here.",
         )
+        raise
 
 
-async def async_create_zip(dir_to_zip: Path, output_dir: Path):
+async def async_create_zip(dir_to_zip: Path, output_dir: Path) -> None:
     loop = asyncio.get_event_loop()
     create_zip_task = loop.run_in_executor(
-        None, lambda: create_zip(dir_to_zip, output_dir)
+        None,
+        lambda: create_zip(dir_to_zip, output_dir),
     )
     await create_zip_task
 
 
-async def make_packages():
+async def make_packages() -> None:
     def create_fake_dir(fake_dir: Path, num_bytes: int) -> Path:
         # Test function to create directories containing
         # files of various sizes.
@@ -60,9 +62,10 @@ async def make_packages():
 
     with tempfile.TemporaryDirectory() as td:
         tempdir = Path(td)
+        tempdir = Path("/tmp")
 
-        input_dir = tempdir.joinpath("input")
         output_dir = tempdir.joinpath("output")
+        print(f"output_dir: {output_dir}")
 
         # In my real code, the dirs come from multiple locations.
         test_dirs = [
@@ -94,7 +97,8 @@ async def make_packages():
         total = (end - start).total_seconds()
         print(f"total time: {total}")
 
-def run():
+
+def run() -> None:
     # Creating zips might be a bit slow, so lets try
     # and run zip creation asynchronously.
     asyncio.run(make_packages())
