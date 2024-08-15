@@ -88,6 +88,13 @@ class MapDataGen:
         # \/Old version\/.
         # self.newmap = np.repeat(np.repeat(self.worldmap, 2, axis=0), 2, axis=1)
 
+    @staticmethod
+    def unique_counts(
+        array: NDArray[np.uint8],
+    ) -> tuple[NDArray[np.uint8], NDArray[np.int32]]:
+        # Available in numpy 2, but spacy is holding us back.
+        return np.unique(array, return_counts=True, equal_nan=False)
+
     def check_tile(self, index: tuple[int, int]) -> None:
         """
         Texturize borders and update new borders.
@@ -102,7 +109,7 @@ class MapDataGen:
             pass
         else:
             # The values of unique tiles and their counts.
-            values, counts = np.unique_counts(self.neighbours(index, 1))
+            values, counts = self.unique_counts(self.neighbours(index, 1))
             # Randomly change each of the 4 newly descended tiles of the original tile to either water or not.
             for row in range(2):
                 for column in range(2):
