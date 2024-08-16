@@ -3,12 +3,13 @@
 # from https://codereview.stackexchange.com/questions/293319/zipping-many-files
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 import asyncio
 import shutil
 import tempfile
 
 
-def create_zip(dir_to_zip: Path, output_dir: Path) -> None:
+def create_zip(dir_to_zip: Path, output_dir: Path, epsilon: float = 1e-3) -> None:
     """Zip a directory.
 
     dir_to_zip (Path): Directory to zip.
@@ -16,7 +17,7 @@ def create_zip(dir_to_zip: Path, output_dir: Path) -> None:
 
     """
     try:
-        dest_file_no_ext = output_dir.joinpath(dir_to_zip.name)
+        dest_file_no_ext = output_dir.joinpath(dir_to_zip.stem)
         print(
             f"{datetime.now()}: Creating ZIP archive: {dest_file_no_ext.name}.zip from "
             f"{dir_to_zip.name}",
@@ -26,12 +27,13 @@ def create_zip(dir_to_zip: Path, output_dir: Path) -> None:
         # sleep(10) or something to test without actually creating files.
 
         shutil.make_archive(
-            dest_file_no_ext.as_posix(),  # Name of zip without ext.
+            dest_file_no_ext,  # Name of zip without ext.
             "zip",
             dir_to_zip.parent,  # Dir to zip from.
             dir_to_zip.name,  # Dir to include in the zip
         )
         print(f"{datetime.now()}: Created: {dest_file_no_ext.name}.zip.")
+        sleep(epsilon)
     except Exception:
         print(
             "asyncio.TaskGroup fails in its entirety if any exceptions occur "
