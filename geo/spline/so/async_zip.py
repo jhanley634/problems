@@ -27,7 +27,7 @@ def create_zip(dir_to_zip: Path, output_dir: Path, epsilon: float = 1e-3) -> Non
         # sleep(10) or something to test without actually creating files.
 
         shutil.make_archive(
-            dest_file_no_ext,  # Name of zip without ext.
+            f"{dest_file_no_ext}",  # Name of zip without ext.
             "zip",
             dir_to_zip.parent,  # Dir to zip from.
             dir_to_zip.name,  # Dir to include in the zip
