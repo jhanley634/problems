@@ -2,6 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 from collections import Counter, defaultdict
 from collections.abc import Generator
+from hashlib import file_digest, sha3_224
 from pathlib import Path
 import io
 import re
@@ -117,6 +118,7 @@ desktop = Path("~/Desktop").expanduser()
 def extract_all_customer_addrs(
     in_csv: Path = desktop / "lafco/district-db.csv",
 ) -> pd.DataFrame:
+    assert (670417, "38d34a95") == fingerprint(in_csv)
     df = pd.DataFrame(_get_df(in_csv))
     df = df.sort_values(by=["city", "st", "street", "housenum"])
     df.to_csv("/tmp/resident_addr.csv", index=False)
@@ -124,4 +126,14 @@ def extract_all_customer_addrs(
     return df
 
 
-typer.run(extract_all_customer_addrs)
+def fingerprint(in_file: Path, nybbles: int = 8) -> tuple[int, str]:
+    """Returns the given file's size along with a truncated SHA3 hash,
+    so we know we have the expected file version.
+    """
+    with open(in_file, "rb") as fin:
+        digest = file_digest(fin, sha3_224)
+    return in_file.stat().st_size, digest.hexdigest()[:nybbles]
+
+
+if __name__ == "__main__":
+    typer.run(extract_all_customer_addrs)
