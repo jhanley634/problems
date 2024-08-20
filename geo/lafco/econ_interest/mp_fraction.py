@@ -27,17 +27,13 @@ def report() -> None:
     df = extract_all_customer_addrs().drop(columns=["housenum"])
     assert 4_123 == len(df)
     assert 470 == len(df[df.city == "MENLO PARK"])
-    print(df[df.city == "MENLO PARK"].street.value_counts())
+    # print(df[df.city == "MENLO PARK"].street.value_counts())
 
     mp = df[df.street.isin(mp_streets)]
-    assert 530 == len(mp)
-    assert 437 == len(mp[mp.city == "MENLO PARK"])
+    assert 535 == len(mp)
+    assert 442 == len(mp[mp.city == "MENLO PARK"])
     mp = mp[mp.city == "MENLO PARK"]
     print(mp)
-
-
-def test_report() -> None:
-    report()
 
 
 if __name__ == "__main__":

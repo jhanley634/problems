@@ -7,6 +7,7 @@ from pathlib import Path
 import io
 import re
 
+import numpy as np
 import pandas as pd
 import typer
 
@@ -120,6 +121,7 @@ def extract_all_customer_addrs(
 ) -> pd.DataFrame:
     assert (670417, "38d34a95") == fingerprint(in_csv)
     df = pd.DataFrame(_get_df(in_csv))
+    df["street"] = np.where(df.street == "O'CONNOR ST", "OCONNOR ST", df.street)
     df = df.sort_values(by=["city", "st", "street", "housenum"])
     df.to_csv("/tmp/resident_addr.csv", index=False)
     assert 4123 == len(df), len(df)
