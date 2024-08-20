@@ -7,7 +7,7 @@ import pandas as pd
 import seaborn as sns
 
 
-def main(in_csv=Path("/tmp/fibo.csv")) -> None:
+def main(in_csv: Path = Path("/tmp/fibo.csv")) -> None:
     sns.set_theme()
     df = pd.read_csv(in_csv)
     print(df[df.type == "recursive"].drop(columns=["type"]))

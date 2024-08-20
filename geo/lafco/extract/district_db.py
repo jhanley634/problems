@@ -111,11 +111,17 @@ def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
     return {street: city_count[street].most_common(1)[0][0] for street in city_count}
 
 
-def extract_all_customer_addrs(in_csv: Path = Path("lafco/district-db.csv")) -> None:
+desktop = Path("~/Desktop").expanduser()
+
+
+def extract_all_customer_addrs(
+    in_csv: Path = desktop / "lafco/district-db.csv",
+) -> pd.DataFrame:
     df = pd.DataFrame(_get_df(in_csv))
     df = df.sort_values(by=["city", "st", "street", "housenum"])
     df.to_csv("/tmp/resident_addr.csv", index=False)
     assert 4123 == len(df), len(df)
+    return df
 
 
 typer.run(extract_all_customer_addrs)

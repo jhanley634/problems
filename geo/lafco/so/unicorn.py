@@ -14,6 +14,7 @@ def _get_df(
     tables = pd.read_html(url)
     penultimate = -2
     df = clean_column_names(tables[penultimate])
+    assert isinstance(df, pd.DataFrame)
     df = df[df.country_countries.str.contains(focus_country)]
     df = df.rename(columns={"valuation_us_billions": "valuation"})
     df = df.drop(columns=["valuation_date", "country_countries"])

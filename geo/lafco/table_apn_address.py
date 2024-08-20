@@ -18,6 +18,7 @@ def create_table_apn_address() -> Engine:
     assert 5479 == len(df), len(df)
 
     engine = get_engine()
+    assert isinstance(engine, Engine)
     metadata = MetaData()
     metadata.create_all(engine, tables=[ApnAddress.__table__])
     with get_session() as sess:

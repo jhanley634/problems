@@ -14,6 +14,7 @@ from geo.lafco.model import Owner
 
 def _get_df() -> pd.DataFrame:
     csv = LAFCO_DIR / "2024-05-21 qry EPASD APNs Landowner Protests.csv"
+    csv = Path(f"{csv}".replace(" ", "_"))
     df = clean_column_names(pd.read_csv(csv))
     df = df[df.signed_protest_form]
     assert 745, 6 == df.shape

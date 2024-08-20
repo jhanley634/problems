@@ -9,7 +9,7 @@ import requests
 
 def _get_rows() -> Generator[str, None, None]:
     url = "https://en.wikipedia.org/wiki/Summer_Olympic_Games"
-    html = requests.get(url).content
+    html = requests.get(url).text
     dfs = pd.read_html(html)
     df = dfs[2]
     assert df.Sport[0] == "3x3 Basketball"
