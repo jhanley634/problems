@@ -27,7 +27,6 @@ def report() -> None:
     df = extract_all_customer_addrs().drop(columns=["housenum"])
     assert 4_123 == len(df)
     assert 470 == len(df[df.city == "MENLO PARK"])
-    # print(df[df.city == "MENLO PARK"].street.value_counts())
 
     mp = df[df.street.isin(mp_streets)]
     assert 535 == len(mp)
