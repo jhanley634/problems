@@ -14,6 +14,7 @@ best_pipeline.pkl
 cache/
 dump.rdb
 geo/htmx/htmx.db
+geo/poll/db.sqlite3
 geo/ski/so/Cargo.lock
 geo/ski/so/median
 geo/ski/so/target/
