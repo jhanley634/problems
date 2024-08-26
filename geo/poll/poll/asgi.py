@@ -1,3 +1,4 @@
+# Copyright 2024 John Hanley. MIT licensed.
 """
 ASGI config for poll project.
 

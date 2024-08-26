@@ -1,3 +1,4 @@
+# Copyright 2024 John Hanley. MIT licensed.
 """
 URL configuration for poll project.
 

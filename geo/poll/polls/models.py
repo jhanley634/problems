@@ -1,3 +1,4 @@
+# Copyright 2024 John Hanley. MIT licensed.
 import datetime
 
 from django.db import models

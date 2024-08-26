@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
+# Copyright 2024 John Hanley. MIT licensed.
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

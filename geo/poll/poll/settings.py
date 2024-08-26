@@ -1,3 +1,4 @@
+# Copyright 2024 John Hanley. MIT licensed.
 """
 Django settings for poll project.
 

@@ -1,3 +1,4 @@
+# Copyright 2024 John Hanley. MIT licensed.
 from django.apps import AppConfig
 
 
