@@ -2,6 +2,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+assert render
+
 
 def index(request):
     return HttpResponse("Hello, world.<p>You're at the polls index.")

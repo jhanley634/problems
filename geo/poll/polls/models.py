@@ -12,6 +12,8 @@ from django.db.models import (
 )
 from django.utils import timezone
 
+assert models
+
 
 class Question(Model):
     question_text = CharField(max_length=200)
