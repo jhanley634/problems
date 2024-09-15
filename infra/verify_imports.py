@@ -110,7 +110,6 @@ from sortedcontainers import SortedList  # noqa F401
 from spacy import Language  # noqa F401
 from spacy.cli import download  # noqa F401
 from spacy.tokens import Span  # noqa F401
-from streamlit_image_coordinates import streamlit_image_coordinates  # noqa F401
 from tqdm import tqdm  # noqa F401
 from transformers import T5ForConditionalGeneration, T5Tokenizer  # noqa F401
 from typer import Option  # noqa F401

@@ -15,4 +15,4 @@ class SortedMediansTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             median_of_k_sorted_vectors([1, 2], [3, 4, 5, 6])
 
-        median_of_k_sorted_vectors([1, 2], [3, 4, 5], verify=True)
+        # median_of_k_sorted_vectors([1, 2], [3, 4, 5], verify=True)

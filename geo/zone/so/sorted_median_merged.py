@@ -1,6 +1,6 @@
 # Copyright 2024 John Hanley. MIT licensed.
 from collections.abc import Callable
-from operator import __ge__, __gt__, __le__, __lt__
+from operator import __gt__, __lt__
 
 from typing_extensions import NamedTuple
 import numpy as np
@@ -78,6 +78,10 @@ def s_m_merged_median_index(a: list[int], b: list[int], verify: bool = True) -> 
     b_hi = len(b)
     m_hi = a_hi + b_hi
 
+    print(f"tgt_idx={tgt_idx}")
+
+    a_idx = b_idx = 0
+
     while m_lo < m_hi:
         m_delta = (m_hi - m_lo) // 2
         a_delta = (a_hi - a_lo) // 2
@@ -91,3 +95,7 @@ def s_m_merged_median_index(a: list[int], b: list[int], verify: bool = True) -> 
 
         m_lo = a_lo + b_lo
         m_hi = a_hi + b_hi
+
+    print(f"m_lo={m_lo} m_hi={m_hi} m_delta={m_delta}")
+    print(a_elt, b_elt)
+    print(a_mid_elt, b_mid_elt)

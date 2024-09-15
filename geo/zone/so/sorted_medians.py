@@ -111,7 +111,7 @@ def _median_k(vecs: list[SortedList]) -> tuple[int, int]:
         v = argmax(sizes)
         # Propose to discard all values from vecs[v]
         # that are either above or below the value at the cut index.
-        cut = randrange(rng[v][0], rng[v][1])
+        cut = randrange(rng[v][0], rng[v][1] + 1)
 
         if feasible():
             trim()
