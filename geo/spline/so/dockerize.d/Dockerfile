@@ -4,7 +4,7 @@
 #     docker build -t pandoc .
 #
 # to get a bash prompt:
-#     docker run -it pandoc
+#     docker run -v /tmp/k:/tmp/k -it pandoc
 
 # Noble, LTS
 FROM ubuntu:24.04
@@ -15,11 +15,11 @@ RUN apt-get update && \
     apt-get install -y \
         build-essential \
         curl \
-        gnupg \
-        lsb-release \
         iputils-ping \
-        traceroute \
+        lsb-release \
+        python3-pip \
         telnet \
+        traceroute \
         wget \
     && true
 
@@ -28,10 +28,10 @@ RUN apt-get install -y \
         nginx \
         pandoc \
         texlive \
-        texlive-latex-extra \
         texlive-fonts-recommended \
-        texlive-fonts-extra \
     && apt-get clean
+#        texlive-latex-extra \
+#        texlive-fonts-extra \
 
 WORKDIR /opt
 
