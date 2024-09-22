@@ -3,20 +3,11 @@ from contextlib import contextmanager
 import unittest
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.sql import func as fn
 import polars as pl
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-class Podcaster(Base):
-    __tablename__ = "podcaster"
-    name: Mapped[str] = mapped_column(primary_key=True)
-    age: Mapped[int]
-
+from geo.spline.pybay_2024.podcaster_model import Base, Podcaster
 
 engine = create_engine(url="sqlite:////tmp/podcaster.db")
 
