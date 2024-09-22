@@ -9,6 +9,7 @@
 .ipynb_checkpoints/
 .pyre/
 .pyre_configuration
+.pyre_configuration.local
 .pytype/
 Untitled.ipynb
 __pycache__/

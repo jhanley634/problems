@@ -1,6 +1,10 @@
 
-[tool.ruff]
-line-length = 120
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "def main\\(",
+]
 
 [tool.pylint]
 [tool.pylint.'MESSAGES CONTROL']
@@ -18,9 +22,8 @@ disable = """
     W3101, missing-timeout,
 """
 
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "if __name__ == .__main__.:",
-    "def main\\(",
-]
+[tool.pyright]
+reportMissingTypeStubs = false
+
+[tool.ruff]
+line-length = 120
