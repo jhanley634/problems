@@ -71,6 +71,7 @@ dependencies:
   - pillow >= 10.4.0
   - plotnine >= 0.13.6
   - polars >= 1.7.1
+  - pre-commit >= 4.0.1
   - psutil >= 6.0.0
   - pyarrow >= 17.0.0
   - pyaudioanalysis >= 0.3.14
