@@ -10,7 +10,6 @@ from collections import deque  # noqa F401
 from collections import namedtuple  # noqa F401
 from collections.abc import Generator  # noqa F401
 from dataclasses import dataclass  # noqa F401
-from distutils.core import setup  # noqa F401
 from enum import Enum, auto  # noqa F401
 from functools import lru_cache  # noqa F401
 from functools import partial  # noqa F401
@@ -80,8 +79,6 @@ from hypothesis import given  # noqa F401
 from ipyleaflet import AwesomeIcon, Map, Marker, basemaps  # noqa F401
 from markdownify import markdownify  # noqa F401
 from memory_profiler import profile  # noqa F401
-from numba import njit  # noqa F401
-from numba import int_, jit  # noqa F401
 from numpy import dtype  # noqa F401
 from numpy import loadtxt  # noqa F401
 from numpy import nan  # noqa F401
