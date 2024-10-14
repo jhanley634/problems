@@ -20,7 +20,7 @@ def feature_subset(
     *,
     num_features: int | None = None,
     fraction: float = 1.0,
-    keep: int = 1
+    keep: int = 1,
 ) -> pd.DataFrame:
     assert len(df.shape) == 2, df.shape
 
@@ -33,6 +33,6 @@ def feature_subset(
     for col in cols:
         if df.shape[1] <= nc:
             break
-        df.drop(columns=[col], inplace=True)
+        df = df.drop(columns=[col])
 
     return df

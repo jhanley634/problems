@@ -1,3 +1,5 @@
+# Copyright 2024 John Hanley. MIT licensed.
+
 from collections.abc import Generator
 from contextlib import contextmanager
 import unittest

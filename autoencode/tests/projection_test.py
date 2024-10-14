@@ -13,8 +13,8 @@ class TestProjection(unittest.TestCase):
 
     def test_feature_subset(self) -> None:
         rows = [
-            dict(a=1, b=2, c=3, d=4, e=5),
-            dict(a=6, b=7, c=8, d=9, e=10),
+            {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5},
+            {"a": 6, "b": 7, "c": 8, "d": 9, "e": 10},
         ]
         df = pd.DataFrame(rows)
         self.assertEqual("a b c d e", " ".join(df.columns))

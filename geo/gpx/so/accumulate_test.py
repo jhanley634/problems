@@ -17,7 +17,7 @@ def accumulate1(
     iterable: Iterable[int],
     func: Callable[[int, int], int] = operator.add,
     *,
-    initial: int | None = None
+    initial: int | None = None,
 ) -> Generator[int, None, None]:
     """Return running totals -- from the python documentation.
 

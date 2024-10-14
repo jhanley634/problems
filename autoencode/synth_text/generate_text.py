@@ -8,11 +8,13 @@ _desktop = Path("~/Desktop").expanduser()
 
 
 class GenerateSyntheticTextImage:
-    def __init__(self, width: int = 32, height: int = 32, out_dir: Path = _desktop):
+    def __init__(
+        self, width: int = 32, height: int = 32, out_dir: Path = _desktop
+    ) -> None:
         self.width = width
         self.height = height
         self.out_dir = out_dir.expanduser()
 
     def generate(self, id_: int = 1001, text: str = "A") -> None:
         d = ImageDraw(Image())
-        d.text((0, 0), "hi")
+        d.text((0, 0), f"hi {id_} {text}")
