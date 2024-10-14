@@ -14,7 +14,7 @@ def web_page(messy_html: str, title: str = "sudoku") -> str:
     return cleanup(f"<head><title>{title}</head><body>{messy_html}")
 
 
-def cleanup(messy_html: str, title: str = "sudoku") -> str:
+def cleanup(messy_html: str) -> str:
     soup = BeautifulSoup(messy_html, "html.parser")
     return soup.prettify()
 
@@ -39,9 +39,9 @@ def show(grid: str) -> str:
 
 @app.route("/edit/<grid>")  # type: ignore [misc]
 def edit(grid: str) -> str:
-    form = """
+    return f"""
+    {grid}
     """
-    return form
 
 
 if __name__ == "__main__":

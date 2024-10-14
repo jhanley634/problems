@@ -25,7 +25,7 @@ class Constraint(Enum):
 class Grid:
     """Models a Sudoku grid."""
 
-    def __init__(self, size: int = 3):
+    def __init__(self, size: int = 3) -> None:
         self.size = size  # width of a block (also, how many blocks across in a grid)
         self.grid = np.zeros((size**2, size**2), dtype=np.uint8)
 
@@ -49,10 +49,10 @@ class Grid:
             y = i // self.size**2
             self.grid[y, x] = v
 
-        self._update_avail()
+        self.update_avail()
         return self  # We offer a fluent API.
 
-    def _update_avail(self) -> None:
+    def update_avail(self) -> None:
         avail = {}
         for i in range(self.size**2):
             avail[(Constraint.ROW, i)] = self._available_values(self.grid[i, :])
@@ -88,16 +88,17 @@ class Grid:
         """Turns N grid values into wildcards."""
         num_wildcards = len(self.grid[self.grid == 0])
         assert num_wildcards == 0
+        rng = np.random.default_rng()
         for _ in range(n):
             # Avoid zeroing a cell that is already zero.
             done = False
             while not done:
-                i = np.random.randint(0, self.size**2)
-                j = np.random.randint(0, self.size**2)
+                i = rng.integers(0, self.size**2)
+                j = rng.integers(0, self.size**2)
                 if self.grid[i, j] > 0:
                     self.grid[i, j] = 0
                     done = True
-        self._update_avail()
+        self.update_avail()
 
     def is_solved(self) -> bool:
         num_wildcards = len(self.grid[self.grid == 0])
@@ -112,10 +113,7 @@ class Grid:
                 return False
             if self._has_dups(self.grid[:, i]):  # column
                 return False
-        for block in self._get_blocks():
-            if self._has_dups(block):
-                return False
-        return True
+        return all(not self._has_dups(block) for block in self._get_blocks())
 
     @staticmethod
     def _has_dups(vals: npt.NDArray[np.uint8]) -> bool:
@@ -134,7 +132,7 @@ class Grid:
         """Returns a deep copy."""
         cpy = Grid(size=self.size)
         cpy.grid = self.grid.copy()
-        cpy._update_avail()
+        cpy.update_avail()
         return cpy
 
 
@@ -166,7 +164,8 @@ def solve(grid: Grid) -> Grid | None:
                     return s
             return None  # caller will backtrack
 
-    raise RuntimeError("no solution found")
+    msg = "no solution found"
+    raise RuntimeError(msg)
 
 
 if __name__ == "__main__":
