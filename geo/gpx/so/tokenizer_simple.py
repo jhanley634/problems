@@ -19,7 +19,8 @@ punctuation = str.maketrans(
 
 
 def get_simple_words(line: str) -> Generator[str, None, None]:
-    for word in line.translate(punctuation).split():
+    for wrd in line.translate(punctuation).split():
+        word = wrd
         # strip possessives
         if word.endswith("'"):
             word = word[:-1]
@@ -51,8 +52,8 @@ def spacy_wordlist(
     cnt: Counter[str] = Counter()
     dups = 0
 
-    for line_num, line in enumerate(fin):
-        line = line.lower()
+    for line_num, orig_line in enumerate(fin):
+        line = orig_line.lower()
         simp_out.write(f"\n{1 + line_num}\n\n")
         spcy_out.write(f"\n{1 + line_num}\n\n")
 
