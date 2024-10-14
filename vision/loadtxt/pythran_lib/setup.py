@@ -19,5 +19,5 @@ setup(
     version="1.0",
     description="Yet another demo package",
     packages=["hello"],
-    **setup_args
+    **setup_args,
 )

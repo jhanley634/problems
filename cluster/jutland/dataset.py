@@ -51,7 +51,7 @@ class Dataset:
         So e.g. singleton "roads", containing just a single point, are discarded.
         """
         counts = Counter(df.osm_id)
-        small_roads = set(osm_id for osm_id, count in counts.items() if count < k)
+        small_roads = {osm_id for osm_id, count in counts.items() if count < k}
         return df[~df.osm_id.isin(small_roads)]
 
     @staticmethod
