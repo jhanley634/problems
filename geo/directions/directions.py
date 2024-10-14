@@ -2,9 +2,9 @@
 # Copyright 2022 John Hanley. MIT licensed.
 from collections.abc import Generator
 from pathlib import Path
+from typing import Any
 
 from gpxpy.gpx import GPXTrackSegment
-from typing_extensions import Any
 import gpxpy
 import pandas as pd
 import pydeck as pdk
@@ -26,9 +26,12 @@ def _get_df(in_file: str = "/tmp/10-Jul-2022-1714.gpx") -> pd.DataFrame:
 
 def _get_points(segment: GPXTrackSegment) -> Generator[dict[str, Any], None, None]:
     for pt in segment.points:
-        yield dict(
-            time=pt.time, lat=pt.latitude, lon=pt.longitude, elevation=pt.elevation
-        )
+        yield {
+            "time": pt.time,
+            "lat": pt.latitude,
+            "lon": pt.longitude,
+            "elevation": pt.elevation,
+        }
 
 
 def _get_deck(start: tuple[float, float] = (37.46, -122.15)) -> pdk.Deck:

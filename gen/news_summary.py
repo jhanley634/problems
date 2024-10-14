@@ -2,6 +2,7 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 from pprint import pp
+from typing import Any
 
 from transformers import (
     AutoModelForCausalLM,
@@ -11,7 +12,6 @@ from transformers import (
     T5ForConditionalGeneration,
     T5Tokenizer,
 )
-from typing_extensions import Any
 import requests
 
 CACHE_DIR = Path("/tmp/cache")

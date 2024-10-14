@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from pprint import pp
-import os
 import re
 import unittest
 
@@ -33,7 +32,7 @@ def get_article_text_file(
     text = html2text(html_fspec.read_text())
     text = _remove(r"^[\s\S]+ Comments\n\n## ", "", text)
     text = _remove(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
-    base, _ = os.path.splitext(html_fspec)
+    base = html_fspec.stem
     txt_fspec = Path(f"{base}.txt")
     txt_fspec.write_text(text)
     return txt_fspec
