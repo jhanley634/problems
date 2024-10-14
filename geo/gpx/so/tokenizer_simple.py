@@ -4,10 +4,10 @@
 from collections import Counter
 from collections.abc import Generator
 from pathlib import Path
+from typing import TextIO
 
 from spacy.language import Language
 from spacy.tokens.token import Token
-from typing_extensions import TextIO
 import spacy
 import spacy.tokens
 import typer
