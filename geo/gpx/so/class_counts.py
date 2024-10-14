@@ -4,11 +4,13 @@
 from collections.abc import Generator
 import datetime as dt
 
+from pytz import timezone
 import pandas as pd
 
 
 def _get_df() -> pd.DataFrame:
-    start = dt.datetime(2021, 5, 23, 7, 0)
+    zone = timezone("America/Los_Angeles")
+    start = dt.datetime(2021, 5, 23, 7, 0, tzinfo=zone)
     df = pd.DataFrame(
         {
             "stamp": [start + dt.timedelta(hours=-i) for i in range(7)],

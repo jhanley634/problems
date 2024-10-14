@@ -3,13 +3,13 @@
 # from https://datascience.stackexchange.com/questions/126359/does-a-random-classifier-have-a-diagonal-roc
 from collections.abc import Generator
 from contextlib import contextmanager
+from typing import Any
 import warnings
 
 from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
-from typing_extensions import Any
 import pandas as pd
 import seaborn as sns
 import seaborn.objects as so

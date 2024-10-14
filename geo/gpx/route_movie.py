@@ -3,15 +3,17 @@
 from collections.abc import Generator
 from io import BytesIO
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 import datetime as dt
 
-from gpxpy.gpx import GPX
-from typing_extensions import Any
 import gpxpy
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+
+if TYPE_CHECKING:
+    from gpxpy.gpx import GPX
 
 
 def main() -> None:
@@ -44,7 +46,7 @@ def _get_fn_points() -> Generator[dict[str, float], None, None]:
         return 0.01 * x**2
 
     for lat in range(-100, 100):
-        yield dict(lat=lat, lng=fn(lat))
+        yield {"lat": lat, "lng": fn(lat)}
 
 
 def _get_gpx_points(in_file: Path) -> Generator[dict[str, Any], None, None]:
@@ -56,15 +58,15 @@ def _get_gpx_points(in_file: Path) -> Generator[dict[str, Any], None, None]:
                 for pt in segment.points:
                     assert pt.time
                     stamp: dt.datetime = pt.time
-                    stamp = stamp.replace(tzinfo=None).astimezone(dt.timezone.utc)
+                    stamp = stamp.replace(tzinfo=None).astimezone(dt.UTC)
                     assert pt.elevation
                     assert pt.elevation > 0, pt.elevation
-                    yield dict(
-                        stamp=stamp,
-                        lat=round(pt.latitude, 6),
-                        lng=round(pt.longitude, 6),
-                        elevation=round(pt.elevation, 2),
-                    )
+                    yield {
+                        "stamp": stamp,
+                        "lat": round(pt.latitude, 6),
+                        "lng": round(pt.longitude, 6),
+                        "elevation": round(pt.elevation, 2),
+                    }
 
 
 if __name__ == "__main__":

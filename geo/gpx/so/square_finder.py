@@ -38,9 +38,7 @@ def main() -> None:
     contours, hierarchy = cv2.findContours(
         thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
     )[-2:]
-    idx = 0
-    for cnt in contours:
-        idx += 1
+    for idx, cnt in enumerate(contours):
         x, y, w, h = cv2.boundingRect(cnt)
         roi = thresh[y : y + h, x : x + w]
         h = h if h > 0 else 1

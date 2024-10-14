@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/78067735/statically-inspect-a-python-test-suite
 from collections.abc import Callable, Generator, Iterable
@@ -6,6 +5,7 @@ from importlib import import_module
 from inspect import getsource, isfunction, isgenerator
 from pathlib import Path
 from types import FunctionType, MethodType, ModuleType
+from typing import Any, NamedTuple
 from unittest.main import TestProgram
 import dis
 import io
@@ -14,15 +14,13 @@ import re
 import sys
 import unittest
 
-from typing_extensions import Any, NamedTuple
-
 
 def find_callable_functions(module: ModuleType | type) -> list[Callable[[Any], Any]]:
     """Finds callables within a module, including functions and classes."""
     return [
         obj
         for obj in module.__dict__.values()
-        if callable(obj) and isinstance(obj, (FunctionType, MethodType, type))
+        if callable(obj) and isinstance(obj, FunctionType | MethodType | type)
     ]
     # cf inspect.{isfunction, ismethod, isclass}
 
@@ -31,23 +29,27 @@ def find_callable_matches(
     module: ModuleType | type, needle: str, verbose: bool = False
 ) -> Generator[Callable[[Any], Any], None, None]:
     for obj in module.__dict__.values():
-        if callable(obj) and isinstance(obj, (FunctionType, MethodType, type)):
-            if not isgenerator(obj) and isfunction(obj):
-                buf = io.StringIO()
-                dis.dis(obj, file=buf)
-                names = obj.__code__.co_names
-                if needle in buf.getvalue() and needle in names:
-                    yield obj
-                    if verbose:
-                        print(getsource(obj))
-                    # print(dis._disassemble_bytes(code, names=names))
-                    # lines, start = findsource(obj)
-                    # print("".join(lines[start : start + 5]), "\n")
-                    # dis.disassemble(obj.__code__)
+        if (
+            callable(obj)
+            and isinstance(obj, FunctionType | MethodType | type)
+            and not isgenerator(obj)
+            and isfunction(obj)
+        ):
+            buf = io.StringIO()
+            dis.dis(obj, file=buf)
+            names = obj.__code__.co_names
+            if needle in buf.getvalue() and needle in names:
+                yield obj
+                if verbose:
+                    print(getsource(obj))
+                # print(dis._disassemble_bytes(code, names=names))
+                # lines, start = findsource(obj)
+                # print("".join(lines[start : start + 5]), "\n")
+                # dis.disassemble(obj.__code__)
 
 
 class Source(NamedTuple):
-    """coordinates of a source code location"""
+    """Stores the coordinates of a source code location."""
 
     file: Path
     line: int

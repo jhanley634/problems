@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/176032/python-code-to-calculate-stm-crc32
 
@@ -14,7 +13,7 @@ def generate_crc32_table(poly: int) -> array[int]:
     for i in range(256):
         c = i << 24
 
-        for j in range(8):
+        for _ in range(8):
             c = (c << 1) ^ poly if (c & 0x8000_0000) else c << 1
 
         custom_crc_table[i] = c & 0xFFFF_FFFF
