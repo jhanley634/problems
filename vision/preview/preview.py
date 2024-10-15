@@ -4,7 +4,6 @@
 # example usage:
 #   vision/preview/preview.py -- --pattern=*.jpg
 #
-from glob import glob
 from pathlib import Path
 
 import streamlit as st
@@ -15,14 +14,14 @@ cli = typer.Typer()
 
 
 @cli.command()
-def preview_images(folder: Path = DESKTOP, pattern="*.png") -> None:
+def preview_images(folder: Path = DESKTOP, pattern: str = "*.png") -> None:
     folder = folder.expanduser()
     assert folder.is_dir(), folder
-    images = [Path(f).name for f in sorted(glob(f"{folder}/{pattern}"))]
+    images = [Path(f).name for f in sorted(folder.glob(pattern))]
     if len(images) < 2:
-        images.append("ω")
+        images.append("<<<")
     if len(images) < 2:
-        images = ["α"] + images
+        images = [">>>"] + images
     assert len(images) >= 2
     st.set_page_config(layout="wide")
 
