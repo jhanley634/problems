@@ -1,10 +1,10 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from collections import deque
 from collections.abc import Generator, Iterable, Sequence
+from typing import Any
 import re
 
 from roman import fromRoman
-from typing_extensions import Any
 
 
 def _int_val(s: str) -> int:

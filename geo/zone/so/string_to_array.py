@@ -1,12 +1,12 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from io import BytesIO
+from typing import Any
 import struct
 
 from beartype import beartype
 from beartype.typing import Iterator
 from numpy import dtype
 from numpy.typing import NDArray
-from typing_extensions import Any
 import numpy as np
 
 
@@ -20,8 +20,7 @@ def _get_codec(s: str) -> tuple[int, int, str]:
     assert 2 <= n <= 4, n
     if n == 2:
         return 2, 2, "utf-16"
-    else:
-        return 4, 4, "utf-32"
+    return 4, 4, "utf-32"
 
 
 @beartype
@@ -49,7 +48,6 @@ class TombstoneString:
         Notice that these are offsets w.r.t. the original string;
         they are unaffected by any tombstones that get written.
         """
-
         # each char has size of 1, 2, or 4 bytes
         self._size, self._strip, self._codec = _get_codec(s)
 
@@ -102,7 +100,6 @@ class TombstoneString:
 
         The start index includes tombstones; it is different from str() output.
         """
-
         # substring, serialized
         sub_ser = np.frombuffer(
             BytesIO(sub.encode(self._codec)).getbuffer()[self._strip :],

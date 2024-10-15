@@ -65,13 +65,12 @@ def _median_k(vecs: list[SortedList]) -> tuple[int, int]:
                     j = vec.bisect_right(val)
                     discarded_lo += j - rng[i][0]
             return discarded_lo >= discarded_hi
-        else:
-            discarded_lo = cut - rng[v][0]  # number of discarded values below the cut
-            for i, vec in enumerate(vecs):
-                if i != v:
-                    j = vec.bisect_left(val)
-                    discarded_hi += rng[i][1] - j
-            return discarded_hi >= discarded_lo
+        discarded_lo = cut - rng[v][0]  # number of discarded values below the cut
+        for i, vec in enumerate(vecs):
+            if i != v:
+                j = vec.bisect_left(val)
+                discarded_hi += rng[i][1] - j
+        return discarded_hi >= discarded_lo
 
     def trim() -> None:
         """Actually trim the ranges, based on a known feasible proposal."""

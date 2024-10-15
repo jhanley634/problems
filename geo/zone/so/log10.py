@@ -24,7 +24,8 @@ def division_based_log10(x: float) -> float:
 def _places_and_remainder(base: int, x: int) -> tuple[int, int]:
     """Finds number of decimal places in x.
 
-    Returns (places, remainder), where remainder is x % 10**places."""
+    Returns (places, remainder), where remainder is x % 10**places.
+    """
     assert x > 0
     places = 0
     while x // base > 0:

@@ -12,7 +12,8 @@ from geo.zone.outline_parser import OutlineParser
 
 class LawParser:
     """Scans leginfo.legislature.ca.gov zoning code
-    to identify the proper indent level."""
+    to identify the proper indent level.
+    """
 
     def __init__(self, path: Path):
         assert path.exists()

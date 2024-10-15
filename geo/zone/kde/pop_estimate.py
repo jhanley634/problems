@@ -60,7 +60,7 @@ def _grid_search(
     plt.fill(x_test, np.exp(log_dens), c="green")
     plt.title("Optimal estimate with Gaussian kernel")
     plt.show()
-    print("optimal bandwidth: " + "{:.2f}".format(kde.bandwidth))
+    print(f"optimal bandwidth: {kde.bandwidth:.2f}")
 
 
 if __name__ == "__main__":

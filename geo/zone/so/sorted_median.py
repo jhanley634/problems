@@ -134,5 +134,4 @@ def _median1(
 
     if len(r0) == 1:
         return r0.start, ListName.X
-    else:
-        return r1.start, ListName.Y
+    return r1.start, ListName.Y

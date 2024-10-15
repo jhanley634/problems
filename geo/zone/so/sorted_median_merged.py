@@ -1,8 +1,8 @@
 # Copyright 2024 John Hanley. MIT licensed.
 from collections.abc import Callable
 from operator import __gt__, __lt__
+from typing import NamedTuple
 
-from typing_extensions import NamedTuple
 import numpy as np
 
 from geo.zone.so.sorted_median import _monotonic

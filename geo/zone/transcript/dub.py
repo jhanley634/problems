@@ -2,13 +2,13 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
 from pprint import pp
+from typing import Annotated
 import struct
 
 from pyAudioAnalysis import ShortTermFeatures, audioBasicIO
 from pydub import AudioSegment
 from scipy.fft import rfft, rfftfreq
 from typer import Option
-from typing_extensions import Annotated
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

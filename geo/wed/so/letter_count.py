@@ -27,7 +27,7 @@ def mix(*strings: str) -> str:
     counts = [Counter(lower(string)) for string in strings]
     ret = []
     for letter in sorted(set("".join(strings))):
-        biggest = max((count.get(letter, 0) for count in counts))
+        biggest = max(count.get(letter, 0) for count in counts)
         if biggest > 1:
             ret.append(which(letter, biggest, *counts) + ":" + letter * biggest)
     return "/".join(ret)

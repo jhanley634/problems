@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from typing import Any
+
 from beartype import beartype
 from numpy.typing import NDArray
 from scipy.interpolate import BSpline, splrep
-from typing_extensions import Any
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

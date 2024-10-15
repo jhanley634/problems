@@ -7,13 +7,13 @@ from hashlib import sha3_224
 from pathlib import Path
 from random import shuffle
 from time import time
+from typing import Any
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.schema import PrimaryKeyConstraint
 from tqdm import tqdm
-from typing_extensions import Any
 import pandas as pd
 import sqlalchemy as sa
 
