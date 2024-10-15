@@ -22,8 +22,11 @@ def copy_all(src_dir: Path = DOWNLOADS, dst_dir: Path = GPX_DIR) -> None:
 def iso(path: Path) -> Path:
     prefix = "-".join(path.stem.split("-")[:4])
     suffix = path.name.removeprefix(prefix).replace(" ", "")
+    offset = "-0800"  # PST
     try:
-        stamp = dt.datetime.strptime(prefix, "%d-%b-%Y-%H%M").strftime("%Y-%m-%d-%H%M")
+        stamp = dt.datetime.strptime(prefix + offset, "%d-%b-%Y-%H%M%z").strftime(
+            "%Y-%m-%d-%H%M"
+        )
     except ValueError:
         stamp = prefix
     return path.with_name(f"{stamp}{suffix}")

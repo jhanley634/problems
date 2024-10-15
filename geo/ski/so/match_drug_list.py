@@ -31,6 +31,7 @@ class Drug:
 NUM_DRUGS = 150_000
 US_DRUGS = [Drug(f"MED{i:05d}", f"{i}", None) for i in range(NUM_DRUGS)]
 
+# ruff: noqa: PERF401
 
 def _extract_drugs_from_prescription_text(prescription_text: str) -> list[Drug]:
     # normalize prescription text (remove accents)
