@@ -2,15 +2,17 @@
 # Copyright 2023 John Hanley. MIT licensed.
 from collections.abc import Generator
 from pathlib import Path
-import datetime as dt
+from typing import TYPE_CHECKING, Any
 
 from geopy import Point
 from geopy.distance import great_circle
 from gpxpy.gpx import GPX
-from typing_extensions import Any
 import gpxpy
 import polars as pl
 import typer
+
+if TYPE_CHECKING:
+    import datetime as dt
 
 GPX_DIR = Path("~/Desktop/gpx").expanduser()
 
@@ -30,11 +32,11 @@ def get_rows(gpx: GPX) -> Generator[dict[Any, Any], None, None]:
     first_loc = Point(first_row["lat"], first_row["lng"])
     for row in g:
         cum += row["delta_x"]
-        d = dict(
-            elapsed=(row["stamp"] - first_row["stamp"]).total_seconds(),
-            cum=cum,
-            crow_fly=great_circle(Point(row["lat"], row["lng"]), first_loc).meters,
-        )
+        d = {
+            "elapsed": (row["stamp"] - first_row["stamp"]).total_seconds(),
+            "cum": cum,
+            "crow_fly": great_circle(Point(row["lat"], row["lng"]), first_loc).meters,
+        }
         yield {**row, **d}
 
 
@@ -55,14 +57,14 @@ def get_breadcrumbs(
                 delta_x = great_circle(prev_loc, loc).meters if prev_loc else 0
                 if verbose:
                     print(s, delta_t, point.time, f"   {lat:.6f}  {lng:.6f}")
-                yield dict(
-                    stamp=point.time,
-                    lat=lat,
-                    lng=lng,
-                    delta_t=delta_t,
-                    delta_x=delta_x,
-                    speed=delta_x / elapsed,
-                )
+                yield {
+                    "stamp": point.time,
+                    "lat": lat,
+                    "lng": lng,
+                    "delta_t": delta_t,
+                    "delta_x": delta_x,
+                    "speed": delta_x / elapsed,
+                }
                 prev_time = point.time
                 prev_loc = loc
 
