@@ -19,8 +19,7 @@ from geo.gpx.so.tokenizer_simple import get_simple_words
 
 def get_words(url: str) -> Generator[str, None, None]:
     for line in get_stripped_document(url).lower().splitlines():
-        for word in get_simple_words(line):
-            yield word
+        yield from get_simple_words(line)
 
 
 def get_document(url: str, expire: int = 86400) -> str:

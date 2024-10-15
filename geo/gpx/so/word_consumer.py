@@ -78,7 +78,7 @@ def populate_rows() -> None:
     with Session(engine) as sess:
         category: Counter[str]
         for cat, word in tqdm(word_consumer("word-event", category := Counter())):
-            sess.execute(ins, dict(cat=cat, word=word))
+            sess.execute(ins, {"cat": cat, "word": word})
         sess.commit()
         print(len(category), category)
 
