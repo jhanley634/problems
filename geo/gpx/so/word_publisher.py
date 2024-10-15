@@ -43,7 +43,7 @@ def dumb_quotes(s: str) -> str:
         "™_—éê•",
         "  -ee*",
     )
-    single = re.compile("[‘’]")
+    single = re.compile("[‘’]")  # noqa: RUF001
     double = re.compile("[“”]")
     return double.sub('"', single.sub("'", s)).translate(clean)
 
@@ -109,9 +109,9 @@ def words_in_common(
     )
     # Now finesse the sort order, popular first then finally
     # alphabetic hapax legomena, exploiting stable sort.
-    both = Counter({k: v for k, v in sorted(both.items(), key=itemgetter(1, 0))})
+    both = Counter((k, v) for k, v in sorted(both.items(), key=itemgetter(1, 0)))
     both = Counter(
-        {k: v for k, v in sorted(both.items(), key=itemgetter(1), reverse=True)}
+        (k, v) for k, v in sorted(both.items(), key=itemgetter(1), reverse=True)
     )
     assert 3_594 == len(both)
     assert tom_cnt["the"] == both["the"]
