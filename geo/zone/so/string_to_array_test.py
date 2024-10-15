@@ -50,6 +50,8 @@ class TombstoneStringTestCase(unittest.TestCase):
         self.assertEqual(4, i)
         self.assertEqual("Straücher", str(ts))
 
+    # ruff: noqa: SLF001
+
     def test_slice(self) -> None:
         self.assertEqual("ello", "".join(self.ts._slice_chars(range(1, 5))))
 

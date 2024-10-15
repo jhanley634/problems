@@ -33,4 +33,4 @@ def audit_ip_notices(folder: Path) -> None:
 
 
 if __name__ == "__main__":
-    audit_ip_notices(Path("."))
+    audit_ip_notices(Path())

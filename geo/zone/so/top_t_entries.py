@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 # based on https://codereview.stackexchange.com/questions/287745/determine-top-t-values
 # cf https://stackoverflow.com/questions/52713266/most-efficient-way-to-get-the-largest-3-elements-using-no-comparison
@@ -24,13 +23,16 @@ def count_sort_calls() -> Generator[Counter[str], None, None]:
     yield cnt
 
 
+rng = np.random.default_rng()
+
+
 @beartype
 def roll_some_numbers(n: int = 1000) -> NDArray[np.int_]:
     """Produces N distinct random integers that are conveniently small."""
     # Leaving room between entries deals with pigeonhole principle & birthday paradox.
     big_n = int(1.5 * n)
 
-    a = np.random.randint(0, big_n, 2 * big_n)
+    a = rng.integers(0, big_n, 2 * big_n)
     a = np.array(sorted(set(a.tolist()))[:n])
     assert len(a) == n
     return a
@@ -119,7 +121,7 @@ class TestTopT(unittest.TestCase):
         self.assertEqual(xs, sorted(a, reverse=True)[:t])
 
     def test_with_dups(self, t: int = T, n: int = 10_000) -> None:
-        a = np.random.randint(0, n // 2, n)
+        a = rng.integers(0, n // 2, n)
         self.assertLess(len(set(a)), len(a) / 2)
         xs = find_top_t(t, a.copy()).tolist()
         self.assertEqual(xs, sorted(xs, reverse=True))

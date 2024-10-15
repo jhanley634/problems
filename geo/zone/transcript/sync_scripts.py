@@ -68,4 +68,4 @@ def squish(s: str) -> str:
 
 
 class HapaxLegomenon:
-    """"""
+    pass

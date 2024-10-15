@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from random import randrange
 
@@ -33,6 +32,9 @@ def median_of_k_sorted_vectors(
             assert vec == sorted(vec)
 
     return _median_k([SortedList(vec) for vec in vecs])
+
+
+# ruff: noqa: C901, PLR0915
 
 
 def _median_k(vecs: list[SortedList]) -> tuple[int, int]:

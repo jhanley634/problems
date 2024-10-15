@@ -15,6 +15,8 @@ import pandas as pd
 import seaborn as sns
 import typer
 
+rng = np.random.default_rng()
+
 
 def demo_350_440_hz(input_file: Path) -> None:
     Fs, x = audioBasicIO.read_audio_file(input_file)
@@ -33,10 +35,7 @@ def demo_350_440_hz(input_file: Path) -> None:
     duration = 10  # seconds
     freq = 350  # Hz
     n = 2048
-    x = (
-        np.sin(2 * np.pi * freq * np.linspace(0, duration, n))
-        + np.random.random(n) * 0.1
-    )
+    x = np.sin(2 * np.pi * freq * np.linspace(0, duration, n)) + rng.uniform(n) * 0.1
 
     z = np.abs(np.fft.rfft(x))  # FFT, peak at .05
     y = np.fft.rfftfreq(len(x), d=1)  # Frequency data
@@ -49,7 +48,7 @@ def demo_350_440_hz(input_file: Path) -> None:
 
 def demo() -> None:
     n = 2048
-    x = np.sin(2 * np.pi * 10 * np.linspace(0, 10, n)) + np.random.random(n) * 0.1
+    x = np.sin(2 * np.pi * 10 * np.linspace(0, 10, n)) + rng.uniform(n) * 0.1
 
     z = np.abs(np.fft.rfft(x))  # FFT, peak at .05
     y = np.fft.rfftfreq(len(x))  # Frequency data

@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 
 # from https://codereview.stackexchange.com/questions/288620/calculate-the-base-10-log-with-loops-in-java

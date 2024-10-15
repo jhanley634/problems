@@ -13,6 +13,8 @@ from geo.zone.transcript.sync_scripts import (
     squish,
 )
 
+# ruff: noqa: RUF001
+
 
 class SyncScriptsTest(unittest.TestCase):
     fuego_url = "https://clarkesworldmagazine.com/buckell_07_09/"

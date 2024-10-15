@@ -3,6 +3,9 @@
 """
 Verifies that packages load without error, e.g. due to missing deps.
 """
+
+# ruff: noqa: RUF100
+
 from abc import ABC  # noqa F401
 from collections import Counter  # noqa F401
 from collections import defaultdict  # noqa F401

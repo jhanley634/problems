@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 
 from dataclasses import dataclass
@@ -59,6 +58,9 @@ def median_of_list_pair(
         (xs, ys),
         (MutRange(0, len(xs)), MutRange(0, len(ys))),
     )
+
+
+# ruff: noqa: C901
 
 
 @beartype

@@ -44,15 +44,16 @@ def get_bp_category(systole: int, diastole: int) -> BpCategory:
 def _to_int(s: str) -> int | str:
     """Converts to an int, if possible.
 
-    Date strings are returned as-is."""
+    Date strings are returned as-is.
+    """
     if s.isnumeric():
         return int(s)
     return s
 
 
 def _get_rows() -> Generator[dict[str, int], None, None]:
-    for row in DictReader(get_bp_table().splitlines()):
-        row = {k.strip(): _to_int(v.strip()) for k, v in row.items()}
+    for row1 in DictReader(get_bp_table().splitlines()):
+        row = {k.strip(): _to_int(v.strip()) for k, v in row1.items()}
         row["category"] = get_bp_category(row["systolic"], row["diastolic"]).value * 10
         yield row
 

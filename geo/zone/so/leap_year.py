@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 # Copyright 2023 John Hanley. MIT licensed.
 #
 # from https://codereview.stackexchange.com/questions/287764/leap-year-calculator-using-if-elif-and-else-only

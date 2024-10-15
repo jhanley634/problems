@@ -10,6 +10,8 @@ from geo.zone.transcript.sync_scripts_spacy import (
 )
 from geo.zone.transcript.sync_scripts_test import SyncScriptsTest
 
+# ruff: noqa: RUF001
+
 
 class SyncScriptsSpacyTest(SyncScriptsTest):
     def test_get_story_tokens(self) -> None:
