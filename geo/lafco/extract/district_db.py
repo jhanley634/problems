@@ -58,7 +58,7 @@ _housenum_street_re = re.compile(r"^(\d+) (.+)$")
 def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
     street_to_city = _street_to_city(df)
 
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
         if m := _housenum_street_re.match(row.address):
             row["housenum"] = int(m[1])
             row["street"] = m[2]
@@ -66,13 +66,12 @@ def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
                 assert row.zip in {"94025", "94301", "94303", "94306"}, row.zip
                 del row["mail_address"]
                 yield dict(row)
-            else:
-                if row.street in street_to_city:
-                    row["city"] = street_to_city[row.street]
-                    row["st"] = "CA"
-                    row["zip"] = "94303"
-                    del row["mail_address"]
-                    yield dict(row)
+            elif row.street in street_to_city:
+                row["city"] = street_to_city[row.street]
+                row["st"] = "CA"
+                row["zip"] = "94303"
+                del row["mail_address"]
+                yield dict(row)
         else:
             assert row.address in _housenumber_missing, row.address
 
@@ -103,9 +102,10 @@ def _street_to_city(df: pd.DataFrame) -> dict[str, str]:
     ]:
         city_count[street].update(["EAST PALO ALTO"])
 
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
         if row.mail_address.startswith(row.address):
-            if m := _housenum_street_re.match(row.address):
+            m = _housenum_street_re.match(row.address)
+            if m:
                 street = m[2]
                 city_count[street].update([row.city])
     assert 119 == len(city_count), len(city_count)

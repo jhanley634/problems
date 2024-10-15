@@ -1,7 +1,8 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
-from collections import namedtuple
+
 from time import sleep
+from typing import NamedTuple
 import json
 import re
 
@@ -11,7 +12,15 @@ import sqlalchemy as sa
 
 from geo.lafco.model import Location
 
-LocTuple = namedtuple("LocTuple", "house_num street city county state zip country")
+
+class LocTuple(NamedTuple):
+    house_num: str
+    street: str
+    city: str
+    county: str
+    state: str
+    zip: str
+    country: str
 
 
 class Geocoder:
@@ -93,7 +102,7 @@ class Geocoder:
         geo_loc = self.geolocator.geocode(addr)
         if not geo_loc:
             print(f"Could not geocode {addr}")
-            return None
+            return
 
         m = re.search(r"^(\d+) ([\w -]+), ([\w ]+) (\w{2,}) (\d{5})$", addr)
         assert m, addr

@@ -28,7 +28,6 @@ class ApnScraper:
 
     def step1_find_by_apn(self) -> None:
         """Click on "Find Parcels by APN"."""
-
         # Step # | name | target | value | comment
         # 1 | open | /Html5Viewer/?viewer=raster |  |
         self.driver.get("https://gis.smcgov.org/Html5Viewer/?viewer=raster")

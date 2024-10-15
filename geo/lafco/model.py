@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 from sqlalchemy import Float, Integer, Text
 from sqlalchemy.orm import declarative_base, mapped_column

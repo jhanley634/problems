@@ -1,9 +1,9 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2024 John Hanley. MIT licensed.
 from pathlib import Path
+from typing import Any
 
 from pandas import Series
-from typing_extensions import Any
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -48,14 +48,14 @@ def _get_point(
 ) -> tuple[float, float, int, tuple[int, int, int, int]]:
     mail_city = row["Mail City"]
     if mail_city not in good_cities:
-        return np.NaN, np.NaN, 0, BLACK
+        return np.nan, np.nan, 0, BLACK
     city = mail_city if mail_city in good_cities else "EAST PALO ALTO"
     addr = f'{row["EPA Address"]}, {city} CA'
     loc = geocoder.get_location(addr)
     if addr == "480 OKEEFE ST, MENLO PARK CA":
-        return np.NaN, np.NaN, 0, BLACK
+        return np.nan, np.nan, 0, BLACK
     if loc.lon < WILLOW_RD_LON:
-        return np.NaN, np.NaN, 0, BLACK
+        return np.nan, np.nan, 0, BLACK
     dot_size = 4 if row["Signed Protest Form?"] else 1
     color = GREEN if row["Signed Protest Form?"] else RED
     return loc.lat, loc.lon, dot_size, color

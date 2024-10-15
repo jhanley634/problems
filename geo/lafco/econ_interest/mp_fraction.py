@@ -3,7 +3,7 @@
 """
 EPASD serves about 350 properties (about 600 registered voters) in Menlo Park.
 The Menlo Park properties served by EPASD are located on
-Byers, Elliot, Emma, Euclid, Falk, French Ct, Green, Menalto, Oak Ct, O’Connor, O’Keefe, and Woodland.
+Byers, Elliot, Emma, Euclid, Falk, French Ct, Green, Menalto, Oak Ct, O'Connor, O'Keefe, and Woodland.
 """
 from geo.lafco.extract.district_db import extract_all_customer_addrs
 

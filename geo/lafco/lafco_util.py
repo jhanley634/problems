@@ -14,7 +14,7 @@ _engine: Engine | None = None
 
 
 def get_engine() -> Engine:
-    global _engine
+    global _engine  # noqa: PLW0603
     db_file = Path("/tmp/apn.db")
     _engine = _engine or sa.create_engine(f"sqlite:///{db_file}")
     assert isinstance(_engine, Engine)
@@ -39,10 +39,11 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _with_dashes(apn: str) -> str:
-    """
+    """Inserts dashes into a 9-digit APN.
+
     >>> _with_dashes("063492490")
     '063-492-490'
     """
-    assert apn.startswith("063") or apn.startswith("113"), apn
+    assert apn.startswith(("063", "113")), apn
     assert 9 == len(apn), apn
     return f"{apn[:3]}-{apn[3:6]}-{apn[6:]}"

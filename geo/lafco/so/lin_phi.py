@@ -15,8 +15,7 @@ def lin_phi(x: float, mu: float = 0, sigma: float = 1) -> float:
     z = (x - mu) / sigma
     if z >= 0:
         return 1 - 0.5 * math.exp(-0.72 * z - 0.42 * z**2)
-    else:
-        return 0.5 * math.exp(0.72 * z - 0.42 * z**2)
+    return 0.5 * math.exp(0.72 * z - 0.42 * z**2)
 
 
 def gen_df(n: int = 1_000) -> Generator[dict[str, float | str], None, None]:
