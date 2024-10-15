@@ -4,9 +4,8 @@
 from collections.abc import Generator
 from dataclasses import dataclass
 from itertools import pairwise
+from typing import Any
 import unittest
-
-from typing_extensions import Any
 
 
 @dataclass

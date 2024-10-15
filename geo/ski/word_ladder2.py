@@ -3,8 +3,7 @@ from collections import defaultdict
 from collections.abc import Generator
 from functools import partial
 from io import StringIO
-
-from typing_extensions import TextIO
+from typing import TextIO
 
 
 class WordLadder:

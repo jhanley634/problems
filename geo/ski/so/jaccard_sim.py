@@ -1,8 +1,8 @@
+from typing import Any
 # Copyright 2023 John Hanley. MIT licensed.
 # https://stackoverflow.com/questions/75714434/computing-jaccard-similarity-between-dataframe-columns
 import unittest
 
-from typing_extensions import Any
 import pandas as pd
 
 

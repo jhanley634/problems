@@ -3,16 +3,16 @@
 # https://codereview.stackexchange.com/questions/284557/mysql-creating-this-table-got-nasty
 from collections.abc import Generator
 from pathlib import Path
+from typing import Any
 from urllib.parse import urlparse
 import datetime as dt
 import logging
 
+from sqlalchemy import orm
 from sqlalchemy.sql.elements import TextClause
-from typing_extensions import Any
 import pandas as pd
 import requests
 import sqlalchemy as sa
-import sqlalchemy.orm as orm
 
 TEMP_DIR = Path("/tmp/climate")  # We store things like cached CSV's here.
 DB_URL = f"sqlite:///{TEMP_DIR / 'climate.db'}"

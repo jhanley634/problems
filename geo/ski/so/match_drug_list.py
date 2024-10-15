@@ -4,7 +4,6 @@
 from pprint import pp
 import re
 
-from typing_extensions import Any
 import regex
 import unidecode
 
@@ -17,7 +16,7 @@ class Drug:
         self.start = position[0] if position is not None else None
         self.stop = position[1] if position is not None else None
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Drug):
             return False
         return self.name == other.name and self.atc == other.atc
