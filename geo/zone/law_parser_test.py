@@ -9,6 +9,8 @@ from geo.gpx.so.word_publisher import get_document
 from geo.zone.law_parser import LawParser
 from geo.zone.outline_parser import Level
 
+# ruff: noqa: SLF001
+
 
 class TestLawParser(unittest.TestCase):
     temp = Path("/tmp")

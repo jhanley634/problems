@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/291086/longest-spell-to-cast-from-pages-of-spellbook-follow-up
 import io

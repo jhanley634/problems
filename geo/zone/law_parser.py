@@ -37,9 +37,9 @@ class LawParser:
 
             # Cleanup leading section numbers, which may be stacked.
             while m := section_number_re.search(line):
-                line = line.removeprefix(m[0]).lstrip()
-            assert not line.startswith("(")
-            yield line
+                line1 = line.removeprefix(m[0]).lstrip()
+            assert not line1.startswith("(")
+            yield line1
 
     def _get_paragraph_lines(self) -> Generator[str, None, None]:
         xlate_table = str.maketrans("\xa0", " ")  # No non-breaking spaces, please.
@@ -57,24 +57,23 @@ class LawParser:
         for levels, text in self._get_outline():
             hashes = "#" * len(levels)
             dots = ". . " * len(levels)
-            levels = str(levels).replace(",)", ")")
-            return f"{hashes} {levels}\n{dots} {text}\n"
+            levels1 = str(levels).replace(",)", ")")
+            return f"{hashes} {levels1}\n{dots} {text}\n"
         return None
 
     def format_html(self) -> None:
         style = "font-family: sans-serif; line-height: 1.4; max-width: 50em; text-align: justify;"
         html = [
             "<!DOCTYPE html><head><title>outline</title></head>"
-            + f"<body><div style='{style}'>"
+            f"<body><div style='{style}'>"
         ]
         for levels, text in self._get_outline():
             heading = f"h{len(levels)}>"
             indent = 4 * len(levels)
             style = f"margin-left: {indent}em;"
-            levels = str(levels).replace(",)", ")")
+            levels1 = str(levels).replace(",)", ")")
             html.append(
-                f"<{heading} {levels} </{heading}\n"
-                + f"<p style='{style}'>{text}</p>\n"
+                f"<{heading} {levels1} </{heading}\n<p style='{style}'>{text}</p>\n"
             )
 
         soup = BeautifulSoup("\n".join(html), "html.parser")

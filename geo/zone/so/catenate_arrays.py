@@ -8,6 +8,8 @@ from time import time
 from numba import njit
 import numpy as np
 
+# ruff: noqa: ANN001, ANN201
+
 
 @njit(fastmath=True)
 def eqn1(a):

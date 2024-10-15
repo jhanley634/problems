@@ -36,14 +36,14 @@ def _reverse_enumerate(seq: Sequence[Any]) -> Generator[tuple[int, Any], None, N
 class Level:
     """Outline level, e.g. 2. (a) (1) (A) (ii)."""
 
-    _level_re_ordinal = [
+    _level_re_ordinal = (
         (re.compile(r"^\d+$"), _int_val),
         (re.compile(r"^[a-z]+$"), _lower_val),
         (re.compile(r"^\d+$"), _int_val),
         (re.compile(r"^[A-Z]+$"), _upper_val),
         (re.compile(r"^[ivx]+$"), _from_roman),
         (re.compile(r"^[IVX]+$"), _from_roman),
-    ]
+    )
 
     def __init__(self, text: str) -> None:
         self.text = text

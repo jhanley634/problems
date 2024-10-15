@@ -4,7 +4,6 @@
 # from https://stackoverflow.com/questions/77318785/how-do-i-detect-use-of-a-contextmanager
 from io import StringIO
 from types import TracebackType
-from typing import Any
 import dis
 import inspect
 
@@ -15,9 +14,9 @@ class MyManager:
 
     def __exit__(
         self,
-        exc_type: Exception,
-        exc_value: Any,
-        traceback: TracebackType,
+        exc_type: type[BaseException] | None,
+        exc_value: object,
+        traceback: TracebackType | None,
     ) -> None:
         print("exit")
 

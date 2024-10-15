@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/290899/leetcode-steps-to-make-array-non-decreasing
 from collections.abc import Iterable
@@ -21,7 +20,8 @@ def get_non_descending_runs(a: list[int]) -> Iterable[tuple[int, int]]:
 
 @beartype
 def _get_non_descending_runs_at(idx: int, a: list[int]) -> Iterable[tuple[int, int]]:
-    0
+    assert idx > 0
+    assert a
 
 
 @beartype

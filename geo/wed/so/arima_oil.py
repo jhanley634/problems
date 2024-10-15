@@ -17,7 +17,7 @@ import requests
 
 
 def get_oil_df(id_: str = "DCOILWTICO", since_year: int = 2010) -> pd.DataFrame:
-    today = dt.datetime.today()
+    today = dt.datetime.now(dt.UTC).date()
     temp = Path("/tmp")
     csv = temp / f"{id_}.csv"
     if not csv.exists():
@@ -47,7 +47,7 @@ def main() -> None:
     result = adfuller(df.price.dropna())
     print(f"ADF Statistic: {result[0]:f}")
     p_value = result[1]
-    assert 0.05 < 0.17 < p_value, p_value
+    assert 0.17 < p_value, p_value
 
     y = df.price.dropna()
     assert 1 == ndiffs(y, test="adf") == ndiffs(y, test="kpss") == ndiffs(y, test="pp")
