@@ -34,7 +34,7 @@ def _reverse_enumerate(seq: Sequence[Any]) -> Generator[tuple[int, Any], None, N
 
 
 class Level:
-    """Outline level, e.g. 2. (a) (1) (A) (ii)"""
+    """Outline level, e.g. 2. (a) (1) (A) (ii)."""
 
     _level_re_ordinal = [
         (re.compile(r"^\d+$"), _int_val),
@@ -45,7 +45,7 @@ class Level:
         (re.compile(r"^[IVX]+$"), _from_roman),
     ]
 
-    def __init__(self, text: str):
+    def __init__(self, text: str) -> None:
         self.text = text
         self.depth = 0
         self.ordinal = 0
@@ -61,7 +61,7 @@ class Level:
 
 
 class OutlineParser:
-    def __init__(self, lines: Iterable[str]):
+    def __init__(self, lines: Iterable[str]) -> None:
         self.lines = deque(lines)
         self.levels: list[Level] = []
 
@@ -85,7 +85,8 @@ class OutlineParser:
                 and self.levels[-1].depth == new_lvl.depth
                 and self.levels[-1].ordinal + 1 != new_lvl.ordinal
             ):
-                raise ValueError(f"non-sequential: {self.levels[-1]} {new_lvl}")
+                msg = f"non-sequential: {self.levels[-1]} {new_lvl}"
+                raise ValueError(msg)
             while len(self.levels) > 0 and self.levels[-1].depth >= new_lvl.depth:
                 self.levels.pop()
             self.levels.append(new_lvl)

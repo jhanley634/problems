@@ -12,7 +12,7 @@ import numpy as np
 
 @beartype
 def _get_codec(s: str) -> tuple[int, int, str]:
-    """Returns (bytes_per_char, bom_bytes_to_strip, codec)"""
+    """Returns (bytes_per_char, bom_bytes_to_strip, codec)."""
     if s == "" or (max_val := max(map(ord, s))) < 128:
         return 1, 0, "ascii"
 
@@ -34,7 +34,7 @@ def string_to_array(s: str) -> NDArray[np.uint8]:
 class TombstoneString:
     SENTINEL: int = 255
 
-    def __init__(self, s: str):
+    def __init__(self, s: str) -> None:
         """Accepts a unicode string.
 
         It should not include a Latin-1 255 char,
@@ -117,7 +117,8 @@ class TombstoneString:
                 continue
             if self._index2(i, sub_ser):
                 return i // self._size
-        raise ValueError(f"{sub_ser} not found")
+        msg = f"{sub_ser} not found"
+        raise ValueError(msg)
 
     def _index2(self, i: int, sub_ser: np.ndarray[Any, dtype[np.uint8]]) -> bool:
         for j, ch in enumerate(sub_ser):
@@ -148,7 +149,7 @@ def lorem_ipsum_article(
 
 
 class Article:
-    def __init__(self, article: str):
+    def __init__(self, article: str) -> None:
         self._article = TombstoneString(article)
 
     def __str__(self) -> str:

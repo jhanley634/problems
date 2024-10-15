@@ -16,12 +16,12 @@ def get_wx_stats(start: dt.date, station: str = "KSJC:9:US") -> pl.DataFrame:
     english_units = "e"
     api_key = "e1f10a1e78da46f5b10a1e78da96f525"
     url = f"https://api.weather.com/v1/location/{station}/observations/historical.json"
-    params = dict(
-        apiKey=api_key,
-        units=english_units,
-        startDate=start.strftime(fmt),
-        endDate=end.strftime(fmt),
-    )
+    params = {
+        "apiKey": api_key,
+        "units": english_units,
+        "startDate": start.strftime(fmt),
+        "endDate": end.strftime(fmt),
+    }
     resp = requests.get(url, params=params)
     resp.raise_for_status()
     data = resp.json()

@@ -110,25 +110,41 @@ def _median1(
             right_elim += m
 
         # While feasible, squish both ranges.
-        if left_elim < target and len(r0) > 0 and len(r1) > 0:
-            if xs[r0.start] <= ys[r1.start]:  # min_y
-                r0.start += 1
-                left_elim += 1
+        if (
+            left_elim < target
+            and len(r0) > 0
+            and len(r1) > 0
+            and xs[r0.start] <= ys[r1.start]
+        ):  # min_y
+            r0.start += 1
+            left_elim += 1
 
-        if left_elim < target and len(r0) > 0 and len(r1) > 0:
-            if ys[r1.start] <= xs[r0.start]:  # min_x
-                r1.start += 1
-                left_elim += 1
+        if (
+            left_elim < target
+            and len(r0) > 0
+            and len(r1) > 0
+            and ys[r1.start] <= xs[r0.start]
+        ):  # min_x
+            r1.start += 1
+            left_elim += 1
 
-        if right_elim < target and len(r0) > 0 and len(r1) > 0:
-            if xs[r0.stop - 1] >= ys[r1.stop - 1]:  # max_y
-                r0.stop -= 1
-                right_elim += 1
+        if (
+            right_elim < target
+            and len(r0) > 0
+            and len(r1) > 0
+            and xs[r0.stop - 1] >= ys[r1.stop - 1]
+        ):  # max_y
+            r0.stop -= 1
+            right_elim += 1
 
-        if right_elim < target and len(r0) > 0 and len(r1) > 0:
-            if ys[r1.stop - 1] >= xs[r0.stop - 1]:  # max_x
-                r1.stop -= 1
-                right_elim += 1
+        if (
+            right_elim < target
+            and len(r0) > 0
+            and len(r1) > 0
+            and ys[r1.stop - 1] >= xs[r0.stop - 1]
+        ):  # max_x
+            r1.stop -= 1
+            right_elim += 1
 
     assert len(r0) + len(r1) == 1  # Found it!
 

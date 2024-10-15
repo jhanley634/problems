@@ -39,9 +39,8 @@ def _median_k(vecs: list[SortedList]) -> tuple[int, int]:
 
     n = sum(map(len, vecs))
     if n % 2 == 0:
-        raise ValueError(
-            f"N must be odd, but it was {n}. Number of vectors was {len(vecs)}."
-        )
+        msg = f"N must be odd, but it was {n}. Number of vectors was {len(vecs)}."
+        raise ValueError(msg)
     # There are now n candidate index positions.
 
     # target = n // 2 # We must eliminate this many lo, and this many hi values.

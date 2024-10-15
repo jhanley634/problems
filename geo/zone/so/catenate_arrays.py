@@ -50,7 +50,7 @@ def eqn4(a):
     return sys
 
 
-def main(reps=10_000, size=100_000):
+def main(reps=10_000, size=100_000) -> None:
     arr = np.ones(size)
     # warmup
     assert arr.shape == eqn1(arr).shape

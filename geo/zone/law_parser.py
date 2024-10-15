@@ -15,7 +15,7 @@ class LawParser:
     to identify the proper indent level.
     """
 
-    def __init__(self, path: Path):
+    def __init__(self, path: Path) -> None:
         assert path.exists()
         assert path.suffix == ".html"
         self.markdown: Path = path.with_suffix(".md")
@@ -59,6 +59,7 @@ class LawParser:
             dots = ". . " * len(levels)
             levels = str(levels).replace(",)", ")")
             return f"{hashes} {levels}\n{dots} {text}\n"
+        return None
 
     def format_html(self) -> None:
         style = "font-family: sans-serif; line-height: 1.4; max-width: 50em; text-align: justify;"

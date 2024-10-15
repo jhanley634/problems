@@ -16,7 +16,7 @@ class Elt(NamedTuple):
 
 class Merged:
 
-    def __init__(self, a: list[int], b: list[int]):
+    def __init__(self, a: list[int], b: list[int]) -> None:
         assert _monotonic(np.array(a)), "sorted elements, please"
         assert _monotonic(np.array(b)), "sorted elements, please"
 
@@ -50,7 +50,7 @@ def s_m_merged_median_index(a: list[int], b: list[int], verify: bool = True) -> 
     assert len(a) < len(b)  # w.l.o.g.
 
     gt = None  # ground truth
-    if True or verify:
+    if verify:
         gt = Merged(a, b)
         # return gt.merged[len(gt) // 2]
 

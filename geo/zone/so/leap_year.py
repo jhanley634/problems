@@ -11,9 +11,7 @@ import unittest
 def is_leap_year_instructor(year: int) -> bool:
     if year % 4 == 0:
         if year % 100 == 0:
-            if year % 400 == 0:
-                return True
-            return False
+            return year % 400 == 0
         return True
     return False
 
@@ -23,9 +21,7 @@ def is_leap_year_student(year: int) -> bool:
         return False
     if year % 100 != 0:
         return True
-    if year % 400 != 0:
-        return False
-    return True
+    return year % 400 == 0
 
 
 class LeapYearTest(unittest.TestCase):

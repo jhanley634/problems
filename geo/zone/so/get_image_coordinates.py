@@ -11,7 +11,7 @@ KITTEN = "https://placekitten.com/200/300"
 
 
 def main() -> None:
-    default = dict(x=0, y=0)  # What we use prior to first click from user.
+    default = {"x": 0, "y": 0}  # What we use prior to first click from user.
     d = streamlit_image_coordinates(KITTEN) or default
 
     x, y = d["x"], d["y"]

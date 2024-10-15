@@ -19,7 +19,7 @@ def get_retiring(
             m = rep_re.search(line)
             if m:
                 type_, name, party, state = m.groups()
-                yield dict(type=type_, party=party, state=state, name=name)
+                yield {"type": type_, "party": party, "state": state, "name": name}
                 if verbose:
                     print(f"{party:11} {type_:15} {state:15} {name}")
 

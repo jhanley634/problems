@@ -39,7 +39,8 @@ def _to_int(num: str) -> int:
             acc += ord(ch) - ord("0")
         else:
             if ch != "-":
-                raise ValueError(f"Invalid digit: {ch}")
+                msg = f"Invalid digit: {ch}"
+                raise ValueError(msg)
             sign = -1
             assert num.rindex("-") == 0  # There Can Be Only One.
     return sign * acc

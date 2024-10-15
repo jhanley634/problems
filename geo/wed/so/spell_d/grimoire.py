@@ -7,7 +7,7 @@ from graph_tool import Graph, topology
 
 
 class Grimoire:
-    def __init__(self, in_file: io.TextIOWrapper):
+    def __init__(self, in_file: io.TextIOWrapper) -> None:
         """Deserialize a graph.
 
         First line of text gives `n`, the number of nodes.

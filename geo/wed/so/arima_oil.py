@@ -45,7 +45,7 @@ def main() -> None:
     print(fit.summary())
 
     result = adfuller(df.price.dropna())
-    print("ADF Statistic: %f" % result[0])
+    print(f"ADF Statistic: {result[0]:f}")
     p_value = result[1]
     assert 0.05 < 0.17 < p_value, p_value
 

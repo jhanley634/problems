@@ -15,7 +15,7 @@ class TestLawParser(unittest.TestCase):
 
     def test_parse(self) -> None:
         desktop = Path("~/Desktop").expanduser()
-        in_file = list(desktop.glob("**/GOV_65852.2.html"))[0]
+        in_file = next(iter(desktop.glob("**/GOV_65852.2.html")))
         lp = LawParser(in_file).parse()
         paragraphs = list(lp.get_paragraphs())
         self.assertEqual(222, len(paragraphs))
