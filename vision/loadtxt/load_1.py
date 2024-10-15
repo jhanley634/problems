@@ -17,12 +17,12 @@ def read_files(in_folder: Path = "/tmp/loadtxt.d") -> None:
         read_file1(fspec)
 
 
-def read_file1(fspec) -> None:
+def read_file1(fspec: Path) -> None:
     a = loadtxt(fspec)
     assert (12500, 2) == a.shape
 
 
-def read_file4(fspec) -> None:
+def read_file4(fspec: Path) -> None:
     with open(fspec) as fin:
         a = [float(y) for x, y in map(str.split, fin.readlines())]
 

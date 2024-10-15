@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Copyright 2022 John Hanley. MIT licensed.
-from collections import namedtuple
 from collections.abc import Generator
 from queue import PriorityQueue
+from typing import NamedTuple
 import datetime as dt
 
 import numpy as np
@@ -11,6 +11,7 @@ import pandas as pd
 
 def now() -> dt.datetime:
     return dt.datetime.now(dt.UTC)
+
 
 class CallGenerator:
     def __init__(
@@ -72,8 +73,7 @@ def _get_gen() -> (
 ):
     generator = CallGenerator()
     return generator, generator.gen_continuous(
-        now(),
-        now() + dt.timedelta(seconds=1_200)
+        now(), now() + dt.timedelta(seconds=1_200)
     )
 
 
@@ -92,17 +92,26 @@ def max_occupancy() -> int:
     return max_occ
 
 
+class Pair(NamedTuple):
+    stamp: dt.datetime
+    delta: float
+
+
 def _get_start_and_end(
     events: pd.DataFrame,
 ) -> Generator[tuple[dt.datetime, int], None, None]:
-    Pair = namedtuple("Pair", ["stamp", "delta"])
     for _, row in events.iterrows():
         yield Pair(row.stamp, 1)  # arrival increment
         yield Pair(row.end, -1)  # departure decrement
 
 
+class Call(NamedTuple):
+    stamp: dt.datetime
+    duration: dt.timedelta
+    id_: int
+
+
 def _get_events_dataframe() -> pd.DataFrame:
-    Call = namedtuple("Call", "stamp, duration, id_")
     _, gen = _get_gen()
     events = pd.DataFrame([Call(*row) for row in gen])
     events["end"] = events.stamp + events.duration
@@ -123,8 +132,8 @@ def pandas_occ2() -> int:
     ev = _get_events_dataframe()
     df = pd.concat([ev.stamp.to_frame(), ev.end.to_frame()])
 
-    df["delta"] = np.where(~df.stamp.isnull(), 1, 0)
-    df.delta += np.where(~df.end.isnull(), -1, 0)
+    df["delta"] = np.where(~df.stamp.isna(), 1, 0)
+    df.delta += np.where(~df.end.isna(), -1, 0)
 
     df["stamp"] = df.stamp.combine_first(df.end)
     df = df.sort_values(["stamp"])

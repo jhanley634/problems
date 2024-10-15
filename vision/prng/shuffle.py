@@ -31,7 +31,9 @@ class Options:
             yield "".join(self.choose_options())
 
 
-def main(n: int = 1_000_000, lo: int = 0, hi: int = 1000, shuffle: bool = False) -> None:
+def main(
+    n: int = 1_000_000, lo: int = 0, hi: int = 1000, shuffle: bool = False
+) -> None:
     opt = Options(list("ABCDEFGH"))
     demo = list(opt.choose_many_options(3))
     pp(demo, width=22)

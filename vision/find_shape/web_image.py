@@ -10,7 +10,9 @@ _tmp = Path("/tmp")
 class WebImage:
     """Offers cached access to images from the web."""
 
-    def __init__(self, url: str, filename: str = "shapes.jpg", temp: Path = _tmp) -> None:
+    def __init__(
+        self, url: str, filename: str = "shapes.jpg", temp: Path = _tmp
+    ) -> None:
         self.url = url
         digest = sha3_224(url.encode()).hexdigest()[:4]
         self.fspec = temp / f"img{digest}_{filename}"

@@ -61,7 +61,9 @@ def main() -> None:
     df = pd.DataFrame(
         [
             {
-                "city": z.major_city, "zip": z.zipcode, "pop": int(z.population / scale) * scale
+                "city": z.major_city,
+                "zip": z.zipcode,
+                "pop": int(z.population / scale) * scale,
             }
             for z in se.by_population(lo * scale, hi * scale, returns=12)
         ]

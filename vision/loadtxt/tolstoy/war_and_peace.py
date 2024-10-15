@@ -12,7 +12,9 @@ temp = Path("/tmp")
 moby = "https://www.gutenberg.org/files/2701/2701-0.txt"
 
 
-def read_war_and_peace(url="https://www.gutenberg.org/ebooks/2600.txt.utf-8"):
+def read_war_and_peace(
+    url: str = "https://www.gutenberg.org/ebooks/2600.txt.utf-8",
+) -> str:
     cache = temp / Path(url).name
     if not cache.exists():
         resp = requests.get(url)

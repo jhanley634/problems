@@ -16,7 +16,7 @@ def hello() -> str:
 
 
 @app.route("/mean", methods=["POST"])
-def mean()-> dict[str, float]:
+def mean() -> dict[str, float]:
 
     # Argument 1 to "dict" has incompatible type "Any | None";
     # expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
