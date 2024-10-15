@@ -8,6 +8,7 @@ import datetime as dt
 import json
 import os
 
+from pytz import timezone
 import requests
 
 TRANSIT = "http://api.511.org/transit"
@@ -77,7 +78,7 @@ def fmt_lat_lng(location: dict[str, str]) -> str:
     return f"{lat:.6f}, {lng:.6f}"
 
 
-def query_vehicle(agency: str = "SC", polling_delay_sec: float = 20.0) -> list[str]:
+def query_vehicle(agency: str = "SC") -> list[str]:
     d = query_transit(f"{TRANSIT}/VehicleMonitoring?agency={agency}")
     assert 1 == len(d), d
     assert 1 == len(d["Siri"]), d
@@ -123,7 +124,8 @@ def vehicle_timeseries(agency: str = "SC", polling_delay_sec: float = 20.0) -> N
     route_folder.mkdir(exist_ok=True)
 
     for _ in range(10):
-        now = dt.datetime.now().isoformat()
+        zone = timezone("US/Pacific")
+        now = dt.datetime.now(zone).isoformat()
         for msg in query_vehicle(agency, polling_delay_sec):
             route = msg.split()[0]
             lat, lng = msg.replace(",", " ").split()[-2:]

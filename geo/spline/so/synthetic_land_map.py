@@ -178,7 +178,7 @@ def haberland(n: int = 10) -> None:
     a = np.zeros((4, 4)).astype(bool)
     a[1:3, 1:3] = 1
 
-    for j in range(n):
+    for _ in range(n):
         a = ndimage.zoom(a, 2, order=0)
         b = ndimage.uniform_filter(a.astype(np.float32))
         z = rng.random(a.sum())

@@ -61,7 +61,7 @@ def experiment(n: int, k: int) -> Result:
 
 def run_experiments() -> Generator[dict[str, float], None, None]:
     """Sweeps through a few decades of problem sizes."""
-    for trial in tqdm(range(12)):
+    for _trial in tqdm(range(12)):
         n = 10_000
         while n <= 10_000_000:
             for k in [1, 10, 100, 1_000]:

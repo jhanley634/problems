@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/293319/zipping-many-files
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from time import sleep
 import asyncio
@@ -19,7 +19,7 @@ def create_zip(dir_to_zip: Path, output_dir: Path, epsilon: float = 1e-3) -> Non
     try:
         dest_file_no_ext = output_dir.joinpath(dir_to_zip.stem)
         print(
-            f"{datetime.now()}: Creating ZIP archive: {dest_file_no_ext.name}.zip from "
+            f"{datetime.now(UTC)}: Creating ZIP archive: {dest_file_no_ext.name}.zip from "
             f"{dir_to_zip.name}",
         )
 
@@ -32,7 +32,7 @@ def create_zip(dir_to_zip: Path, output_dir: Path, epsilon: float = 1e-3) -> Non
             dir_to_zip.parent,  # Dir to zip from.
             dir_to_zip.name,  # Dir to include in the zip
         )
-        print(f"{datetime.now()}: Created: {dest_file_no_ext.name}.zip.")
+        print(f"{datetime.now(UTC)}: Created: {dest_file_no_ext.name}.zip.")
         sleep(epsilon)
     except Exception:
         print(
@@ -79,15 +79,15 @@ async def make_packages() -> None:
 
         # Test synchronous.
         print("Synchronous Test:")
-        start = datetime.now()
+        start = datetime.now(UTC)
         for test_dir in test_dirs:
             create_zip(test_dir, output_dir)
-        end = datetime.now()
+        end = datetime.now(UTC)
         total = (end - start).total_seconds()
         print(f"total time: {total}")
 
         print("Asynchronous Test:")
-        start = datetime.now()
+        start = datetime.now(UTC)
         async with asyncio.TaskGroup() as tg:
             # Fire off create_zip tasks for every package file we find.
             # These tasks will be run asynchronously - so as to not pointlessly
@@ -95,7 +95,7 @@ async def make_packages() -> None:
 
             for test_dir in test_dirs:
                 tg.create_task(async_create_zip(test_dir, output_dir))
-        end = datetime.now()
+        end = datetime.now(UTC)
         total = (end - start).total_seconds()
         print(f"total time: {total}")
 

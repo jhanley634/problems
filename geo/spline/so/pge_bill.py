@@ -18,10 +18,11 @@ def _get_rows(
 ) -> Generator[dict[str, dt.date | float], None, None]:
     with open(in_file) as fin:
         date: dt.date | None = None
-        for line in fin:
-            line = line.rstrip()
+        for orig_line in fin:
+            line = orig_line.rstrip()
             if "/" in line and " " not in line:
-                date = dt.datetime.strptime(line, "%m/%d/%y").date()
+                offset = " +0000"
+                date = dt.datetime.strptime(line + offset, "%m/%d/%y %z").date()
             if line.startswith("$"):
                 assert date
                 charge = float(line[1:].replace(",", ""))
