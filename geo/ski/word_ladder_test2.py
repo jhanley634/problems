@@ -5,6 +5,8 @@ import unittest
 from geo.ski.word_ladder2 import WordLadder
 from geo.ski.word_ladder_test import _get_months
 
+# ruff: noqa: SLF001
+
 
 class TestWordLadder2(unittest.TestCase):
     def test_months(self) -> None:

@@ -13,6 +13,9 @@ def hamming_distance(a: str, b: str) -> int:
 
 
 class Word(str):
+
+    __slots__ = ()
+
     def __init__(self, word: str) -> None:
         assert word.isalpha(), word
         super().__init__()
@@ -20,6 +23,8 @@ class Word(str):
 
 class Proto(str):
     """A prototype word, with exactly one "_" underscore wildcard."""
+
+    __slots__ = ()
 
     def __init__(self, text: str) -> None:
         assert "_" in text, text
