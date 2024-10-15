@@ -13,7 +13,7 @@ def hamming_distance(a: str, b: str) -> int:
 
 
 class Word(str):
-    def __init__(self, word: str):
+    def __init__(self, word: str) -> None:
         assert word.isalpha(), word
         super().__init__()
 
@@ -21,7 +21,7 @@ class Word(str):
 class Proto(str):
     """A prototype word, with exactly one "_" underscore wildcard."""
 
-    def __init__(self, text: str):
+    def __init__(self, text: str) -> None:
         assert "_" in text, text
         assert text.count("_") == 1
         assert text.replace("_", "").isalpha()
@@ -33,7 +33,7 @@ class WordLadder:
         self,
         length: int = 3,
         input_words: list[str] | str = "/usr/share/dict/words",
-    ):
+    ) -> None:
         self.words: defaultdict[Proto, set[Word]] = defaultdict(set)
         if isinstance(input_words, str):
             with open(input_words) as fin:

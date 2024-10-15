@@ -11,7 +11,7 @@ class WordLadder:
         self,
         length: int = 3,
         input_words: list[str] | str = "/usr/share/dict/words",
-    ):
+    ) -> None:
         self.length = length
         self.words: defaultdict[int, set[int]] = defaultdict(set)
         if isinstance(input_words, str):

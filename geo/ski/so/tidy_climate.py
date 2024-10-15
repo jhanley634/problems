@@ -34,7 +34,7 @@ class OriginalClimate:
 
     MONTHS = [dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13)]
 
-    def __init__(self, temp_dir: Path = TEMP_DIR):
+    def __init__(self, temp_dir: Path = TEMP_DIR) -> None:
         self.folder = temp_dir
         self.folder.mkdir(exist_ok=True)
         self.log = logging.getLogger(self.__class__.__name__)
@@ -95,7 +95,7 @@ def _get_monthly_rows(
     col_name: str,
 ) -> Generator[dict[str, Any], None, None]:
     for _, row in df.iterrows():
-        place = dict(state=row.state, county=row.county)
+        place = {"state": row.state, "county": row.county}
         for month_num, month in enumerate(OriginalClimate.MONTHS):
             yield {
                 **place,
@@ -107,7 +107,7 @@ def _get_monthly_rows(
 class TidyClimate:
     """Maintains tidy versions of climate datasets in DB tables."""
 
-    def __init__(self, db_url: str = DB_URL):
+    def __init__(self, db_url: str = DB_URL) -> None:
         self.engine = sa.create_engine(db_url)
         self.oc = OriginalClimate()
 
@@ -144,7 +144,7 @@ class PastAndRecentClimate:
     PAST = range(1895, 1931)  # half-open interval
     RECENT = range(1991, 2100)  # half-open interval
 
-    def __init__(self, db_url: str = DB_URL):
+    def __init__(self, db_url: str = DB_URL) -> None:
         self.engine = sa.create_engine(db_url).execution_options(stream_results=True)
         self.meta = sa.MetaData()
         self.log = logging.getLogger(self.__class__.__name__)

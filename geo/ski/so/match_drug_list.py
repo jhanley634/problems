@@ -9,7 +9,7 @@ import unidecode
 
 
 class Drug:
-    def __init__(self, name: str, atc: str, position: tuple[int, int] | None):
+    def __init__(self, name: str, atc: str, position: tuple[int, int] | None) -> None:
         # normalize name make it capitalize
         self.name = re.escape(name.upper())
         self.atc = atc

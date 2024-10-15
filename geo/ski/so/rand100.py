@@ -12,7 +12,7 @@ def rand100(size: int = 100_000) -> list[float]:
 
 
 class RandomIntGenerator:
-    def __init__(self, bits: list[bool] | None = None, size: int = 750_000):
+    def __init__(self, bits: list[bool] | None = None, size: int = 750_000) -> None:
         self._bits = bits or self._get_random_bits(size)
 
     @staticmethod
