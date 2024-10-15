@@ -2,6 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 """
 The excel file has 4273 parcels listed.
+
 There are fewer owners.
 Can you parse out the succinct number of owners?
 """

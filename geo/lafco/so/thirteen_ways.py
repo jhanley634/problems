@@ -12,6 +12,9 @@ import timeit
 from faker import Faker
 import numpy as np
 
+# ruff: noqa
+
+
 num_runs = 10
 num_loops = 100000
 num_loops_default = 100000
@@ -44,7 +47,9 @@ def calculate_and_display_test_run_numbers(result_ns, num_loops_used_for_tests):
     return test_avg
 
 
-def compare_test_0_with_test_1(test_0_avg, test_1_avg, num_loops_used_for_tests):
+def compare_test_0_with_test_1(
+    test_0_avg, test_1_avg, num_loops_used_for_tests
+) -> None:
     # Helper function used to compare Test 0 with Test 1
     # Assumption: test_0_avg and test_1_avg are expressed in nanoseconds
     baseline_avg_per_loop = test_0_avg / num_loops_used_for_tests
@@ -114,7 +119,7 @@ def test_03_v1(list_1, list_2):
     return _test_03_v1
 
 
-def tip03_use_sets():
+def tip03_use_sets() -> None:
     # Run the test 0 (nested lookups using for loop)
 
     t = timeit.Timer(test_03_v0(list_1=cs_majors, list_2=ee_majors))
@@ -143,16 +148,16 @@ def tip03_use_sets():
 
 
 def fibonacci(n):
-    if n == 0 or n == 1:
+    if n in (0, 1):
         return n
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
-@functools.lru_cache()
+@functools.lru_cache
 def fibonacci_v2(n):
     if n == 0:
         return 0
-    elif n == 1:
+    if n == 1:
         return 1
     return fibonacci_v2(n - 1) + fibonacci_v2(n - 2)
 
@@ -182,7 +187,7 @@ def test_10_v1(numbers):
     return _test_10_v1
 
 
-def tip10_memoize():
+def tip10_memoize() -> None:
 
     num_loops = 1500  # Reduce this from the usual 100K loops, since the tests (for this tip) take too long
 
@@ -258,7 +263,7 @@ def test_12_v2(numbers):
     return _test_12_v1
 
 
-def tip12_filterfalse_no_intermediate_lists():
+def tip12_filterfalse_no_intermediate_lists() -> None:
 
     # Reduce this from the usual 100K loops, since the tests (for this tip) take too long
     num_loops = 1000
@@ -322,7 +327,7 @@ def test_09_v1(numbers):
     return _test_09_v1
 
 
-def tip9_map():
+def tip9_map() -> None:
     # Run the test 0 (inefficient version)
 
     t = timeit.Timer(test_09_v0(numbers=num1K))

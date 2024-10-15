@@ -6,6 +6,7 @@ This module is a facade for the Nominatim geocoder, enforcing some pre-condition
 """
 from pathlib import Path
 from time import sleep, time
+from typing import TYPE_CHECKING
 import json
 import logging
 import re
@@ -16,6 +17,9 @@ from sqlalchemy import JSON, Text
 from sqlalchemy.orm import Session, declarative_base, mapped_column
 import sqlalchemy as sa
 
+if TYPE_CHECKING:
+    from geopy.location import Location
+
 Base = declarative_base()
 
 console = logging.StreamHandler()
@@ -24,7 +28,7 @@ logging.basicConfig(
     level=logging.INFO,
     handlers=[console],
 )
-logger = logging.Logger(__name__)
+logger = logging.getLogger(__name__)
 logger.addHandler(console)
 
 
@@ -63,11 +67,11 @@ class NominatimCached:
         with Session(self.engine) as sess:
             result = sess.get(NominatimQuery, addr)
             if not result:  # pragma: no cover
-                logger.info(f"sending query for {addr}")
+                logger.info("sending query for %s", addr)
                 sleep(max(0.0, self.query_delay_secs - (time() - self.queried_at)))
                 self.query_count += 1
                 geo_result: Location = self._geolocator.geocode(addr)
-                logger.info(f"received: {geo_result}")
+                logger.info("received: %s", geo_result)
                 self.queried_at = time()
                 if geo_result:
                     # lat, lon = geo_result.raw["lat"], geo_result.raw["lon"]

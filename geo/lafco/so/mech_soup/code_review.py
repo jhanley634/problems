@@ -3,15 +3,18 @@
 """
 Shows recent CR changes.
 """
-from collections import namedtuple
 from collections.abc import Generator
+from typing import NamedTuple
 
 from tabulate import tabulate
 import pandas as pd
 
 from geo.lafco.so.mech_soup.ddg import get_browser
 
-CRResult = namedtuple("CRResult", "title modified")
+
+class CRResult(NamedTuple):
+    title: str
+    modified: str
 
 
 def scrape(

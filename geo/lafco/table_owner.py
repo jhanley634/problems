@@ -2,7 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 """
 Datasource is the EPS093KO spreadsheet
-(from O'Connor Water?)
+(from O'Connor Water?).
 """
 
 from sqlalchemy import Engine, MetaData

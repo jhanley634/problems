@@ -11,6 +11,7 @@ import datetime as dt
 import re
 import tkinter as tk
 
+from pytz import timezone
 from tabulate import tabulate
 import pandas as pd
 
@@ -46,6 +47,8 @@ def _get_previous_elapsed_minutes(default: int = 999) -> int:
 
 ymd_hms_fmt = "%Y-%m-%d %H:%M:%S"
 
+zone = timezone("US/Pacific")
+
 
 def _is_new(modified: str) -> bool:
     m = ans_mod_re.match(modified)
@@ -54,7 +57,7 @@ def _is_new(modified: str) -> bool:
     prev = _get_previous_elapsed_minutes()
 
     with open(log, "a") as fout:
-        now = dt.datetime.now().strftime(ymd_hms_fmt)
+        now = dt.datetime.now(zone).strftime(ymd_hms_fmt)
         print(f"{now}   {elapsed_minutes} minutes ago", file=fout)
 
     return elapsed_minutes < prev
@@ -62,7 +65,7 @@ def _is_new(modified: str) -> bool:
 
 def notify(delay: int = 60, jitter: int = 30) -> None:
     while True:
-        now = dt.datetime.now().strftime(ymd_hms_fmt)
+        now = dt.datetime.now(zone).strftime(ymd_hms_fmt)
         print("\r", end=f"{now}  ", flush=True)
         sleep(delay + randrange(0, jitter))
         sleep(1)

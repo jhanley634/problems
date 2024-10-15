@@ -1,7 +1,7 @@
-from typing import Any
-
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
+from typing import Any
+
 from gspread.auth import DEFAULT_SCOPES
 from pandas import Series
 import pandas as pd

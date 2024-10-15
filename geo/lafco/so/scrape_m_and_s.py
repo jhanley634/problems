@@ -5,6 +5,7 @@ from collections.abc import Generator
 import json
 
 from beartype import beartype
+from boltons.dictutils import FrozenDict
 from scrapy.http import HtmlResponse
 import scrapy
 
@@ -12,16 +13,16 @@ import scrapy
 @beartype
 class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
     name = "marksandspencer"
-    allowed_domains = ["marksandspencer.com"]
-    start_urls = ["https://www.marksandspencer.com"]
-    custom_settings = {"REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7"}
+    allowed_domains = ("marksandspencer.com",)
+    start_urls = ("https://www.marksandspencer.com",)
+    custom_settings = FrozenDict({"REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7"})
 
     def parse(self, response: HtmlResponse) -> Generator[dict[str, str], None, None]:
         option = response.css('#country-selector-country option[value="BG"]')
         if option:
             value = option.css("::attr(value)").get().lower()
             bg_url = f"https://www.marksandspencer.com/{value}"
-            self.logger.info(f"BG URL found: {bg_url}")
+            self.logger.info("BG URL found: %s", bg_url)
             yield response.follow(bg_url, callback=self.parse_bg_page)
         else:
             self.logger.warning("BG option not found on the homepage.")
@@ -33,7 +34,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
             ".nav-item.dropdown.order-lg-3 .subcategory a::attr(href)"
         ).get()
         if men_link:
-            self.logger.info(f"Men's link found: {men_link}")
+            self.logger.info("Men's link found: %s", men_link)
             yield response.follow(men_link, callback=self.parse_mens_page)
         else:
             self.logger.warning("Men's section link not found on the BG page.")
@@ -45,7 +46,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
             '//a[contains(text(), "Casual shirts")]/@href'
         ).get()
         if casual_shirts_link:
-            self.logger.info(f"Casual shirts link found: {casual_shirts_link}")
+            self.logger.info("Casual shirts link found: %s", casual_shirts_link)
             yield response.follow(casual_shirts_link, callback=self.parse_casual_shirts)
         else:
             self.logger.warning("Casual shirts link not found on the Men's page.")
@@ -57,7 +58,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
             'div.pdp-link a:contains("Easy Iron Geometric Print Shirt")::attr(href)'
         ).get()
         if product_link:
-            self.logger.info(f"Product link found: {product_link}")
+            self.logger.info("Product link found: %s", product_link)
             yield response.follow(product_link, callback=self.parse_product_page)
         else:
             self.logger.warning("Product link not found in the Casual Shirts section.")

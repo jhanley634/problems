@@ -3,13 +3,16 @@
 """
 Obtains Mechanical Soup resources from a popular search engine.
 """
-from collections import namedtuple
 from collections.abc import Generator
+from typing import NamedTuple
 
 from mechanicalsoup import StatefulBrowser
 import pandas as pd
 
-Result = namedtuple("Result", "url title")
+
+class Result(NamedTuple):
+    url: str
+    title: str
 
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
