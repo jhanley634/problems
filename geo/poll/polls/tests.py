@@ -3,7 +3,7 @@ from django.test import TestCase
 
 
 class DjangoDemoTests(TestCase):
-    def test_addition(self):
+    def test_addition(self) -> None:
         self.assertEqual(5, 2 + 3)
 
 
