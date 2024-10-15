@@ -13,7 +13,7 @@ class GraphEdit:
         edge: npt.NDArray[np.int_],
         edit: dict[tuple[int, int], int] | None = None,
         verify: bool = False,
-    ):
+    ) -> None:
         a, b = edge.shape
         assert a == b, f"Expected square matrix, got {a}x{b}"
         self.edge = edge  # We treat these as immutable weights.

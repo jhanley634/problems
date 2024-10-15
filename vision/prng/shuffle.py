@@ -14,7 +14,7 @@ import typer
 
 
 class Options:
-    def __init__(self, all_options, k=4):
+    def __init__(self, all_options, k=4) -> None:
         self.all_options = all_options
         self.k = k
 
@@ -31,7 +31,7 @@ class Options:
             yield "".join(self.choose_options())
 
 
-def main(n: int = 1_000_000, lo: int = 0, hi: int = 1000, shuffle: bool = False):
+def main(n: int = 1_000_000, lo: int = 0, hi: int = 1000, shuffle: bool = False) -> None:
     opt = Options(list("ABCDEFGH"))
     demo = list(opt.choose_many_options(3))
     pp(demo, width=22)
@@ -47,7 +47,7 @@ def main(n: int = 1_000_000, lo: int = 0, hi: int = 1000, shuffle: bool = False)
     plt.show()
 
 
-def plot_randint_counts(df, verbose=False):
+def plot_randint_counts(df, verbose=False) -> None:
     df["cnt"] = 1
     df_summary = df.groupby("val").sum()
     if verbose:
@@ -68,7 +68,7 @@ def plot_randint_counts(df, verbose=False):
         print(df_summary.describe())
 
 
-def plot_shuffle_combination_counts(df):
+def plot_shuffle_combination_counts(df) -> None:
     df["cnt"] = 1
     counts = df.groupby("opt").sum().cnt.tolist()
     plt.plot(range(len(counts)), counts)

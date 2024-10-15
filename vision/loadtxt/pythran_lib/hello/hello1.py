@@ -3,7 +3,7 @@
 # pythran export hello1()
 
 
-def hello1():
+def hello1() -> None:
     """
     Wave hello.
     """

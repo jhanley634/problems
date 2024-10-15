@@ -38,8 +38,7 @@ def streaming_subproc(cmd: list[str]) -> Generator[str, None, None]:
             yield buf
 
         # Now drain the last few lines from the wrapper, until EOF.
-        for line in stdout:
-            yield line
+        yield from stdout
 
         proc.terminate()
         proc.wait()
@@ -50,8 +49,8 @@ def parent() -> None:
     os.chdir(repo_top)
 
     cmd = "bash percolate/bin/subproc_slow_output.sh 3 1".split()
-    for line in streaming_subproc(cmd):
-        line = line.rstrip("\n")
+    for line1 in streaming_subproc(cmd):
+        line = line1.rstrip("\n")
         print(f"]] {line} [[")
 
 

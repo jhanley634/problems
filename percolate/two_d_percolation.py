@@ -11,7 +11,7 @@ class Perc:
 
     # (or, a percolation matrix, if you prefer, given the Manhattan layout)
 
-    def __init__(self, width: int = 6, height: int = 5):
+    def __init__(self, width: int = 6, height: int = 5) -> None:
         self.width = width
         self.height = height
         self.g = self._get_initial_graph()
@@ -19,15 +19,16 @@ class Perc:
     def node_num(self, x: int, y: int) -> int:
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.width * y + x
-        raise ValueError(f"({x}, {y}) is out of bounds")
+        msg = f"({x}, {y}) is out of bounds"
+        raise ValueError(msg)
 
     # https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
-    cardinal_directions = [  # N, E, S, W
+    cardinal_directions = (  # N, E, S, W
         (0, -1),
         (1, 0),
         (0, 1),
         (-1, 0),
-    ]
+    )
 
     def _node_nbrhd(self, x: int, y: int) -> Generator[int, None, None]:
         for nx, ny, *_ in self._x_y_nbrhd(x, y):

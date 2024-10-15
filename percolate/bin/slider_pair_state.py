@@ -2,4 +2,4 @@
 
 INITIAL = 114
 
-prev = dict(lo=1, hi=INITIAL)
+prev = {"lo": 1, "hi": INITIAL}

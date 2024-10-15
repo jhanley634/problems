@@ -15,12 +15,12 @@ from requests import Response
 import click
 import requests
 
-_utc = dt.timezone.utc
+_utc = dt.UTC
 _tmp = Path("/tmp")
 
 
 class HistoryScraper:
-    def __init__(self, title: str):
+    def __init__(self, title: str) -> None:
         assert "/" not in title, title
         assert re.search(r"^[\w()-]+$", title), title
         self.page_url_prefix = f"https://en.wikipedia.org/w/rest.php/v1/page/{title}"
@@ -121,7 +121,7 @@ class HistoryScraper:
                 if comment != match[1]:
                     print(comment)
                     print(match[1])
-                print("")
+                print()
                 cmd = f'''
                     cd {out_dir} &&
                     git add {self.title} &&

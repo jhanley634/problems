@@ -15,7 +15,7 @@ cli = typer.Typer()
 
 
 @cli.command()
-def preview_images(folder: Path = DESKTOP, pattern="*.png"):
+def preview_images(folder: Path = DESKTOP, pattern="*.png") -> None:
     folder = folder.expanduser()
     assert folder.is_dir(), folder
     images = [Path(f).name for f in sorted(glob(f"{folder}/{pattern}"))]

@@ -2,6 +2,7 @@
 
 # Copyright 2023 John Hanley. MIT licensed.
 from abc import ABC
+from typing import Never
 
 import pandas as pd
 import pyspark.context as pc
@@ -9,8 +10,9 @@ import pyspark.pandas as sp
 
 
 class Delegator(ABC):
-    def get_delegated_obj(self):
-        raise ValueError("Implementor must delegate to an object")
+    def get_delegated_obj(self) -> Never:
+        msg = "Implementor must delegate to an object"
+        raise ValueError(msg)
 
     def __getattr__(self, called_method):
         def _wrapper(*args, **kwargs):
@@ -23,7 +25,7 @@ class Delegator(ABC):
 
 
 class FlexFrame(Delegator):
-    def __init__(self, arg, **kwargs):
+    def __init__(self, arg, **kwargs) -> None:
         rec = arg.to_records(index=False)
         self.pd = self.sp = None
         if isinstance(arg, pd.DataFrame):
@@ -31,7 +33,8 @@ class FlexFrame(Delegator):
         elif isinstance(arg, sp.DataFrame):
             self.sp = sp.DataFrame(rec, **kwargs)
         else:
-            raise TypeError(f"Unexpected type: {type(arg)}")
+            msg = f"Unexpected type: {type(arg)}"
+            raise TypeError(msg)
 
     def get_delegated_obj(self):
         # We're either delegating to pandas or to spark.

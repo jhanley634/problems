@@ -8,7 +8,7 @@ from tqdm import tqdm
 import typer
 
 
-def generate_all(dest_dir: Path, num_copies: int = 7_000, length: int = 12_500):
+def generate_all(dest_dir: Path, num_copies: int = 7_000, length: int = 12_500) -> None:
     """Generates example data for a timing comparison.
 
     Question originally posed in

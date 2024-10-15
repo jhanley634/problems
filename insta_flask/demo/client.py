@@ -22,7 +22,7 @@ def url(path: str) -> str:
 
 def check_mean() -> None:
     data = np.array([1, 2, 6])
-    jsn = json.dumps(dict(shape=data.shape, data=data.tolist()))
+    jsn = json.dumps({"shape": data.shape, "data": data.tolist()})
     resp = requests.post(url("/mean"), headers=headers, data=jsn)
     ct_mean = resp.json()["mean"]
     assert 3 == ct_mean
@@ -30,7 +30,7 @@ def check_mean() -> None:
 
 def check_median() -> None:
     data = np.array([1, 2, 6])
-    jsn = json.dumps(dict(shape=data.shape, data=data.tolist()))
+    jsn = json.dumps({"shape": data.shape, "data": data.tolist()})
     resp = requests.post(url("/median"), headers=headers, data=jsn)
     ct_median = resp.json()["median"]
     assert 2 == ct_median

@@ -10,7 +10,7 @@ def main() -> None:
     st.write("Hi!")
     p = Perc(3, 2)
     st.write(p.g.numberOfNodes(), p.g.numberOfEdges())
-    print("")
+    print()
     nk.overview(p.g)
 
 

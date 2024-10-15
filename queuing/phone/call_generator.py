@@ -9,13 +9,16 @@ import numpy as np
 import pandas as pd
 
 
+def now() -> dt.datetime:
+    return dt.datetime.now(dt.UTC)
+
 class CallGenerator:
     def __init__(
         self,
         arrival_rate: float = 1 / 30.0,  # expect a call every thirty seconds
         call_duration: float = 28,  # almost one Erlang of call traffic
         variance: float = 15,
-    ):
+    ) -> None:
         """Generate call events at random times.
 
         arrival_rate: λ, in event per second, expect a call every 1 / λ seconds
@@ -69,8 +72,8 @@ def _get_gen() -> (
 ):
     generator = CallGenerator()
     return generator, generator.gen_continuous(
-        dt.datetime.now(),
-        dt.datetime.now() + dt.timedelta(seconds=1_200),
+        now(),
+        now() + dt.timedelta(seconds=1_200)
     )
 
 

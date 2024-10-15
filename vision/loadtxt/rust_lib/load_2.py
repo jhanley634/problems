@@ -8,7 +8,7 @@ import numpy as np
 import typer
 
 
-def main(in_folder: Path = "/tmp/loadtxt.d"):
+def main(in_folder: Path = "/tmp/loadtxt.d") -> None:
     for in_file in tqdm(sorted(in_folder.glob("*.txt")), smoothing=0.002):
         vals = load_txt(in_file.as_posix())
         a = np.array(vals)

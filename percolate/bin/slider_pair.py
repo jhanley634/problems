@@ -60,9 +60,9 @@ def main() -> None:
     scale = 1000
     df = pd.DataFrame(
         [
-            dict(
-                city=z.major_city, zip=z.zipcode, pop=int(z.population / scale) * scale
-            )
+            {
+                "city": z.major_city, "zip": z.zipcode, "pop": int(z.population / scale) * scale
+            }
             for z in se.by_population(lo * scale, hi * scale, returns=12)
         ]
     )

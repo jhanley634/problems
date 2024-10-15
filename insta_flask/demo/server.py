@@ -11,12 +11,12 @@ app = Flask(__name__)
 
 
 @app.route("/hello")
-def hello():
+def hello() -> str:
     return "Hello!\n"
 
 
 @app.route("/mean", methods=["POST"])
-def mean():
+def mean()-> dict[str, float]:
 
     # Argument 1 to "dict" has incompatible type "Any | None";
     # expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
@@ -24,7 +24,7 @@ def mean():
     shape = d["shape"]
     data = np.asarray(d["data"]).reshape(shape)
 
-    return dict(mean=ct_mean(data))
+    return {"mean": ct_mean(data)}
 
 
 def median() -> dict[str, float]:
@@ -32,7 +32,7 @@ def median() -> dict[str, float]:
     shape = d["shape"]
     data = np.asarray(d["data"]).reshape(shape)
 
-    return dict(median=ct_median(data))
+    return {"median": ct_median(data)}
 
 
 app.add_url_rule("/median", view_func=median, methods=["POST"])

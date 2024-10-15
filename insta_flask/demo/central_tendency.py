@@ -4,9 +4,9 @@ import numpy as np
 import numpy.typing as npt
 
 
-def ct_mean(x: npt.NDArray[np.float_]) -> float:
+def ct_mean(x: npt.NDArray[np.float64]) -> float:
     return sum(x) / len(x)
 
 
-def ct_median(x: npt.NDArray[np.float_]) -> np.float_:
+def ct_median(x: npt.NDArray[np.float64]) -> np.float64:
     return np.median(x)
