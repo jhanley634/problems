@@ -3,6 +3,8 @@ import unittest
 
 from web.wiki.history import HistoryScraper
 
+# ruff: noqa: SLF001
+
 
 class HistoryTest(unittest.TestCase):
     def setUp(self) -> None:

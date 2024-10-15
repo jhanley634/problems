@@ -80,12 +80,14 @@ class HistoryScraper:
         txt = txt.replace("\n", "\n\n======\n")  # This improves `diff` output a bit.
         txt = txt.replace("<", "\n<")
         # Line break, for diff, on a deterministic subset of words. (Nothing special about "vowels".)
-        txt = re.sub(r"\b([aeiou])", r"\n\1", txt, re.IGNORECASE)
+        txt = re.sub(r"\b([aeiou])", r"\n\1", txt, flags=re.IGNORECASE)
         lines = [
             line.strip()  # so `git log -p` won't append EOL red "trailing blank" notations
             for line in txt.split("\n")
         ]
         return "\n".join(lines)
+
+    # ruff: noqa: RUF001
 
     def write_versions(self, out_dir: Path = _tmp / "wiki_history") -> None:
         out_dir.mkdir(exist_ok=True)
@@ -99,10 +101,10 @@ class HistoryScraper:
         single_quote = "'"
         xlate_tbl = str.maketrans(f'{single_quote}"\t\n', "..  ")
 
-        for id_, stamp, author, comment in self._get_all_history_ids():
+        for id_, stamp, author, comment1 in self._get_all_history_ids():
             sec = int(stamp.timestamp())
             stamp_ = stamp.strftime("%Y-%m-%dT%H:%M:%S")
-            comment = comment.translate(xlate_tbl)
+            comment = comment1.translate(xlate_tbl)
             out_file = out_dir / self.title
             out_file_id = Path(f"{out_file}-{id_}")
             if not out_file_id.exists():
