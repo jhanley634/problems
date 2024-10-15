@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 # Copyright 2023 John Hanley. MIT licensed.
 from pathlib import Path
+from typing import Any
 import re
 
 from beartype import beartype
 from geopandas.array import GeometryArray
-from typing_extensions import Any
 from uszipcode import SearchEngine, SimpleZipcode
 import geopandas as gpd
 import numpy as np
@@ -87,9 +87,10 @@ def _points_from_xy(
     """Fuzzes points by small random epsilon, so all locations are distinct."""
     assert len(lng) == len(lat)
     size = len(lng)
+    rng = np.random.default_rng(42)
     return gpd.points_from_xy(
-        lng + np.random.uniform(-eps, eps, size=size),
-        lat + np.random.uniform(-eps, eps, size=size),
+        lng + rng.uniform(-eps, eps, size=size),
+        lat + rng.uniform(-eps, eps, size=size),
     )
 
 
