@@ -89,7 +89,6 @@ from numpy.random import default_rng  # noqa F401
 from numpy.testing import assert_array_equal  # noqa F401
 from osmnx.graph import graph_from_place  # noqa F401
 from palettable.colorbrewer import qualitative  # noqa F401
-# ignore F401 "imported but unused"
 from PIL import Image, ImageDraw  # noqa F401
 from PIL.Image import Image  # noqa F401
 from PIL.ImageDraw import ImageDraw  # noqa F401
