@@ -41,6 +41,9 @@ class RandomIntGenerator:
                 c -= n
 
 
+# ruff: noqa: SLF001
+
+
 class TestRand100(unittest.TestCase):
     def test_next_random_bit(self) -> None:
         g = RandomIntGenerator()

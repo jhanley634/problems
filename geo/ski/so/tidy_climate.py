@@ -23,16 +23,16 @@ class OriginalClimate:
 
     BASE_URL = "https://www.ncei.noaa.gov/pub/data/cirs/climdiv"
     FILE_PREFIX = "climdiv"
-    DATA_ELEMENTS = [
+    DATA_ELEMENTS = (
         # "sp01dv",
         # "sp24dv",  # Standardized Precipitation uses "division", not "county"
         "tmaxcy",
         "tmincy",
         "tmpccy",
-    ]
+    )
     FILE_VERSION = "v1.0.0-20230406"
 
-    MONTHS = [dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13)]
+    MONTHS = (dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13))
 
     def __init__(self, temp_dir: Path = TEMP_DIR) -> None:
         self.folder = temp_dir
@@ -53,7 +53,7 @@ class OriginalClimate:
         """Fetches the raw data of the given URL, possibly enjoying a local cache hit."""
         csv = self._path_for_url(url)
         if not csv.exists():
-            self.log.info(f"Saving {csv}")
+            self.log.info("Saving %s", csv)
             resp = requests.get(url)
             resp.raise_for_status()
             with open(csv, "w") as fout:
@@ -99,7 +99,7 @@ def _get_monthly_rows(
         for month_num, month in enumerate(OriginalClimate.MONTHS):
             yield {
                 **place,
-                "stamp": dt.datetime(row.year, 1 + month_num, 1),
+                "stamp": dt.datetime(row.year, 1 + month_num, 1, tzinfo=dt.UTC),
                 col_name: row[month],
             }
 

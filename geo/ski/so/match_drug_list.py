@@ -33,6 +33,7 @@ US_DRUGS = [Drug(f"MED{i:05d}", f"{i}", None) for i in range(NUM_DRUGS)]
 
 # ruff: noqa: PERF401
 
+
 def _extract_drugs_from_prescription_text(prescription_text: str) -> list[Drug]:
     # normalize prescription text (remove accents)
     normalized_prescription_text = unidecode.unidecode(prescription_text)
