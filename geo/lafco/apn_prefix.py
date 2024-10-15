@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
 """
-Datasource is CSV exports from https://gis.smcgov.org/Html5Viewer/?viewer=raster
+Datasource is CSV exports from https://gis.smcgov.org/Html5Viewer/?viewer=raster .
 """
 import pandas as pd
 

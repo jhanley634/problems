@@ -1,13 +1,12 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
 # Copyright 2023 John Hanley. MIT licensed.
-from collections import namedtuple
 from collections.abc import Generator
 from enum import Enum, auto
 from time import time
+from typing import Any, NamedTuple
 
 from pygame import Rect, Surface, Vector2
 from sortedcontainers import SortedList
-from typing_extensions import Any
 import pygame
 
 GRID_SIZE_PX: int = 3
@@ -19,7 +18,7 @@ DURATION = 4.0
 class Block:
     """A city block."""
 
-    def __init__(self, x: float, y: float, size: float):
+    def __init__(self, x: float, y: float, size: float) -> None:
         self.x = x
         self.y = y
         self.size = size
@@ -42,7 +41,9 @@ class Obstacle:
     """
 
     serial: int = 0
-    fleet: dict[int, "Obstacle"] = {}  # maps serial number to Car or Control
+
+    # maps serial number to Car or Control
+    fleet: dict[int, "Obstacle"] = {}  # noqa: RUF012
 
     def __init__(self, position: float) -> None:
         self.position = position  # distance from RoadSegment start, in px
@@ -52,15 +53,18 @@ class Obstacle:
         self.serial = Obstacle.serial
         Obstacle.fleet[self.serial] = self
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return bool(self.position == other.position)
 
     def __lt__(self, other: Any) -> bool:
         return bool(self.position < other.position)
 
 
-# position in px from road segment start, for a given obstacle
-Position = namedtuple("Position", ["position", "serial"])
+class Position(NamedTuple):
+    """Position in px from road segment start, for a given obstacle."""
+
+    position: float
+    serial: int
 
 
 class RoadSegment:
@@ -88,7 +92,8 @@ class RoadSegment:
 class Control(Obstacle):
     """A traffic control, or signal light, at an intersection.
 
-    It faces just one way and controls exactly one lane of traffic."""
+    It faces just one way and controls exactly one lane of traffic.
+    """
 
     class Color(Enum):
         RED = auto()
@@ -116,6 +121,7 @@ class Car(Obstacle):
         obs, i = None, 0
         for i, obs in enumerate(seg.obstacles):
             if obs is self:
+                print(i)
                 break
         print(obs, i, self)
         print(seg.obstacles[i])
@@ -145,7 +151,7 @@ class City:
 
     BLOCK_SIZE: float = 50.0  # number of grids per (square) block
 
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int) -> None:
         scale = self.BLOCK_SIZE * GRID_SIZE_PX
         self.blocks = [
             Block(

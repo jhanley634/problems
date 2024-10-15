@@ -8,7 +8,7 @@ class Author(db.Model):  # type: ignore [misc]
     books = db.relationship("Book", backref="author")
 
     def repr(self) -> str:
-        return "<Author: {}>".format(self.books)
+        return f"<Author: {self.books}>"
 
 
 class Book(db.Model):  # type: ignore [misc]

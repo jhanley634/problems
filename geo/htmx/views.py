@@ -64,6 +64,9 @@ def submit() -> str:
     return response
 
 
+# ruff: noqa: A002
+
+
 @app.route("/delete/<int:id>", methods=["DELETE"])  # type: ignore [misc]
 def delete_book(id: str) -> str:
     book = Book.query.get(id)
@@ -154,7 +157,9 @@ def sse() -> Response:
     def event_stream() -> Generator[str, None, None]:
         while messages:
             msg = messages.popleft()
-            counter = repr({"time": dt.datetime.now().isoformat(), "counter": msg})
+            counter = repr(
+                {"time": dt.datetime.now(dt.UTC).isoformat(), "counter": msg}
+            )
             yield f"event: count\ndata: {counter}\n\n"
             sleep(2)
 

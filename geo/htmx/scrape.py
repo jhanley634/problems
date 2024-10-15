@@ -3,6 +3,7 @@ from collections.abc import Generator
 import logging
 
 from beartype import beartype
+from boltons.dictutils import FrozenDict
 from scrapy.crawler import CrawlerProcess
 from scrapy.http import HtmlResponse
 from scrapy.spiders import Spider
@@ -29,13 +30,15 @@ def populate_books_table(minimum: int = 8) -> None:
 @beartype
 class Gutenberg(Spider):  # type: ignore [misc]
     name = "gutenberg"
-    allowed_domains = ["gutenberg.org"]
+    allowed_domains = ("gutenberg.org",)
     mark_twain = "https://www.gutenberg.org/ebooks/author/53"
-    start_urls = [mark_twain]
-    custom_settings = {
-        "REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7",
-        "LOG_LEVEL": logging.WARNING,
-    }
+    start_urls = (mark_twain,)
+    custom_settings = FrozenDict(
+        {
+            "REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7",
+            "LOG_LEVEL": logging.WARNING,
+        }
+    )
 
     def parse(self, response: HtmlResponse) -> Generator[None, None, None]:
         with get_conn() as conn:
