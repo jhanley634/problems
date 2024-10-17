@@ -12,7 +12,6 @@ import logging
 import re
 
 from geopy.geocoders import Nominatim
-from geopy.location import Location
 from sqlalchemy import JSON, Text
 from sqlalchemy.orm import Session, declarative_base, mapped_column
 import sqlalchemy as sa

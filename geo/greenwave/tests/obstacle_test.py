@@ -13,7 +13,7 @@ class ObstacleTest(unittest.TestCase):
 
         for i in range(7):
             car = Car(seg, speed_px_per_sec=7.0 - i)
-            car.update(one_second, seg)  #   update will need a 2nd arg
+            car.update(one_second, seg)  # update will need a 2nd arg
         self.assertEqual(7, len(Obstacle.fleet))
         self.assertEqual(7, len(seg.obstacles))
         self.assertEqual(
