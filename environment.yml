@@ -26,6 +26,7 @@ dependencies:
   - black[jupyter] >= 24.10.0
   - dask >= 2024.9.1
   - datasets >= 3.0.1
+  - docx >= 0.2.4
   - evaluate >= 0.4.3
   - eyed3 >= 0.9.7
   - fasteners >= 0.19
@@ -81,7 +82,8 @@ dependencies:
   - pylint >= 3.3.1
   - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
-  - pyright >= 1.1.383
+  - pypandoc >= 1.14
+  - pyright >= 1.1.384
   - pyspark >= 3.5.3
   - pytesseract >= 0.3.13
   - pytest >= 8.3.3
