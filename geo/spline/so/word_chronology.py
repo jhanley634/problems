@@ -29,9 +29,11 @@ def clean_markdown_document(input_file, output_file) -> None:
     # Determine the index to cut off the content
     if first_occurrence_index != -1:
         if first_occurrence_of_footnote != -1 and first_occurrence_of_footnote > first_occurrence_index:
-            cleaned_content = content[:first_occurrence_of_footnote]  # Slice content up to the footnote
+            # Slice content up to the footnote
+            cleaned_content = content[:first_occurrence_of_footnote]
         else:
-            cleaned_content = content[first_occurrence_index:]  # Keep content from "1." onwards
+            # Keep content from "1." onwards
+            cleaned_content = content[first_occurrence_index:]
     else:
         cleaned_content = content  # If "1." is not found, keep the content as is
 
@@ -57,7 +59,8 @@ def extract_numbered_items_to_csv(input_file, output_file) -> None:
         writer.writerow(["Number", "Text"])  # Writing header
 
         for number, text in matches:
-            writer.writerow([number, text.strip()])  # Writing each row with number and text
+            # Writing each row with number and text
+            writer.writerow([number, text.strip()])
 
     print(f"Data has been extracted and saved to {output_file}")
 
