@@ -17,7 +17,7 @@ import pypandoc
 app = Flask(__name__)
 
 
-def clean_markdown_document(input_file, output_file):
+def clean_markdown_document(input_file, output_file) -> None:
     with open(input_file, encoding="utf-8") as file:
         content = file.read()
 
@@ -41,7 +41,7 @@ def clean_markdown_document(input_file, output_file):
     print(f"Markdown document cleaned and saved as {output_file}")
 
 
-def extract_numbered_items_to_csv(input_file, output_file):
+def extract_numbered_items_to_csv(input_file, output_file) -> None:
     with open(input_file, encoding="utf-8") as file:
         content = file.read()
 
@@ -79,7 +79,7 @@ def parse_date(date_str):
     return None
 
 
-def extract_dates(input_file, output_file):
+def extract_dates(input_file, output_file) -> None:
     extracted_data = []
 
     # Define regular expression patterns for common date formats
@@ -125,7 +125,7 @@ def extract_dates(input_file, output_file):
     print(f"Date extraction completed and saved to {output_file}")
 
 
-def create_word_document_from_csv(input_file, output_file):
+def create_word_document_from_csv(input_file, output_file) -> None:
     data = pd.read_csv(input_file)
 
     # Create a new Word document
@@ -143,7 +143,7 @@ def create_word_document_from_csv(input_file, output_file):
     hdr_cells[1].text = "Text"
     hdr_cells[2].text = "Paragraph Number"
 
-    for index, row in data.iterrows():
+    for _index, row in data.iterrows():
         row_cells = table.add_row().cells  # Add a new row
         row_cells[0].text = str(row["Date"])  # Fill Date
         row_cells[1].text = str(row["Text"])  # Fill Text
@@ -171,7 +171,7 @@ def everything_function(f: Path = Path("/tmp/foo.docx")) -> None:
 
 
 @app.route("/")
-def main():
+def main() -> None:
     everything_function()
 
 
