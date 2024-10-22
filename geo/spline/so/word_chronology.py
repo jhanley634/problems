@@ -4,7 +4,6 @@
 # from https://codereview.stackexchange.com/questions/294181/word-chronology-from-word-doc
 
 from datetime import datetime
-from pathlib import Path
 import csv
 import os
 import re
@@ -18,7 +17,7 @@ import typer
 app = Flask(__name__)
 
 
-def clean_markdown_document(input_file, output_file) -> None:
+def clean_markdown_document(input_file: str, output_file: str) -> None:
     with open(input_file, encoding="utf-8") as file:
         content = file.read()
 
@@ -47,7 +46,7 @@ def clean_markdown_document(input_file, output_file) -> None:
     print(f"Markdown document cleaned and saved as {output_file}")
 
 
-def extract_numbered_items_to_csv(input_file, output_file) -> None:
+def extract_numbered_items_to_csv(input_file: str, output_file: str) -> None:
     with open(input_file, encoding="utf-8") as file:
         content = file.read()
 
@@ -69,7 +68,7 @@ def extract_numbered_items_to_csv(input_file, output_file) -> None:
     print(f"Data has been extracted and saved to {output_file}")
 
 
-def parse_date(date_str):
+def parse_date(date_str: str) -> datetime | None:
     # Attempt to parse the date string into a datetime object
     date_formats = [
         "%m/%d/%Y",
@@ -92,7 +91,7 @@ def parse_date(date_str):
     return None
 
 
-def extract_dates(input_file, output_file) -> None:
+def extract_dates(input_file: str, output_file: str) -> None:
     extracted_data = []
 
     # Define regular expression patterns for common date formats
@@ -137,6 +136,7 @@ def extract_dates(input_file, output_file) -> None:
         writer.writeheader()
 
         for entry in extracted_data:
+            assert isinstance(entry["Date"], datetime)
             writer.writerow(
                 {
                     "Date": entry["Date"].strftime("%Y-%m-%d"),
@@ -148,7 +148,7 @@ def extract_dates(input_file, output_file) -> None:
     print(f"Date extraction completed and saved to {output_file}")
 
 
-def create_word_document_from_csv(input_file, output_file) -> None:
+def create_word_document_from_csv(input_file: str, output_file: str) -> None:
     data = pd.read_csv(input_file)
 
     # Create a new Word document
@@ -177,7 +177,7 @@ def create_word_document_from_csv(input_file, output_file) -> None:
     print(f"Word document '{output_file}' created successfully.")
 
 
-def everything_function(in_file: Path = Path("/tmp/foo.docx")) -> None:
+def everything_function(in_file: str = "/tmp/foo.docx") -> None:
     try:
         pypandoc.convert_file(in_file, "md", outputfile="input.md")
         clean_markdown_document("input.md", "cleaned.md")
@@ -199,7 +199,7 @@ def everything_function(in_file: Path = Path("/tmp/foo.docx")) -> None:
                 print(f"Removed {file}")
 
 
-@app.route("/")
+@app.route("/")  # type:ignore [misc]
 def main() -> None:
     everything_function()
 
