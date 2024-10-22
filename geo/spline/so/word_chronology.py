@@ -13,6 +13,7 @@ from docx import Document
 from flask import *
 import pandas as pd
 import pypandoc
+import typer
 
 app = Flask(__name__)
 
@@ -28,7 +29,10 @@ def clean_markdown_document(input_file, output_file) -> None:
 
     # Determine the index to cut off the content
     if first_occurrence_index != -1:
-        if first_occurrence_of_footnote != -1 and first_occurrence_of_footnote > first_occurrence_index:
+        if (
+            first_occurrence_of_footnote != -1
+            and first_occurrence_of_footnote > first_occurrence_index
+        ):
             # Slice content up to the footnote
             cleaned_content = content[:first_occurrence_of_footnote]
         else:
@@ -68,9 +72,15 @@ def extract_numbered_items_to_csv(input_file, output_file) -> None:
 def parse_date(date_str):
     # Attempt to parse the date string into a datetime object
     date_formats = [
-        "%m/%d/%Y", "%m-%d-%Y", "%m/%d/%y", "%m-%d-%y",
-        "%d %B %Y", "%d %b %Y", "%B %d, %Y", "%b %d, %Y",
-        "%Y-%m-%d"
+        "%m/%d/%Y",
+        "%m-%d-%Y",
+        "%m/%d/%y",
+        "%m-%d-%y",
+        "%d %B %Y",
+        "%d %b %Y",
+        "%B %d, %Y",
+        "%b %d, %Y",
+        "%Y-%m-%d",
     ]
 
     for date_format in date_formats:
@@ -90,7 +100,7 @@ def extract_dates(input_file, output_file) -> None:
         r"\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b",  # MM/DD/YYYY or MM-DD-YYYY or MM/DD/YY or MM-DD-YY
         r"\b(\d{1,2} [A-Za-z]{3,9} \d{2,4})\b",  # DD Month YYYY
         r"\b([A-Za-z]{3,9} \d{1,2}, \d{2,4})\b",  # Month DD, YYYY
-        r"\b(\d{4}-\d{2}-\d{2})\b"  # YYYY-MM-DD
+        r"\b(\d{4}-\d{2}-\d{2})\b",  # YYYY-MM-DD
     ]
 
     with open(input_file, encoding="utf-8") as csvfile:
@@ -107,7 +117,13 @@ def extract_dates(input_file, output_file) -> None:
                         # Attempt to parse the match into a datetime object
                         date = parse_date(match)
                         if date:
-                            extracted_data.append({"Date": date, "Text": text, "Paragraph Number": paragraph_number})
+                            extracted_data.append(
+                                {
+                                    "Date": date,
+                                    "Text": text,
+                                    "Paragraph Number": paragraph_number,
+                                }
+                            )
                     except ValueError:
                         # Ignore if the match cannot be parsed into a valid date
                         pass
@@ -121,9 +137,13 @@ def extract_dates(input_file, output_file) -> None:
         writer.writeheader()
 
         for entry in extracted_data:
-            writer.writerow({"Date": entry["Date"].strftime("%Y-%m-%d"),
-                             "Text": entry["Text"],
-                             "Paragraph Number": entry["Paragraph Number"]})
+            writer.writerow(
+                {
+                    "Date": entry["Date"].strftime("%Y-%m-%d"),
+                    "Text": entry["Text"],
+                    "Paragraph Number": entry["Paragraph Number"],
+                }
+            )
 
     print(f"Date extraction completed and saved to {output_file}")
 
@@ -157,9 +177,9 @@ def create_word_document_from_csv(input_file, output_file) -> None:
     print(f"Word document '{output_file}' created successfully.")
 
 
-def everything_function(f: Path = Path("/tmp/foo.docx")) -> None:
+def everything_function(in_file: Path = Path("/tmp/foo.docx")) -> None:
     try:
-        pypandoc.convert_file(f, "md", outputfile="input.md")
+        pypandoc.convert_file(in_file, "md", outputfile="input.md")
         clean_markdown_document("input.md", "cleaned.md")
         extract_numbered_items_to_csv("cleaned.md", "all_dates.csv")
         extract_dates("all_dates.csv", "dates_extracted.csv")
@@ -167,7 +187,13 @@ def everything_function(f: Path = Path("/tmp/foo.docx")) -> None:
 
     finally:
         # Remove intermediate files
-        for file in [f, "input.md", "cleaned.md", "all_dates.csv", "dates_extracted.csv"]:
+        for file in [
+            in_file,
+            "input.md",
+            "cleaned.md",
+            "all_dates.csv",
+            "dates_extracted.csv",
+        ]:
             if os.path.exists(file):
                 os.remove(file)
                 print(f"Removed {file}")
@@ -179,4 +205,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    typer.run(everything_function)

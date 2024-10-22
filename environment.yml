@@ -26,7 +26,6 @@ dependencies:
   - black[jupyter] >= 24.10.0
   - dask >= 2024.10.0
   - datasets >= 3.0.1
-  - docx >= 0.2.4
   - evaluate >= 0.4.3
   - eyed3 >= 0.9.7
   - fasteners >= 0.19
@@ -89,6 +88,7 @@ dependencies:
   - pytest >= 8.3.3
   - pytest-cov >= 5.0.0
   - python-Levenshtein >= 0.26.0
+  - python-docx >= 1.1.2
   - redis >= 5.1.1
   - reedsolo >= 1.7.0
   - requests-cache >= 1.2.1
