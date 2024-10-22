@@ -3,13 +3,13 @@
 
 # from https://codereview.stackexchange.com/questions/294181/word-chronology-from-word-doc
 
-from datetime import datetime
+from datetime import UTC, datetime
+from pathlib import Path
 import csv
-import os
 import re
 
 from docx import Document
-from flask import *
+from flask import Flask
 import pandas as pd
 import pypandoc
 import typer
@@ -51,7 +51,7 @@ def extract_numbered_items_to_csv(input_file: str, output_file: str) -> None:
         content = file.read()
 
     # Regex pattern to find numbered items
-    pattern = r"(\d+)\.\s*(.*?)\n(?=\d+\.\s|$)"  # Matches numbers followed by text, ending with a new line before another number
+    pattern = r"(\d+)\.\s*(.*?)\n(?=\d+\.\s|$)"  # Matches numbers then text, ending with \n before another number
 
     # Find all matches
     matches = re.findall(pattern, content, re.DOTALL)
@@ -84,7 +84,7 @@ def parse_date(date_str: str) -> datetime | None:
 
     for date_format in date_formats:
         try:
-            return datetime.strptime(date_str, date_format)
+            return datetime.strptime(date_str, date_format).replace(tzinfo=UTC)
         except ValueError:
             pass
 
@@ -194,9 +194,10 @@ def everything_function(in_file: str = "/tmp/foo.docx") -> None:
             "all_dates.csv",
             "dates_extracted.csv",
         ]:
-            if os.path.exists(file):
-                os.remove(file)
-                print(f"Removed {file}")
+            f = Path(file)
+            if f.exists():
+                f.unlink()
+                print(f"Removed {f}")
 
 
 @app.route("/")  # type:ignore [misc]
