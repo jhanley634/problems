@@ -40,7 +40,7 @@ WIDTH, HEIGHT = 800, 600
 LANE_WIDTH = 40  # it's a two lane highway
 JOGGER_SIZE = 10
 ZOMBIE_SIZE = 8
-ZOMBIE_COUNT = 30
+ZOMBIE_COUNT = 200
 SPEED = 2
 ZOMBIE_SPEED = 1
 SEPARATION_DISTANCE = 4 * ZOMBIE_SIZE  # minimum distance between zombies
@@ -85,12 +85,14 @@ class ZombieRunnerSim:
             # Boids behavior: Cohesion and Separation
             self.flock_like_boids(zombie)
 
+        # Remove zombies that have gone off-screen
+        self.zombies = [z for z in self.zombies if z.y >= 0]
+
     def flock_like_boids(self, zombie: Zombie) -> None:
-        nearby_zombies = [
-            z
-            for z in self.zombies
-            if z != zombie and self.distance(zombie, z) < SEPARATION_DISTANCE
-        ]
+        def near(other: Zombie, epsilon: float = 1e-9) -> bool:
+            return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
+
+        nearby_zombies = list(filter(near, self.zombies))
 
         if nearby_zombies:
             # Cohesion: Calculate the average position of nearby zombies
@@ -149,7 +151,8 @@ def main() -> None:
         game.move_zombies()
         game.draw()
 
-        print(f"\r{clock.get_fps():.1f} fps   ", end="", flush=True)
+        # Even without flushing, we'll see plenty of updates.
+        print(f"\r{clock.get_fps():4.1f} fps    {len(game.zombies)} zombies   ", end="")
         clock.tick(60)
 
     pygame.quit()
