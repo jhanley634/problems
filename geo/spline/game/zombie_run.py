@@ -6,10 +6,29 @@ where a uniform distribution of dozens of zombies are just waking up.
 When they notice the jogger they first head toward the highway,
 and then make a 90-degree turn to head north, pursuing the jogger.
 """
+from dataclasses import dataclass
 import math
 import random
 
 import pygame
+
+
+@dataclass
+class Agent:
+    x: float
+    y: float
+    speed: float
+    color: tuple[int, int, int]
+    size: int
+
+
+class Jogger(Agent):
+    pass
+
+
+class Zombie(Agent):
+    pass
+
 
 # Constants
 WIDTH, HEIGHT = 800, 600
@@ -26,8 +45,7 @@ pygame.display.set_caption("Jogger vs Zombies Simulation")
 clock = pygame.time.Clock()
 
 # Jogger starting position
-jogger_pos = [WIDTH // 2, HEIGHT // 2]
-jogger_color = (0, 255, 0)  # Green
+jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, (0, 255, 0), JOGGER_SIZE)  # green
 
 # Initialize zombies
 zombies = []
@@ -37,32 +55,25 @@ for _ in range(ZOMBIE_COUNT):
         [random.randint(0, WIDTH // 2 - 50), random.randint(WIDTH // 2 + 50, WIDTH)]
     )
     y_pos = random.randint(0, HEIGHT)
-    zombies.append({"pos": [x_pos, y_pos], "color": (255, 0, 0)})  # Red
-
+    zombies.append(Zombie(x_pos, y_pos, ZOMBIE_SPEED, (255, 0, 0), ZOMBIE_SIZE))  # red
 
 def move_zombies() -> None:
     for zombie in zombies:
-        zombie_x, zombie_y = zombie["pos"]
         # Move zombie towards the jogger's x position, then head north
-        direction = int(math.copysign(1, jogger_pos[0] - zombie_x))
-        zombie_x += direction * ZOMBIE_SPEED
+        direction = int(math.copysign(1, jogger.x - zombie.x))
+        zombie.x += direction * ZOMBIE_SPEED
 
         # Zombie moves north along the highway towards the jogger
-        if zombie_x == jogger_pos[0]:
-            zombie_y -= ZOMBIE_SPEED
-        zombie["pos"] = [zombie_x, zombie_y]
+        if zombie.x == jogger.x:
+            zombie.y -= ZOMBIE_SPEED
 
 
 def draw() -> None:
     screen.fill((0, 0, 0))  # Clear screen with black
-    pygame.draw.circle(
-        screen, jogger_color, (jogger_pos[0], jogger_pos[1]), JOGGER_SIZE
-    )
+    pygame.draw.circle(screen, jogger.color, (jogger.x, jogger.y), jogger.size)
 
     for zombie in zombies:
-        pygame.draw.circle(
-            screen, zombie["color"], (zombie["pos"][0], zombie["pos"][1]), ZOMBIE_SIZE
-        )
+        pygame.draw.circle(screen, zombie.color, (zombie.x, zombie.y), zombie.size)
 
     pygame.display.flip()
 
@@ -75,9 +86,9 @@ def main() -> None:
                 running = False
 
         # Move jogger north
-        jogger_pos[1] -= SPEED
-        if jogger_pos[1] < 0:  # Reset jogger position if it goes off screen
-            jogger_pos[1] = HEIGHT
+        jogger.y -= SPEED
+        if jogger.y < 0:  # Reset jogger position if it goes off screen
+            jogger.y = HEIGHT
 
         move_zombies()
         draw()
