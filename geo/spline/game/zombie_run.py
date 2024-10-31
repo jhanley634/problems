@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
 """
 A jogger is heading north on a highway.
 To the east and west there are corn fields,
@@ -43,9 +43,10 @@ ZOMBIE_SIZE = 8
 ZOMBIE_COUNT = 30
 SPEED = 2
 ZOMBIE_SPEED = 1
+SEPARATION_DISTANCE = 4 * ZOMBIE_SIZE  # minimum distance between zombies
 
 
-class ZombieRunnerBoard:
+class ZombieRunnerSim:
 
     def __init__(self) -> None:
         pygame.init()
@@ -81,6 +82,42 @@ class ZombieRunnerBoard:
             if abs(zombie.x - self.jogger.x) < LANE_WIDTH:
                 zombie.y -= zombie.speed
 
+            # Boids behavior: Cohesion and Separation
+            self.flock_like_boids(zombie)
+
+    def flock_like_boids(self, zombie: Zombie) -> None:
+        nearby_zombies = [
+            z
+            for z in self.zombies
+            if z != zombie and self.distance(zombie, z) < SEPARATION_DISTANCE
+        ]
+
+        if nearby_zombies:
+            # Cohesion: Calculate the average position of nearby zombies
+            avg_x = sum(z.x for z in nearby_zombies) / len(nearby_zombies)
+            avg_y = sum(z.y for z in nearby_zombies) / len(nearby_zombies)
+
+            # Move towards the average position (cohesion)
+            zombie.x += (avg_x - zombie.x) * 0.05  # Adjust the factor for smoothness
+            zombie.y += (avg_y - zombie.y) * 0.05
+
+            # Separation: Move away from nearby zombies
+            for other in nearby_zombies:
+                distance = self.distance(zombie, other)
+                if distance < SEPARATION_DISTANCE:
+                    # Calculate a separation vector
+                    dx = zombie.x - other.x
+                    dy = zombie.y - other.y
+                    norm = math.hypot(dx, dy)
+                    if norm > 0:
+                        # Push away.
+                        zombie.x += (dx / norm) * (SEPARATION_DISTANCE - distance) * 0.1
+                        zombie.y += (dy / norm) * (SEPARATION_DISTANCE - distance) * 0.1
+
+    @staticmethod
+    def distance(a: Agent, b: Agent) -> float:
+        return math.hypot(a.x - b.x, a.y - b.y)
+
     def draw(self) -> None:
         black = (0, 0, 0)
         self.screen.fill(black)  # clear screen
@@ -95,7 +132,7 @@ class ZombieRunnerBoard:
 
 
 def main() -> None:
-    game = ZombieRunnerBoard()
+    game = ZombieRunnerSim()
     clock = pygame.time.Clock()
 
     running = True
@@ -112,6 +149,7 @@ def main() -> None:
         game.move_zombies()
         game.draw()
 
+        print(f"\r{clock.get_fps():.1f} fps   ", end="", flush=True)
         clock.tick(60)
 
     pygame.quit()
