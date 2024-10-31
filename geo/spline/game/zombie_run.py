@@ -6,6 +6,7 @@ where a uniform distribution of dozens of zombies are just waking up.
 When they notice the jogger they first head toward the highway,
 and then make a 90-degree turn to head north, pursuing the jogger.
 """
+import math
 import random
 
 import pygame
@@ -39,21 +40,20 @@ for _ in range(ZOMBIE_COUNT):
     zombies.append({"pos": [x_pos, y_pos], "color": (255, 0, 0)})  # Red
 
 
-def move_zombies():
+def move_zombies() -> None:
     for zombie in zombies:
         zombie_x, zombie_y = zombie["pos"]
         # Move zombie towards the jogger's x position, then head north
-        if zombie_x < jogger_pos[0]:
-            zombie_x += ZOMBIE_SPEED
-        elif zombie_x > jogger_pos[0]:
-            zombie_x -= ZOMBIE_SPEED
+        direction = int(math.copysign(1, jogger_pos[0] - zombie_x))
+        zombie_x += direction * ZOMBIE_SPEED
 
-        # Move zombie north towards jogger
-        zombie_y -= ZOMBIE_SPEED
+        # Zombie moves north along the highway towards the jogger
+        if zombie_x == jogger_pos[0]:
+            zombie_y -= ZOMBIE_SPEED
         zombie["pos"] = [zombie_x, zombie_y]
 
 
-def draw():
+def draw() -> None:
     screen.fill((0, 0, 0))  # Clear screen with black
     pygame.draw.circle(
         screen, jogger_color, (jogger_pos[0], jogger_pos[1]), JOGGER_SIZE
@@ -67,7 +67,7 @@ def draw():
     pygame.display.flip()
 
 
-def main():
+def main() -> None:
     running = True
     while running:
         for event in pygame.event.get():
