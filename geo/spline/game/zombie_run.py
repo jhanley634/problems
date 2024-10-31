@@ -37,6 +37,7 @@ class Zombie(Agent):
 
 
 WIDTH, HEIGHT = 800, 600
+LANE_WIDTH = 40  # it's a two lane highway
 JOGGER_SIZE = 10
 ZOMBIE_SIZE = 8
 ZOMBIE_COUNT = 30
@@ -65,20 +66,20 @@ class ZombieRunnerBoard:
                 ]
             )
             y = random.randint(0, HEIGHT)
+            speed = ZOMBIE_SPEED * random.uniform(0.3, 1.0)
             red = (255, 0, 0)
-            zombies.append(Zombie(x, y, ZOMBIE_SPEED, red, ZOMBIE_SIZE))
+            zombies.append(Zombie(x, y, speed, red, ZOMBIE_SIZE))
         return zombies
 
     def move_zombies(self) -> None:
         for zombie in self.zombies:
-            speed = ZOMBIE_SPEED * random.uniform(0.8, 1.0)
             # Move zombie towards the jogger's x position, then head north
             direction = int(math.copysign(1, self.jogger.x - zombie.x))
-            zombie.x += direction * speed
+            zombie.x += direction * zombie.speed
 
             # Zombie moves north along the highway towards the jogger
-            if zombie.x == self.jogger.x:
-                zombie.y -= speed
+            if abs(zombie.x - self.jogger.x) < LANE_WIDTH:
+                zombie.y -= zombie.speed
 
     def draw(self) -> None:
         black = (0, 0, 0)
