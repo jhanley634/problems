@@ -126,6 +126,7 @@ dependencies:
   - xlsx2csv >= 0.8.3
   - yahoofinancials >= 1.20
   - yfinance[nospam] >= 0.2.46
+  - planegeometry >= 1.0.2
 #  - google-re2 >= 1.1.20240702
 #  - gymnasium[box2d] >= 0.29.1
 #  - networkit >= 11.0
