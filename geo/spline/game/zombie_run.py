@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import math
 import random
 
+from pygame import Rect
 import pygame
 
 
@@ -59,6 +60,7 @@ class ZombieRunnerSim:
         pygame.init()
         pygame.display.set_caption("Jogger vs Zombies Simulation")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.fps = 0.0
         green = (0, 255, 0)
         self.jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, green, JOGGER_SIZE)
         self.zombies = self.init_zombies()
@@ -116,7 +118,7 @@ class ZombieRunnerSim:
                 self.nbrs[z_id].discard(other_id)
                 continue
             other = self.zombies[other_id]
-            if self.distance(zombie, other) > 2 * SEPARATION_DISTANCE:
+            if self.distance(zombie, other) > 4 * SEPARATION_DISTANCE:
                 self.nbrs[z_id].discard(other_id)
 
     # ruff: noqa: B006
@@ -137,7 +139,11 @@ class ZombieRunnerSim:
             permuted_ids[:] = list(self.zombies.keys())  # persistent across calls
             random.shuffle(permuted_ids)
 
-        for _ in range(count):
+        acceptable_frame_rate = 20  # visually this is barely acceptably smooth
+        if self.fps < acceptable_frame_rate:
+            count //= 10  # speed things up until we're working on an easier problem
+
+        for _ in range(min(count, len(permuted_ids) // 2)):
             if permuted_ids:
                 other_id = permuted_ids.pop()
                 if other_id in self.zombies and other_id != z_id:
@@ -193,6 +199,11 @@ class ZombieRunnerSim:
         for zombie in self.zombies.values():
             pygame.draw.circle(self.screen, zombie.color, zombie.position, zombie.size)
 
+        purple = (128, 0, 128)
+        scale_factor = 5
+        speed_indicator = Rect(0, scale_factor * (60 - self.fps), WIDTH // 3, 10)
+        pygame.draw.rect(self.screen, purple, speed_indicator)
+
         pygame.display.flip()
 
 
@@ -201,7 +212,7 @@ def main() -> None:
     clock = pygame.time.Clock()
 
     running = True
-    while running:
+    while running and len(game.zombies) > 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -215,7 +226,8 @@ def main() -> None:
         game.draw()
 
         # Even without flushing, we'll see plenty of updates.
-        print(f"\r{clock.get_fps():4.1f} fps    {len(game.zombies)} zombies   ", end="")
+        game.fps = clock.get_fps()
+        print(f"\r{game.fps:4.1f} fps    {len(game.zombies)} zombies   ", end="")
         clock.tick(60)
 
     pygame.quit()
