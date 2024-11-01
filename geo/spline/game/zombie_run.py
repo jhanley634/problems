@@ -47,7 +47,7 @@ WIDTH, HEIGHT = 800, 600
 LANE_WIDTH = 40  # it's a two lane highway
 JOGGER_SIZE = 10
 ZOMBIE_SIZE = 8
-ZOMBIE_COUNT = 200
+ZOMBIE_COUNT = 300
 SPEED = 2
 ZOMBIE_SPEED = 1
 SEPARATION_DISTANCE = 4 * ZOMBIE_SIZE  # minimum distance between zombies
@@ -63,9 +63,11 @@ class ZombieRunnerSim:
         self.jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, green, JOGGER_SIZE)
         self.zombies = self.init_zombies()
 
-        ids = list(self.zombies.keys())
+        z_ids = list(self.zombies.keys())
         # from zombie ID to IDs of its nearby neighbors (initially all are "near")
-        self.nbrs = {id_: set(ids) for id_ in self.zombies}
+        self.nbrs = {z_id: set(z_ids) for z_id in self.zombies}
+        for z_id in z_ids:
+            self.nbrs[z_id].remove(z_id)
 
     def init_zombies(self) -> dict[int, Zombie]:
         zombies = {}
@@ -102,14 +104,24 @@ class ZombieRunnerSim:
             if zombie.y < 0:
                 del self.zombies[z_id]
 
-    def _update_neighbors(self, zombie: Zombie) -> None:
-        pass
+    def _update_neighbors(self, z_id: int) -> None:
+
+        zombie = self.zombies[z_id]
+
+        for other_id in list(self.nbrs[z_id]):
+            assert other_id != z_id
+            if other_id not in self.zombies:
+                self.nbrs[z_id].discard(other_id)
+                continue
+            other = self.zombies[other_id]
+            if self.distance(zombie, other) > 2 * SEPARATION_DISTANCE:
+                self.nbrs[z_id].discard(other_id)
 
     def _flock_like_boids(self, z_id: int) -> None:
 
-        zombie = self.zombies[z_id]
         if random.uniform(0, 1) < 0.01:
-            self._update_neighbors(zombie)
+            self._update_neighbors(z_id)
+        zombie = self.zombies[z_id]
 
         def near(other_id: int, epsilon: float = 1e-9) -> bool:
             other = self.zombies.get(other_id)
