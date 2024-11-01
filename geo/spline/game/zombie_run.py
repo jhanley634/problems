@@ -95,6 +95,8 @@ class ZombieRunnerSim:
         return zombies
 
     def move_zombies(self) -> None:
+        culls = []
+
         for z_id, zombie in self.zombies.items():
             # Move zombie towards the jogger's x position, then head north
             direction = int(math.copysign(1, self.jogger.x - zombie.x))
@@ -103,14 +105,15 @@ class ZombieRunnerSim:
             # Zombie moves north along the highway towards the jogger
             if abs(zombie.x - self.jogger.x) < LANE_WIDTH:
                 zombie.y -= zombie.speed
+            if zombie.y < 0:
+                culls.append(z_id)
 
             # Boids behavior: Cohesion and Separation
             self._flock_like_boids(z_id)
 
         # Remove zombies that have gone off-screen
-        for z_id, zombie in list(self.zombies.items()):
-            if zombie.y < 0:
-                del self.zombies[z_id]
+        for z_id in culls:
+            del self.zombies[z_id]
 
     def _update_neighbors(self, z_id: int) -> None:
 
@@ -178,6 +181,11 @@ class ZombieRunnerSim:
             # Move towards the average position (cohesion)
             zombie.x += (avg_x - zombie.x) * 0.05  # Adjust the factor for smoothness
             zombie.y += (avg_y - zombie.y) * 0.05
+
+            # occasional random perturbation
+            if random.uniform(0, 1) < 0.05:
+                kick = 3.0 * zombie.speed
+                zombie.x += random.uniform(-kick, kick)
 
             # Separation: Move away from nearby zombies
             for other in nearby_zombies:
