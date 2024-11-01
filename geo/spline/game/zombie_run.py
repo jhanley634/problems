@@ -10,9 +10,6 @@ from dataclasses import dataclass
 import math
 import random
 
-from planegeometry.structures.points import Point
-from planegeometry.structures.quadtree import QuadTree
-from planegeometry.structures.rectangles import Rectangle
 import pygame
 
 
@@ -45,22 +42,6 @@ class Zombie(Agent):
         return self.position == other.position
 
 
-class ZPoint(Point):  # type: ignore [misc]
-    """A Point that hangs onto a Zombie reference."""
-
-    def __init__(self, zombie: Zombie) -> None:
-        x, y = map(int, zombie.position)
-        super().__init__(x, y)
-        self.zombie = zombie
-
-
-class FPoint(Point):  # type: ignore [misc]
-    """Impedance matcher from float to int."""
-
-    def __init__(self, x: float, y: float) -> None:
-        super().__init__(int(x), int(y))
-
-
 WIDTH, HEIGHT = 800, 600
 LANE_WIDTH = 40  # it's a two lane highway
 JOGGER_SIZE = 10
@@ -80,7 +61,6 @@ class ZombieRunnerSim:
         green = (0, 255, 0)
         self.jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, green, JOGGER_SIZE)
         self.zombies = self.init_zombies()
-        self.qt = QuadTree(Rectangle(Point(0, 0), Point(WIDTH, HEIGHT)))
 
     def init_zombies(self) -> list[Zombie]:
         zombies = []
@@ -115,22 +95,19 @@ class ZombieRunnerSim:
         self.zombies = [z for z in self.zombies if z.y >= 0]
 
     def _update_quadtree(self, zombie: Zombie) -> None:
-        self.qt = QuadTree(Rectangle(Point(0, 0), Point(WIDTH, HEIGHT)))
-        for z in self.zombies:
-            if z != zombie:
-                self.qt.insert(ZPoint(z))
+        pass
 
     def flock_like_boids(self, zombie: Zombie) -> None:
         def near(other: Zombie, epsilon: float = 1e-9) -> bool:
             return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
 
-        # nearby_zombies1 = sorted(filter(near, self.zombies))
+        nearby_zombies = sorted(filter(near, self.zombies))
 
         if random.uniform(0, 1) < 0.01:
             self._update_quadtree(zombie)
-        p1 = FPoint(zombie.x - SEPARATION_DISTANCE, zombie.y - SEPARATION_DISTANCE)
-        p2 = FPoint(zombie.x + SEPARATION_DISTANCE, zombie.y + SEPARATION_DISTANCE)
-        nearby_zombies = self.qt.query(Rectangle(p1, p2))
+        # p1 = FPoint(zombie.x - SEPARATION_DISTANCE, zombie.y - SEPARATION_DISTANCE)
+        # p2 = FPoint(zombie.x + SEPARATION_DISTANCE, zombie.y + SEPARATION_DISTANCE)
+        # nearby_zombies = self.qt.query(Rectangle(p1, p2))
         # nearby_zombies.remove(Point(*zombie.position))
         # nearby_zombies = list(filter(near, nearby_zombies))
         # assert sorted(map(attrgetter("zombie"), nearby_zombies)) == nearby_zombies1
