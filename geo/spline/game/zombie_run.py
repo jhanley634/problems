@@ -72,6 +72,8 @@ class ZombieRunnerSim:
         self.zombies = self.init_zombies()
 
         z_ids = list(self.zombies.keys())
+        random.shuffle(z_ids)
+        z_ids = z_ids[: len(self.zombies) // 2]
         # from zombie ID to IDs of its nearby neighbors (initially all are "near")
         self.nbrs = {z_id: set(z_ids) for z_id in self.zombies}
         for z_id in z_ids:
@@ -108,8 +110,7 @@ class ZombieRunnerSim:
             if zombie.y < 0:
                 culls.append(z_id)
 
-            # Boids behavior: Cohesion and Separation
-            self._flock_like_boids(z_id)
+            self._apply_repulsive_force_field(z_id)
 
         # Remove zombies that have gone off-screen
         for z_id in culls:
@@ -117,9 +118,9 @@ class ZombieRunnerSim:
 
     def _update_neighbors(self, z_id: int) -> None:
 
-        zombie = self.zombies[z_id]
-
         self._add_random_neighbors(z_id)
+
+        zombie = self.zombies[z_id]
 
         for other_id in list(self.nbrs[z_id]):
             assert other_id != z_id
@@ -157,6 +158,7 @@ class ZombieRunnerSim:
                 other_id = permuted_ids.pop()
                 if self.near(zombie, other_id):
                     self.nbrs[z_id].add(other_id)
+                    self.nbrs[other_id].add(z_id)
 
     def near(self, zombie: Zombie, other_id: int, epsilon: float = 1e-9) -> bool:
         other = self.zombies.get(other_id)
@@ -164,9 +166,9 @@ class ZombieRunnerSim:
             return False
         return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
 
-    def _flock_like_boids(self, z_id: int) -> None:
+    def _apply_repulsive_force_field(self, z_id: int) -> None:
 
-        if random.uniform(0, 1) < 0.01:
+        if random.uniform(0, 1) < 0.03:
             self._update_neighbors(z_id)
         zombie = self.zombies[z_id]
 
@@ -174,31 +176,31 @@ class ZombieRunnerSim:
         nearby_zombies = [self.zombies[z_id] for z_id in filter(near, self.nbrs[z_id])]
 
         if nearby_zombies:
-            # Cohesion: Calculate the average position of nearby zombies
-            avg_x = sum(z.x for z in nearby_zombies) / len(nearby_zombies)
-            avg_y = sum(z.y for z in nearby_zombies) / len(nearby_zombies)
-
-            # Move towards the average position (cohesion)
-            zombie.x += (avg_x - zombie.x) * 0.05  # Adjust the factor for smoothness
-            zombie.y += (avg_y - zombie.y) * 0.05
 
             # occasional random perturbation
-            if random.uniform(0, 1) < 0.05:
+            if random.uniform(0, 1) < 0.02:
                 kick = 3.0 * zombie.speed
                 zombie.x += random.uniform(-kick, kick)
 
-            # Separation: Move away from nearby zombies
+            repulsive_force_x = 0.0
+            repulsive_force_y = 0.0
+
+            # Calculate sum of repulsive forces from nearby zombies
             for other in nearby_zombies:
                 distance = self.distance(zombie, other)
-                if distance < SEPARATION_DISTANCE:
-                    # Calculate a separation vector
+                if 0 < distance < SEPARATION_DISTANCE:
+                    # Calculate the repulsion vector
                     dx = zombie.x - other.x
                     dy = zombie.y - other.y
-                    norm = math.hypot(dx, dy)
-                    if norm > 0:
-                        # Push away.
-                        zombie.x += (dx / norm) * (SEPARATION_DISTANCE - distance) * 0.1
-                        zombie.y += (dy / norm) * (SEPARATION_DISTANCE - distance) * 0.1
+                    sep_dist = SEPARATION_DISTANCE
+                    repulsion_strength = (sep_dist - distance) / sep_dist
+                    repulsive_force_x += (dx / distance) * repulsion_strength * 3.0
+                    repulsive_force_y += (dy / distance) * repulsion_strength * 3.0
+
+            # Update zombie's position by applying cohesion and repulsive forces
+            # print(zombie.speed, "\t", repulsive_force_x)
+            zombie.x += repulsive_force_x
+            zombie.y += repulsive_force_y
 
     @staticmethod
     def distance(a: Agent, b: Agent) -> float:
