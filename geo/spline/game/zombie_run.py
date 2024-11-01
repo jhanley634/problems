@@ -103,6 +103,9 @@ class ZombieRunnerSim:
             # Move zombie towards the jogger's x position, then head north
             direction = int(math.copysign(1, self.jogger.x - zombie.x))
             zombie.x += direction * zombie.speed
+            # Half the population leans left, half right, to avoid single-file.
+            yaw = math.copysign(1.0, z_id % 2 - 0.5)  # +/- 1, so Right or Left
+            zombie.x += 0.19 * yaw * zombie.speed
 
             # Zombie moves north along the highway towards the jogger
             if abs(zombie.x - self.jogger.x) < LANE_WIDTH:
