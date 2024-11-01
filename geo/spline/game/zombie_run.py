@@ -7,6 +7,7 @@ When they notice the jogger they first head toward the highway,
 and then make a 90-degree turn to head north, pursuing the jogger.
 """
 from dataclasses import dataclass
+from functools import partial
 import math
 import random
 
@@ -138,7 +139,6 @@ class ZombieRunnerSim:
         This helper promises to complete in O(1) constant time.
         Sometimes we get lucky, we choose another zombie that truly
         is nearby, and it sticks around for a while.
-        Distant ones will be immediately pruned, so no harm done.
         """
         if not permuted_ids:
             permuted_ids[:] = list(self.zombies.keys())  # persistent across calls
@@ -147,11 +147,19 @@ class ZombieRunnerSim:
         if self.fps < ACCEPTABLE_FRAME_RATE:
             count //= 10  # speed things up until we're working on an easier problem
 
+        zombie = self.zombies[z_id]
+
         for _ in range(min(count, len(permuted_ids) // 2)):
             if permuted_ids:
                 other_id = permuted_ids.pop()
-                if other_id in self.zombies and other_id != z_id:
+                if self.near(zombie, other_id):
                     self.nbrs[z_id].add(other_id)
+
+    def near(self, zombie: Zombie, other_id: int, epsilon: float = 1e-9) -> bool:
+        other = self.zombies.get(other_id)
+        if other is None:
+            return False
+        return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
 
     def _flock_like_boids(self, z_id: int) -> None:
 
@@ -159,12 +167,7 @@ class ZombieRunnerSim:
             self._update_neighbors(z_id)
         zombie = self.zombies[z_id]
 
-        def near(other_id: int, epsilon: float = 1e-9) -> bool:
-            other = self.zombies.get(other_id)
-            if other is None:
-                return False
-            return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
-
+        near = partial(self.near, zombie)
         nearby_zombies = [self.zombies[z_id] for z_id in filter(near, self.nbrs[z_id])]
 
         if nearby_zombies:
@@ -245,6 +248,7 @@ def main() -> None:
         clock.tick(TARGET_FRAME_RATE)
 
     pygame.quit()
+    print()
 
 
 if __name__ == "__main__":
