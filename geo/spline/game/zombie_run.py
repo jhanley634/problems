@@ -149,7 +149,7 @@ class ZombieRunnerSim:
 
         zombie = self.zombies[z_id]
 
-        for _ in range(min(count, len(permuted_ids) // 2)):
+        for _ in range(min(count, 1 + len(permuted_ids) // 2)):
             if permuted_ids:
                 other_id = permuted_ids.pop()
                 if self.near(zombie, other_id):
