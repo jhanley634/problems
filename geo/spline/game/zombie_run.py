@@ -47,7 +47,7 @@ WIDTH, HEIGHT = 800, 600
 LANE_WIDTH = 40  # it's a two lane highway
 JOGGER_SIZE = 10
 ZOMBIE_SIZE = 8
-ZOMBIE_COUNT = 300
+ZOMBIE_COUNT = 500
 SPEED = 2
 ZOMBIE_SPEED = 1
 SEPARATION_DISTANCE = 4 * ZOMBIE_SIZE  # minimum distance between zombies
@@ -108,6 +108,8 @@ class ZombieRunnerSim:
 
         zombie = self.zombies[z_id]
 
+        self._add_random_neighbors(z_id)
+
         for other_id in list(self.nbrs[z_id]):
             assert other_id != z_id
             if other_id not in self.zombies:
@@ -116,6 +118,30 @@ class ZombieRunnerSim:
             other = self.zombies[other_id]
             if self.distance(zombie, other) > 2 * SEPARATION_DISTANCE:
                 self.nbrs[z_id].discard(other_id)
+
+    # ruff: noqa: B006
+    def _add_random_neighbors(
+        self,
+        z_id: int,
+        count: int = 40,
+        permuted_ids: list[int] = [],
+    ) -> None:
+        """Adds `count` neighbors to a given zombie, completely at random.
+
+        This helper promises to complete in O(1) constant time.
+        Sometimes we get lucky, we choose another zombie that truly
+        is nearby, and it sticks around for a while.
+        Distant ones will be immediately pruned, so no harm done.
+        """
+        if not permuted_ids:
+            permuted_ids[:] = list(self.zombies.keys())  # persistent across calls
+            random.shuffle(permuted_ids)
+
+        for _ in range(count):
+            if permuted_ids:
+                other_id = permuted_ids.pop()
+                if other_id in self.zombies and other_id != z_id:
+                    self.nbrs[z_id].add(other_id)
 
     def _flock_like_boids(self, z_id: int) -> None:
 
