@@ -33,6 +33,21 @@ class Jogger(Agent):
 
 
 class Zombie(Agent):
+    id_: int
+
+    # ruff: noqa: PLR0913
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        speed: float,
+        color: tuple[int, int, int],
+        size: int,
+        id_: int,
+    ) -> None:
+        super().__init__(x, y, speed, color, size)
+        self.id_ = id_
+
     def __lt__(self, other: object) -> bool:
         assert isinstance(other, Zombie), other
         return self.position < other.position
@@ -61,10 +76,11 @@ class ZombieRunnerSim:
         green = (0, 255, 0)
         self.jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, green, JOGGER_SIZE)
         self.zombies = self.init_zombies()
+        self.nbrs: dict[int, set[Zombie]] = {}
 
     def init_zombies(self) -> list[Zombie]:
         zombies = []
-        for _ in range(ZOMBIE_COUNT):
+        for i in range(ZOMBIE_COUNT):
             # Randomly place zombies in corn fields (either left or right of the highway)
             x = random.choice(
                 [
@@ -75,7 +91,8 @@ class ZombieRunnerSim:
             y = random.randint(0, HEIGHT)
             speed = ZOMBIE_SPEED * random.uniform(0.3, 1.0)
             red = (255, 0, 0)
-            zombies.append(Zombie(x, y, speed, red, ZOMBIE_SIZE))
+            zombies.append(Zombie(x, y, speed, red, ZOMBIE_SIZE, i))
+
         return zombies
 
     def move_zombies(self) -> None:
