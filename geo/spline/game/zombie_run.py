@@ -52,6 +52,11 @@ ZOMBIE_COUNT = 500
 SPEED = 2
 ZOMBIE_SPEED = 1
 SEPARATION_DISTANCE = 4 * ZOMBIE_SIZE  # minimum distance between zombies
+TARGET_FRAME_RATE = 60  #   frames per second
+ACCEPTABLE_FRAME_RATE = 20  # visually this is barely acceptably smooth
+BLACK = (0, 0, 0)
+PURPLE = (128, 0, 128)
+TWILIGHT_LAVENDER = (230, 230, 250)
 
 
 class ZombieRunnerSim:
@@ -139,8 +144,7 @@ class ZombieRunnerSim:
             permuted_ids[:] = list(self.zombies.keys())  # persistent across calls
             random.shuffle(permuted_ids)
 
-        acceptable_frame_rate = 20  # visually this is barely acceptably smooth
-        if self.fps < acceptable_frame_rate:
+        if self.fps < ACCEPTABLE_FRAME_RATE:
             count //= 10  # speed things up until we're working on an easier problem
 
         for _ in range(min(count, len(permuted_ids) // 2)):
@@ -189,9 +193,11 @@ class ZombieRunnerSim:
     def distance(a: Agent, b: Agent) -> float:
         return math.hypot(a.x - b.x, a.y - b.y)
 
-    def draw(self) -> None:
-        black = (0, 0, 0)
-        self.screen.fill(black)  # clear screen
+    def draw(self, fps: dict[str, float] = {"prev": 0.0}) -> None:
+        acceptable = ACCEPTABLE_FRAME_RATE
+        got_faster = fps["prev"] < acceptable and self.fps >= acceptable
+        bg_color = TWILIGHT_LAVENDER if got_faster else BLACK  # flash at transition
+        self.screen.fill(bg_color)  # clear screen
 
         jogger = self.jogger
         pygame.draw.circle(self.screen, jogger.color, jogger.position, jogger.size)
@@ -199,10 +205,18 @@ class ZombieRunnerSim:
         for zombie in self.zombies.values():
             pygame.draw.circle(self.screen, zombie.color, zombie.position, zombie.size)
 
-        purple = (128, 0, 128)
+        bar_height = 10
         scale_factor = 5
-        speed_indicator = Rect(0, scale_factor * (60 - self.fps), WIDTH // 3, 10)
-        pygame.draw.rect(self.screen, purple, speed_indicator)
+        population_indicator = Rect(
+            2 * WIDTH // 3, len(self.zombies), WIDTH // 3, bar_height
+        )
+        pygame.draw.rect(self.screen, TWILIGHT_LAVENDER, population_indicator)
+
+        speed_indicator = Rect(
+            0, scale_factor * (TARGET_FRAME_RATE - self.fps), WIDTH // 3, bar_height
+        )
+        pygame.draw.rect(self.screen, PURPLE, speed_indicator)
+        fps["prev"] = self.fps  # persistent across calls
 
         pygame.display.flip()
 
@@ -228,7 +242,7 @@ def main() -> None:
         # Even without flushing, we'll see plenty of updates.
         game.fps = clock.get_fps()
         print(f"\r{game.fps:4.1f} fps    {len(game.zombies)} zombies   ", end="")
-        clock.tick(60)
+        clock.tick(TARGET_FRAME_RATE)
 
     pygame.quit()
 
