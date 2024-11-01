@@ -33,20 +33,6 @@ class Jogger(Agent):
 
 
 class Zombie(Agent):
-    id_: int
-
-    # ruff: noqa: PLR0913
-    def __init__(
-        self,
-        x: float,
-        y: float,
-        speed: float,
-        color: tuple[int, int, int],
-        size: int,
-        id_: int,
-    ) -> None:
-        super().__init__(x, y, speed, color, size)
-        self.id_ = id_
 
     def __lt__(self, other: object) -> bool:
         assert isinstance(other, Zombie), other
@@ -76,10 +62,13 @@ class ZombieRunnerSim:
         green = (0, 255, 0)
         self.jogger = Jogger(WIDTH // 2, HEIGHT // 2, SPEED, green, JOGGER_SIZE)
         self.zombies = self.init_zombies()
-        self.nbrs: dict[int, set[Zombie]] = {}
 
-    def init_zombies(self) -> list[Zombie]:
-        zombies = []
+        ids = list(self.zombies.keys())
+        # from zombie ID to IDs of its nearby neighbors (initially all are "near")
+        self.nbrs = {id_: set(ids) for id_ in self.zombies}
+
+    def init_zombies(self) -> dict[int, Zombie]:
+        zombies = {}
         for i in range(ZOMBIE_COUNT):
             # Randomly place zombies in corn fields (either left or right of the highway)
             x = random.choice(
@@ -91,12 +80,12 @@ class ZombieRunnerSim:
             y = random.randint(0, HEIGHT)
             speed = ZOMBIE_SPEED * random.uniform(0.3, 1.0)
             red = (255, 0, 0)
-            zombies.append(Zombie(x, y, speed, red, ZOMBIE_SIZE, i))
+            zombies[i] = Zombie(x, y, speed, red, ZOMBIE_SIZE)
 
         return zombies
 
     def move_zombies(self) -> None:
-        for zombie in self.zombies:
+        for z_id, zombie in self.zombies.items():
             # Move zombie towards the jogger's x position, then head north
             direction = int(math.copysign(1, self.jogger.x - zombie.x))
             zombie.x += direction * zombie.speed
@@ -106,28 +95,29 @@ class ZombieRunnerSim:
                 zombie.y -= zombie.speed
 
             # Boids behavior: Cohesion and Separation
-            self.flock_like_boids(zombie)
+            self._flock_like_boids(z_id)
 
         # Remove zombies that have gone off-screen
-        self.zombies = [z for z in self.zombies if z.y >= 0]
+        for z_id, zombie in list(self.zombies.items()):
+            if zombie.y < 0:
+                del self.zombies[z_id]
 
-    def _update_quadtree(self, zombie: Zombie) -> None:
+    def _update_neighbors(self, zombie: Zombie) -> None:
         pass
 
-    def flock_like_boids(self, zombie: Zombie) -> None:
-        def near(other: Zombie, epsilon: float = 1e-9) -> bool:
+    def _flock_like_boids(self, z_id: int) -> None:
+
+        zombie = self.zombies[z_id]
+        if random.uniform(0, 1) < 0.01:
+            self._update_neighbors(zombie)
+
+        def near(other_id: int, epsilon: float = 1e-9) -> bool:
+            other = self.zombies.get(other_id)
+            if other is None:
+                return False
             return epsilon < self.distance(zombie, other) < SEPARATION_DISTANCE
 
-        nearby_zombies = sorted(filter(near, self.zombies))
-
-        if random.uniform(0, 1) < 0.01:
-            self._update_quadtree(zombie)
-        # p1 = FPoint(zombie.x - SEPARATION_DISTANCE, zombie.y - SEPARATION_DISTANCE)
-        # p2 = FPoint(zombie.x + SEPARATION_DISTANCE, zombie.y + SEPARATION_DISTANCE)
-        # nearby_zombies = self.qt.query(Rectangle(p1, p2))
-        # nearby_zombies.remove(Point(*zombie.position))
-        # nearby_zombies = list(filter(near, nearby_zombies))
-        # assert sorted(map(attrgetter("zombie"), nearby_zombies)) == nearby_zombies1
+        nearby_zombies = [self.zombies[z_id] for z_id in filter(near, self.nbrs[z_id])]
 
         if nearby_zombies:
             # Cohesion: Calculate the average position of nearby zombies
@@ -162,7 +152,7 @@ class ZombieRunnerSim:
         jogger = self.jogger
         pygame.draw.circle(self.screen, jogger.color, jogger.position, jogger.size)
 
-        for zombie in self.zombies:
+        for zombie in self.zombies.values():
             pygame.draw.circle(self.screen, zombie.color, zombie.position, zombie.size)
 
         pygame.display.flip()
