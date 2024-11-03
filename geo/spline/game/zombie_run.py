@@ -180,28 +180,21 @@ class ZombieRunnerSim:
 
         if nearby_zombies:
 
-            # occasional random perturbation
-            if random.uniform(0, 1) < 0.02:
-                kick = 3.0 * zombie.speed
-                zombie.x += random.uniform(-kick, kick)
-
             repulsive_force_x = 0.0
             repulsive_force_y = 0.0
 
-            # Calculate sum of repulsive forces from nearby zombies
+            # Calculate sum of repulsive forces from nearby zombies.
             for other in nearby_zombies:
                 distance = self.distance(zombie, other)
-                if 0 < distance < SEPARATION_DISTANCE:
-                    # Calculate the repulsion vector
+                if 0 < distance < 3 * SEPARATION_DISTANCE:
+                    # Calculate the repulsion vector.
                     dx = zombie.x - other.x
                     dy = zombie.y - other.y
-                    sep_dist = SEPARATION_DISTANCE
-                    repulsion_strength = (sep_dist - distance) / sep_dist
-                    repulsive_force_x += (dx / distance) * repulsion_strength * 3.0
-                    repulsive_force_y += (dy / distance) * repulsion_strength * 3.0
+                    repulsion_force = 5.0 / (distance - SEPARATION_DISTANCE)
+                    repulsive_force_x += (dx / distance) * repulsion_force
+                    repulsive_force_y += (dy / distance) * repulsion_force
 
-            # Update zombie's position by applying cohesion and repulsive forces
-            # print(zombie.speed, "\t", repulsive_force_x)
+            # print("\r", zombie.speed, "\t", repulsive_force_x)
             zombie.x += repulsive_force_x
             zombie.y += repulsive_force_y
 
