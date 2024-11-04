@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 from geo.zone.so.sorted_median import (
     SlicedList,
     is_monotonic,
+    kth_idx,
     median_general,
     median_of_sorted_lists,
     median_of_sorted_lists_slow,
@@ -83,3 +84,40 @@ def test_median_two(
     a.sort()
     b.sort()
     assert median_of_sorted_lists(a, b) == sorted(a + b)[len(a + b) // 2]
+
+
+class TestKthIdx(unittest.TestCase):
+
+    def test_case_too_short(self) -> None:
+        k = 0
+        a = SlicedList([])
+        b = SlicedList([])
+        with self.assertRaises(AssertionError):
+            kth_idx(a, b, k)
+
+    def test_case_length_1(self) -> None:
+        k = 0
+        a = SlicedList([0])
+        b = SlicedList([])
+        self.assertEqual((0, 0), kth_idx(a, b, k))
+        self.assertEqual((1, 0), kth_idx(b, a, k))
+
+    def test_case_length_2(self) -> None:
+        k = 0
+        a = SlicedList([0])
+        b = SlicedList([1])
+        self.assertEqual((0, 0), kth_idx(a, b, k))
+        self.assertEqual((1, 0), kth_idx(b, a, k))
+
+    def test_case_length_3(self) -> None:
+        k = 0
+        a = SlicedList([0, 1])
+        b = SlicedList([2])
+        self.assertEqual((0, 0), kth_idx(a, b, k))
+        self.assertEqual((1, 0), kth_idx(b, a, k))
+        k = 1
+        self.assertEqual((0, 1), kth_idx(a, b, k))
+        self.assertEqual((1, 1), kth_idx(b, a, k))
+        k = 2
+        self.assertEqual((1, 0), kth_idx(a, b, k))
+        self.assertEqual((0, 0), kth_idx(b, a, k))

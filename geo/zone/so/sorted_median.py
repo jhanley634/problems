@@ -71,7 +71,11 @@ def median_of_sorted_lists(a_in: list[float], b_in: list[float]) -> float:
 
 
 def kth(a: SlicedList, b: SlicedList, k: int) -> float:  # noqa PLR0911
-    """Return the kth element of two sorted lists, in O(log n) time."""
+    """Return (list_id, idx) in O(log n) time.
+
+    list_id: 0 for a, 1 for b, according to which contains the median value
+    idx: index of the median in either list a or b.
+    """
     assert 0 <= k < len(a) + len(b), f"{k}, {a}, {b}"
     if not a:
         return b[k]
@@ -89,3 +93,38 @@ def kth(a: SlicedList, b: SlicedList, k: int) -> float:  # noqa PLR0911
     if a[ia] > b[ib]:
         return kth(a.slice(0, ia), b, k)
     return kth(a, b.slice(0, ib), k)
+
+
+def kth_idx(a: SlicedList, b: SlicedList, k: int) -> tuple[int, int]:  # noqa PLR0911
+    """Given two sorted lists of numbers, return (list_id, idx) in O(log n) time.
+
+    We are concerned with the kth element of the merged lists a and b.
+
+    list_id: 0 for a, 1 for b, according to which contains the kth sorted value
+    idx: index of the kth element in either list a or b
+    """
+    assert 0 <= k < len(a) + len(b), f"{k}, {a}, {b}"
+    if not a:
+        return 1, k
+    if not b:
+        return 0, k
+    if k == 0:
+        return int(a[0] > b[0]), k
+
+    # binary search
+    ia, ib = len(a) // 2, len(b) // 2
+    if ia + ib < k:
+        if a[ia] > b[ib]:
+            return kth_idx(a, b.slice(ib + 1), k - ib - 1)
+        return kth_idx(a.slice(ia + 1), b, k - ia - 1)
+    if a[ia] > b[ib]:
+        return kth_idx(a.slice(0, ia), b, k)
+    return kth_idx(a, b.slice(0, ib), k)
+
+
+def median_idx_of_sorted_lists(a_in: list[float], b_in: list[float]) -> float:
+    """Given two sorted lists of numbers, return (list_id, idx) in O(log n) time.
+
+    list_id: 0 for a, 1 for b, according to which contains the median value
+    idx: index of the median in either list a or b
+    """
