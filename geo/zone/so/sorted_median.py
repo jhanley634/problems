@@ -1,31 +1,8 @@
 # Copyright 2023 John Hanley. MIT licensed.
-
-from dataclasses import dataclass
-from enum import Enum, auto
+from itertools import pairwise
 
 from beartype import beartype
 import numpy as np
-
-
-class ListName(Enum):
-    X = 0
-    Y = auto()
-
-
-@dataclass
-class MutRange:
-    """Models a mutable `range`, with .start and .stop attributes."""
-
-    # I may get around to implementing __iter__, if calling code ever needs that.
-    # We remedy the chief disadvantage of the builtin `range`: its immutability.
-
-    start: int
-    stop: int
-    # `step` is always unity.
-
-    def __len__(self) -> int:
-        assert self.stop >= self.start
-        return self.stop - self.start
 
 
 @beartype
@@ -33,123 +10,82 @@ def _monotonic(a: np.ndarray[int, np.dtype[np.int_]]) -> bool:
     return bool(np.all(np.diff(a) >= 0))
 
 
-@beartype
-def median_idx_of_single_list(xs: np.ndarray[int, np.dtype[np.int_]]) -> int:
-    assert len(xs) > 0
-    assert len(xs) % 2 == 1
-    assert _monotonic(xs)
-    mid = len(xs) // 2
-    assert all(xs[i] <= xs[mid] for i in range(mid))
-    assert all(xs[i] >= xs[mid] for i in range(mid, len(xs)))
-    return mid
+class SlicedList:
+    """Models a slice of a list using start and end index, with zero copies."""
+
+    def __init__(
+        self, nums: list[float], start: int = 0, end: int | None = None
+    ) -> None:
+        self.nums = nums
+        self.start = start
+        self.end = len(nums) if end is None else end
+
+    def slice(self, start: int, end: int | None = None) -> "SlicedList":
+        length = self.end - self.start
+        end_i: int = length if end is None else end
+        assert 0 <= start <= end_i <= length
+
+        return SlicedList(self.nums, self.start + start, self.start + end_i)
+
+    def __getitem__(self, i: int) -> float:
+        return self.nums[self.start + i]
+
+    def __len__(self) -> int:
+        return self.end - self.start
+
+    def __str__(self) -> str:
+        return str(self.nums[self.start : self.end])
 
 
-@beartype
-def median_of_list_pair(
-    xs: np.ndarray[int, np.dtype[np.int_]],
-    ys: np.ndarray[int, np.dtype[np.int_]],
-) -> tuple[int, ListName]:
-    assert _monotonic(xs)
-    assert _monotonic(ys)
-    assert len(xs) + len(ys) > 0, "empty input not allowed"
-    assert (len(xs) + len(ys)) % 2 == 1  # The answer is definitely one of the elements.
-
-    return _median1(
-        (xs, ys),
-        (MutRange(0, len(xs)), MutRange(0, len(ys))),
-    )
+def median_general(nums: list[float]) -> float:
+    return median_sorted(sorted(nums))
 
 
-# ruff: noqa: C901
+def median_sorted(nums: list[float]) -> float:
+    """Given a sorted list of numbers, return the median in O(1) constant time."""
+    n = len(nums)
+    if n % 2 == 0:
+        return (nums[n // 2 - 1] + nums[n // 2]) / 2
+    return nums[n // 2]
 
 
-@beartype
-def _median1(
-    arrays: tuple[
-        np.ndarray[int, np.dtype[np.int_]],
-        np.ndarray[int, np.dtype[np.int_]],
-    ],
-    ranges: tuple[MutRange, MutRange],
-) -> tuple[int, ListName]:
-    xs, ys = arrays
-    r0, r1 = ranges
+def is_monotonic(nums: list[float]) -> bool:
+    return all(a <= b for a, b in pairwise(nums))
 
-    assert len(xs) == len(r0)
-    assert len(ys) == len(r1)
 
-    # If an entry has been eliminated, it is ruled out as a median candidate.
-    left_elim = right_elim = 0
-    # The total of the range .start's needs to hit this target.
-    # So does the total amount of .stop .. len() elements.
-    target = (len(r0) + len(r1)) // 2
+def median_of_sorted_lists_slow(a: list[float], b: list[float]) -> float:
+    """Given two sorted lists of numbers, return the median in O(n log n) time."""
+    assert is_monotonic(a)
+    assert is_monotonic(b)
+    return median_sorted(sorted(a + b))
 
-    # invariant: the median index is always within the ranges.
-    # (A range _can_ get squished to zero length,
-    # indicating the median index is within the other range.)
 
-    while len(r0) + len(r1) > 1:
-        # Loop variant: at least one of the two ranges _will_ shrink.
+def median_of_sorted_lists(a_in: list[float], b_in: list[float]) -> float:
+    """Given two sorted lists of numbers, return the median in O(log n) time."""
+    n = len(a_in) + len(b_in)
+    a = SlicedList(a_in)
+    b = SlicedList(b_in)
+    if n % 2 == 0:
+        return (kth(a, b, n // 2 - 1) + kth(a, b, n // 2)) / 2
+    return kth(a, b, n // 2)
 
-        # One of the ranges has been exhausted, so squish the other.
-        if left_elim < target and len(r0) > 0 and len(r1) == 0:
-            m = min(max(1, len(r0) // 2), target - left_elim, len(r0))  # midpoint
-            r0.start += m
-            left_elim += m
 
-        if left_elim < target and len(r0) == 0 and len(r1) > 0:
-            m = min(max(1, len(r1) // 2), target - left_elim, len(r1))
-            r1.start += m
-            left_elim += m
+def kth(a: SlicedList, b: SlicedList, k: int) -> float:  # noqa PLR0911
+    """Return the kth element of two sorted lists, in O(log n) time."""
+    assert 0 <= k < len(a) + len(b), f"{k}, {a}, {b}"
+    if not a:
+        return b[k]
+    if not b:
+        return a[k]
+    if k == 0:
+        return min(a[0], b[0])
 
-        if right_elim < target and len(r0) > 0 and len(r1) == 0:
-            m = min(max(1, len(r0) // 2), target - right_elim, len(r0))
-            r0.stop -= m
-            right_elim += m
-
-        if right_elim < target and len(r0) == 0 and len(r1) > 0:
-            m = min(max(1, len(r1) // 2), target - right_elim, len(r1))
-            r1.stop -= m
-            right_elim += m
-
-        # While feasible, squish both ranges.
-        if (
-            left_elim < target
-            and len(r0) > 0
-            and len(r1) > 0
-            and xs[r0.start] <= ys[r1.start]
-        ):  # min_y
-            r0.start += 1
-            left_elim += 1
-
-        if (
-            left_elim < target
-            and len(r0) > 0
-            and len(r1) > 0
-            and ys[r1.start] <= xs[r0.start]
-        ):  # min_x
-            r1.start += 1
-            left_elim += 1
-
-        if (
-            right_elim < target
-            and len(r0) > 0
-            and len(r1) > 0
-            and xs[r0.stop - 1] >= ys[r1.stop - 1]
-        ):  # max_y
-            r0.stop -= 1
-            right_elim += 1
-
-        if (
-            right_elim < target
-            and len(r0) > 0
-            and len(r1) > 0
-            and ys[r1.stop - 1] >= xs[r0.stop - 1]
-        ):  # max_x
-            r1.stop -= 1
-            right_elim += 1
-
-    assert len(r0) + len(r1) == 1  # Found it!
-
-    if len(r0) == 1:
-        return r0.start, ListName.X
-    return r1.start, ListName.Y
+    # binary search
+    ia, ib = len(a) // 2, len(b) // 2
+    if ia + ib < k:
+        if a[ia] > b[ib]:
+            return kth(a, b.slice(ib + 1), k - ib - 1)
+        return kth(a.slice(ia + 1), b, k - ia - 1)
+    if a[ia] > b[ib]:
+        return kth(a.slice(0, ia), b, k)
+    return kth(a, b.slice(0, ib), k)
