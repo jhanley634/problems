@@ -13,7 +13,7 @@ from geo.zone.so.sorted_median import (
     median_of_sorted_lists_slow,
 )
 
-# easily fits within FP 53-bit signficand
+# easily fits within FP 53-bit significand
 BIG = 2**52
 ST_FINITE_INTEGERS = st.integers(min_value=-BIG, max_value=BIG)
 
@@ -121,3 +121,52 @@ class TestKthIdx(unittest.TestCase):
         k = 2
         self.assertEqual((1, 0), kth_idx(a, b, k))
         self.assertEqual((0, 0), kth_idx(b, a, k))
+
+        a = SlicedList([0, 2])
+        b = SlicedList([1])
+        k = 0
+        self.assertEqual((0, 0), kth_idx(a, b, k))
+        self.assertEqual((1, 0), kth_idx(b, a, k))
+        k = 1
+        self.assertEqual((1, 0), kth_idx(a, b, k))
+        self.assertEqual((0, 0), kth_idx(b, a, k))
+        k = 2
+        self.assertEqual((0, 1), kth_idx(a, b, k))
+        self.assertEqual((1, 1), kth_idx(b, a, k))
+
+    def test_case_length_4(self) -> None:
+        k = 0
+        a = SlicedList([0, 1])
+        b = SlicedList([2, 3])
+        self.assertEqual((0, 0), kth_idx(a, b, k))
+        self.assertEqual((1, 0), kth_idx(b, a, k))
+        k = 1
+        self.assertEqual((0, 1), kth_idx(a, b, k))
+        self.assertEqual((1, 1), kth_idx(b, a, k))
+        k = 2
+        self.assertEqual((1, 0), kth_idx(a, b, k))
+        self.assertEqual((0, 0), kth_idx(b, a, k))
+        k = 3
+        self.assertEqual((1, 1), kth_idx(a, b, k))
+        self.assertEqual((0, 1), kth_idx(b, a, k))
+
+        a = SlicedList([0, 3])
+        b = SlicedList([1, 2])
+        self.assertEqual((0, 1), kth_idx(a, b, k))
+        self.assertEqual((1, 1), kth_idx(b, a, k))
+
+    def test_case_length_9(self) -> None:
+        k = 1
+        a = SlicedList([3, 4])
+        b = SlicedList([])
+        self.assertEqual((0, 1), kth_idx(a, b, k))
+
+        k = 4
+        a = SlicedList([0, 1, 2, 3, 4])
+        b = SlicedList([5])
+
+        self.assertEqual(k + 1, len(a))
+
+        print("\n\n----------")
+        # self.assertEqual((0, 4), kth_idx(a, b, k))
+        # self.assertEqual((1, 4), kth_idx(b, a, k))
