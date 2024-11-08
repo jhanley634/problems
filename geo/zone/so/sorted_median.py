@@ -106,6 +106,7 @@ def kth_idx(a: SlicedList, b: SlicedList, k: int) -> tuple[int, int]:  # noqa PL
     list_id: 0 for a, 1 for b, according to which contains the kth sorted value
     idx: index of the kth element in either list a or b
     """
+    # print()
     # print("\n", a, b, k)
     assert len(a) + len(b) > 0
     assert 0 <= k < len(a) + len(b), f"{k}, {a}, {b}"
@@ -122,7 +123,9 @@ def kth_idx(a: SlicedList, b: SlicedList, k: int) -> tuple[int, int]:  # noqa PL
         if a[ia] > b[ib]:
             return kth_idx(a, b.slice(ib + 1), k - ib - 1)
         return kth_idx(a.slice(ia + 1), b, k - ia - 1)
+
     # print(a[ia], b[ib], a[ia] > b[ib])
+
     if a[ia] > b[ib]:
         return kth_idx(a.slice(0, ia), b, k)
     return kth_idx(a, b.slice(0, ib), k)
