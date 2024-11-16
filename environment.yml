@@ -82,7 +82,7 @@ dependencies:
   - pynisher >= 1.0.10
   - pyo3-pack >= 0.6.1
   - pypandoc >= 1.14
-  - pyright >= 1.1.385
+  - pyright >= 1.1.389
   - pyspark >= 3.5.3
   - pytesseract >= 0.3.13
   - pytest >= 8.3.3
