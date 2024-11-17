@@ -74,6 +74,7 @@ dependencies:
   - pre-commit >= 4.0.1
   - psutil >= 6.1.0
   - pyarrow >= 17.0.0
+  - pyarrow-stubs >= 17.12
   - pyaudioanalysis >= 0.3.14
   - pydeck >= 0.9.1
   - pydub >= 0.25.1
