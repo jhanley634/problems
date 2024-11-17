@@ -21,8 +21,11 @@ fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
     Ok(xs)
 }
 
+fn sum_int16(xs: &[i16]) -> i64 {
+    xs.iter().map(|&x| x as i64).sum()
+}
 fn main() -> Result<(), Box<dyn Error>> {
     let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
-    println!("{:?}", xs);
+    assert_eq!(5_504_562, sum_int16(&xs));
     Ok(())
 }
