@@ -19,6 +19,9 @@ def generate_sorted_values(
     return sorted(xs)
 
 
+rng = np.random.default_rng(0)
+
+
 def generate_sorted_numpy_array(
     n: int = 1_000_000,
     distinct_values: int = 12,
@@ -26,9 +29,12 @@ def generate_sorted_numpy_array(
     """Returns a sorted array of random non-negative integers."""
     assert distinct_values < 2**16
     population = np.array(range(distinct_values), dtype=np.int16)
-    rng = np.random.default_rng()
     xs = rng.choice(population, n)
     return np.sort(xs)
+
+
+def _sum_int(xs: npt.NDArray[np.int_]) -> int:
+    return sum(map(int, xs))
 
 
 def roundtrip_to_disk(temp_file: Path = Path("/tmp/sorted_xs.parquet")) -> None:
@@ -40,6 +46,7 @@ def roundtrip_to_disk(temp_file: Path = Path("/tmp/sorted_xs.parquet")) -> None:
     # Now read it back in.
     table2 = pq.read_table(temp_file)
     xs2 = np.array(table2["x"])
+    assert _sum_int(xs) == _sum_int(xs2) == 5_504_562
     assert xs2.dtype == np.int16
     assert xs.shape == xs2.shape
     assert (xs == xs2).all()
