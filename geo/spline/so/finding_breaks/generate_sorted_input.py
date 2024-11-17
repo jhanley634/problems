@@ -22,9 +22,10 @@ def generate_sorted_values(
 def generate_sorted_numpy_array(
     n: int = 1_000_000,
     distinct_values: int = 12,
-) -> npt.NDArray[np.int_]:
+) -> npt.NDArray[np.int16]:
     """Returns a sorted array of random non-negative integers."""
-    population = range(distinct_values)
+    assert distinct_values < 2**16
+    population = np.array(range(distinct_values), dtype=np.int16)
     rng = np.random.default_rng()
     xs = rng.choice(population, n)
     return np.sort(xs)
@@ -32,17 +33,17 @@ def generate_sorted_numpy_array(
 
 def roundtrip_to_disk(temp_file: Path = Path("/tmp/sorted_xs.parquet")) -> None:
     xs = generate_sorted_numpy_array()
-    assert (1_000_000,) == xs.shape
 
-    table = pa.table({"x": xs})
+    table = pa.table({"x": pa.array(xs)})
     pq.write_table(table, temp_file)
 
     # Now read it back in.
     table2 = pq.read_table(temp_file)
     xs2 = np.array(table2["x"])
+    assert xs2.dtype == np.int16
     assert xs.shape == xs2.shape
     assert (xs == xs2).all()
-    assert 675 == temp_file.stat().st_size  # It compresses quite nicely.
+    assert 627 == temp_file.stat().st_size  # It compresses quite nicely.
     # temp_file.unlink()
 
 
