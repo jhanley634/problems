@@ -2,7 +2,7 @@ use parquet::file::reader::{FileReader, SerializedFileReader};
 use parquet::record::RowAccessor;
 use std::error::Error;
 use std::fs::File;
-use std::time::Instant;
+use timeit::timeit_loops;
 
 fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
     let file = File::open(file_path)?;
@@ -26,16 +26,21 @@ fn sum_int16(xs: &[i16]) -> i64 {
     xs.iter().map(|&x| x as i64).sum()
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let now = Instant::now();
-    let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
-    println!("{:.3}", now.elapsed().as_secs_f32());
+#[macro_use]
+extern crate timeit;
 
-    let million_sum = 5_504_562;
-    let ten_million_sum = 55_008_083;
-    let t0 = Instant::now();
-    let s = sum_int16(&xs);
-    assert!(s == million_sum || s == ten_million_sum);
-    println!("{:.4}", t0.elapsed().as_secs_f32());
+fn main() -> Result<(), Box<dyn Error>> {
+    timeit!({
+        let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
+
+        let million_sum = 5_504_562;
+        let ten_million_sum = 55_008_083;
+        sum_int16(&xs); // Warm the cache.
+        let sec = timeit_loops!(1, {
+            let s = sum_int16(&xs);
+            assert!(s == million_sum || s == ten_million_sum);
+        });
+        println!("sum_int16() took {:.4} s", sec);
+    });
     Ok(())
 }

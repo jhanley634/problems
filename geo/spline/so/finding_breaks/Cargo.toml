@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arrow = "11.1.0"
+arrow = "53.2.0"
 parquet = "53.2.0"
+timeit = "0.1.2"
