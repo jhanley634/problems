@@ -2,6 +2,7 @@ use parquet::file::reader::{FileReader, SerializedFileReader};
 use parquet::record::RowAccessor;
 use std::error::Error;
 use std::fs::File;
+use std::time::Instant;
 
 fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
     let file = File::open(file_path)?;
@@ -24,8 +25,17 @@ fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
 fn sum_int16(xs: &[i16]) -> i64 {
     xs.iter().map(|&x| x as i64).sum()
 }
+
 fn main() -> Result<(), Box<dyn Error>> {
+    let now = Instant::now();
     let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
-    assert_eq!(5_504_562, sum_int16(&xs));
+    println!("{:.3}", now.elapsed().as_secs_f32());
+
+    let million_sum = 5_504_562;
+    let ten_million_sum = 55_008_083;
+    let t0 = Instant::now();
+    let s = sum_int16(&xs);
+    assert!(s == million_sum || s == ten_million_sum);
+    println!("{:.4}", t0.elapsed().as_secs_f32());
     Ok(())
 }
