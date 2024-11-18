@@ -3,6 +3,7 @@ use parquet::record::RowAccessor;
 use std::error::Error;
 use std::fs::File;
 use std::time::Instant;
+use timeit::timeit_loops;
 
 fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
     let file = File::open(file_path)?;
@@ -33,9 +34,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let million_sum = 5_504_562;
     let ten_million_sum = 55_008_083;
-    let t0 = Instant::now();
-    let s = sum_int16(&xs);
-    assert!(s == million_sum || s == ten_million_sum);
-    println!("{:.4}", t0.elapsed().as_secs_f32());
+    let sec = timeit_loops!(1, {
+        let s = sum_int16(&xs);
+        assert!(s == million_sum || s == ten_million_sum);
+    });
+    println!("{:.4}", sec);
     Ok(())
 }
