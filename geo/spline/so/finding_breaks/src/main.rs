@@ -2,7 +2,6 @@ use parquet::file::reader::{FileReader, SerializedFileReader};
 use parquet::record::RowAccessor;
 use std::error::Error;
 use std::fs::File;
-use std::time::Instant;
 use timeit::timeit_loops;
 
 fn read_parquet_file(file_path: &str) -> Result<Vec<i16>, Box<dyn Error>> {
@@ -34,12 +33,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     timeit!({
         let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
 
-    let million_sum = 5_504_562;
-    let ten_million_sum = 55_008_083;
-    let sec = timeit_loops!(1, {
-        let s = sum_int16(&xs);
-        assert!(s == million_sum || s == ten_million_sum);
+        let million_sum = 5_504_562;
+        let ten_million_sum = 55_008_083;
+        sum_int16(&xs); // Warm the cache.
+        let sec = timeit_loops!(1, {
+            let s = sum_int16(&xs);
+            assert!(s == million_sum || s == ten_million_sum);
+        });
+        println!("sum_int16() took {:.4} s", sec);
     });
-    println!("{:.4}", sec);
     Ok(())
 }
