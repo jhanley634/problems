@@ -31,7 +31,6 @@ fn find_break(xs: &[i16], start: usize, end: usize) -> usize {
     assert!(!xs.is_empty());
     let mut i = start;
     let mut j = end;
-    assert!(start < end);
     assert!(i < j);
 
     while i < j {

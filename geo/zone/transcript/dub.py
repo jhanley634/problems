@@ -76,7 +76,7 @@ def main(
     assert sound.frame_width == 2
     assert sound.duration_seconds == (end - start) / msec_per_sec == 0.25
 
-    fmt = "%ih" % sound.frame_count() * channels
+    fmt = f"{sound.frame_count() * channels}h"
     amplitudes = struct.unpack(fmt, raw_data)
     df = pd.DataFrame()
     df["y"] = np.abs(rfft(amplitudes))
