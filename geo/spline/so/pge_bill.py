@@ -15,7 +15,7 @@ desktop = Path("~/Desktop").expanduser()
 
 def _get_rows(
     in_file: Path, thresh: float = 2000.0
-) -> Generator[dict[str, dt.date | float], None, None]:
+) -> Generator[dict[str, dt.date | float]]:
     with open(in_file) as fin:
         date: dt.date | None = None
         for orig_line in fin:

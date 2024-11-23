@@ -18,7 +18,7 @@ punctuation = str.maketrans(
 )
 
 
-def get_simple_words(line: str) -> Generator[str, None, None]:
+def get_simple_words(line: str) -> Generator[str]:
     for wrd in line.translate(punctuation).split():
         word = wrd
         # strip possessives
@@ -31,7 +31,7 @@ def get_simple_words(line: str) -> Generator[str, None, None]:
             yield word
 
 
-def _get_spacy_tokens(nlp: Language, line: str) -> Generator[Token, None, None]:
+def _get_spacy_tokens(nlp: Language, line: str) -> Generator[Token]:
     yield from (word for word in nlp(line.strip()) if word.is_alpha)
 
 

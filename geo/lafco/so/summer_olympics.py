@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 
 
-def _get_rows() -> Generator[str, None, None]:
+def _get_rows() -> Generator[str]:
     url = "https://en.wikipedia.org/wiki/Summer_Olympic_Games"
     html = requests.get(url).text
     dfs = pd.read_html(html)

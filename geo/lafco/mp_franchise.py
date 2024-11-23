@@ -36,7 +36,7 @@ def _street_num(addr: str) -> str:
 GREEN = (0, 255, 0, 255)
 
 
-def menlo_park_disenfranchised(sess: Session) -> Generator[dict[str, str], None, None]:
+def menlo_park_disenfranchised(sess: Session) -> Generator[dict[str, str]]:
     g = Geocoder()
     for _, row in _get_df().iterrows():
         own = sess.query(Owner).filter(Owner.apn == row.apn).one_or_none()

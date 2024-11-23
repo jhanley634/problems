@@ -27,7 +27,7 @@ def find_callable_functions(module: ModuleType | type) -> list[Callable[[Any], A
 
 def find_callable_matches(
     module: ModuleType | type, needle: str, verbose: bool = False
-) -> Generator[Callable[[Any], Any], None, None]:
+) -> Generator[Callable[[Any], Any]]:
     for obj in module.__dict__.values():
         if (
             callable(obj)
@@ -56,7 +56,7 @@ class Source(NamedTuple):
     src: list[str]
 
 
-def find_functions_in(source_file: Path) -> Generator[Source, None, None]:
+def find_functions_in(source_file: Path) -> Generator[Source]:
     decorator = re.compile(r"^\s*@")
     record_delimiter = re.compile(r"^(\s*def |if __name__ == .__main__.)")
     record = Source(Path("/dev/null"), -1, [])  # sentinel
@@ -74,7 +74,7 @@ def find_functions_in(source_file: Path) -> Generator[Source, None, None]:
 
 def find_functions_under(
     paths: Iterable[Path], needle: str
-) -> Generator[Source, None, None]:
+) -> Generator[Source]:
     for path in paths:
         if path.is_file() and path.suffix == ".py":
             for record in find_functions_in(path):

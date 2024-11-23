@@ -29,7 +29,7 @@ class LawParser:
         self.soup = BeautifulSoup(tag.prettify(), "html.parser")
         return self
 
-    def get_paragraphs(self) -> Generator[str, None, None]:
+    def get_paragraphs(self) -> Generator[str]:
         section_number_re = re.compile(r"^\(\w+\)")
         for line in self._get_paragraph_lines():
             if m := section_number_re.search(line):
@@ -41,7 +41,7 @@ class LawParser:
             assert not line1.startswith("(")
             yield line1
 
-    def _get_paragraph_lines(self) -> Generator[str, None, None]:
+    def _get_paragraph_lines(self) -> Generator[str]:
         xlate_table = str.maketrans("\xa0", " ")  # No non-breaking spaces, please.
         for p in self.soup.find_all("p"):
             yield p.text.translate(xlate_table).strip()

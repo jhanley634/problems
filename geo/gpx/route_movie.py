@@ -41,7 +41,7 @@ def _get_df(in_file: Path) -> pd.DataFrame:
     return pd.DataFrame(_get_fn_points())
 
 
-def _get_fn_points() -> Generator[dict[str, float], None, None]:
+def _get_fn_points() -> Generator[dict[str, float]]:
     def fn(x: float) -> float:
         return 0.01 * x**2
 
@@ -49,7 +49,7 @@ def _get_fn_points() -> Generator[dict[str, float], None, None]:
         yield {"lat": lat, "lng": fn(lat)}
 
 
-def _get_gpx_points(in_file: Path) -> Generator[dict[str, Any], None, None]:
+def _get_gpx_points(in_file: Path) -> Generator[dict[str, Any]]:
     # Similar to _get_breadcrumbs()
     with open(in_file) as fin:
         gpx: GPX = gpxpy.parse(fin)

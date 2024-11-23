@@ -15,7 +15,7 @@ engine = create_engine(url="sqlite:////tmp/podcaster.db")
 
 
 @contextmanager
-def get_session() -> Generator[Session, None, None]:
+def get_session() -> Generator[Session]:
     with sessionmaker(bind=engine)() as sess:
         try:
             yield sess

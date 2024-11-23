@@ -22,7 +22,7 @@ def _first_spreadsheet(in_file: Path) -> io.StringIO:
     return io.StringIO("\n".join(lines))
 
 
-def _get_rows(in_file: Path) -> Generator[dict[str, str | int], None, None]:
+def _get_rows(in_file: Path) -> Generator[dict[str, str | int]]:
     df = pl.read_csv(_first_spreadsheet(in_file))
     expected = "Date|Time|Systolic (mmHg)|Diastolic (mmHg)|Pulse (bpm)|Symptoms|Consumed|TruRead|Notes"
     assert expected == "|".join(df.columns), df.columns

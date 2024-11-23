@@ -17,7 +17,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
     start_urls = ("https://www.marksandspencer.com",)
     custom_settings = FrozenDict({"REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7"})
 
-    def parse(self, response: HtmlResponse) -> Generator[dict[str, str], None, None]:
+    def parse(self, response: HtmlResponse) -> Generator[dict[str, str]]:
         option = response.css('#country-selector-country option[value="BG"]')
         if option:
             value = option.css("::attr(value)").get().lower()
@@ -29,7 +29,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
 
     def parse_bg_page(
         self, response: HtmlResponse
-    ) -> Generator[dict[str, str], None, None]:
+    ) -> Generator[dict[str, str]]:
         men_link = response.css(
             ".nav-item.dropdown.order-lg-3 .subcategory a::attr(href)"
         ).get()
@@ -41,7 +41,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
 
     def parse_mens_page(
         self, response: HtmlResponse
-    ) -> Generator[dict[str, str], None, None]:
+    ) -> Generator[dict[str, str]]:
         casual_shirts_link = response.xpath(
             '//a[contains(text(), "Casual shirts")]/@href'
         ).get()
@@ -53,7 +53,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
 
     def parse_casual_shirts(
         self, response: HtmlResponse
-    ) -> Generator[dict[str, str], None, None]:
+    ) -> Generator[dict[str, str]]:
         product_link = response.css(
             'div.pdp-link a:contains("Easy Iron Geometric Print Shirt")::attr(href)'
         ).get()
@@ -65,7 +65,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
 
     def parse_product_page(
         self, response: HtmlResponse
-    ) -> Generator[dict[str, float | str | list[str]], None, None]:
+    ) -> Generator[dict[str, float | str | list[str]]]:
         product_name = response.css(".product-name::text").get()
         price = response.css(".value::text").get()
         selected_colour = response.css("button.qa-addtocart-button")

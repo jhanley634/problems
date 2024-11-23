@@ -39,7 +39,7 @@ class OriginalClimate:
         self.folder.mkdir(exist_ok=True)
         self.log = logging.getLogger(self.__class__.__name__)
 
-    def get_urls(self) -> Generator[str, None, None]:
+    def get_urls(self) -> Generator[str]:
         yield from map(self.url_for, self.DATA_ELEMENTS)
 
     def url_for(self, suffix: str) -> str:
@@ -78,7 +78,7 @@ class OriginalClimate:
         df["year"] = df["year"].astype(int)
         return df
 
-    def download_datasets(self) -> Generator[str, None, None]:
+    def download_datasets(self) -> Generator[str]:
         for url in self.get_urls():
             self.read_dataset(url)  # drags remote data into local cache
             yield url
@@ -93,7 +93,7 @@ def read_tidy_dataset(oc: OriginalClimate, col_name: str) -> pd.DataFrame:
 def _get_monthly_rows(
     df: pd.DataFrame,
     col_name: str,
-) -> Generator[dict[str, Any], None, None]:
+) -> Generator[dict[str, Any]]:
     for _, row in df.iterrows():
         place = {"state": row.state, "county": row.county}
         for month_num, month in enumerate(OriginalClimate.MONTHS):

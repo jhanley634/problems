@@ -120,7 +120,7 @@ class Grid:
         actual_vals = vals[vals > 0]  # a zero wildcard is not an actual solution value
         return len(set(actual_vals)) < len(actual_vals)
 
-    def _get_blocks(self) -> Generator[npt.NDArray[np.uint8], None, None]:
+    def _get_blocks(self) -> Generator[npt.NDArray[np.uint8]]:
         sz = self.size
         for a in range(self.size):
             for b in range(self.size):

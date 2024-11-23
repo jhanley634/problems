@@ -154,7 +154,7 @@ def update_book(id: str) -> str:
 
 @app.route("/sse", methods=["GET"])  # type: ignore [misc]
 def sse() -> Response:
-    def event_stream() -> Generator[str, None, None]:
+    def event_stream() -> Generator[str]:
         while messages:
             msg = messages.popleft()
             counter = repr(

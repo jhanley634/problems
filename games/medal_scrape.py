@@ -25,7 +25,7 @@ class OlympicMedals2024(scrapy.Spider):  # type: ignore [misc]
         ["https://olympics.com/en/paris-2024/schedule/27-july?medalEvents=true"]
     )
 
-    def parse(self, response: Response) -> Generator[dict[str, str], None, None]:
+    def parse(self, response: Response) -> Generator[dict[str, str]]:
         assert 200 == response.status, response
         soup = BeautifulSoup(response.body, "html.parser")
         with open("/tmp/medal-events.html", "w") as fout:

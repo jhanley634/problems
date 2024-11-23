@@ -53,7 +53,7 @@ class WordLadder:
     @classmethod
     def _read_words(
         cls, length: int, fin: TextIO
-    ) -> Generator[tuple[Proto, Word], None, None]:
+    ) -> Generator[tuple[Proto, Word]]:
         for line in map(str.rstrip, fin):
             if len(line) == length and line.isalpha():
                 word = Word(line.lower())
@@ -61,7 +61,7 @@ class WordLadder:
                     yield prototype, word
 
     @staticmethod
-    def _gen_prototypes(word: Word) -> Generator[Proto, None, None]:
+    def _gen_prototypes(word: Word) -> Generator[Proto]:
         for i in range(len(word)):
             prefix = word[:i]
             suffix = word[i + 1 :]
@@ -71,7 +71,7 @@ class WordLadder:
         paths = sorted(self.bfs_paths(Word(start), Word(end)), key=len) + [[]]
         return paths[0]
 
-    def bfs_paths(self, start: Word, end: Word) -> Generator[list[Word], None, None]:
+    def bfs_paths(self, start: Word, end: Word) -> Generator[list[Word]]:
         """Generates candidate acyclic paths from start to end."""
         assert start.isalpha()
         assert end.isalpha()

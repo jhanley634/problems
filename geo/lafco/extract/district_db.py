@@ -41,7 +41,7 @@ _housenumber_missing = {
 }
 
 
-def _get_df(in_csv: Path) -> Generator[dict[str, str], None, None]:
+def _get_df(in_csv: Path) -> Generator[dict[str, str]]:
     csv = in_csv.read_text()
     csv = csv.replace("E PALO", "EAST PALO")
     csv = csv.replace(", ,", ",,")  # dropna(), roughly
@@ -55,7 +55,7 @@ def _get_df(in_csv: Path) -> Generator[dict[str, str], None, None]:
 _housenum_street_re = re.compile(r"^(\d+) (.+)$")
 
 
-def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str], None, None]:
+def _clean_rows(df: pd.DataFrame) -> Generator[dict[str, str]]:
     street_to_city = _street_to_city(df)
 
     for _, row in df.iterrows():

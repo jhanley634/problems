@@ -6,7 +6,7 @@ from collections.abc import Generator, Iterable
 import numpy as np
 
 
-def _get_fractions(k: int, r: Iterable[int]) -> Generator[float, None, None]:
+def _get_fractions(k: int, r: Iterable[int]) -> Generator[float]:
     for i in r:
         yield i / k
 

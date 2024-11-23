@@ -30,20 +30,20 @@ class Perc:
         (-1, 0),
     )
 
-    def _node_nbrhd(self, x: int, y: int) -> Generator[int, None, None]:
+    def _node_nbrhd(self, x: int, y: int) -> Generator[int]:
         for nx, ny, *_ in self._x_y_nbrhd(x, y):
             yield self.node_num(nx, ny)
 
     def _x_y_nbrhd(
         self, x: int, y: int
-    ) -> Generator[tuple[int, int, int, int], None, None]:
+    ) -> Generator[tuple[int, int, int, int]]:
         for dx, dy in self.cardinal_directions:
             # Valid point? Or did we wander out of bounds?
             # Edge nodes only have 3 nbrs, corners have just 2.
             if 0 <= x + dx < self.width and 0 <= y + dy < self.height:
                 yield x + dx, y + dy, dx, dy
 
-    def _get_initial_nodes(self) -> Generator[tuple[int, int], None, None]:
+    def _get_initial_nodes(self) -> Generator[tuple[int, int]]:
         for x in range(self.width):
             for y in range(self.height):
                 yield x, y

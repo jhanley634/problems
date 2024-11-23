@@ -4,7 +4,7 @@ from collections.abc import Generator
 import unittest
 
 
-def insert_blanks(text: str, target: str) -> Generator[str, None, None]:
+def insert_blanks(text: str, target: str) -> Generator[str]:
     i = 0
     for tgt in target:
         if tgt == " ":

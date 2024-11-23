@@ -11,14 +11,14 @@ from tqdm import tqdm
 from geo.zone.so.article_db import NUM_FACTS, NUM_USERS, Fact, WorldFact, create_engine
 
 
-def fact_details_for(user_id: int) -> Generator[Iterable[str], None, None]:
+def fact_details_for(user_id: int) -> Generator[Iterable[str]]:
     with Session(engine) as session:
         yield from session.query(WorldFact.details).join(Fact).filter(
             Fact.user_id == user_id
         )
 
 
-def num_facts_for(user_id: int) -> Generator[Iterable[int], None, None]:
+def num_facts_for(user_id: int) -> Generator[Iterable[int]]:
     select = "count(*)"  # or "sum(fact_id)"
     with Session(engine) as session:
         yield from session.query(text(select)).filter(Fact.user_id == user_id)

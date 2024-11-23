@@ -34,7 +34,7 @@ def _downlod_then_load_model(name: str, do_download: bool) -> Language:
     return spacy.load(name)
 
 
-def get_story_tokens(url: str) -> Generator[str, None, None]:
+def get_story_tokens(url: str) -> Generator[str]:
     """Generates both words and paragraph breaks."""
     nlp = load_language_model()
     doc = nlp(clean_text_for_spacy(get_story_text(url)))
@@ -52,7 +52,7 @@ def get_story_tokens(url: str) -> Generator[str, None, None]:
             yield token.text
 
 
-def get_story_sentences(url: str) -> Generator[Span, None, None]:
+def get_story_sentences(url: str) -> Generator[Span]:
     nlp = load_language_model()
     doc = nlp(clean_text_for_spacy(get_story_text(url)))
 

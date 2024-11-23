@@ -21,7 +21,7 @@ def _get_df() -> pd.DataFrame:
     return df
 
 
-def _get_counts(s: "pd.Series[str]") -> Generator[int, None, None]:
+def _get_counts(s: "pd.Series[str]") -> Generator[int]:
     prev = None
     count = 1
     for val in s:

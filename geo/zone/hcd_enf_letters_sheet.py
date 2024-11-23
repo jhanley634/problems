@@ -58,7 +58,7 @@ class CountName(NamedTuple):
     name: str
 
 
-def _bool_frequencies(df: pl.DataFrame) -> Generator[tuple[int, str], None, None]:
+def _bool_frequencies(df: pl.DataFrame) -> Generator[tuple[int, str]]:
     for col in df.columns:
         if df[col].dtype == pl.Boolean:
             yield CountName(sum(df[col]), col)

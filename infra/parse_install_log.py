@@ -8,7 +8,7 @@ import re
 import typer
 
 
-def get_package_revs(fin: TextIOWrapper) -> Generator[str, None, None]:
+def get_package_revs(fin: TextIOWrapper) -> Generator[str]:
     from_re = re.compile(r"^Requirement already satisfied: .*\(from (\w+)>=(\d+\.\d+)")
     using_cached_re = re.compile(r"^\s*Using cached (\w+)-(\d+\.\d+)")
     for line in fin:

@@ -17,7 +17,7 @@ import pandas as pd
 import seaborn as sns
 
 
-def ratchet(ranks: array[int]) -> Generator[dict[str, int], None, None]:
+def ratchet(ranks: array[int]) -> Generator[dict[str, int]]:
     """Demonstrates the speed at which we slowly ratchet up a min bound."""
     bound = ranks[0]
     prev = bound
@@ -59,7 +59,7 @@ def experiment(n: int, k: int) -> Result:
     return Result(i, elapsed)
 
 
-def run_experiments() -> Generator[dict[str, float], None, None]:
+def run_experiments() -> Generator[dict[str, float]]:
     """Sweeps through a few decades of problem sizes."""
     for _trial in tqdm(range(12)):
         n = 10_000

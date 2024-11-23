@@ -18,7 +18,7 @@ def lin_phi(x: float, mu: float = 0, sigma: float = 1) -> float:
     return 0.5 * math.exp(0.72 * z - 0.42 * z**2)
 
 
-def gen_df(n: int = 1_000) -> Generator[dict[str, float | str], None, None]:
+def gen_df(n: int = 1_000) -> Generator[dict[str, float | str]]:
     for x in np.linspace(-3.0, 3.0, num=n):
         cdf = norm.cdf(x)
         assert isinstance(cdf, float), type(cdf)

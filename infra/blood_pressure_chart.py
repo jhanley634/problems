@@ -51,7 +51,7 @@ def _to_int(s: str) -> int | str:
     return s
 
 
-def _get_rows() -> Generator[dict[str, int], None, None]:
+def _get_rows() -> Generator[dict[str, int]]:
     for row1 in DictReader(get_bp_table().splitlines()):
         row = {k.strip(): _to_int(v.strip()) for k, v in row1.items()}
         row["category"] = get_bp_category(row["systolic"], row["diastolic"]).value * 10

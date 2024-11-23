@@ -21,7 +21,7 @@ class WordLadder:
             self.vocabulary = sorted(self._read_words(StringIO("\n".join(input_words))))
         self.rev_vocab = self._get_rev_vocabulary()
 
-    def _read_words(self, fin: TextIO) -> Generator[str, None, None]:
+    def _read_words(self, fin: TextIO) -> Generator[str]:
         for line in map(str.rstrip, fin):
             if len(line) == self.length and line.isalpha():
                 word = line.lower()
@@ -46,7 +46,7 @@ class WordLadder:
         assert "_" in p
         return sum(x != y for x, y in zip(p, w))
 
-    def _gen_prototypes(self, word: int) -> Generator[int, None, None]:
+    def _gen_prototypes(self, word: int) -> Generator[int]:
         for j in range(self.length):
             yield word + j
 
@@ -57,7 +57,7 @@ class WordLadder:
         paths = sorted(self.bfs_paths(as_int(start), as_int(end)), key=len) + [[]]
         return [self.word_str(i) for i in paths[0]]
 
-    def bfs_paths(self, start: int, end: int) -> Generator[list[int], None, None]:
+    def bfs_paths(self, start: int, end: int) -> Generator[list[int]]:
         """Generates candidate acyclic paths from start to end."""
         assert self.word_str(start).isalpha()
         assert self.word_str(end).isalpha()
@@ -75,7 +75,7 @@ class WordLadder:
                         best[word] = len(path)
                         queue.append((word, path + [word]))
 
-    def _adjacent_words(self, protos: set[int]) -> Generator[int, None, None]:
+    def _adjacent_words(self, protos: set[int]) -> Generator[int]:
         for proto in protos:
             for word_idx in range(len(self.vocabulary)):
                 if word_idx == proto // self.length:

@@ -168,7 +168,7 @@ class City:
         )
 
     @property
-    def cars(self) -> Generator[Car, None, None]:
+    def cars(self) -> Generator[Car]:
         for block in self.blocks:
             for segment in block.road_segments:
                 for item in segment.obstacles:

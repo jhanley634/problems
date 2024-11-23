@@ -16,7 +16,7 @@ import seaborn.objects as so
 
 
 @contextmanager
-def _filter_warnings() -> Generator[None, None, None]:
+def _filter_warnings() -> Generator[None]:
     warnings.filterwarnings(
         "ignore",
         category=FutureWarning,

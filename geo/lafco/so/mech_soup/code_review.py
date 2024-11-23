@@ -19,7 +19,7 @@ class CRResult(NamedTuple):
 
 def scrape(
     site: str = "https://codereview.stackexchange.com/",
-) -> Generator[CRResult, None, None]:
+) -> Generator[CRResult]:
     browser = get_browser()
     browser.open(site)
 

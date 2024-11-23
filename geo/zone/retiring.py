@@ -11,7 +11,7 @@ import pandas as pd
 
 def get_retiring(
     in_file: str = "/tmp/congress-retirements-list.txt", verbose: bool = False
-) -> Generator[dict[str, str], None, None]:
+) -> Generator[dict[str, str]]:
     """Reports on retiring congress folks."""
     rep_re = re.compile(r"(Representative|Senator) (.+), (Republican|Democrat) of (.+)")
     with open(in_file, encoding="ISO-8859-1") as fin:

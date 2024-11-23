@@ -13,7 +13,7 @@ matchlink = "https://www.betexplorer.com/football/serbia/prva-liga/results/"
 
 
 @beartype
-def _get_rows() -> Generator[dict[str, str], None, None]:
+def _get_rows() -> Generator[dict[str, str]]:
     session = HTMLSession()
 
     r = session.get(matchlink)

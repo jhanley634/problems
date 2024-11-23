@@ -33,7 +33,7 @@ pool = [
 ]
 
 
-def get_deltas(pool: list[Player]) -> Generator[int, None, None]:
+def get_deltas(pool: list[Player]) -> Generator[int]:
     pool = sorted(pool)
     for a, b in pairwise(pool):
         yield b.rating - a.rating
@@ -41,7 +41,7 @@ def get_deltas(pool: list[Player]) -> Generator[int, None, None]:
 
 def get_player_pairs(
     pool: list[Player],
-) -> Generator[tuple[Player, Player], None, None]:
+) -> Generator[tuple[Player, Player]]:
     max_delta = max(get_deltas(pool))
     pool = sorted(pool)
     while len(pool) > 1:

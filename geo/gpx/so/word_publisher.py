@@ -17,7 +17,7 @@ import redis
 from geo.gpx.so.tokenizer_simple import get_simple_words
 
 
-def get_words(url: str) -> Generator[str, None, None]:
+def get_words(url: str) -> Generator[str]:
     for line in get_stripped_document(url).lower().splitlines():
         yield from get_simple_words(line)
 
@@ -124,7 +124,7 @@ def words_in_common(
     return both
 
 
-def _get_ranks(both: Counter[str]) -> Generator[int, None, None]:
+def _get_ranks(both: Counter[str]) -> Generator[int]:
     for rank, count in enumerate(both.values()):
         for _ in range(count):
             yield rank

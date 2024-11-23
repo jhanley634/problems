@@ -25,7 +25,7 @@ def main(infile: str = f"{GPX_DIR}/2022-07-14-1234-pizza.gpx") -> None:
         print(df)
 
 
-def get_rows(gpx: GPX) -> Generator[dict[Any, Any], None, None]:
+def get_rows(gpx: GPX) -> Generator[dict[Any, Any]]:
     g = get_breadcrumbs(gpx)
     cum = 0
     first_row = next(g)
@@ -42,7 +42,7 @@ def get_rows(gpx: GPX) -> Generator[dict[Any, Any], None, None]:
 
 def get_breadcrumbs(
     gpx: GPX, precision: int = 6, verbose: bool = False
-) -> Generator[dict[Any, Any], None, None]:
+) -> Generator[dict[Any, Any]]:
     prev_time: dt.datetime | None = None
     prev_loc: Point | None = None
     for track in gpx.tracks:

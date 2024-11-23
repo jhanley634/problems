@@ -40,7 +40,7 @@ class Gutenberg(Spider):  # type: ignore [misc]
         }
     )
 
-    def parse(self, response: HtmlResponse) -> Generator[None, None, None]:
+    def parse(self, response: HtmlResponse) -> Generator[None]:
         with get_conn() as conn:
             titles = response.css("span .title")[4:]
             for title in titles:

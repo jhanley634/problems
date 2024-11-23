@@ -19,7 +19,7 @@ def svg_json_to_gnuplot(infile: str) -> None:
                 fout.write(f"{x}, {y}\n")
 
 
-def _pairs(nums: list[int]) -> Generator[tuple[int, ...], None, None]:
+def _pairs(nums: list[int]) -> Generator[tuple[int, ...]]:
     for i in range(0, len(nums), 2):
         yield tuple(nums[i : i + 2])
 

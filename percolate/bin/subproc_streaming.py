@@ -11,7 +11,7 @@ import os
 import typer
 
 
-def streaming_subproc(cmd: list[str]) -> Generator[str, None, None]:
+def streaming_subproc(cmd: list[str]) -> Generator[str]:
     timeout = dt.timedelta(seconds=5)
 
     with Popen(cmd, stdout=PIPE) as proc:

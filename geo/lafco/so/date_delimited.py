@@ -25,7 +25,7 @@ GBU -09890340922 : I-BANK
 date_pattern = r"\d{2}/\d{2}/\d{4}"
 
 
-def get_transactions(text: str) -> Generator[list[str], None, None]:
+def get_transactions(text: str) -> Generator[list[str]]:
     pat = re.compile(rf"({date_pattern}.*?)(?={date_pattern}|\Z)", re.DOTALL)
     for xctn in pat.findall(text):
         yield xctn.splitlines()

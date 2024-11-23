@@ -8,12 +8,12 @@ import token
 import unittest
 
 
-def f() -> Generator[str, None, None]:
+def f() -> Generator[str]:
     # print("Doing something in function f.")
     yield from detect()
 
 
-def detect() -> Generator[str, None, None]:
+def detect() -> Generator[str]:
     name = stack()[1].function
     source_line = stack()[2].code_context[0]  # type: ignore [index]
     tokens = tokenize(io.BytesIO(source_line.encode()).read)

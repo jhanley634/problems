@@ -28,7 +28,7 @@ def word_consumer(
     topic: str,
     category: Counter[str],
     verbose: bool = False,
-) -> Generator[tuple[str, str], None, None]:
+) -> Generator[tuple[str, str]]:
     ps = redis.Redis().pubsub()
     ps.subscribe(topic)
     sleep(0.010)

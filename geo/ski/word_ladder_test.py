@@ -45,7 +45,7 @@ class TestHammingDistance(unittest.TestCase):
             self.assertEqual(distance, hamming_distance(b, a))
 
 
-def _get_months() -> Generator[str, None, None]:
+def _get_months() -> Generator[str]:
     for month in range(1, 8):
         yield dt.date(2023, month, 1).strftime("%b").lower()
 

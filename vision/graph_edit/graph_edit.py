@@ -40,7 +40,7 @@ def as_array(g: GraphEdit) -> npt.NDArray[np.int_]:
     return np.array([[g[i, j] for j in range(g.num_nodes)] for i in range(g.num_nodes)])
 
 
-def all_single_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
+def all_single_mods(g: GraphEdit) -> Generator[GraphEdit]:
     """Generates all possible single-edge modifications to the graph."""
     orig_edit = g.edit.copy()
     for i in range(g.num_nodes):
@@ -52,7 +52,7 @@ def all_single_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
                 yield GraphEdit(g.edge, {**orig_edit, (i, j): w})
 
 
-def all_mods(g: GraphEdit, depth: int) -> Generator[GraphEdit, None, None]:
+def all_mods(g: GraphEdit, depth: int) -> Generator[GraphEdit]:
     assert depth >= 1
     if depth == 1:
         yield from all_single_mods(g)
@@ -61,6 +61,6 @@ def all_mods(g: GraphEdit, depth: int) -> Generator[GraphEdit, None, None]:
             yield from all_mods(gm, depth - 1)
 
 
-def all_double_mods(g: GraphEdit) -> Generator[GraphEdit, None, None]:
+def all_double_mods(g: GraphEdit) -> Generator[GraphEdit]:
     """Generates all possible double-edge modifications to the graph."""
     yield from all_mods(g, 2)

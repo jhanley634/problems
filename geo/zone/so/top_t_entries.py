@@ -18,7 +18,7 @@ cnt: Counter[str] = Counter()  # an event counter
 
 
 @contextmanager
-def count_sort_calls() -> Generator[Counter[str], None, None]:
+def count_sort_calls() -> Generator[Counter[str]]:
     cnt["sort"] = 0
     yield cnt
 

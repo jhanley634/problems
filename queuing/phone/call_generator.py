@@ -38,7 +38,7 @@ class CallGenerator:
         self,
         start_time: dt.datetime,
         end_time: dt.datetime,
-    ) -> Generator[tuple[dt.datetime, dt.timedelta, int], None, None]:
+    ) -> Generator[tuple[dt.datetime, dt.timedelta, int]]:
         t = start_time
         while t < end_time:
             t += dt.timedelta(seconds=self.rng.exponential(1 / self.arrival_rate))
@@ -48,7 +48,7 @@ class CallGenerator:
         self,
         start: dt.datetime,
         end: dt.datetime,
-    ) -> Generator[tuple[dt.datetime, dt.timedelta, int], None, None]:
+    ) -> Generator[tuple[dt.datetime, dt.timedelta, int]]:
         one_second = dt.timedelta(seconds=1)
         t = start
         while t < end:
@@ -69,7 +69,7 @@ class CallGenerator:
 
 
 def _get_gen() -> (
-    tuple[CallGenerator, Generator[tuple[dt.datetime, dt.timedelta, int], None, None]]
+    tuple[CallGenerator, Generator[tuple[dt.datetime, dt.timedelta, int]]]
 ):
     generator = CallGenerator()
     return generator, generator.gen_continuous(
@@ -99,7 +99,7 @@ class Pair(NamedTuple):
 
 def _get_start_and_end(
     events: pd.DataFrame,
-) -> Generator[tuple[dt.datetime, int], None, None]:
+) -> Generator[tuple[dt.datetime, int]]:
     for _, row in events.iterrows():
         yield Pair(row.stamp, 1)  # arrival increment
         yield Pair(row.end, -1)  # departure decrement

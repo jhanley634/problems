@@ -53,7 +53,7 @@ class HistoryScraper:
 
     def _get_reverse_history_ids(
         self,
-    ) -> Generator[tuple[int, dt.datetime, str, str], None, None]:
+    ) -> Generator[tuple[int, dt.datetime, str, str]]:
         # now = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         older = f"{self.page_url_prefix}/history"
         while older:

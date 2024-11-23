@@ -24,7 +24,7 @@ def _get_df(in_file: str = "/tmp/10-Jul-2022-1714.gpx") -> pd.DataFrame:
         return pd.DataFrame(_get_points(gpx.tracks[0].segments[0]))
 
 
-def _get_points(segment: GPXTrackSegment) -> Generator[dict[str, Any], None, None]:
+def _get_points(segment: GPXTrackSegment) -> Generator[dict[str, Any]]:
     for pt in segment.points:
         yield {
             "time": pt.time,

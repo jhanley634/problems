@@ -31,7 +31,7 @@ def gen_dfs(
         df.to_parquet(dst_dir / f"{i}.parquet", compression=None)
 
 
-def read_dfs(src_dir: Path = PQ_DIR) -> Generator[pd.DataFrame, None, None]:
+def read_dfs(src_dir: Path = PQ_DIR) -> Generator[pd.DataFrame]:
     for file in src_dir.glob("*.parquet"):
         yield pd.read_parquet(file)
 

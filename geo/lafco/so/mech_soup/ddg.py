@@ -25,7 +25,7 @@ def get_browser() -> StatefulBrowser:
 def search(
     query: str = "mechanical soup",
     engine: str = "https://lite.duckduckgo.com/lite/",
-) -> Generator[Result, None, None]:
+) -> Generator[Result]:
     browser = get_browser()
     browser.open(engine)
     assert browser.url == engine

@@ -12,6 +12,6 @@ class AgendaParser:
         for in_file in self.folder.glob("*.pdf"):
             self.parse_agenda_pdf(in_file)
 
-    def parse_agenda_pdf(self, in_file: Path) -> Generator[str, None, None]:
+    def parse_agenda_pdf(self, in_file: Path) -> Generator[str]:
         cmd = f"pdftotext -layout {in_file} -"
         yield from check_output(cmd, shell=True).decode().splitlines()

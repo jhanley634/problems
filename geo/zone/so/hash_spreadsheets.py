@@ -14,7 +14,7 @@ import typer
 def hash_spreadsheet(
     in_file: Path,
     birthday_nybbles: int = 16,
-) -> Generator[str, None, None]:
+) -> Generator[str]:
     """Turns rows of first sheet into hashes.
 
     Hang on to a long enough hash prefix to make a birthday collision unlikely;

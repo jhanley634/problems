@@ -57,7 +57,7 @@ def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
 
 def _get_large_counties(
     housing: pd.DataFrame,
-) -> Generator[tuple[str, int], None, None]:
+) -> Generator[tuple[str, int]]:
     for county, row in (
         housing[["county", "population"]].groupby("county").count().iterrows()
     ):
