@@ -6,7 +6,8 @@ from pathlib import Path
 import cv2
 
 
-def detect_motion(video_path):
+def detect_motion(video_path: int) -> None:
+    green = (0, 255, 0)
     cap = cv2.VideoCapture(video_path)
     assert cap
 
@@ -37,13 +38,12 @@ def detect_motion(video_path):
         motion_detected = False
 
         for contour in contours:
-            if cv2.contourArea(contour) > 500:
+            if cv2.contourArea(contour) > 400:
                 motion_detected = True
                 x, y, w, h = cv2.boundingRect(contour)
                 # Draw bounding box around moving object
-                cv2.rectangle(
-                    frame, (x, y), (x + w, y + h), (0, 255, 0), 2
-                )
+                cv2.rectangle(frame, (x, y), (x + w, y + h), green, 2)
+                print(frame_count, "\t", (x, y), "\t", (x + w, y + h))
 
         if motion_detected:
             if start_frame is None:
