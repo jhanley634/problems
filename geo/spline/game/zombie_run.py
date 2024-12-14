@@ -1,4 +1,5 @@
 #! /usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=1 python
+# Copyright 2024 John Hanley. MIT licensed.
 """
 A jogger is heading north on a highway.
 To the east and west there are corn fields,

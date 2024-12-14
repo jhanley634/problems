@@ -34,9 +34,7 @@ class Perc:
         for nx, ny, *_ in self._x_y_nbrhd(x, y):
             yield self.node_num(nx, ny)
 
-    def _x_y_nbrhd(
-        self, x: int, y: int
-    ) -> Generator[tuple[int, int, int, int]]:
+    def _x_y_nbrhd(self, x: int, y: int) -> Generator[tuple[int, int, int, int]]:
         for dx, dy in self.cardinal_directions:
             # Valid point? Or did we wander out of bounds?
             # Edge nodes only have 3 nbrs, corners have just 2.

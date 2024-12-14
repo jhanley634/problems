@@ -1,4 +1,5 @@
 # Copyright 2023 John Hanley. MIT licensed.
+
 from itertools import pairwise
 
 from beartype import beartype

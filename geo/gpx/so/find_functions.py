@@ -72,9 +72,7 @@ def find_functions_in(source_file: Path) -> Generator[Source]:
             yield record
 
 
-def find_functions_under(
-    paths: Iterable[Path], needle: str
-) -> Generator[Source]:
+def find_functions_under(paths: Iterable[Path], needle: str) -> Generator[Source]:
     for path in paths:
         if path.is_file() and path.suffix == ".py":
             for record in find_functions_in(path):

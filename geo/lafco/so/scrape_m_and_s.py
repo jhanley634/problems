@@ -27,9 +27,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
         else:
             self.logger.warning("BG option not found on the homepage.")
 
-    def parse_bg_page(
-        self, response: HtmlResponse
-    ) -> Generator[dict[str, str]]:
+    def parse_bg_page(self, response: HtmlResponse) -> Generator[dict[str, str]]:
         men_link = response.css(
             ".nav-item.dropdown.order-lg-3 .subcategory a::attr(href)"
         ).get()
@@ -39,9 +37,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
         else:
             self.logger.warning("Men's section link not found on the BG page.")
 
-    def parse_mens_page(
-        self, response: HtmlResponse
-    ) -> Generator[dict[str, str]]:
+    def parse_mens_page(self, response: HtmlResponse) -> Generator[dict[str, str]]:
         casual_shirts_link = response.xpath(
             '//a[contains(text(), "Casual shirts")]/@href'
         ).get()
@@ -51,9 +47,7 @@ class MarksAndSpencerSpider(scrapy.Spider):  # type: ignore [misc]
         else:
             self.logger.warning("Casual shirts link not found on the Men's page.")
 
-    def parse_casual_shirts(
-        self, response: HtmlResponse
-    ) -> Generator[dict[str, str]]:
+    def parse_casual_shirts(self, response: HtmlResponse) -> Generator[dict[str, str]]:
         product_link = response.css(
             'div.pdp-link a:contains("Easy Iron Geometric Print Shirt")::attr(href)'
         ).get()

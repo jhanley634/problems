@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Copyright 2024 John Hanley. MIT licensed.
 """
 Investigates the circumstances in which isort can move a shebang around.
 """

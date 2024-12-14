@@ -51,9 +51,7 @@ class WordLadder:
             self.words[prototype].add(word)
 
     @classmethod
-    def _read_words(
-        cls, length: int, fin: TextIO
-    ) -> Generator[tuple[Proto, Word]]:
+    def _read_words(cls, length: int, fin: TextIO) -> Generator[tuple[Proto, Word]]:
         for line in map(str.rstrip, fin):
             if len(line) == length and line.isalpha():
                 word = Word(line.lower())

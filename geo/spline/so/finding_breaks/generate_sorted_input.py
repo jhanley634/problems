@@ -1,5 +1,7 @@
 #! /usr/bin/env python
+# Copyright 2024 John Hanley. MIT licensed.
 # from https://stackoverflow.com/questions/79195892/most-efficient-way-to-get-unique-elements-from-sorted-list
+
 from pathlib import Path
 from random import choices
 
