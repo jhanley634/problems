@@ -6,4 +6,5 @@ edition = "2021"
 [dependencies]
 arrow = "53.2.0"
 parquet = "53.2.0"
+time = "0.2.0"
 timeit = "0.1.2"
