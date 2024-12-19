@@ -52,7 +52,9 @@ extern crate timeit;
 
 fn main() -> Result<(), Box<dyn Error>> {
     timeit!({
-        let xs = read_parquet_file("/tmp/sorted_xs.parquet")?;
+        let in_file = "/tmp/sorted_xs.parquet";
+	println!("reading {} ...", in_file);
+        let xs = read_parquet_file(in_file)?;
 
         let million_sum = 5_504_562;
         let ten_million_sum = 55_008_083;
