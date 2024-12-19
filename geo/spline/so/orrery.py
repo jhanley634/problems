@@ -5,7 +5,19 @@
 import math
 import sys
 
-from pygame.locals import *
+from pygame.font import SysFont
+from pygame.locals import (
+    K_DOWN,
+    K_ESCAPE,
+    K_UP,
+    KEYDOWN,
+    MOUSEBUTTONDOWN,
+    MOUSEBUTTONUP,
+    MOUSEMOTION,
+    QUIT,
+    RESIZABLE,
+    VIDEORESIZE,
+)
 from pygame.math import Vector2
 import pygame
 
@@ -17,8 +29,8 @@ pygame.display.set_caption("Solar System 2.0")
 clock = pygame.time.Clock()
 
 WIDTH, HEIGHT = pygame.display.get_surface().get_size()
-FONT = pygame.font.SysFont("Tahoma", 16)
-LARGE_FONT = pygame.font.SysFont("Tahoma", 26)
+FONT = SysFont("Tahoma", 16)
+LARGE_FONT = SysFont("Tahoma", 26)
 
 AU = 1.496e8 * 1000  # km to m
 G = 6.67428e-11
