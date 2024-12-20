@@ -1,0 +1,2 @@
+gymnasium[classic-control]
+tqdm
