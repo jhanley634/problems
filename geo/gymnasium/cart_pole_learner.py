@@ -9,7 +9,7 @@ import numpy as np
 
 
 def discretize_state(state: np.ndarray, bins: list) -> tuple:
-    """Discretize continuous state into discrete state using bins."""
+    """Bin the continuous state into discrete state."""
     state_discretized = []
     for i, value in enumerate(state):
         state_discretized.append(np.digitize(value, bins[i]))
@@ -24,7 +24,7 @@ def main(
 ) -> None:
     env = gym.make("CartPole-v1", render_mode="human")
 
-    # Define state space discretization
+    # Discretize the state space
     bins = [
         np.linspace(-1, 1, 10),  # Position (Cart position)
         np.linspace(-1, 1, 10),  # Velocity (Cart velocity)

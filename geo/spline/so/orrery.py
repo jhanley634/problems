@@ -23,16 +23,12 @@ from pygame.locals import (
 from pygame.math import Vector2
 import pygame
 
-pygame.display.init()
-pygame.font.init()
-
 win = pygame.display.set_mode((750, 500), RESIZABLE)
-pygame.display.set_caption("Solar System 2.0")
 clock = pygame.time.Clock()
 
 WIDTH, HEIGHT = pygame.display.get_surface().get_size()
-FONT = SysFont("Tahoma", 16)
-LARGE_FONT = SysFont("Tahoma", 26)
+FONT = None
+LARGE_FONT = None
 
 AU = 1.496e8 * 1000  # km to m
 G = 6.67428e-11
@@ -111,6 +107,7 @@ class Planet:
         """Renders information about the planet."""
         # Information text labels...
         distance_from_sun = self.pos.distance_to(sun.pos)
+        assert FONT
         name_text = FONT.render(f"Name: {self.name}", 1, self.color)
         mass_text = FONT.render(f"Mass: {self.mass}", 1, self.color)
         orbital_period_text = FONT.render(
@@ -193,7 +190,9 @@ venus = Planet(
 )
 earth = Planet("Earth", Vector2(1.496e11, 0), BLUE, 5.97e24, 9.0, 365.2, 29.783e3)
 mars = Planet("Mars", Vector2(2.28e11, 0), RED, 6.42e23, 8.75, 687.0, 24.077e3)
-jupiter = Planet("Jupiter", Vector2(7.785e11, 0), BROWN, 1.898e27, 12., 4331.0, 13.07e3)
+jupiter = Planet(
+    "Jupiter", Vector2(7.785e11, 0), BROWN, 1.898e27, 12.0, 4331.0, 13.07e3
+)
 saturn = Planet(
     "Saturn", Vector2(1.432e12, 0), YELLOWISH_BROWN, 5.68e26, 10.0, 10747.0, 9.69e3
 )
@@ -204,17 +203,13 @@ pluto = Planet("Pluto", Vector2(5.9064e12, 0), BROWN, 1.30e22, 3.5, 90560.0, 4.7
 moon = Planet("Moon", Vector2(1.5e11, 0), WHITE, 7.3e22, 5.0, 0.0, 1.022e3)
 
 planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
-selected_planet = earth
-
-run = True
-drag = False
-drag_start = None
 
 
 @beartype
 def render_win_info() -> None:
     """Renders window related info such as x-pos, y-pos, scale, fps and timestep..."""
     x, y = convert_to_real_pos(Vector2(pygame.mouse.get_pos()))
+    assert FONT
     x_text = FONT.render(f"Position - x: {round(x):,}km", 1, WHITE)
     y_text = FONT.render(f"Position - y: {round(y):,}km", 1, WHITE)
     scale_text = FONT.render(f"Scale: 1-(x, y): {round(1 / SCALE):,}km", 1, WHITE)
@@ -227,52 +222,75 @@ def render_win_info() -> None:
     win.blit(timestep_text, (15, 95))
 
 
-while run:
-    clock.tick(60)
-    win.fill(BLACK)
+def main() -> None:
+    pygame.display.init()
+    pygame.font.init()
+    pygame.display.set_caption("Solar System 2.0")
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
+    global FONT, LARGE_FONT
+    FONT = SysFont("Tahoma", 16)
+    LARGE_FONT = SysFont("Tahoma", 26)
+
+    _main_loop()
+
+
+def _main_loop() -> None:
+    global SCALE, WIN_CENTER
+    run = True
+    drag = False
+    drag_start = None
+    selected_planet = earth
+
+    while run:
+        clock.tick(60)
+        win.fill(BLACK)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-        elif event.type == MOUSEBUTTONDOWN:
-            if event.button == 1:
-                drag = True
-                drag_start = pygame.mouse.get_pos()
-                for planet in planets:
-                    planet_pos = convert_to_win_pos(planet.pos)
-                    if (
-                        planet_pos.distance_to(pygame.mouse.get_pos())
-                        < planet.radius * 2
-                    ):
-                        selected_planet = planet
-                        break
-        elif event.type == MOUSEBUTTONUP:
-            if event.button == 1:
-                drag = False
-                drag_start = None
-        elif event.type == MOUSEMOTION:
-            if drag:
-                assert drag_start
-                WIN_CENTER += Vector2(pygame.mouse.get_pos()) - drag_start
-                drag_start = pygame.mouse.get_pos()
-        elif event.type == VIDEORESIZE:
-            WIDTH, HEIGHT = pygame.display.get_surface().get_size()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            elif event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    drag = True
+                    drag_start = pygame.mouse.get_pos()
+                    for planet in planets:
+                        planet_pos = convert_to_win_pos(planet.pos)
+                        if (
+                            planet_pos.distance_to(pygame.mouse.get_pos())
+                            < planet.radius * 2
+                        ):
+                            selected_planet = planet
+                            break
+            elif event.type == MOUSEBUTTONUP:
+                if event.button == 1:
+                    drag = False
+                    drag_start = None
+            elif event.type == MOUSEMOTION:
+                if drag:
+                    assert drag_start
+                    WIN_CENTER += Vector2(pygame.mouse.get_pos()) - drag_start
+                    drag_start = pygame.mouse.get_pos()
+            elif event.type == VIDEORESIZE:
+                WIDTH, HEIGHT = pygame.display.get_surface().get_size()
 
-    keys_pressed = pygame.key.get_pressed()
-    if keys_pressed[K_UP]:
-        SCALE += 1 / AU  # Zoom in
-    if keys_pressed[K_DOWN]:
-        SCALE -= 1 / AU  # Zoom out
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[K_UP]:
+            SCALE += 1 / AU  # Zoom in
+        if keys_pressed[K_DOWN]:
+            SCALE -= 1 / AU  # Zoom out
 
-    for planet in planets:
-        planet.update_position(planets)
-        planet.render(win)
+        for planet in planets:
+            planet.update_position(planets)
+            planet.render(win)
 
-    selected_planet.render_info(win, sun)
-    render_win_info()
-    pygame.display.update()
+        selected_planet.render_info(win, sun)
+        render_win_info()
+        pygame.display.update()
+
+
+if __name__ == "__main__":
+    main()
