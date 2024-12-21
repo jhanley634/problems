@@ -52,14 +52,14 @@ CYAN = "#00FFFF"
 
 
 def convert_to_win_pos(pos):
-    "Converts a position in the real universe to window coordinates"
+    """Converts a position in the real universe to window coordinates"""
     # X increases towards right in pygame window
     # -pos[1] because Y increases downards in pygame window
     return WIN_CENTER + (pos[0] * SCALE, -pos[1] * SCALE)
 
 
 def convert_to_real_pos(pos):
-    "Converts a position on the window to real universe coordinates"
+    """Converts a position on the window to real universe coordinates"""
     real_pos = Vector2(pos) - WIN_CENTER
     real_pos.x /= SCALE
     real_pos.y /= -SCALE  # -SCALE because Y increases downards in pygame window
@@ -80,7 +80,7 @@ class Planet:
         self.orbit = []
 
     def render(self, win):
-        "Render the planet and orbit on the window."
+        """Render the planet and orbit on the window."""
         # Rendering orbit...
         if len(self.orbit) > 2:
             scaled_points = []
@@ -92,7 +92,7 @@ class Planet:
         pygame.draw.circle(win, self.color, convert_to_win_pos(self.pos), self.radius)
 
     def render_info(self, win, sun):
-        "Renders information about the planet."
+        """Renders information about the planet."""
         # Information text labels...
         distance_from_sun = self.pos.distance_to(sun.pos)
         name_text = FONT.render(f"Name: {self.name}", 1, self.color)
@@ -130,7 +130,7 @@ class Planet:
         pygame.draw.line(win, self.color, planet_pos, sun_pos, 2)
 
     def update_position(self, planets):
-        "Updates the position considering gravity of other planets"
+        """Updates the position considering gravity of other planets"""
         total_force_x = total_force_y = 0
         for planet in planets:
             if planet == self:
@@ -195,7 +195,7 @@ drag_start = None
 
 
 def render_win_info():
-    "Renders window related info such as x-pos, y-pos, scale, fps and timestep..."
+    """Renders window related info such as x-pos, y-pos, scale, fps and timestep..."""
     x, y = convert_to_real_pos(pygame.mouse.get_pos())
     x_text = FONT.render(f"Position - x: {round(x):,}km", 1, WHITE)
     y_text = FONT.render(f"Position - y: {round(y):,}km", 1, WHITE)
