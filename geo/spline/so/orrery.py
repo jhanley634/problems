@@ -5,6 +5,8 @@
 import math
 import sys
 
+from beartype import beartype
+from pygame import Surface
 from pygame.font import SysFont
 from pygame.locals import (
     K_DOWN,
@@ -51,14 +53,16 @@ YELLOWISH_BROWN = "#9B7A01"
 CYAN = "#00FFFF"
 
 
-def convert_to_win_pos(pos):
+@beartype
+def convert_to_win_pos(pos: Vector2) -> Vector2:
     """Converts a position in the real universe to window coordinates."""
     # X increases towards right in pygame window
     # -pos[1] because Y increases downards in pygame window
     return WIN_CENTER + (pos[0] * SCALE, -pos[1] * SCALE)
 
 
-def convert_to_real_pos(pos):
+@beartype
+def convert_to_real_pos(pos: Vector2) -> Vector2:
     """Converts a position on the window to real universe coordinates."""
     real_pos = Vector2(pos) - WIN_CENTER
     real_pos.x /= SCALE
@@ -66,32 +70,44 @@ def convert_to_real_pos(pos):
     return real_pos
 
 
+@beartype
 class Planet:
-    def __init__(self, name, pos, color, mass, radius, orbital_period, y_vel) -> None:
+    def __init__(  # noqa: PLR0913
+        self,
+        name: str,
+        pos: Vector2,
+        color: str,
+        mass: float,
+        radius: float,
+        orbital_period: float,
+        y_vel: float,
+    ) -> None:
         self.name = name
         self.pos = pos
         self.color = color
         self.mass = mass
         self.radius = radius
-        self.x_vel = 0
+        self.x_vel = 0.0
         self.y_vel = y_vel
         self.orbital_period = orbital_period
         self.orbit_counter = 0
-        self.orbit = []
+        self.orbit: list[tuple[float, float]] = []
 
-    def render(self, win) -> None:
+    def render(self, win: Surface) -> None:
         """Render the planet and orbit on the window."""
         # Rendering orbit...
         if len(self.orbit) > 2:
             scaled_points = []
             for x, y in self.orbit:
-                scaled_points.append(convert_to_win_pos((x, y)))
-            pygame.draw.lines(win, self.color, False, scaled_points, 2)
+                scaled_points.append(convert_to_win_pos(Vector2(x, y)))
+            pygame.draw.lines(
+                win, self.color, closed=False, points=scaled_points, width=2
+            )
 
         # Rendering planet...
         pygame.draw.circle(win, self.color, convert_to_win_pos(self.pos), self.radius)
 
-    def render_info(self, win, sun) -> None:
+    def render_info(self, win: Surface, sun: "Planet") -> None:
         """Renders information about the planet."""
         # Information text labels...
         distance_from_sun = self.pos.distance_to(sun.pos)
@@ -129,9 +145,9 @@ class Planet:
         sun_pos = convert_to_win_pos(sun.pos)
         pygame.draw.line(win, self.color, planet_pos, sun_pos, 2)
 
-    def update_position(self, planets) -> None:
+    def update_position(self, planets: list["Planet"]) -> None:
         """Updates the position considering gravity of other planets."""
-        total_force_x = total_force_y = 0
+        total_force_x = total_force_y = 0.0
         for planet in planets:
             if planet == self:
                 continue
@@ -152,11 +168,12 @@ class Planet:
         self.orbit_counter += 1
         if self.orbit_counter >= point_dist:
             self.orbit_counter = 0
-            self.orbit.append([*self.pos])
+            pos = self.pos.x, self.pos.y
+            self.orbit.append(pos)
             if len(self.orbit) > (self.orbital_period / point_dist) + 1:
                 del self.orbit[0]
 
-    def gravity(self, other):
+    def gravity(self, other: "Planet") -> tuple[float, float]:
         distance_x = other.pos.x - self.pos.x
         distance_y = other.pos.y - self.pos.y
         distance = math.sqrt(distance_x**2 + distance_y**2)
@@ -169,22 +186,22 @@ class Planet:
         return force_x, force_y
 
 
-sun = Planet("Sun", Vector2(0, 0), YELLOW, 1.9891e30, 20, 0, 0)
-mercury = Planet("Merucry", Vector2(5.79e10, 0), DARK_GREY, 3.30e23, 7.5, 88, 47.87e3)
+sun = Planet("Sun", Vector2(0, 0), YELLOW, 1.9891e30, 20.0, 0.0, 0.0)
+mercury = Planet("Merucry", Vector2(5.79e10, 0), DARK_GREY, 3.30e23, 7.5, 88.0, 47.87e3)
 venus = Planet(
     "Venus", Vector2(1.082e11, 0), PEARL_WHITE, 4.87e24, 8.5, 224.7, -35.02e3
 )
-earth = Planet("Earth", Vector2(1.496e11, 0), BLUE, 5.97e24, 9, 365.2, 29.783e3)
-mars = Planet("Mars", Vector2(2.28e11, 0), RED, 6.42e23, 8.75, 687, 24.077e3)
-jupiter = Planet("Jupiter", Vector2(7.785e11, 0), BROWN, 1.898e27, 12, 4331, 13.07e3)
+earth = Planet("Earth", Vector2(1.496e11, 0), BLUE, 5.97e24, 9.0, 365.2, 29.783e3)
+mars = Planet("Mars", Vector2(2.28e11, 0), RED, 6.42e23, 8.75, 687.0, 24.077e3)
+jupiter = Planet("Jupiter", Vector2(7.785e11, 0), BROWN, 1.898e27, 12., 4331.0, 13.07e3)
 saturn = Planet(
-    "Saturn", Vector2(1.432e12, 0), YELLOWISH_BROWN, 5.68e26, 10, 10747, 9.69e3
+    "Saturn", Vector2(1.432e12, 0), YELLOWISH_BROWN, 5.68e26, 10.0, 10747.0, 9.69e3
 )
-uranus = Planet("Uranus", Vector2(2.867e12, 0), CYAN, 8.68e25, 9, 30589, -6.81e3)
-neptune = Planet("Neptune", Vector2(4.515e12, 0), BLUE, 1.02e26, 9.75, 59800, 5.43e3)
-pluto = Planet("Pluto", Vector2(5.9064e12, 0), BROWN, 1.30e22, 3.5, 90560, 4.7e3)
+uranus = Planet("Uranus", Vector2(2.867e12, 0), CYAN, 8.68e25, 9.0, 30589.0, -6.81e3)
+neptune = Planet("Neptune", Vector2(4.515e12, 0), BLUE, 1.02e26, 9.75, 59800.0, 5.43e3)
+pluto = Planet("Pluto", Vector2(5.9064e12, 0), BROWN, 1.30e22, 3.5, 90560.0, 4.7e3)
 
-moon = Planet("Moon", Vector2(1.5e11, 0), WHITE, 7.3e22, 5, 0, 1.022e3)
+moon = Planet("Moon", Vector2(1.5e11, 0), WHITE, 7.3e22, 5.0, 0.0, 1.022e3)
 
 planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
 selected_planet = earth
@@ -194,9 +211,10 @@ drag = False
 drag_start = None
 
 
+@beartype
 def render_win_info() -> None:
     """Renders window related info such as x-pos, y-pos, scale, fps and timestep..."""
-    x, y = convert_to_real_pos(pygame.mouse.get_pos())
+    x, y = convert_to_real_pos(Vector2(pygame.mouse.get_pos()))
     x_text = FONT.render(f"Position - x: {round(x):,}km", 1, WHITE)
     y_text = FONT.render(f"Position - y: {round(y):,}km", 1, WHITE)
     scale_text = FONT.render(f"Scale: 1-(x, y): {round(1 / SCALE):,}km", 1, WHITE)
@@ -239,6 +257,7 @@ while run:
                 drag_start = None
         elif event.type == MOUSEMOTION:
             if drag:
+                assert drag_start
                 WIN_CENTER += Vector2(pygame.mouse.get_pos()) - drag_start
                 drag_start = pygame.mouse.get_pos()
         elif event.type == VIDEORESIZE:
