@@ -52,14 +52,14 @@ CYAN = "#00FFFF"
 
 
 def convert_to_win_pos(pos):
-    """Converts a position in the real universe to window coordinates"""
+    """Converts a position in the real universe to window coordinates."""
     # X increases towards right in pygame window
     # -pos[1] because Y increases downards in pygame window
     return WIN_CENTER + (pos[0] * SCALE, -pos[1] * SCALE)
 
 
 def convert_to_real_pos(pos):
-    """Converts a position on the window to real universe coordinates"""
+    """Converts a position on the window to real universe coordinates."""
     real_pos = Vector2(pos) - WIN_CENTER
     real_pos.x /= SCALE
     real_pos.y /= -SCALE  # -SCALE because Y increases downards in pygame window
@@ -67,7 +67,7 @@ def convert_to_real_pos(pos):
 
 
 class Planet:
-    def __init__(self, name, pos, color, mass, radius, orbital_period, y_vel):
+    def __init__(self, name, pos, color, mass, radius, orbital_period, y_vel) -> None:
         self.name = name
         self.pos = pos
         self.color = color
@@ -79,7 +79,7 @@ class Planet:
         self.orbit_counter = 0
         self.orbit = []
 
-    def render(self, win):
+    def render(self, win) -> None:
         """Render the planet and orbit on the window."""
         # Rendering orbit...
         if len(self.orbit) > 2:
@@ -91,7 +91,7 @@ class Planet:
         # Rendering planet...
         pygame.draw.circle(win, self.color, convert_to_win_pos(self.pos), self.radius)
 
-    def render_info(self, win, sun):
+    def render_info(self, win, sun) -> None:
         """Renders information about the planet."""
         # Information text labels...
         distance_from_sun = self.pos.distance_to(sun.pos)
@@ -129,8 +129,8 @@ class Planet:
         sun_pos = convert_to_win_pos(sun.pos)
         pygame.draw.line(win, self.color, planet_pos, sun_pos, 2)
 
-    def update_position(self, planets):
-        """Updates the position considering gravity of other planets"""
+    def update_position(self, planets) -> None:
+        """Updates the position considering gravity of other planets."""
         total_force_x = total_force_y = 0
         for planet in planets:
             if planet == self:
@@ -194,7 +194,7 @@ drag = False
 drag_start = None
 
 
-def render_win_info():
+def render_win_info() -> None:
     """Renders window related info such as x-pos, y-pos, scale, fps and timestep..."""
     x, y = convert_to_real_pos(pygame.mouse.get_pos())
     x_text = FONT.render(f"Position - x: {round(x):,}km", 1, WHITE)
