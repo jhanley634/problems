@@ -1,16 +1,20 @@
 #! /usr/bin/env python
 
-from tqdm import tqdm
 import gymnasium as gym
+import numpy as np
 
 
 def main() -> None:
-    env = gym.make("CartPole-v1", render_mode="rgb_array")
+    env = gym.make("CartPole-v1", render_mode="human")  # or render_mode="rgb_array"
     env.reset(seed=42, options={"low": -0.1, "high": 0.1})
-    print(env)
-    for _ in tqdm(range(1000)):
+    term = False
+
+    while not term:
         env.render()
-        env.step(env.action_space.sample())
+        obs, reward, term, _trunc, _info = env.step(env.action_space.sample())
+        print(reward, np.array(obs))
+
+    env.reset()
     env.close()
 
 
