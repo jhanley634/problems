@@ -41,6 +41,7 @@ dependencies:
   - graphviz >= 0.20.3
   - gspread >= 6.1.4
   - gunicorn >= 23.0.0
+  - gymnasium[classic-control] >= 1.0.0
   - html2text >= 2024.2.26
   - huggingface-hub >= 0.26.5
   - hypothesis >= 6.122.3
