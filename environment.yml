@@ -105,6 +105,8 @@ dependencies:
   - seaborn >= 0.13.2
   - selenium >= 4.27.1
   - sentencepiece >= 0.2.0
+  - sortedcontainers >= 2.4.0
+  - sortedcontainers-stubs >= 2.4.0
   - sqlacodegen-v2 >= 0.1.4
   - sqlalchemy >= 2.0.29
   - sqlalchemy_mate < 2.0.0.1
