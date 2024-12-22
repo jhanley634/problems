@@ -36,7 +36,7 @@ class Intervals:
     intervals: SortedList[Interval]
 
     def check(self) -> None:
-        """Verifies class invariant: the intervals are non-overlapping and in sorted order."""
+        """Verifies class invariant: the intervals are non-overlapping."""
         for i, interval in enumerate(self.intervals):
             assert interval.start < interval.end
             if i > 0:
@@ -45,17 +45,24 @@ class Intervals:
     def __contains__(self, x: float) -> bool:
         i = self.intervals.bisect_left(Interval(x, x))
         if i == 0:
-            return False
+            return x in self.intervals[i]
         return x in self.intervals[i - 1]
 
     def exclude(self, interval: Interval) -> None:
+        """Removes the given interval from the free intervals, by splitting it."""
         i = self.intervals.bisect_left(interval)
         if i == 0:
-            self.intervals.add(interval)
             return
-        if interval.start < self.intervals[i - 1].end:
-            raise ValueError(f"Overlap with {self.intervals[i - 1]}")
-        self.intervals.add(interval)
+        i -= 1
+        if self.intervals[i].start < interval.start:
+            self.intervals.add(Interval(self.intervals[i].start, interval.start))
+        if interval.end < self.intervals[i].end:
+            self.intervals.add(Interval(interval.end, self.intervals[i].end))
+        self.intervals.remove(self.intervals[i])
+
+
+def round3(x: float) -> float:
+    return round(x, 3)
 
 
 def main() -> None:
@@ -68,13 +75,13 @@ def main() -> None:
     )
     free_intervals.check()
     while cur < end:
-        cur += timedelta(days=1 * random())
+        cur += timedelta(days=1 * round3(random()))
         free_intervals.exclude(
-            Interval(cur.timestamp(), cur.timestamp() + 2 * random())
+            Interval(cur.timestamp(), cur.timestamp() + 2 * round3(random()))
         )
 
     free_intervals.check()
-    pp(free_intervals.intervals)
+    pp(list(free_intervals.intervals))
 
 
 if __name__ == "__main__":
