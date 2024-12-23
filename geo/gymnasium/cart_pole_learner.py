@@ -41,9 +41,9 @@ def main(
         """Choose action using epsilon-greedy strategy."""
         if random.uniform(0, 1) < epsilon:
             return env.action_space.sample()  # Explore: random action
-        else:
-            # Exploit: choose action with highest Q-value
-            return np.argmax(q_table[state])
+
+        # Exploit: choose action with highest Q-value
+        return np.argmax(q_table[state])
 
     for episode in range(num_episodes):
         state, _info = env.reset()

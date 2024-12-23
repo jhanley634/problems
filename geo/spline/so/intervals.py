@@ -3,7 +3,7 @@
 # loosely based on specification from https://codereview.stackexchange.com/questions/294778/range-exclusion-function
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from functools import total_ordering
 from pprint import pp
 from random import random
@@ -80,7 +80,7 @@ def round3(x: float) -> float:
 
 
 def main() -> None:
-    cur = jan1 = datetime(2024, 1, 1)
+    cur = jan1 = datetime(2024, 1, 1, tzinfo=UTC)
     end = jan1 + timedelta(days=300)
     free_intervals = Intervals(
         SortedList(

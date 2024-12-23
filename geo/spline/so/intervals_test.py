@@ -1,7 +1,6 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
-from datetime import datetime, timedelta
-from pprint import pp
+from datetime import UTC, datetime, timedelta
 import unittest
 
 from sortedcontainers import SortedList
@@ -11,7 +10,7 @@ from geo.spline.so.intervals import Interval, Intervals
 
 class TestIntervals(unittest.TestCase):
     def setUp(self) -> None:
-        self.jan1 = datetime(2024, 1, 1)
+        self.jan1 = datetime(2024, 1, 1, tzinfo=UTC)
         self.january = Interval(
             self.jan1.timestamp(), (self.jan1 + timedelta(days=30)).timestamp()
         )
@@ -32,9 +31,7 @@ class TestIntervals(unittest.TestCase):
             (self.jan1 + timedelta(days=30)).timestamp(),
             (self.jan1 + timedelta(days=40)).timestamp(),
         )
-        intervals = Intervals(SortedList([interval1, interval2, interval3]))
-        self.assertTrue(interval1 < interval2)
-        self.assertTrue(interval2 < interval3)
+        self.assertTrue(interval1 < interval2 < interval3)
         self.assertTrue(interval1 < interval3)
 
     def test_contains_operator(self) -> None:
