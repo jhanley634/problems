@@ -17,7 +17,9 @@ class Interval:
     start: float
     end: float
 
-    def __contains__(self, x: float) -> bool:
+    def __contains__(self, x: "float | Interval") -> bool:
+        if isinstance(x, Interval):
+            return self.start <= x.start and x.end <= self.end
         return self.start <= x < self.end
 
     def __lt__(self, other: object) -> bool:
@@ -50,15 +52,18 @@ class Intervals:
 
     def exclude(self, interval: Interval) -> None:
         """Removes the given interval from the free intervals, by splitting it."""
+        assert len(self.intervals) > 0
+        assert interval.start < interval.end
+        assert interval.start > self.intervals[0].start
+        assert interval.end < self.intervals[-1].end
+
         i = self.intervals.bisect_left(interval)
-        if i == 0:
-            return
-        i -= 1
-        if self.intervals[i].start < interval.start:
-            self.intervals.add(Interval(self.intervals[i].start, interval.start))
-        if interval.end < self.intervals[i].end:
-            self.intervals.add(Interval(interval.end, self.intervals[i].end))
-        self.intervals.remove(self.intervals[i])
+        assert self.intervals[i - 1].start < interval.start
+        assert self.intervals[i - 1].end > interval.end
+        assert interval in self.intervals[i - 1]
+
+        self.intervals.add(Interval(interval.end, self.intervals[i - 1].end))
+        self.intervals[i - 1].end = interval.start
 
 
 def round3(x: float) -> float:
