@@ -17,6 +17,10 @@ class TestIntervals(unittest.TestCase):
         )
         self.intervals = Intervals(SortedList([self.january]))
 
+    def tearDown(self) -> None:
+        if False:
+            self.intervals.check()
+
     def test_check_overlapping_intervals(self) -> None:
         overlapping = Interval(
             (self.jan1 + timedelta(days=15)).timestamp(),
@@ -103,6 +107,7 @@ class TestIntervals(unittest.TestCase):
             "SortedList([Interval(start=1, end=3), Interval(start=5, end=10)])",
             f"{free_intervals.intervals}",
         )
+        free_intervals.check()
 
     def test2(self) -> None:
         free_intervals = Intervals(SortedList([Interval(1, 10)]))
@@ -111,11 +116,23 @@ class TestIntervals(unittest.TestCase):
             "SortedList([Interval(start=1, end=7), Interval(start=9, end=10)])",
             f"{free_intervals.intervals}",
         )
+        free_intervals.check()
 
-    def ZZtest3(self) -> None:
+    def test3(self) -> None:
+        free_intervals = Intervals(SortedList([Interval(1, 10)]))
+
+        free_intervals.exclude(Interval(7, 10))
+        self.assertEqual(
+            "SortedList([Interval(start=1, end=7)])",
+            f"{free_intervals.intervals}",
+        )
+        free_intervals.check()
+
+    def test4(self) -> None:
         free_intervals = Intervals(SortedList([Interval(1, 10)]))
         free_intervals.exclude(Interval(1, 2))
         self.assertEqual(
             "SortedList([Interval(start=2, end=10)])",
             f"{free_intervals.intervals}",
         )
+        free_intervals.check()

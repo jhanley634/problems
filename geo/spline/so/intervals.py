@@ -58,9 +58,14 @@ class Intervals:
         assert interval.end <= self.intervals[-1].end
 
         i = self.intervals.bisect_left(interval)
+        assert 0 <= i <= len(self.intervals), i
         assert self.intervals[i - 1].start <= interval.start
         assert self.intervals[i - 1].end >= interval.end
         assert interval in self.intervals[i - 1]
+
+        if interval.start == self.intervals[i - 1].start:
+            self.intervals[i - 1].start = interval.end
+            return
 
         new_interval = Interval(interval.end, self.intervals[i - 1].end)
         if new_interval.start < new_interval.end:
