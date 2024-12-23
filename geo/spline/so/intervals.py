@@ -65,6 +65,8 @@ class Intervals:
 
         if interval.start == self.intervals[i - 1].start:
             self.intervals[i - 1].start = interval.end
+            if self.intervals[i - 1].start == self.intervals[i - 1].end:
+                self.intervals.pop(i - 1)
             return
 
         new_interval = Interval(interval.end, self.intervals[i - 1].end)
@@ -79,7 +81,7 @@ def round3(x: float) -> float:
 
 def main() -> None:
     cur = jan1 = datetime(2024, 1, 1)
-    end = jan1 + timedelta(days=3.66)
+    end = jan1 + timedelta(days=300)
     free_intervals = Intervals(
         SortedList(
             [Interval(jan1.timestamp(), (jan1 + timedelta(days=365)).timestamp())]

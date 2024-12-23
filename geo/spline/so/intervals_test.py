@@ -18,18 +18,7 @@ class TestIntervals(unittest.TestCase):
         self.intervals = Intervals(SortedList([self.january]))
 
     def tearDown(self) -> None:
-        if False:
-            self.intervals.check()
-
-    def test_check_overlapping_intervals(self) -> None:
-        overlapping = Interval(
-            (self.jan1 + timedelta(days=15)).timestamp(),
-            (self.jan1 + timedelta(days=45)).timestamp(),
-        )
-        self.intervals.intervals.add(overlapping)
-
-        with self.assertRaises(AssertionError):
-            self.intervals.check()
+        self.intervals.check()
 
     def test_lt_operator(self) -> None:
         interval1 = Interval(
@@ -89,7 +78,7 @@ class TestIntervals(unittest.TestCase):
     def test_exclude_exact_match(self) -> None:
         exact_match_interval = self.january
         self.intervals.exclude(exact_match_interval)
-        self.assertEqual(len(self.intervals.intervals), 1)
+        self.assertEqual(len(self.intervals.intervals), 0)
 
     def test1(self) -> None:
         free_intervals = Intervals(SortedList([Interval(1, 10)]))
@@ -114,6 +103,11 @@ class TestIntervals(unittest.TestCase):
         free_intervals.exclude(Interval(7, 9))
         self.assertEqual(
             "SortedList([Interval(start=1, end=7), Interval(start=9, end=10)])",
+            f"{free_intervals.intervals}",
+        )
+        free_intervals.exclude(Interval(2, 4))
+        self.assertEqual(
+            "SortedList([Interval(start=1, end=2), Interval(start=4, end=7), Interval(start=9, end=10)])",
             f"{free_intervals.intervals}",
         )
         free_intervals.check()
