@@ -54,15 +54,17 @@ class Intervals:
         """Removes the given interval from the free intervals, by splitting it."""
         assert len(self.intervals) > 0
         assert interval.start < interval.end
-        assert interval.start > self.intervals[0].start
-        assert interval.end < self.intervals[-1].end
+        assert interval.start >= self.intervals[0].start
+        assert interval.end <= self.intervals[-1].end
 
         i = self.intervals.bisect_left(interval)
-        assert self.intervals[i - 1].start < interval.start
-        assert self.intervals[i - 1].end > interval.end
+        assert self.intervals[i - 1].start <= interval.start
+        assert self.intervals[i - 1].end >= interval.end
         assert interval in self.intervals[i - 1]
 
-        self.intervals.add(Interval(interval.end, self.intervals[i - 1].end))
+        new_interval = Interval(interval.end, self.intervals[i - 1].end)
+        if new_interval.start < new_interval.end:
+            self.intervals.add(new_interval)
         self.intervals[i - 1].end = interval.start
 
 

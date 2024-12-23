@@ -82,10 +82,10 @@ class TestIntervals(unittest.TestCase):
         ):
             self.assertEqual(expected, actual)
 
-    def ZZtest_exclude_exact_match(self) -> None:
+    def test_exclude_exact_match(self) -> None:
         exact_match_interval = self.january
         self.intervals.exclude(exact_match_interval)
-        self.assertEqual(len(self.intervals.intervals), 1)  # XXX
+        self.assertEqual(len(self.intervals.intervals), 1)
 
     def test1(self) -> None:
         free_intervals = Intervals(SortedList([Interval(1, 10)]))
