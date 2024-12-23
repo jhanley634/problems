@@ -227,15 +227,15 @@ def main() -> None:
     pygame.font.init()
     pygame.display.set_caption("Solar System 2.0")
 
-    global FONT, LARGE_FONT
+    global FONT, LARGE_FONT  # noqa PLW0603
     FONT = SysFont("Tahoma", 16)
     LARGE_FONT = SysFont("Tahoma", 26)
 
     _main_loop()
 
 
-def _main_loop() -> None:
-    global SCALE, WIN_CENTER
+def _main_loop() -> None:  # noqa C907
+    global SCALE, WIN_CENTER, WIDTH, HEIGHT  # noqa PLW0603
     run = True
     drag = False
     drag_start = None
