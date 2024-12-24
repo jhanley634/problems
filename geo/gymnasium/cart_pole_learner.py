@@ -3,6 +3,7 @@
 # Q-learner, from https://towardsdatascience.com/deep-q-learning-for-the-cartpole-44d761085c2f
 
 from pathlib import Path
+from typing import Any
 import random
 
 from beartype import beartype
@@ -20,7 +21,7 @@ TABLE = TEMP / "q-table.npy"
 
 
 @beartype
-def discretize_state(
+def _discretize_state(
     state: NDArray[float32],
     bins: tuple[
         NDArray[float64],
@@ -37,7 +38,7 @@ def discretize_state(
 
 
 @beartype
-def epsilon_greedy(
+def _epsilon_greedy(
     state: NDArray[int64],
     env: Env[NDArray[float32], int],
     q_table: NDArray[float32],
@@ -57,41 +58,46 @@ def learn_a_balancing_policy(
     alpha: float = 0.1,
     gamma: float = 0.99,
 ) -> None:
-    env = gym.make("CartPole-v1", render_mode="human")
 
-    # Discretize the state space
-    bins = (
-        np.linspace(-1.0, 1.0, 10).astype(np.float64),  # cart position
-        np.linspace(-1.0, 1.0, 10).astype(np.float64),  # cart velocity
-        np.linspace(-0.418, 0.418, 10).astype(np.float64),  #  pole angle
-        np.linspace(-3.0, 3.0, 10).astype(np.float64),  # angular pole velocity
-    )
+    @beartype
+    def get_q_table(env: Env[NDArray[float32], int]) -> NDArray[float32]:
+        if TABLE.exists():
+            return np.array(np.load(TABLE), dtype=float32)
 
-    if TABLE.exists():
-        q_table = np.load(TABLE)
-    else:
         # Initialize Q-table with all zeros (discretized state-action pairs)
         assert isinstance(env.action_space, Discrete)
-        q_table = np.zeros(
+        return np.zeros(
             [len(bin_edges) + 1 for bin_edges in bins] + [env.action_space.n],
             dtype=float32,
         )
 
+    env = gym.make("CartPole-v1", render_mode="human")
+
+    # Discretize the state space
+    num_bins = 10
+    bins = (
+        np.linspace(-1.0, 1.0, num_bins).astype(np.float64),  # cart position
+        np.linspace(-1.0, 1.0, num_bins).astype(np.float64),  # cart velocity
+        np.linspace(-0.418, 0.418, num_bins).astype(np.float64),  #  pole angle
+        np.linspace(-3.0, 3.0, num_bins).astype(np.float64),  # angular pole velocity
+    )
+
     max_reward = 0
     epsilon = 0.9
+    q_table = get_q_table(env)
     progress = tqdm(range(num_episodes), desc="training progress")
 
     for episode in progress:
         state, info = env.reset()
-        state = np.array(discretize_state(state, bins), dtype=np.int64)
+        state = np.array(_discretize_state(state, bins), dtype=np.int64)
         cum_reward = 0
-        epsilon *= 0.995
+        epsilon *= 0.99
         done = False
 
         while not done:
-            action = epsilon_greedy(state, env, q_table, epsilon)
+            action = _epsilon_greedy(state, env, q_table, epsilon)
             next_state, reward, done, _, _ = env.step(action)
-            next_state = discretize_state(next_state, bins)
+            next_state = _discretize_state(next_state, bins)
             cum_reward += int(float(reward))
 
             # Q-learning update rule
@@ -108,7 +114,6 @@ def learn_a_balancing_policy(
                 cum_reward=f"{cum_reward:.0f}", epsilon=f"{epsilon:.4f}"
             )
             np.save(TABLE, q_table)
-            env.render()
 
     env.close()  # type: ignore [no-untyped-call]
 
