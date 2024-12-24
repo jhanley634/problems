@@ -7,6 +7,7 @@ import random
 
 from beartype import beartype
 from gymnasium import Env
+from gymnasium.core import ActType, ObsType
 from gymnasium.spaces import Discrete
 from numpy import float32, float64, int64
 from numpy.typing import NDArray
@@ -60,10 +61,10 @@ def learn_a_balancing_policy(
 
     # Discretize the state space
     bins = (
-        np.linspace(-1.0, 1.0, 10),  # Position (Cart position)
-        np.linspace(-1.0, 1.0, 10),  # Velocity (Cart velocity)
-        np.linspace(-0.418, 0.418, 10),  # Angle (Pole angle)
-        np.linspace(-3.0, 3.0, 10),  # Angular velocity (Pole velocity)
+        np.linspace(-1.0, 1.0, 10).astype(np.float64),  # cart position
+        np.linspace(-1.0, 1.0, 10).astype(np.float64),  # cart velocity
+        np.linspace(-0.418, 0.418, 10).astype(np.float64),  #  pole angle
+        np.linspace(-3.0, 3.0, 10).astype(np.float64),  # angular pole velocity
     )
 
     if TABLE.exists():
@@ -76,27 +77,25 @@ def learn_a_balancing_policy(
             dtype=float32,
         )
 
-    epsilon = 0.2
+    max_reward = 0
+    epsilon = 0.9
     progress = tqdm(range(num_episodes), desc="training progress")
 
     for episode in progress:
         state, info = env.reset()
         state = np.array(discretize_state(state, bins), dtype=np.int64)
-        cum_reward = max_reward = 0
-        epsilon *= 0.99
+        cum_reward = 0
+        epsilon *= 0.995
         done = False
 
         while not done:
             action = epsilon_greedy(state, env, q_table, epsilon)
-            epsilon *= 0.99
             next_state, reward, done, _, _ = env.step(action)
             next_state = discretize_state(next_state, bins)
-            cum_reward += reward
+            cum_reward += int(float(reward))
 
             # Q-learning update rule
-            next_max = float(
-                np.max(q_table[tuple(next_state)])
-            )
+            next_max = float(np.max(q_table[tuple(next_state)]))
             q_table[state][action] = q_table[state][action] + alpha * (
                 float(reward) + gamma * next_max - q_table[state][action]
             )
@@ -111,7 +110,7 @@ def learn_a_balancing_policy(
             np.save(TABLE, q_table)
             env.render()
 
-    env.close()
+    env.close()  # type: ignore [no-untyped-call]
 
 
 if __name__ == "__main__":
