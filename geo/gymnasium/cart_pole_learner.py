@@ -3,12 +3,10 @@
 # Q-learner, from https://towardsdatascience.com/deep-q-learning-for-the-cartpole-44d761085c2f
 
 from pathlib import Path
-from typing import Any
 import random
 
 from beartype import beartype
 from gymnasium import Env
-from gymnasium.core import ActType, ObsType
 from gymnasium.spaces import Discrete
 from numpy import float32, float64, int64
 from numpy.typing import NDArray
@@ -71,7 +69,8 @@ def learn_a_balancing_policy(
             dtype=float32,
         )
 
-    env = gym.make("CartPole-v1", render_mode="human")
+    render_mode = "rgb_array" if num_episodes > 1000 else "human"
+    env = gym.make("CartPole-v1", render_mode=render_mode)
 
     # Discretize the state space
     num_bins = 10
@@ -83,7 +82,7 @@ def learn_a_balancing_policy(
     )
 
     max_reward = 0
-    epsilon = 0.9
+    epsilon = 0.1
     q_table = get_q_table(env)
     progress = tqdm(range(num_episodes), desc="training progress")
 
@@ -91,7 +90,6 @@ def learn_a_balancing_policy(
         state, info = env.reset()
         state = np.array(_discretize_state(state, bins), dtype=np.int64)
         cum_reward = 0
-        epsilon *= 0.99
         done = False
 
         while not done:
@@ -114,9 +112,13 @@ def learn_a_balancing_policy(
                 cum_reward=f"{cum_reward:.0f}", epsilon=f"{epsilon:.4f}"
             )
             np.save(TABLE, q_table)
-
+        if episode % 1000 == 0:
+            progress.set_postfix(
+                cum_reward=f"{cum_reward:.0f}", epsilon=f"{epsilon:.4f}"
+            )
+            np.save(TABLE, q_table)
     env.close()  # type: ignore [no-untyped-call]
 
 
 if __name__ == "__main__":
-    learn_a_balancing_policy(1000)
+    learn_a_balancing_policy(1_000)
