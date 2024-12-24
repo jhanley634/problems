@@ -59,17 +59,19 @@ def learn_a_balancing_policy(
             [len(bin_edges) + 1 for bin_edges in bins] + [env.action_space.n]
         )
 
-    for _ in tqdm(range(num_episodes)):
+    for episode in tqdm(range(num_episodes)):
         state, _info = env.reset()
         state = discretize_state(state, bins)
-        epsilon = 0.1
+        cum_reward = 0
+        epsilon = 0.3
         done = False
 
         while not done:
             action = epsilon_greedy(state, env, q_table, epsilon)
-            epsilon *= 0.999
+            epsilon *= 0.99
             next_state, reward, done, _, _ = env.step(action)
             next_state = discretize_state(next_state, bins)
+            cum_reward += reward
 
             # Q-learning update rule
             next_max = np.max(q_table[next_state])  # Max Q-value for next state
@@ -80,7 +82,9 @@ def learn_a_balancing_policy(
             state = next_state
             env.render()
 
-        np.save(TABLE, q_table)
+        if episode % 10 == 0:
+            np.save(TABLE, q_table)
+            print(f"\n{episode=}   {cum_reward=:.0f}   {epsilon=:.4f}")
 
     env.close()
 
