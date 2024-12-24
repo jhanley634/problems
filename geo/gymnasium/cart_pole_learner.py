@@ -59,11 +59,13 @@ def learn_a_balancing_policy(
             [len(bin_edges) + 1 for bin_edges in bins] + [env.action_space.n]
         )
 
-    for episode in tqdm(range(num_episodes)):
+    progress = tqdm(range(num_episodes), desc="training progress")
+
+    for episode in progress:
         state, _info = env.reset()
         state = discretize_state(state, bins)
         cum_reward = 0
-        epsilon = 0.3
+        epsilon = 0.15
         done = False
 
         while not done:
@@ -84,7 +86,9 @@ def learn_a_balancing_policy(
 
         if episode % 10 == 0:
             np.save(TABLE, q_table)
-            print(f"\n{episode=}   {cum_reward=:.0f}   {epsilon=:.4f}")
+            progress.set_postfix(
+                cum_reward=f"{cum_reward:.0f}", epsilon=f"{epsilon:.4f}"
+            )
 
     env.close()
 
