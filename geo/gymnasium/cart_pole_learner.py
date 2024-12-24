@@ -2,10 +2,16 @@
 # Copyright 2024 John Hanley. MIT licensed.
 # Q-learner, from https://towardsdatascience.com/deep-q-learning-for-the-cartpole-44d761085c2f
 
+from pathlib import Path
 import random
 
+from numpy.typing import NDArray
+from tqdm import tqdm
 import gymnasium as gym
 import numpy as np
+
+TEMP = Path("/tmp")
+TABLE = TEMP / "q-table.npy"
 
 
 def discretize_state(state: np.ndarray, bins: list) -> tuple:
@@ -16,11 +22,24 @@ def discretize_state(state: np.ndarray, bins: list) -> tuple:
     return tuple(state_discretized)
 
 
-def main(
-    num_episodes: int = 20,
+def epsilon_greedy(
+    state: tuple,
+    env: int,
+    q_table: NDArray[np.float64],
+    epsilon: float,
+) -> int:
+    """Choose action using epsilon-greedy strategy."""
+    if random.uniform(0, 1) < epsilon:
+        return env.action_space.sample()  # Explore: random action
+
+    # Exploit: choose action with highest Q-value
+    return np.argmax(q_table[state])
+
+
+def learn_a_balancing_policy(
+    num_episodes: int = 5,
     alpha: float = 0.1,
     gamma: float = 0.99,
-    epsilon: float = 0.1,
 ) -> None:
     env = gym.make("CartPole-v1", render_mode="human")
 
@@ -32,26 +51,23 @@ def main(
         np.linspace(-3, 3, 10),  # Angular velocity (Pole velocity)
     ]
 
-    # Initialize Q-table with all zeros (discretized state-action pairs)
-    q_table = np.zeros(
-        [len(bin_edges) + 1 for bin_edges in bins] + [env.action_space.n]
-    )
+    if TABLE.exists():
+        q_table = np.load(TABLE)
+    else:
+        # Initialize Q-table with all zeros (discretized state-action pairs)
+        q_table = np.zeros(
+            [len(bin_edges) + 1 for bin_edges in bins] + [env.action_space.n]
+        )
 
-    def epsilon_greedy(state: tuple) -> int:
-        """Choose action using epsilon-greedy strategy."""
-        if random.uniform(0, 1) < epsilon:
-            return env.action_space.sample()  # Explore: random action
-
-        # Exploit: choose action with highest Q-value
-        return np.argmax(q_table[state])
-
-    for episode in range(num_episodes):
+    for _ in tqdm(range(num_episodes)):
         state, _info = env.reset()
         state = discretize_state(state, bins)
+        epsilon = 0.1
         done = False
 
         while not done:
-            action = epsilon_greedy(state)
+            action = epsilon_greedy(state, env, q_table, epsilon)
+            epsilon *= 0.999
             next_state, reward, done, _, _ = env.step(action)
             next_state = discretize_state(next_state, bins)
 
@@ -62,13 +78,12 @@ def main(
             )
 
             state = next_state
-
             env.render()
 
-        print(f"Episode {episode + 1}/{num_episodes} complete.")
+        np.save(TABLE, q_table)
 
     env.close()
 
 
 if __name__ == "__main__":
-    main()
+    learn_a_balancing_policy(1000)
