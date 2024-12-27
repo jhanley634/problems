@@ -52,23 +52,33 @@ def heap_sort(lst):
     current_index = 0
 
     while len(result) < len(lst):
+
         if current_index not in visited_indices:
             # Add the current node's value to the result and mark it as visited
             result.append(lst[current_index])
             visited_indices.add(current_index)
+
         # Replace the current node value with value of either left, right or parent node
         if parent(current_index) < min(
-            left_child(current_index), right_child(current_index)
+            left_child(current_index),
+            right_child(current_index),
         ):
             lst[current_index] = min(
-                left_child(current_index), right_child(current_index)
+                left_child(current_index),
+                right_child(current_index),
             )
             current_index = (current_index - 1) // 2  # Move to the parent node
         elif left_child(current_index) < right_child(current_index):
-            lst[current_index] = min(right_child(current_index), parent(current_index))
+            lst[current_index] = min(
+                right_child(current_index),
+                parent(current_index),
+            )
             current_index = 2 * current_index + 1  # Move to the left child
         else:
-            lst[current_index] = min(left_child(current_index), parent(current_index))
+            lst[current_index] = min(
+                left_child(current_index),
+                parent(current_index),
+            )
             current_index = 2 * current_index + 2  # Move to the right child
 
     return result
