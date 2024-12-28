@@ -128,9 +128,9 @@ def heapsort(arr):
     return arr
 
 
-def nlargest(arr):
+def nsmallest(arr):
     heapq.heapify(arr)
-    return heapq.nlargest(len(arr), arr)
+    return heapq.nsmallest(len(arr), arr)
 
 
 def makedata(n):
@@ -142,6 +142,7 @@ def makedata(n):
 
 def sample(n, fn):
     data = makedata(n)
+    assert fn(data.copy()) == sorted(data)
     return timeit.timeit(lambda: fn(data[:]), number=10)
 
 
@@ -158,7 +159,8 @@ def main() -> None:
         ("blue", heap_sort_custom),
         ("red", heapsort),
         ("green", sort_using_heap),
-        ("purple", nlargest),
+        ("purple", nsmallest),
+        ("orange", sorted),
     ]:
         plot(ax, a, fn, color)
 
