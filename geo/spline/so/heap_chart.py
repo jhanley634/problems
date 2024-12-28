@@ -45,7 +45,7 @@ def heap_sort_custom(lst):
         """
         return lst[(i - 1) // 2] if i > 0 else float("inf")
 
-    heapq.heapify(lst)  #Build a min-heap from input list
+    heapq.heapify(lst)  # Build a min-heap from input list
 
     # A set to keep track of visited indices
     visited_indices = set()
@@ -54,7 +54,7 @@ def heap_sort_custom(lst):
     sorted_result = []
 
     # Start traversal from the root of the heap
-    current_index = 0  
+    current_index = 0
 
     while len(sorted_result) < len(lst):
         if current_index not in visited_indices:
@@ -62,8 +62,12 @@ def heap_sort_custom(lst):
             sorted_result.append(lst[current_index])
             visited_indices.add(current_index)
         # Replace the current node value with value of either left, right or parent node
-        if parent(current_index) < min(left_child(current_index), right_child(current_index)):
-            lst[current_index] = min(left_child(current_index), right_child(current_index))
+        if parent(current_index) < min(
+            left_child(current_index), right_child(current_index)
+        ):
+            lst[current_index] = min(
+                left_child(current_index), right_child(current_index)
+            )
             current_index = (current_index - 1) // 2  # Move to the parent node
         elif left_child(current_index) < right_child(current_index):
             lst[current_index] = min(right_child(current_index), parent(current_index))
@@ -74,12 +78,14 @@ def heap_sort_custom(lst):
 
     return sorted_result
 
+
 def sort_using_heap(arr):
     heapq.heapify(arr)
     result = []
     while arr:
         result.append(heapq.heappop(arr))
     return result
+
 
 def heapsort(arr):
     def sift_down(arr, n, i):
@@ -98,7 +104,7 @@ def heapsort(arr):
                 return
             arr[i] = arr[c]
             i = c
-        
+
     n = len(arr)
     for i in range(n // 2, -1, -1):
         sift_down(arr, n, i)
@@ -109,29 +115,41 @@ def heapsort(arr):
         sift_down(arr, i, 0)
     return arr
 
+
 def makedata(n):
     res = list(range(n))
     random.seed(a=n)
     random.shuffle(res)
     return res
 
+
 def sample1(n):
     data = makedata(n)
     return timeit.timeit(lambda: heap_sort_custom(data[:]), number=10)
+
+
 def sample2(n):
     data = makedata(n)
     return timeit.timeit(lambda: heapsort(data[:]), number=10)
+
+
 def sample3(n):
     data = makedata(n)
     return timeit.timeit(lambda: sort_using_heap(data[:]), number=10)
 
-a = [pow(2, i) for i in range(1,17)]
-fig = plt.figure()
-ax = fig.add_subplot(2, 1, 1)
-ax.plot(a, [sample1(n)/10 for n in a], color='blue', label='heap_sort_custom')
-ax.plot(a, [sample2(n)/10 for n in a], color='red', label='heapsort')
-ax.plot(a, [sample3(n)/10 for n in a], color='green', label='sort_using_heap')
-ax.set_yscale('log')
-ax.set_xscale('log')
-plt.legend()
-plt.show()
+
+def main() -> None:
+    a = [pow(2, i) for i in range(1, 17)]
+    fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    ax.plot(a, [sample1(n) / 10 for n in a], color="blue", label="heap_sort_custom")
+    ax.plot(a, [sample2(n) / 10 for n in a], color="red", label="heapsort")
+    ax.plot(a, [sample3(n) / 10 for n in a], color="green", label="sort_using_heap")
+    ax.set_yscale("log")
+    ax.set_xscale("log")
+    plt.legend()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
