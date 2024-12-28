@@ -46,16 +46,16 @@ def heap_sort(lst):
     visited_indices = set()
 
     # List to store the sorted result
-    result = []
+    sorted_result = []
 
     # Start traversal from the root of the heap
     j = 0
 
-    while len(result) < len(lst):
+    while len(sorted_result) < len(lst):
 
         if j not in visited_indices:
             # Add the current node's value to the result and mark it as visited
-            result.append(lst[j])
+            sorted_result.append(lst[j])
             visited_indices.add(j)
 
         # Replace the current node value with value of either left, right or parent node
@@ -81,4 +81,4 @@ def heap_sort(lst):
             )
             j = 2 * j + 2  # Move to the right child
 
-    return result
+    return sorted_result

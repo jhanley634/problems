@@ -45,6 +45,7 @@ def heap_sort_custom(lst):
         """
         return lst[(i - 1) // 2] if i > 0 else float("inf")
 
+    orig_input = lst.copy()
     heapq.heapify(lst)  # Build a min-heap from input list
 
     # A set to keep track of visited indices
@@ -57,10 +58,12 @@ def heap_sort_custom(lst):
     j = 0
 
     while len(sorted_result) < len(lst):
+
         if j not in visited_indices:
             # Add the current node's value to the result and mark it as visited
             sorted_result.append(lst[j])
             visited_indices.add(j)
+
         # Replace the current node value with value of either left, right or parent node
         if parent(j) < min(
             left_child(j),
@@ -72,12 +75,19 @@ def heap_sort_custom(lst):
             )
             j = (j - 1) // 2  # Move to the parent node
         elif left_child(j) < right_child(j):
-            lst[j] = min(right_child(j), parent(j))
+            lst[j] = min(
+                right_child(j),
+                parent(j),
+            )
             j = 2 * j + 1  # Move to the left child
         else:
-            lst[j] = min(left_child(j), parent(j))
+            lst[j] = min(
+                left_child(j),
+                parent(j),
+            )
             j = 2 * j + 2  # Move to the right child
 
+    assert sorted_result == sorted(orig_input)
     return sorted_result
 
 
