@@ -140,34 +140,28 @@ def makedata(n):
     return res
 
 
-def sample1(n):
+def sample(n, fn):
     data = makedata(n)
-    return timeit.timeit(lambda: heap_sort_custom(data[:]), number=10)
+    return timeit.timeit(lambda: fn(data[:]), number=10)
 
 
-def sample2(n):
-    data = makedata(n)
-    return timeit.timeit(lambda: heapsort(data[:]), number=10)
-
-
-def sample3(n):
-    data = makedata(n)
-    return timeit.timeit(lambda: sort_using_heap(data[:]), number=10)
-
-
-def sample4(n):
-    data = makedata(n)
-    return timeit.timeit(lambda: nlargest(data[:]), number=10)
+def plot(ax, a, fn, color):
+    ax.plot([sample(n, fn) for n in a], color=color, label=fn.__name__)
 
 
 def main() -> None:
     a = [pow(2, i) for i in range(1, 17)]
     fig = plt.figure()
     ax = fig.add_subplot(2, 1, 1)
-    ax.plot(a, [sample1(n) / 10 for n in a], color="blue", label="heap_sort_custom")
-    ax.plot(a, [sample2(n) / 10 for n in a], color="red", label="heapsort")
-    ax.plot(a, [sample3(n) / 10 for n in a], color="green", label="sort_using_heap")
-    ax.plot(a, [sample4(n) / 10 for n in a], color="purple", label="nlargest")
+
+    for color, fn in [
+        ("blue", heap_sort_custom),
+        ("red", heapsort),
+        ("green", sort_using_heap),
+        ("purple", nlargest),
+    ]:
+        plot(ax, a, fn, color)
+
     ax.set_yscale("log")
     ax.set_xscale("log")
     plt.legend()
