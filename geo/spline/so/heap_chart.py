@@ -128,6 +128,11 @@ def heapsort(arr):
     return arr
 
 
+def nlargest(arr):
+    heapq.heapify(arr)
+    return heapq.nlargest(len(arr), arr)
+
+
 def makedata(n):
     res = list(range(n))
     random.seed(a=n)
@@ -150,6 +155,11 @@ def sample3(n):
     return timeit.timeit(lambda: sort_using_heap(data[:]), number=10)
 
 
+def sample4(n):
+    data = makedata(n)
+    return timeit.timeit(lambda: nlargest(data[:]), number=10)
+
+
 def main() -> None:
     a = [pow(2, i) for i in range(1, 17)]
     fig = plt.figure()
@@ -157,6 +167,7 @@ def main() -> None:
     ax.plot(a, [sample1(n) / 10 for n in a], color="blue", label="heap_sort_custom")
     ax.plot(a, [sample2(n) / 10 for n in a], color="red", label="heapsort")
     ax.plot(a, [sample3(n) / 10 for n in a], color="green", label="sort_using_heap")
+    ax.plot(a, [sample4(n) / 10 for n in a], color="purple", label="nlargest")
     ax.set_yscale("log")
     ax.set_xscale("log")
     plt.legend()
