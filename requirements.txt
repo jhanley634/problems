@@ -63,7 +63,6 @@ pydub
 pygame
 pylint
 pynisher
-pyo3-pack
 pypandoc
 pyright
 pyspark
