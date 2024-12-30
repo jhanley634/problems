@@ -7,6 +7,16 @@ ACTIVATE = source activate problems
 all:
 	@echo Hello, world!
 
+.venv:
+	which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
+	uv venv --python=python3.13
+
+install: .venv
+	sort -o requirements.txt{,}
+	$(ACTIVATE) && uv pip compile --upgrade --quiet requirements.txt -o infra/requirements.lock
+	$(ACTIVATE) && uv pip install -r infra/requirements.lock
+	$(ACTIVATE) && pre-commit install
+
 IGNORE_TZ = env PYARROW_IGNORE_TIMEZONE=1 PYGAME_HIDE_SUPPORT_PROMPT=1
 VERIFY = $(ACTIVATE) && $(IGNORE_TZ) infra/verify_imports.py && flake8
 
