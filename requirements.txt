@@ -83,7 +83,6 @@ scikit-learn
 scrapy
 seaborn
 selenium
-sentencepiece
 sortedcontainers
 sortedcontainers-stubs
 sqlacodegen-v2

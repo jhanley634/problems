@@ -953,8 +953,6 @@ rsa==4.9
     #   oauth2client
 ruamel-yaml==0.18.7
     # via -r requirements.txt
-ruamel-yaml-clib==0.2.12
-    # via ruamel-yaml
 ruff==0.8.4
     # via -r requirements.txt
 scikit-learn==1.6.0
@@ -979,8 +977,6 @@ selenium==4.27.1
     # via -r requirements.txt
 send2trash==1.8.3
     # via jupyter-server
-sentencepiece==0.2.0
-    # via -r requirements.txt
 service-identity==24.2.0
     # via scrapy
 setuptools==75.6.0
@@ -1170,7 +1166,6 @@ types-tqdm==4.67.0.20241221
 typing-extensions==4.12.2
     # via
     #   altair
-    #   anyio
     #   enum-tools
     #   gymnasium
     #   huggingface-hub
