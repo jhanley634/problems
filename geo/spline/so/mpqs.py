@@ -11,18 +11,23 @@ from sympy import nextprime
 import numpy as np
 
 logging.basicConfig(
-    format='[%(levelname)s] %(asctime)s - %(message)s',
-    level=logging.INFO
+    format="[%(levelname)s] %(asctime)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
 
 _known_primes = [2, 3]
 
+
 def init_known_primes(limit=1000):
     global _known_primes
     _known_primes += [x for x in range(5, limit, 2) if is_prime(x)]
-    logger.info("Initialized _known_primes up to %d. Total known primes: %d", limit, len(_known_primes))
+    logger.info(
+        "Initialized _known_primes up to %d. Total known primes: %d",
+        limit,
+        len(_known_primes),
+    )
+
 
 def _try_composite(a, d, n, s):
     if pow(a, d, n) == 1:
@@ -31,6 +36,7 @@ def _try_composite(a, d, n, s):
         if pow(a, 2**i * d, n) == n - 1:
             return False
     return True
+
 
 def is_prime(n, _precision_for_huge_n=16):
     if n in _known_primes:
@@ -58,16 +64,13 @@ def is_prime(n, _precision_for_huge_n=16):
     if n < 341550071728321:
         return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11, 13, 17))
 
-    return not any(_try_composite(a, d, n, s)
-                   for a in _known_primes[:_precision_for_huge_n])
+    return not any(
+        _try_composite(a, d, n, s) for a in _known_primes[:_precision_for_huge_n]
+    )
+
 
 class QuadraticSieve:
-    def __init__(
-        self,
-        M: int = 200000,
-        B: int = 10000,
-        T: int = 1
-    ):
+    def __init__(self, M: int = 200000, B: int = 10000, T: int = 1):
         self.logger = logging.getLogger(__name__)
         self.prime_log_map = {}
         self.root_map = {}
@@ -113,8 +116,8 @@ class QuadraticSieve:
 
     @staticmethod
     def hensel(r, p, n):
-        x = (n - r * r) / p # f(b) = b ^ 2 - n
-        z = QuadraticSieve.modinv(2 * r, p) % p # f'(b) = 2b
+        x = (n - r * r) / p  # f(b) = b ^ 2 - n
+        z = QuadraticSieve.modinv(2 * r, p) % p  # f'(b) = 2b
         y = (-x * z) % p
         return r + y * p
 
@@ -212,7 +215,7 @@ class QuadraticSieve:
 
             nulls.append(null)
             k += 1
-            if k == 4: # no need to find entire null space, just a few values will do
+            if k == 4:  # no need to find entire null space, just a few values will do
                 break
 
         return np.asarray(nulls, dtype=np.int8)
@@ -222,9 +225,9 @@ class QuadraticSieve:
         """Return list of primes up to n using Sieve of Eratosthenes."""
         sieve_array = np.ones((n + 1,), dtype=bool)
         sieve_array[0], sieve_array[1] = False, False
-        for i in range(2, int(n ** 0.5) + 1):
+        for i in range(2, int(n**0.5) + 1):
             if sieve_array[i]:
-                sieve_array[i * 2::i] = False
+                sieve_array[i * 2 :: i] = False
         return np.where(sieve_array)[0].tolist()
 
     def find_b(self, N):
@@ -271,7 +274,7 @@ class QuadraticSieve:
             r2 = (r2 + M) % p
 
             for r in [r1, r2]:
-                for i in range(r, 2 * M +1, p):
+                for i in range(r, 2 * M + 1, p):
                     sieve_values[i] += self.prime_log_map[p]
 
         return sieve_values
@@ -376,7 +379,9 @@ class QuadraticSieve:
 
             if factor_candidate not in (1, N):
                 other_factor = N // factor_candidate
-                self.logger.info("Found factors: %d, %d", factor_candidate, other_factor)
+                self.logger.info(
+                    "Found factors: %d, %d", factor_candidate, other_factor
+                )
                 return factor_candidate, other_factor
 
         return 0, 0
@@ -391,53 +396,68 @@ class QuadraticSieve:
         step_start = time.time()
         B = self.decide_bound(N, self.B)
         step_end = time.time()
-        self.logger.info("Step 1 (Decide Bound) took %.3f seconds", step_end - step_start)
+        self.logger.info(
+            "Step 1 (Decide Bound) took %.3f seconds", step_end - step_start
+        )
 
         # Step 2: Build Factor Base
         step_start = time.time()
         factor_base = self.build_factor_base(N, B)
         step_end = time.time()
-        self.logger.info("Step 2 (Build Factor Base) took %.3f seconds", step_end - step_start)
+        self.logger.info(
+            "Step 2 (Build Factor Base) took %.3f seconds", step_end - step_start
+        )
 
         # Step 3: Sieve Phase
 
         step_start = time.time()
         matrix, relations, roots = self.sieve(N, B, factor_base, self.M)
         step_end = time.time()
-        self.logger.info("Step 3 (Sieve Interval) took %.3f seconds", step_end - step_start)
+        self.logger.info(
+            "Step 3 (Sieve Interval) took %.3f seconds", step_end - step_start
+        )
 
         if len(matrix) < len(factor_base) + 1:
-            self.logger.warning("Not enough smooth relations found. Try increasing the sieve interval.")
+            self.logger.warning(
+                "Not enough smooth relations found. Try increasing the sieve interval."
+            )
             return 0, 0
 
         # Step 4: Solve for Dependencies
         step_start = time.time()
         dep_vectors = self.solve_dependencies(matrix)
         step_end = time.time()
-        self.logger.info("Step 5 (Solve Dependencies) took %.3f seconds", step_end - step_start)
+        self.logger.info(
+            "Step 5 (Solve Dependencies) took %.3f seconds", step_end - step_start
+        )
 
         # Step 5: Extract Factors
         step_start = time.time()
         f1, f2 = self.extract_factors(N, relations, roots, dep_vectors)
         step_end = time.time()
-        self.logger.info("Step 6 (Extract Factors) took %.3f seconds", step_end - step_start)
+        self.logger.info(
+            "Step 6 (Extract Factors) took %.3f seconds", step_end - step_start
+        )
 
         if f1 and f2:
             self.logger.info("Quadratic Sieve successful: %d * %d = %d", f1, f2, N)
         else:
-            self.logger.warning("No non-trivial factors found with the current settings.")
+            self.logger.warning(
+                "No non-trivial factors found with the current settings."
+            )
 
         overall_end = time.time()
-        self.logger.info("Total time for Quadratic Sieve: %.3f seconds", overall_end - overall_start)
+        self.logger.info(
+            "Total time for Quadratic Sieve: %.3f seconds", overall_end - overall_start
+        )
         self.logger.info("========== Quadratic Sieve End ==========")
 
         return f1, f2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     N = 97245170828229363259 * 49966345331749027373
     qs = QuadraticSieve(B=11812, M=59060, T=1)
-
 
     factor1, factor2 = qs.factor(N)
 
