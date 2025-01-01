@@ -2,11 +2,11 @@
 # Copyright 2024 John Hanley. MIT licensed.
 # from https://codereview.stackexchange.com/questions/294893/optimizing-sieving-code-for-the-multiple-polynomial-quadratic-sieve
 
-from math import ceil, exp, floor, isqrt, log, log2, sqrt
+from math import ceil, exp, isqrt, log, log2, sqrt
 import logging
-import random
 import time
 
+from numpy.typing import NDArray
 from sympy import nextprime
 import numpy as np
 
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 _known_primes = [2, 3]
 
 
-def init_known_primes(limit=1000):
+def init_known_primes(limit: int = 1000) -> None:
     global _known_primes
     _known_primes += [x for x in range(5, limit, 2) if is_prime(x)]
     logger.info(
@@ -29,7 +29,7 @@ def init_known_primes(limit=1000):
     )
 
 
-def _try_composite(a, d, n, s):
+def _try_composite(a: int, d: int, n: int, s: int) -> bool:
     if pow(a, d, n) == 1:
         return False
     for i in range(s):
@@ -38,7 +38,7 @@ def _try_composite(a, d, n, s):
     return True
 
 
-def is_prime(n, _precision_for_huge_n=16):
+def is_prime(n: int, _precision_for_huge_n: int = 16) -> bool:
     if n in _known_primes:
         return True
     if any((n % p) == 0 for p in _known_primes) or n in (0, 1):
@@ -72,8 +72,8 @@ def is_prime(n, _precision_for_huge_n=16):
 class QuadraticSieve:
     def __init__(self, M: int = 200000, B: int = 10000, T: int = 1):
         self.logger = logging.getLogger(__name__)
-        self.prime_log_map = {}
-        self.root_map = {}
+        self.prime_log_map: dict[int, int] = {}
+        self.root_map: dict[int, int] = {}
 
         # Store hyperparameters
         self.M = M
@@ -81,7 +81,7 @@ class QuadraticSieve:
         self.T = T
 
     @staticmethod
-    def gcd(a, b):
+    def gcd(a: int, b: int) -> int:
         """Compute GCD of two integers using Euclid's Algorithm."""
         a, b = abs(a), abs(b)
         while a:
@@ -89,13 +89,13 @@ class QuadraticSieve:
         return b
 
     @staticmethod
-    def legendre(n, p):
+    def legendre(n: int, p: int) -> int:
         """Compute the Legendre symbol (n/p)."""
         val = pow(n, (p - 1) // 2, p)
         return val - p if val > 1 else val
 
     @staticmethod
-    def jacobi(a, m):
+    def jacobi(a: int, m: int) -> int:
         """Compute the Jacobi symbol (a/m)."""
         a = a % m
         t = 1
@@ -111,17 +111,19 @@ class QuadraticSieve:
         return t if m == 1 else 0
 
     @staticmethod
-    def modinv(n, p):
+    def modinv(n: int, p: int) -> int:
         return pow(n, -1, p)
 
     @staticmethod
-    def hensel(r, p, n):
+    def hensel(r: int, p: int, n: int) -> float:
         x = (n - r * r) / p  # f(b) = b ^ 2 - n
         z = QuadraticSieve.modinv(2 * r, p) % p  # f'(b) = 2b
         y = (-x * z) % p
         return r + y * p
 
-    def factorise_fast(self, value, factor_base):
+    def factorise_fast(
+        self, value: int, factor_base: list[int]
+    ) -> tuple[list[int], int]:
         """Factor a number over the given factor base."""
         factors = []
         if value < 0:
@@ -134,7 +136,7 @@ class QuadraticSieve:
         return sorted(factors), value
 
     @staticmethod
-    def tonelli_shanks(a, p):
+    def tonelli_shanks(a: int, p: int) -> tuple[int, int]:
         """Solve x^2 ≡ a (mod p) for x using the Tonelli-Shanks algorithm."""
         a %= p
         if p % 8 in [3, 7]:
@@ -174,7 +176,7 @@ class QuadraticSieve:
         return x, p - x
 
     @staticmethod
-    def gauss_elim(x):
+    def gauss_elim(x: NDArray[np.int64]) -> tuple[NDArray[np.int64], list[int]]:
         """Perform Gaussian elimination on a binary matrix over GF(2)"""
         x = x.astype(bool, copy=False)
         n, m = x.shape
@@ -197,7 +199,9 @@ class QuadraticSieve:
         return x.astype(np.int8, copy=False), sorted(marks)
 
     @staticmethod
-    def find_null_space_GF2(reduced_matrix, pivot_rows):
+    def find_null_space_GF2(
+        reduced_matrix: NDArray[np.int64], pivot_rows: list[int]
+    ) -> NDArray[np.int8]:
         """Find null space vectors of the reduced binary matrix over GF(2)"""
         n, m = reduced_matrix.shape
         nulls = []
@@ -221,21 +225,24 @@ class QuadraticSieve:
         return np.asarray(nulls, dtype=np.int8)
 
     @staticmethod
-    def prime_sieve(n):
+    def prime_sieve(n: int) -> list[int]:
         """Return list of primes up to n using Sieve of Eratosthenes."""
         sieve_array = np.ones((n + 1,), dtype=bool)
         sieve_array[0], sieve_array[1] = False, False
         for i in range(2, int(n**0.5) + 1):
             if sieve_array[i]:
                 sieve_array[i * 2 :: i] = False
-        return np.where(sieve_array)[0].tolist()
+        ret = np.where(sieve_array)[0].tolist()
+        assert isinstance(ret, list)
+        assert all(isinstance(x, int) for x in ret)
+        return ret
 
-    def find_b(self, N):
+    def find_b(self, N: int) -> int:
         """Determine the factor base bound B"""
         x = ceil(exp(sqrt(0.5 * log(N) * log(log(N))))) + 1
         return x
 
-    def get_smooth_b(self, N, B):
+    def get_smooth_b(self, N: int, B: int) -> list[int]:
         """Build the factor base of primes p ≤ B where (N/p) = 1."""
         primes = self.prime_sieve(B)
         factor_base = [-1, 2]
@@ -247,7 +254,7 @@ class QuadraticSieve:
                 self.root_map[p] = self.tonelli_shanks(N, p)
         return factor_base
 
-    def decide_bound(self, N, B=None):
+    def decide_bound(self, N: int, B=None) -> int:
         """Decide on bound B using heuristic if none provided."""
         if B is None:
             B = self.find_b(N)
