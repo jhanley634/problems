@@ -21,7 +21,7 @@ def filter_path_names() -> None:
         if exclude_re.search(line):
             continue
         file = Path(line.rstrip())
-        if file.suffix == '.json' or not file.is_file():
+        if file.suffix == ".json" or not file.is_file():
             continue
 
         if " text" in magic.from_file(f"{file}"):

@@ -43,7 +43,11 @@ def read_csv() -> pd.DataFrame:
             m = stamp_miles_re.search(line)
             if m:
                 stamp, odometer, range_ = m.groups()
-                stamp = pac.localize(dt.datetime.strptime(stamp, "%Y-%m-%d %a %H:%M"))
+                stamp = dt.datetime.strptime(stamp, "%Y-%m-%d %a %H:%M").astimezone(pac)
+                if rows:
+                    assert stamp > rows[-1]["stamp"], line
+                    assert int(odometer) >= rows[-1]["odometer"], line
+
                 rows.append(
                     {
                         "stamp": stamp,
