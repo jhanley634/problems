@@ -5,8 +5,6 @@
 #    find . | sort | only_text_files.py | xargs grep ...
 
 from pathlib import Path
-from pprint import pp
-import os
 import re
 import sys
 

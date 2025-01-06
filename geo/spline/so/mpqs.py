@@ -338,12 +338,11 @@ class QuadraticSieve:
                         if value not in partials:
                             partials[value] = (relation, local_factors, poly_val * a)
                             continue
-                        else:
-                            lp_found += 1
-                            relation = relation * partials[value][0]
-                            local_factors += partials[value][1]
-                            poly_val = poly_val * partials[value][2]
-                            mark = True
+                        lp_found += 1
+                        relation = relation * partials[value][0]
+                        local_factors += partials[value][1]
+                        poly_val = poly_val * partials[value][2]
+                        mark = True
                     elif partial and value != 1:
                         continue
 

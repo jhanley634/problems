@@ -7,7 +7,6 @@ import random
 import timeit
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 def heap_sort_custom(lst):
@@ -16,6 +15,7 @@ def heap_sort_custom(lst):
 
     Args:
         lst (list): The input list to be sorted.
+
     Returns:
         list: A sorted list containing elements of the input list in ascending order.
 
