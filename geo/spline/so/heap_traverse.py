@@ -5,9 +5,10 @@
 import heapq
 
 
-def heap_sort(lst):
+def heap_sort(lst: list[float]) -> list[float]:
     """
-    Performs a heap sort iteratively by traversing all nodes of the heap, visiting nodes with smaller values first and adding the values to sorted result list.
+    Performs a heap sort iteratively by traversing all nodes of the heap, visiting
+    nodes with smaller values first and adding the values to sorted result list.
 
     Args:
       lst (list): The input list to be sorted.
@@ -19,23 +20,24 @@ def heap_sort(lst):
     - Convert the input list into a min-heap
     - Traverse and process the heap iteratively:
       - Maintain a set to track indices that have already been processed.
-      - Replace the value at the current node with the value of either the left child, right child or parent, depending on specific conditions.
+      - Replace the value at the current node with the value of either the
+        left child, right child or parent, depending on specific conditions.
     - Accumulate results in a separate list as each node is processed.
     """
 
-    def left_child(i):
+    def left_child(i: int) -> float:
         """
         Returns the value of the left child of the node at index i, or infinity if out of bounds.
         """
         return float("inf") if 2 * i + 1 >= len(lst) else lst[2 * i + 1]
 
-    def right_child(i):
+    def right_child(i: int) -> float:
         """
         Returns the value of the right child of the node at index i, or infinity if out of bounds.
         """
         return float("inf") if 2 * i + 2 >= len(lst) else lst[2 * i + 2]
 
-    def parent(i):
+    def parent(i: int) -> float:
         """
         Returns the value of parent of the node at index i, or infinity if the node is the root.
         """
@@ -47,7 +49,7 @@ def heap_sort(lst):
     visited_indices = set()
 
     # List to store the sorted result
-    sorted_result = []
+    sorted_result: list[float] = []
 
     # Start traversal from the root of the heap
     j = 0
