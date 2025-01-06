@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def heap_sort_custom(lst):
     """
-    Performs a custom heap sort iterative algorithm without changing the size of the heap. Unlike in standard heap sort, no extractions are performed
+    Performs a custom heap sort iterative algorithm without changing the size of the heap. Unlike in standard heap sort, no extractions are performed.
 
     Args:
         lst (list): The input list to be sorted.
@@ -100,7 +100,7 @@ def sort_using_heap(arr):
 
 
 def heapsort(arr):
-    def sift_down(arr, n, i):
+    def sift_down(arr, n, i) -> None:
         elem = arr[i]
         while True:
             l = 2 * i + 1
@@ -146,7 +146,7 @@ def sample(n, fn):
     return timeit.timeit(lambda: fn(data[:]), number=10)
 
 
-def plot(ax, a, fn, color):
+def plot(ax, a, fn, color) -> None:
     ax.plot([sample(n, fn) for n in a], color=color, label=fn.__name__)
 
 
