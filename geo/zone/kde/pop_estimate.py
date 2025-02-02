@@ -27,7 +27,7 @@ def sparse_population_data() -> NDArray[np.int64]:
 
 
 def estimate_1d_data(
-    generator: Callable[[], NDArray[np.int_]] = sparse_population_data
+    generator: Callable[[], NDArray[np.int_]] = sparse_population_data,
 ) -> None:
     df = pd.DataFrame()
     df["x"] = generator()

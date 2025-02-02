@@ -60,7 +60,7 @@ def demo() -> None:
 
 
 def main(
-    mp3_file: Annotated[Path, Option(help="input audio file", default=None)]
+    mp3_file: Annotated[Path, Option(help="input audio file", default=None)],
 ) -> None:
     # return demo()
     sound1 = AudioSegment.from_file(mp3_file.expanduser())

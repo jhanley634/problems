@@ -1,9 +1,14 @@
 #! /usr/bin/env python
 
 from pathlib import Path
+import io
 import re
 
+import pdftotext
 import requests
+
+temp = Path("/tmp/menu")
+
 
 dining = "https://www.palisadestahoe.com/-/media/palisades-tahoe/pdfs/dining"
 urls = [
@@ -17,18 +22,32 @@ urls = [
 
 
 def main() -> None:
-    temp = Path("/tmp/menu")
     temp.mkdir(exist_ok=True)
-    pat = re.compile(r"pdfs/dining/rocker-(\w+)-2425")
+    if not (temp / "dinner.txt").exists():
+        _fetch_menus()
+
+
+def _fetch_menus() -> None:
     for url in urls:
-        m = pat.search(url)
-        assert m
-        name = m.group(1)
-        out_file = temp / f"{name}.pdf"
-        print(out_file)
+        out_file = _get_out_file(url)
         response = requests.get(url)
         with open(out_file, "wb") as f:
             f.write(response.content)
+
+        pdf = pdftotext.PDF(io.BytesIO(response.content))
+        print(len(pdf), out_file)
+        with open(out_file.with_suffix(".txt"), "w") as f:
+            f.write("\n\n".join(pdf))
+
+
+def _get_out_file(url: str) -> Path:
+    pat = re.compile(r"pdfs/dining/rocker-(\w+)-2425")
+
+    m = pat.search(url)
+    assert m
+
+    name = m.group(1)
+    return temp / f"{name}.pdf"
 
 
 if __name__ == "__main__":
