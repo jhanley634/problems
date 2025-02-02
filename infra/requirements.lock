@@ -685,6 +685,8 @@ pathspec==0.12.1
     # via black
 patsy==1.0.1
     # via statsmodels
+pdf2image==1.17.0
+    # via -r requirements.txt
 pdftotext==3.0.0
     # via -r requirements.txt
 peewee==3.17.8
@@ -698,6 +700,7 @@ pillow==11.1.0
     #   -r requirements.txt
     #   bokeh
     #   matplotlib
+    #   pdf2image
     #   pytesseract
     #   streamlit
 planegeometry==1.0.2

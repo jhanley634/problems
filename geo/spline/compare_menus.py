@@ -4,7 +4,10 @@ from pathlib import Path
 import io
 import re
 
+from pdf2image import convert_from_path
+from PIL import Image
 import pdftotext
+import pytesseract as tess
 import requests
 
 temp = Path("/tmp/menu")
@@ -25,6 +28,8 @@ def main() -> None:
     temp.mkdir(exist_ok=True)
     if not (temp / "dinner.txt").exists():
         _fetch_menus()
+    for meal in ["brunch", "lunch", "dinner"]:
+        _ocr(temp / f"{meal}.pdf")
 
 
 def _fetch_menus() -> None:
@@ -48,6 +53,28 @@ def _get_out_file(url: str) -> Path:
 
     name = m.group(1)
     return temp / f"{name}.pdf"
+
+
+def _ocr(pdf_file: Path) -> None:
+    psm = 12
+    image_file = _convert_pdf_to_image(pdf_file)
+    image = Image.open(image_file)
+    assert (1700, 2200) == image.size
+    assert "PNG" == image.format
+
+    text = tess.image_to_string(image, config=f"--psm {psm}")
+    with open(f"{temp / pdf_file.stem}_ocr.txt", "w") as fout:
+        fout.write(text)
+
+
+def _convert_pdf_to_image(pdf_file: Path) -> Path:
+    image_file = pdf_file.with_suffix(".png")
+    images = convert_from_path(pdf_file, first_page=1, last_page=1)
+    image_file = pdf_file.with_suffix(".png")
+
+    images[0].save(image_file, "PNG")
+
+    return image_file
 
 
 if __name__ == "__main__":
