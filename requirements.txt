@@ -50,6 +50,7 @@ palettable
 pandas
 pandas-stubs
 pdf2image
+pdfsak
 pdftotext
 pillow
 planegeometry
