@@ -12,9 +12,9 @@ aiosignal==1.3.2
     # via aiohttp
 altair==5.5.0
     # via streamlit
-aniso8601==9.0.1
+aniso8601==10.0.0
     # via flask-restx
-anyio==4.7.0
+anyio==4.8.0
     # via
     #   httpx
     #   jupyter-server
@@ -40,7 +40,7 @@ async-lru==2.0.4
     # via jupyterlab
 atomicwrites==1.4.1
     # via uszipcode
-attrs==24.3.0
+attrs==25.1.0
     # via
     #   aiohttp
     #   cattrs
@@ -56,11 +56,11 @@ attrs==24.3.0
     #   uszipcode
 automat==24.8.1
     # via twisted
-babel==2.16.0
+babel==2.17.0
     # via jupyterlab-server
 beartype==0.19.0
     # via -r requirements.txt
-beautifulsoup4==4.12.3
+beautifulsoup4==4.13.0
     # via
     #   -r requirements.txt
     #   bs4
@@ -71,7 +71,7 @@ beautifulsoup4==4.12.3
     #   yfinance
 bitarray==3.0.0
     # via -r requirements.txt
-black==24.10.0
+black==25.1.0
     # via -r requirements.txt
 bleach==6.2.0
     # via
@@ -95,7 +95,7 @@ branca==0.8.1
     # via ipyleaflet
 bs4==0.0.2
     # via requests-html
-cachetools==5.5.0
+cachetools==5.5.1
     # via
     #   google-auth
     #   streamlit
@@ -103,7 +103,7 @@ cartopy==0.24.1
     # via geoviews
 cattrs==24.1.2
     # via requests-cache
-certifi==2024.12.14
+certifi==2025.1.31
     # via
     #   httpcore
     #   httpx
@@ -129,7 +129,7 @@ click==8.1.8
     #   nltk
     #   streamlit
     #   typer
-cloudpickle==3.1.0
+cloudpickle==3.1.1
     # via
     #   dask
     #   gymnasium
@@ -167,13 +167,13 @@ cssselect==1.2.0
     #   scrapy
 cycler==0.12.1
     # via matplotlib
-dask==2024.12.1
+dask==2025.1.0
     # via -r requirements.txt
 datasets==3.2.0
     # via
     #   -r requirements.txt
     #   evaluate
-debugpy==1.8.11
+debugpy==1.8.12
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -197,7 +197,7 @@ et-xmlfile==2.0.0
     # via openpyxl
 evaluate==0.4.3
     # via -r requirements.txt
-executing==2.1.0
+executing==2.2.0
     # via stack-data
 eyed3==0.9.7
     # via -r requirements.txt
@@ -211,7 +211,7 @@ fasteners==0.19
     # via -r requirements.txt
 fastjsonschema==2.21.1
     # via nbformat
-filelock==3.16.1
+filelock==3.17.0
     # via
     #   datasets
     #   huggingface-hub
@@ -233,7 +233,7 @@ flask-restx==1.3.0
     # via -r requirements.txt
 flask-sqlalchemy==3.1.1
     # via -r requirements.txt
-fonttools==4.55.3
+fonttools==4.55.8
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -263,13 +263,13 @@ geopy==2.4.1
     # via -r requirements.txt
 geoviews==1.14.0
     # via -r requirements.txt
-gitdb==4.0.11
+gitdb==4.0.12
     # via gitpython
-gitpython==3.1.43
+gitpython==3.1.44
     # via streamlit
 glom==24.11.0
     # via -r requirements.txt
-google-auth==2.37.0
+google-auth==2.38.0
     # via
     #   google-auth-oauthlib
     #   gspread
@@ -303,16 +303,16 @@ httplib2==0.22.0
     # via oauth2client
 httpx==0.28.1
     # via jupyterlab
-huggingface-hub==0.27.0
+huggingface-hub==0.28.1
     # via
     #   -r requirements.txt
     #   datasets
     #   evaluate
 hyperlink==21.0.0
     # via twisted
-hypothesis==6.123.2
+hypothesis==6.124.9
     # via -r requirements.txt
-identify==2.6.4
+identify==2.6.6
     # via pre-commit
 idna==3.10
     # via
@@ -326,7 +326,7 @@ idna==3.10
     #   yarl
 imbalanced-learn==0.13.0
     # via -r requirements.txt
-importlib-resources==6.4.5
+importlib-resources==6.5.2
     # via
     #   compact-json
     #   flask-restx
@@ -341,7 +341,7 @@ ipykernel==6.29.5
     # via jupyterlab
 ipyleaflet==0.19.2
     # via -r requirements.txt
-ipython==8.31.0
+ipython==8.32.0
     # via
     #   black
     #   ipykernel
@@ -350,11 +350,11 @@ ipywidgets==8.1.5
     # via ipyleaflet
 isoduration==20.11.0
     # via jsonschema
-isort==5.13.2
+isort==6.0.0
     # via
     #   -r requirements.txt
     #   pylint
-itemadapter==0.10.0
+itemadapter==0.11.0
     # via
     #   itemloaders
     #   scrapy
@@ -426,7 +426,7 @@ jupyter-server==2.15.0
     #   notebook-shim
 jupyter-server-terminals==0.5.3
     # via jupyter-server
-jupyterlab==4.3.4
+jupyterlab==4.3.5
     # via -r requirements.txt
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -499,13 +499,13 @@ mechanicalsoup==1.3.0
     # via -r requirements.txt
 memory-profiler==0.61.0
     # via -r requirements.txt
-minio==7.2.13
+minio==7.2.15
     # via openml
-mistune==3.1.0
+mistune==3.1.1
     # via nbconvert
 mizani==0.13.1
     # via plotnine
-more-itertools==10.5.0
+more-itertools==10.6.0
     # via inflect
 mplcursors==0.6
     # via -r requirements.txt
@@ -527,11 +527,11 @@ mypy-extensions==1.0.0
     # via
     #   black
     #   mypy
-narwhals==1.20.1
+narwhals==1.24.2
     # via altair
 nbclient==0.10.2
     # via nbconvert
-nbconvert==7.16.4
+nbconvert==7.16.6
     # via jupyter-server
 nbformat==5.10.4
     # via
@@ -554,7 +554,7 @@ notebook-shim==0.2.4
     # via jupyterlab
 numbers-parser==4.14.2
     # via -r requirements.txt
-numpy==2.2.1
+numpy==2.2.2
     # via
     #   -r requirements.txt
     #   bokeh
@@ -592,13 +592,13 @@ oauth2client==4.1.3
     # via -r requirements.txt
 oauthlib==3.2.2
     # via requests-oauthlib
-opencv-python-headless==4.10.0.84
+opencv-python-headless==4.11.0.86
     # via -r requirements.txt
-openml==0.15.0
+openml==0.15.1
     # via -r requirements.txt
 openpyxl==3.1.5
     # via -r requirements.txt
-osmnx==2.0.0
+osmnx==2.0.1
     # via -r requirements.txt
 outcome==1.3.0.post0
     # via trio
@@ -659,7 +659,7 @@ pandas-stubs==2.2.3.241126
     #   types-seaborn
 pandocfilters==1.5.1
     # via nbconvert
-panel==1.5.5
+panel==1.6.0
     # via
     #   geoviews
     #   holoviews
@@ -671,7 +671,7 @@ param==2.2.0
     #   pyviz-comms
 parse==1.20.2
     # via requests-html
-parsel==1.9.1
+parsel==1.10.0
     # via
     #   itemloaders
     #   scrapy
@@ -685,13 +685,15 @@ pathspec==0.12.1
     # via black
 patsy==1.0.1
     # via statsmodels
+pdftotext==3.0.0
+    # via -r requirements.txt
 peewee==3.17.8
     # via
     #   yahoofinancials
     #   yfinance
 pexpect==4.9.0
     # via ipython
-pillow==11.0.0
+pillow==11.1.0
     # via
     #   -r requirements.txt
     #   bokeh
@@ -708,27 +710,27 @@ platformdirs==4.3.6
     #   requests-cache
     #   virtualenv
     #   yfinance
-plotnine==0.14.4
+plotnine==0.14.5
     # via -r requirements.txt
 pluggy==1.5.0
     # via pytest
-polars==1.18.0
+polars==1.21.0
     # via -r requirements.txt
-pre-commit==4.0.1
+pre-commit==4.1.0
     # via -r requirements.txt
-prettytable==3.12.0
+prettytable==3.14.0
     # via sqlalchemy-mate
 prometheus-client==0.21.1
     # via jupyter-server
-prompt-toolkit==3.0.48
+prompt-toolkit==3.0.50
     # via ipython
 propcache==0.2.1
     # via
     #   aiohttp
     #   yarl
-protego==0.3.1
+protego==0.4.0
     # via scrapy
-protobuf==5.29.2
+protobuf==5.29.3
     # via
     #   numbers-parser
     #   streamlit
@@ -746,14 +748,14 @@ pure-eval==0.2.3
     # via stack-data
 py4j==0.10.9.7
     # via pyspark
-pyarrow==18.1.0
+pyarrow==19.0.0
     # via
     #   -r requirements.txt
     #   datasets
     #   openml
     #   pyarrow-stubs
     #   streamlit
-pyarrow-stubs==17.14
+pyarrow-stubs==17.16
     # via -r requirements.txt
 pyasn1==0.6.1
     # via
@@ -790,23 +792,23 @@ pygame==2.6.1
     # via
     #   -r requirements.txt
     #   gymnasium
-pygments==2.18.0
+pygments==2.19.1
     # via
     #   enum-tools
     #   ipython
     #   nbconvert
     #   rich
-pylint==3.3.3
+pylint==3.3.4
     # via -r requirements.txt
 pynisher==1.0.10
     # via -r requirements.txt
 pyogrio==0.10.0
     # via geopandas
-pyopenssl==24.3.0
+pyopenssl==25.0.0
     # via scrapy
-pypandoc==1.14
+pypandoc==1.15
     # via -r requirements.txt
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via
     #   httplib2
     #   matplotlib
@@ -821,7 +823,7 @@ pyquery==2.0.1
     # via requests-html
 pyrate-limiter==2.10.0
     # via requests-ratelimiter
-pyright==1.1.391
+pyright==1.1.393
     # via -r requirements.txt
 pyshp==2.3.1
     # via cartopy
@@ -858,13 +860,13 @@ python-slugify==8.0.4
     # via kaggle
 python-snappy==0.7.3
     # via numbers-parser
-pytz==2024.2
+pytz==2025.1
     # via
     #   flask-restx
     #   pandas
     #   yahoofinancials
     #   yfinance
-pyviz-comms==3.0.3
+pyviz-comms==3.0.4
     # via
     #   holoviews
     #   panel
@@ -876,20 +878,20 @@ pyyaml==6.0.2
     #   huggingface-hub
     #   jupyter-events
     #   pre-commit
-pyzmq==26.2.0
+pyzmq==26.2.1
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
 queuelib==1.7.0
     # via scrapy
-rapidfuzz==3.11.0
+rapidfuzz==3.12.1
     # via levenshtein
 redis==5.2.1
     # via -r requirements.txt
 reedsolo==1.7.0
     # via -r requirements.txt
-referencing==0.35.1
+referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -951,17 +953,17 @@ rsa==4.9
     # via
     #   google-auth
     #   oauth2client
-ruamel-yaml==0.18.7
+ruamel-yaml==0.18.10
     # via -r requirements.txt
-ruff==0.8.4
+ruff==0.9.4
     # via -r requirements.txt
-scikit-learn==1.6.0
+scikit-learn==1.6.1
     # via
     #   -r requirements.txt
     #   imbalanced-learn
     #   openml
     #   sklearn-compat
-scipy==1.14.1
+scipy==1.15.1
     # via
     #   imbalanced-learn
     #   mizani
@@ -973,20 +975,20 @@ scrapy==2.12.0
     # via -r requirements.txt
 seaborn==0.13.2
     # via -r requirements.txt
-selenium==4.27.1
+selenium==4.28.1
     # via -r requirements.txt
 send2trash==1.8.3
     # via jupyter-server
 service-identity==24.2.0
     # via scrapy
-setuptools==75.6.0
+setuptools==75.8.0
     # via
     #   compact-json
     #   incremental
     #   jupyterlab
     #   numbers-parser
     #   zope-interface
-shapely==2.0.6
+shapely==2.0.7
     # via
     #   cartopy
     #   geopandas
@@ -1008,7 +1010,7 @@ six==1.17.0
     #   url-normalize
 sklearn-compat==0.1.3
     # via imbalanced-learn
-smmap==5.0.1
+smmap==5.0.2
     # via gitdb
 sniffio==1.3.1
     # via
@@ -1027,7 +1029,7 @@ soupsieve==2.6
     # via beautifulsoup4
 sqlacodegen-v2==0.1.4
     # via -r requirements.txt
-sqlalchemy==2.0.36
+sqlalchemy==2.0.37
     # via
     #   -r requirements.txt
     #   flask-sqlalchemy
@@ -1067,7 +1069,7 @@ threadpoolctl==3.5.0
     #   imbalanced-learn
     #   scikit-learn
 tinycss2==1.4.0
-    # via nbconvert
+    # via bleach
 tldextract==5.1.3
     # via scrapy
 tokenize-rt==6.1.0
@@ -1155,9 +1157,9 @@ types-requests==2.32.0.20241016
     # via
     #   -r requirements.txt
     #   types-tqdm
-types-seaborn==0.13.2.20241204
+types-seaborn==0.13.2.20250111
     # via -r requirements.txt
-types-setuptools==75.6.0.20241223
+types-setuptools==75.8.0.20250110
     # via types-cffi
 types-tabulate==0.9.0.20241207
     # via -r requirements.txt
@@ -1166,6 +1168,7 @@ types-tqdm==4.67.0.20241221
 typing-extensions==4.12.2
     # via
     #   altair
+    #   beautifulsoup4
     #   enum-tools
     #   gymnasium
     #   huggingface-hub
@@ -1183,7 +1186,7 @@ typing-extensions==4.12.2
     #   twisted
     #   typeguard
     #   typer
-tzdata==2024.2
+tzdata==2025.1
     # via pandas
 uc-micro-py==1.0.3
     # via linkify-it-py
@@ -1204,11 +1207,11 @@ urllib3==2.3.0
     #   types-requests
 uszipcode==1.0.1
     # via -r requirements.txt
-uv==0.5.13
+uv==0.5.26
     # via -r requirements.txt
-virtualenv==20.28.0
+virtualenv==20.29.1
     # via pre-commit
-w3lib==2.2.1
+w3lib==2.3.1
     # via
     #   parsel
     #   requests-html
@@ -1231,7 +1234,7 @@ websocket-client==1.8.0
     # via
     #   jupyter-server
     #   selenium
-websockets==14.1
+websockets==14.2
     # via pyppeteer
 werkzeug==3.1.3
     # via
@@ -1249,7 +1252,7 @@ xxhash==3.5.0
     # via
     #   datasets
     #   evaluate
-xyzservices==2024.9.0
+xyzservices==2025.1.0
     # via
     #   bokeh
     #   geoviews
@@ -1258,7 +1261,7 @@ yahoofinancials==1.20
     # via -r requirements.txt
 yarl==1.18.3
     # via aiohttp
-yfinance==0.2.51
+yfinance==0.2.52
     # via -r requirements.txt
 zope-interface==7.2
     # via

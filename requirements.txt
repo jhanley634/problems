@@ -49,6 +49,7 @@ osmnx
 palettable
 pandas
 pandas-stubs
+pdftotext
 pillow
 planegeometry
 plotnine
