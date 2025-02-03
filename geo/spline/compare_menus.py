@@ -70,10 +70,9 @@ def _ocr(pdf_file: Path) -> None:
 def _convert_pdf_to_image(pdf_file: Path) -> Path:
     image_file = pdf_file.with_suffix(".png")
     images = convert_from_path(pdf_file, first_page=1, last_page=1)
-    image_file = pdf_file.with_suffix(".png")
+    gray_image = images[0].quantize(2)  # binarize
 
-    images[0].save(image_file, "PNG")
-
+    gray_image.save(image_file, "PNG")
     return image_file
 
 
