@@ -20,21 +20,24 @@ def get_lines(file: Path) -> Generator[str]:
                     in_preamble = False
 
 
-def report(file: Path, year: int = 2024) -> None:
+def get_triples(file: Path, year: int = 2024) -> Generator[tuple[str, str, str]]:
     day = dt.datetime.now(UTC)
     vendor = ""
     amt = 0.0
     gl = get_lines(file)
     for _ in gl:
-        mm_dd = next(gl)
         try:
+            mm_dd = next(gl)
             day = dt.datetime.strptime(f"{year}/{mm_dd} +0000", "%Y/%m/%d %z")
             vendor = next(gl)
             amt = float(next(gl))
         except ValueError:
             pass
+        except StopIteration:
+            break
         if amt:
-            print(day.date(), f"{amt:9.2f}\t", vendor)
+            yield f"{day.date()}", f"{amt:9.2f}", vendor
+            amt = 0.0
 
 
 def main() -> None:
@@ -43,7 +46,8 @@ def main() -> None:
     nnn = "0??"
     glob = f"????-202?{yymm}-Statement-{nnn}.pdf"
     for file in sorted(desktop.glob(glob)):
-        report(file)
+        for d, a, v in get_triples(file):
+            print(d, a, "   ", v)
 
 
 if __name__ == "__main__":
