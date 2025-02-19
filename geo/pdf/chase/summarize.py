@@ -4,9 +4,11 @@
 from collections.abc import Generator
 from datetime import UTC
 from pathlib import Path
+from typing import Any
 import datetime as dt
 
 from pdftotext import PDF
+import pandas as pd
 
 
 def get_lines(file: Path) -> Generator[str]:
@@ -20,7 +22,7 @@ def get_lines(file: Path) -> Generator[str]:
                     in_preamble = False
 
 
-def get_triples(file: Path, year: int = 2024) -> Generator[tuple[str, str, str]]:
+def get_triples(file: Path, year: int = 2024) -> Generator[dict[str, Any]]:
     day = dt.datetime.now(UTC)
     vendor = ""
     amt = 0.0
@@ -36,7 +38,11 @@ def get_triples(file: Path, year: int = 2024) -> Generator[tuple[str, str, str]]
         except StopIteration:
             break
         if amt:
-            yield f"{day.date()}", f"{amt:9.2f}", vendor
+            yield {
+                "day": f"{day.date()}",
+                "amt": amt,
+                "vendor": vendor,
+            }
             amt = 0.0
 
 
@@ -46,8 +52,9 @@ def main() -> None:
     nnn = "0??"
     glob = f"????-202?{yymm}-Statement-{nnn}.pdf"
     for file in sorted(desktop.glob(glob)):
-        for d, a, v in get_triples(file):
-            print(d, a, "   ", v)
+        df = pd.DataFrame(get_triples(file))
+        print(f"\n\n{file.name}\n")
+        print(df.sort_values(by=["vendor", "amt", "day"]))
 
 
 if __name__ == "__main__":
