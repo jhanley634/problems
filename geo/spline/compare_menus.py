@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+# Copyright 2025 John Hanley. MIT licensed.
+
 
 from pathlib import Path
 import io

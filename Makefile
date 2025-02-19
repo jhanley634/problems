@@ -41,9 +41,9 @@ test:
 SHELL = bash -o pipefail
 
 INCLUDE = '\.py$$'
-EXCLUDE = '/loadtxt.d/pythran_lib/build/lib.macosx-10.9-x86_64-cpython-310/hello/'
+EXCLUDE = '^./.venv/|/loadtxt.d/pythran_lib/build/lib.macosx-10.9-x86_64-cpython-310/hello/'
 L = --files-without-match
 C2021 = 'Copyright 202[1-5] John Hanley\. MIT licensed\.'
 audit:
-	find . -type f | grep -v $(EXCLUDE) | grep $(INCLUDE) | sort | xargs egrep $(L) $(C2021) || true
+	find . -type f | egrep -v $(EXCLUDE) | egrep $(INCLUDE) | sort | xargs egrep $(L) $(C2021) || true
 	infra/audit.py
