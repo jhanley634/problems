@@ -47,11 +47,11 @@ def get_triples(file: Path, year: int = 2024) -> Generator[dict[str, Any]]:
 
 
 def main() -> None:
-    desktop = Path("~/Desktop").expanduser()
+    statements = Path("~/Desktop").expanduser() / '2025/statements'
     yymm = "????"
     nnn = "0??"
     glob = f"????-202?{yymm}-Statement-{nnn}.pdf"
-    for file in sorted(desktop.glob(glob)):
+    for file in sorted(statements.glob(glob)):
         df = pd.DataFrame(get_triples(file))
         print(f"\n\n{file.name}\n")
         print(df.sort_values(by=["vendor", "amt", "day"]))
