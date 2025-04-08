@@ -61,6 +61,7 @@ psutil
 pyarrow
 pyarrow-stubs
 pyaudioanalysis
+pydantic
 pydeck
 pydub
 pygame
@@ -91,6 +92,7 @@ sortedcontainers-stubs
 sqlacodegen-v2
 sqlalchemy
 sqlalchemy_mate
+sqlmodel
 streamlit
 streamlit-image-coordinates
 swig
