@@ -46,7 +46,8 @@ def discard_interior_observations(housing: pd.DataFrame) -> pd.DataFrame:
         hull = ConvexHull(points)
         print(sum(h.interior), len(h), len(hull.vertices))
         for i in hull.vertices:
-            print(sum(h.interior), i, h.loc[i].longitude, h.loc[i].latitude)
+            # print(sum(h.interior), i, h.loc[i].longitude, h.loc[i].latitude)
+            print(sum(h.interior), i)
             h.loc[(h.longitude == h.loc[i].longitude), "interior"] = False
         h = pd.DataFrame(h[not h.interior])
 
