@@ -58,7 +58,7 @@ class NominatimCached:
         return addr.replace("'", "").upper()
 
     query_delay_secs = 1.1  # Nominatim's rate limit is 1 per second
-    addr_re = re.compile(r"^\d[\wA-Z ,]+ \d{5}$")
+    addr_re = re.compile(r"^\d[\w ,]+ \d{5}$")
 
     def geocode(self, addr: str) -> NominatimQuery | None:
         addr = self.canonical(addr)
