@@ -37,11 +37,9 @@ def show(grid: str) -> str:
     return web_page(f"<pre>\n{g}")
 
 
-@app.route("/edit/<grid>")  # type: ignore [misc]
-def edit(grid: str) -> str:
-    return f"""
-    {grid}
-    """
+# @app.route("/edit/<grid>")
+# def edit(grid: str) -> str:
+#     return f"""{grid}"""
 
 
 if __name__ == "__main__":
