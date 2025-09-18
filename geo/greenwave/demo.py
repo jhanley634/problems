@@ -53,6 +53,9 @@ class Obstacle:
         self.serial = Obstacle.serial
         Obstacle.fleet[self.serial] = self
 
+    def __hash__(self) -> int:
+        return hash(self.serial)
+
     def __eq__(self, other: object) -> bool:
         return bool(self.position == other.position)
 
