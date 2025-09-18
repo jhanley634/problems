@@ -43,10 +43,11 @@ class CollatzTest(unittest.TestCase):
         self.assertEqual(collatz(100_000_000), 108)
         self.assertEqual(collatz(1_000_000_000), 101)
 
-    def test_iterate(self) -> None:
+    def test_iterate(self, verbose: bool = False) -> None:
         phi = 0.5 * (1 + sqrt(5))
         n = 2
         for i in range(1, 410_000):
-            print(" ", i, " ", n, end="       \r")
+            if verbose:
+                print(" ", i, " ", n, end="       \r")
             n = 1 + ceil(n * (phi - 0.61803))
             self.assertLess(collatz(n), 532, (i, n))
