@@ -32,6 +32,9 @@ class Interval:
             return self.start == other.start and self.end == other.end
         return False
 
+    def __hash__(self) -> int:
+        return super().__hash__((self.start, self.end))
+
 
 @dataclass
 class Intervals:
