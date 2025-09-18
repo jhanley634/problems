@@ -88,6 +88,7 @@ seaborn
 selenium
 sortedcontainers
 sortedcontainers-stubs
+spacy
 sqlacodegen-v2
 sqlalchemy
 sqlalchemy_mate
