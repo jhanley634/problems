@@ -29,7 +29,7 @@ def get_oil_df(id_: str = "DCOILWTICO", since_year: int = 2010) -> pd.DataFrame:
     df = pd.read_csv(csv, parse_dates=["DATE"], index_col="DATE")
     df = df.rename(columns={id_: "price"})
     df = df[df.price != "."]
-    df = df[df.index.year >= since_year]
+    df = df[df["index"]["year"] >= since_year]
     return pd.DataFrame(
         {"price": df.price.astype(float)},
         df.reset_index().DATE.rename("date"),
