@@ -8,7 +8,7 @@ import streamlit as st
 from cluster.jutland.dataset import Dataset
 
 
-@st.cache
+@st.cache  # type: ignore
 def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
     df = pd.DataFrame(Dataset.get_df())
 
@@ -23,7 +23,7 @@ def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
     colors = qualitative.Paired_12.colors
     # Argument 1 to "hash_array" has incompatible type "Series[Any]";
     # expected "ExtensionArray | ndarray[Any, Any]"  [arg-type]
-    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)  # type: ignore [arg-type]
+    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)
 
     # In https://discuss.streamlit.io/t/tooltip-and-labels-in-pydeck-chart/1727
     # godot63 suggests we may need an annoying 3 (r,g,b) color columns.
