@@ -2,6 +2,7 @@
 # Copyright 2024 John Hanley. MIT licensed.
 
 from pathlib import Path
+from typing import Any
 import datetime as dt
 import re
 
@@ -37,7 +38,7 @@ def read_csv() -> pd.DataFrame:
     stamp_miles_re = re.compile(r"^<(\d{4}-\d+-\d+ \w{3} \d+:\d+)>\s*(\d+)\s+(\d+)")
     telsa = Path("~/repo/sector6-infra/documents/tesla/").expanduser()
     pac = pytz.timezone("US/Pacific")
-    rows = []
+    rows: list[dict[str, Any]] = []
     with open(telsa / "charge.txt") as fin:
         for line in fin:
             m = stamp_miles_re.search(line)

@@ -22,6 +22,7 @@ def get_non_descending_runs(a: list[int]) -> Iterable[tuple[int, int]]:
 def _get_non_descending_runs_at(idx: int, a: list[int]) -> Iterable[tuple[int, int]]:
     assert idx > 0
     assert a
+    return [(1, 2)]
 
 
 @beartype
