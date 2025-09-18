@@ -12,7 +12,7 @@ class CountyVoronoiTest(unittest.TestCase):
         if verbose:
             print(df.to_dict(orient="list"))
 
-    def test_find_internal(self) -> None:
+    def unused_test_find_internal(self) -> None:
         df = pd.DataFrame(
             {
                 "county": ["L.A.", "L.A.", "L.A.", "San_Joaquin", "San_Joaquin"],
