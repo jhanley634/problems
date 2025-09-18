@@ -55,9 +55,14 @@ def get_df(add_stamp: bool = True) -> pd.DataFrame:
     return df
 
 
-COLS = (
-    ["pres_500mb", "humidity", "temp_f_sandberg", "gradient_mm_hg", "inversion_temp_f", "ozone"]
-)
+COLS = [
+    "pres_500mb",
+    "humidity",
+    "temp_f_sandberg",
+    "gradient_mm_hg",
+    "inversion_temp_f",
+    "ozone",
+]
 
 
 def main(out_file: Path = _desktop / "ozone.png", want_report: bool = False) -> None:
