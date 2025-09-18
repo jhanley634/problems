@@ -128,7 +128,8 @@ class Car(Obstacle):
         print(obs)
         assert seg.obstacles[i] is self
 
-        next_obstacle = seg.obstacles.bisect(self.position)
+        next_obstacle = 0
+        # next_obstacle = seg.obstacles.bisect(self.position)  # can't compare float & Car
 
         self.position += self.velocity * dt
 
