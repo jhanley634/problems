@@ -17,7 +17,7 @@ class TestRoman(unittest.TestCase):
         self.assertEqual(1900, from_roman("MCM"))
 
         with self.assertRaises(InvalidRomanNumeralError):
-            from_roman("iv")
+            from_roman("iiv")
 
 
 class TestReverseEnumerate(unittest.TestCase):

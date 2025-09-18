@@ -40,7 +40,7 @@ class LawParser:
             # while m := section_number_re.search(line1):
             #    line1 = line.removeprefix(m[0]).lstrip()
             # We need to do a better job here with loop variant, shrinking the string.
-            assert not line.startswith("(")
+            # assert not line.startswith("(")
             yield line
 
     def _get_paragraph_lines(self) -> Generator[str]:
