@@ -47,5 +47,5 @@ def _get_rows() -> Generator[dict[str, str]]:
 
 
 if __name__ == "__main__":
-    df = pd.DataFrame(_get_rows(matchlink)).set_index("match")
+    df = pd.DataFrame(_get_rows()).set_index("match")
     print(df)
