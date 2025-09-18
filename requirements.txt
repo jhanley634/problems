@@ -39,6 +39,7 @@ memory-profiler
 mplcursors
 mypy
 netifaces
+numba
 numbers-parser
 numpy
 oauth2client
@@ -79,6 +80,7 @@ redis
 reedsolo
 requests-cache
 requests-html
+roman
 rouge-score
 ruamel.yaml
 ruff
