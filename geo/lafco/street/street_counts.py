@@ -22,7 +22,7 @@ def _get_geocoded_df() -> pd.DataFrame:
     )
     text = io.StringIO(get_document(url))
     df = pd.read_csv(text)
-    cols = "address city st zip housenum  street lat lon".split()
+    cols = ["address", "city", "st", "zip", "housenum", "street", "lat", "lon"]
     assert cols == df.columns.tolist(), df.columns
     return df
 

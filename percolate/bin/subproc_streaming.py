@@ -48,7 +48,7 @@ def parent() -> None:
     repo_top = Path(__file__ + "/../../..").resolve()
     os.chdir(repo_top)
 
-    cmd = "bash percolate/bin/subproc_slow_output.sh 3 1".split()
+    cmd = ["bash", "percolate/bin/subproc_slow_output.sh", "3", "1"]
     for line1 in streaming_subproc(cmd):
         line = line1.rstrip("\n")
         print(f"]] {line} [[")

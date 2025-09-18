@@ -6,7 +6,7 @@ import unittest
 
 from tqdm import tqdm
 
-from geo.ski.iso_filenames import GPX_DIR, copy_all, iso
+from geo.ski.iso_filenames import iso
 
 tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 

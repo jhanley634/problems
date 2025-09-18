@@ -8,7 +8,6 @@ import unittest
 from datasets import Dataset, load_dataset
 from html2text import html2text
 from huggingface_hub import hf_hub_download
-import huggingface_hub
 import requests
 
 from gen.news_summary import Summarizer, get_cache_filespec

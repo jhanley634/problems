@@ -15,8 +15,7 @@ def svg_json_to_gnuplot(infile: str) -> None:
     with open(infile) as fin, open(outfile, "w") as fout:
         d = json.load(fin)
         for path in sorted(d.keys()):
-            for x, y in _pairs(d[path]):
-                fout.write(f"{x}, {y}\n")
+            fout.writelines(f"{x}, {y}\n" for x, y in _pairs(d[path]))
 
 
 def _pairs(nums: list[int]) -> Generator[tuple[int, ...]]:

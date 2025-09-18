@@ -22,10 +22,8 @@ def get_simple_words(line: str) -> Generator[str]:
     for wrd in line.translate(punctuation).split():
         word = wrd
         # strip possessives
-        if word.endswith("'"):
-            word = word[:-1]
-        if word.endswith("'s"):
-            word = word[:-2]
+        word = word.removesuffix("'")
+        word = word.removesuffix("'s")
 
         if word.isalpha():
             yield word

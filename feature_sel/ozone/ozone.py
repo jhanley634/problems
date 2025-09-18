@@ -56,7 +56,7 @@ def get_df(add_stamp: bool = True) -> pd.DataFrame:
 
 
 COLS = (
-    "pres_500mb humidity temp_f_sandberg gradient_mm_hg inversion_temp_f ozone".split()
+    ["pres_500mb", "humidity", "temp_f_sandberg", "gradient_mm_hg", "inversion_temp_f", "ozone"]
 )
 
 
