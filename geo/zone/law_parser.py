@@ -36,10 +36,12 @@ class LawParser:
                 yield m[0]
 
             # Cleanup leading section numbers, which may be stacked.
-            while m := section_number_re.search(line):
-                line1 = line.removeprefix(m[0]).lstrip()
-            assert not line1.startswith("(")
-            yield line1
+            # line1 = line
+            # while m := section_number_re.search(line1):
+            #    line1 = line.removeprefix(m[0]).lstrip()
+            # We need to do a better job here with loop variant, shrinking the string.
+            assert not line.startswith("(")
+            yield line
 
     def _get_paragraph_lines(self) -> Generator[str]:
         xlate_table = str.maketrans("\xa0", " ")  # No non-breaking spaces, please.
