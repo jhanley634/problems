@@ -338,7 +338,7 @@ huggingface-hub==0.35.0
     #   transformers
 hyperlink==21.0.0
     # via twisted
-hypothesis==6.139.1
+hypothesis==6.139.2
     # via -r requirements.txt
 identify==2.6.14
     # via pre-commit
@@ -842,7 +842,7 @@ pyasn1-modules==0.4.2
     #   google-auth
     #   oauth2client
     #   service-identity
-pyaudioanalysis==0.3.14
+pyaudioanalysis==0.2.5
     # via -r requirements.txt
 pycodestyle==2.14.0
     # via flake8
