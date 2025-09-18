@@ -39,7 +39,6 @@ memory-profiler
 mplcursors
 mypy
 netifaces
-numba
 numbers-parser
 numpy
 oauth2client

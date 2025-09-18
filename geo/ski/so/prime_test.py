@@ -4,12 +4,9 @@ from math import sqrt
 import unittest
 
 from hypothesis import given
-from numba import int_, jit
+# from numba import int_, jit
 import hypothesis.strategies as st
 import sympy
-
-assert int_
-assert jit
 
 
 def is_prime(n: int) -> bool:

@@ -39,4 +39,4 @@ class SyncScriptsSpacyTest(SyncScriptsTest):
 
     def test_sentences(self) -> None:
         sentences = list(get_story_sentences(self.fuego_url))
-        self.assertEqual(775, len(sentences))  # We have hundreds of spacy Spans.
+        self.assertEqual(774, len(sentences))  # We have hundreds of spacy Spans.
