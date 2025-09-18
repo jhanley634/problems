@@ -53,6 +53,7 @@ pandas-stubs
 pdf2image
 pdftotext
 pillow
+pip
 planegeometry
 plotnine
 polars

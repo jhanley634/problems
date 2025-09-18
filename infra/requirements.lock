@@ -759,6 +759,8 @@ pillow==11.3.0
     #   pdf2image
     #   pytesseract
     #   streamlit
+pip==25.2
+    # via -r requirements.txt
 planegeometry==1.0.3
     # via -r requirements.txt
 platformdirs==4.4.0

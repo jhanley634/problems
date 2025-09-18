@@ -47,7 +47,7 @@ def get_triples(file: Path, year: int = 2024) -> Generator[dict[str, Any]]:
 
 
 def main() -> None:
-    statements = Path("~/Desktop").expanduser() / '2025/statements'
+    statements = Path("~/Desktop").expanduser() / "2025/statements"
     yymm = "????"
     nnn = "0??"
     glob = f"????-202?{yymm}-Statement-{nnn}.pdf"
