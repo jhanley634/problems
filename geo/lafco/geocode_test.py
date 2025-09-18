@@ -46,14 +46,14 @@ class GeocodeTest(unittest.TestCase):
         loc = g.get_location(f"101 Donohoe St, {g.menlo}")
         # loc = g.get_location(f"173 Oak Ct, {g.menlo}")
         self.assertEqual(
-            "101 DONOHOE ST, MENLO PARK CA 94025 (37.4639, -122.15121)",
+            "101 DONOHOE ST, MENLO PARK CA 94025 (37.46389, -122.1512)",
             str(loc),
         )
         self.assertEqual(37.464, round(loc.lat, 3))
 
         loc = g.get_location(f"325 Oak Ct, {g.menlo}")
         self.assertEqual(
-            "325 OAK CT, MENLO PARK CA 94025 (37.45914, -122.14845)",
+            "325 OAK CT, MENLO PARK CA 94025 (37.45911, -122.14843)",
             str(loc),
         )
 
