@@ -31,15 +31,13 @@ _default_url = (
 )
 
 
-def get_article_text_file(
-    url: str = _default_url,
-) -> Path:
+def get_article_text_file(url: str = _default_url) -> Path:
     html_fspec = get_cached_html_file(url)
     text = html2text(html_fspec.read_text())
     text = _remove(r"^[\s\S]+ Comments\n\n## ", "", text)
     text = _remove(r"Nancy Cooper.+$", "", text, flags=re.DOTALL).strip()
     base = html_fspec.stem
-    txt_fspec = Path(f"{base}.txt")
+    txt_fspec = Path(f"/tmp/{base}.txt")
     txt_fspec.write_text(text)
     return txt_fspec
 
