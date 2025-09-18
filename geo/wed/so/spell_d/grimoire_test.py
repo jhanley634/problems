@@ -18,7 +18,7 @@ def generate_grimoire(n: int = 2) -> Grimoire:
 
 def gen_random_grimoire(n: int = 2) -> Grimoire:
     gr = generate_grimoire(n)
-    gr.g = random_graph(n, deg_sampler=lambda: (1, 1))
+    # gr.g = random_graph(n, deg_sampler=lambda: (1, 1))
     return gr
 
 
@@ -51,5 +51,5 @@ class GrimoireTest(unittest.TestCase):
         self.assertEqual(6, gr.longest_spell())
 
         gr = generate_random_grimoire(15)
-        graph_draw(gr.g, output="/tmp/gr.png")
+        # graph_draw(gr.g, output="/tmp/gr.png")
         self.assertEqual(15, gr.longest_spell())
