@@ -57,6 +57,7 @@ class Obstacle:
         return hash(self.serial)
 
     def __eq__(self, other: object) -> bool:
+        assert isinstance(other, Obstacle)
         return bool(self.position == other.position)
 
     def __lt__(self, other: Any) -> bool:
