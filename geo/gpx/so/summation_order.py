@@ -16,8 +16,7 @@ def _display(label: str, k: int, result: float) -> None:
 
 
 def add_doubles(n: int = 5_000_000) -> None:
-    rng = np.random.get_default_rng()
-    rng.set_seed(42)
+    rng = np.random.default_rng(seed=42)
 
     # dividing by K ensures we have lots of mantissa bits set
     for k in [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]:
