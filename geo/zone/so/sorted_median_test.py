@@ -167,6 +167,5 @@ class TestKthIdx(unittest.TestCase):
 
         self.assertEqual(k + 1, len(a))
 
-        print("\n\n----------")
         # self.assertEqual((0, 4), kth_idx(a, b, k))
         # self.assertEqual((1, 4), kth_idx(b, a, k))

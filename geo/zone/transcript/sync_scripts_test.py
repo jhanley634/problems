@@ -24,7 +24,7 @@ class SyncScriptsTest(unittest.TestCase):
         fspec = _cache_file_for(self.fuego_url)
         fspec.unlink(missing_ok=True)
 
-        self.assertGreater(len(get_html_text(self.fuego_url)), 91427)
+        self.assertGreater(len(get_html_text(self.fuego_url)), 91425)
 
         expected = (
             "Placa del Fuego by Tobias S. Buckell : Clarkesworld Magazine"

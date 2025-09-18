@@ -115,17 +115,19 @@ class Car(Obstacle):
         self.velocity: float = speed_px_per_sec
         road_segment.add_obstacle_position(self)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, debug: bool = False) -> None:
         seg = self.road_segment
         assert seg.start.y == seg.end.y  # horizontal
         obs, i = None, 0
         for i, obs in enumerate(seg.obstacles):
             if obs is self:
-                print(i)
+                if debug:
+                    print(i)
                 break
-        print(obs, i, self)
-        print(seg.obstacles[i])
-        print(obs)
+        if debug:
+            print(obs, i, self)
+            print(seg.obstacles[i])
+            print(obs)
         assert seg.obstacles[i] is self
 
         next_obstacle = 0
@@ -133,7 +135,10 @@ class Car(Obstacle):
 
         self.position += self.velocity * dt
 
-        print(f"{self.position:6f}  {self.velocity}  {next_obstacle}  {seg.obstacles}")
+        if debug:
+            print(
+                f"{self.position:6f}  {self.velocity}  {next_obstacle}  {seg.obstacles}"
+            )
 
     def render(self, screen: Surface) -> None:
         start = self.road_segment.start
