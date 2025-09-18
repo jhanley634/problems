@@ -40,7 +40,8 @@ class NominatimQuery(Base):  # type: ignore [misc, valid-type]
 
 class NominatimCached:
 
-    lafco_dir = Path("~/Desktop/lafco").expanduser()
+    lafco_dir = Path("/tmp/k/lafco").expanduser()
+    lafco_dir.mkdir(exist_ok=True)
     db_cache_file = lafco_dir / "nominatim.db"
     UA = "SMClafco"
 
