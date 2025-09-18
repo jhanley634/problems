@@ -36,7 +36,7 @@ jupyter:
 COVERAGE = --cov --cov-report=term-missing --import-mode=importlib
 test:
 	$(ACTIVATE) && pytest $(COVERAGE)  geo/
-	$(ACTIVATE) && python -m unittest  $$(find . -name '*_test.py' | sort) ; isort . ; black -S geo/
+	$(ACTIVATE) && python -m unittest  $$(find . -name '*_test.py' | egrep -v /.venv/ | sort) ; isort . ; black -S geo/
 	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-uw-z]*/
 SHELL = bash -o pipefail
 
