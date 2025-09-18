@@ -45,6 +45,9 @@ class Zombie(Agent):
         assert isinstance(other, Zombie), other
         return self.position == other.position
 
+    def __hash__(self) -> int:
+        return super().__hash__((self.x, self.y, self.speed))
+
 
 WIDTH, HEIGHT = 800, 600
 LANE_WIDTH = 40  # it's a two lane highway
