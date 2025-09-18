@@ -12,6 +12,7 @@ all:
 
 install: .venv
 	sort -o requirements.txt{,}
+	$(ACTIVATE) && uv pip compile           --quiet requirements.txt -o infra/requirements.lock
 	$(ACTIVATE) && uv pip compile --upgrade --quiet requirements.txt -o infra/requirements.lock
 	$(ACTIVATE) && uv pip install -r infra/requirements.lock
 	$(ACTIVATE) && pre-commit install

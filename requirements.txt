@@ -107,6 +107,7 @@ types-beautifulsoup4
 types-openpyxl
 types-pillow
 types-python-dateutil
+types-pytz
 types-redis
 types-requests
 types-seaborn
