@@ -49,7 +49,7 @@ def binary_split(a: int, b: int) -> tuple[int, int, int]:
 
 
 def chudnovsky(n: int) -> Decimal:
-    P1n, Q1n, R1n = binary_split(1, n)
+    _P1n, Q1n, R1n = binary_split(1, n)
     return (426880 * Decimal(10005).sqrt() * Q1n) / (13591409 * Q1n + R1n)
 
 

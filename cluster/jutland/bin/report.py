@@ -41,7 +41,7 @@ def find_clusters() -> None:
     X = ground_truth.copy().drop(columns=["osm_id"])
     y = ground_truth.copy()[["osm_id"]]
 
-    X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(
+    X_train, _X_test, y_train, _y_test = sklearn.model_selection.train_test_split(
         X, y, random_state=1
     )
 

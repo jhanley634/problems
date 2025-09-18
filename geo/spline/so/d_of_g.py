@@ -8,7 +8,7 @@ def main() -> None:
     # lena = "https://i.sstatic.net/Q3hecnZb.png"
     lena = "/tmp/Q3hecnZb.png"
     img = cv2.imread(lena)
-    height, width, depth = img.shape
+    _height, _width, depth = img.shape
     assert depth == 3
 
     k_size = 3

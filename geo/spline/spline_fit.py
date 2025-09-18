@@ -29,7 +29,7 @@ def get_image(url: str) -> Image.Image:
 
 
 def show_volcano(url: str = volcano) -> None:
-    fig, ax = plt.subplots()
+    _fig, ax = plt.subplots()
     img = get_image(url)
     ax.imshow(img)
 

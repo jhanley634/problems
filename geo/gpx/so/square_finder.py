@@ -35,7 +35,7 @@ def main() -> None:
     thresh = np.array(
         cv2.threshold(a, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
     )
-    contours, hierarchy = cv2.findContours(
+    contours, _hierarchy = cv2.findContours(
         thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
     )[-2:]
     for idx, cnt in enumerate(contours):

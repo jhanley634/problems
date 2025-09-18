@@ -63,7 +63,7 @@ def _plot_differences(df: pd.DataFrame) -> None:
     plt.rcParams.update({"figure.figsize": (9, 7), "figure.dpi": 120})
 
     # Original Series
-    fig, axes = plt.subplots(3, 2, sharex=True)
+    _fig, axes = plt.subplots(3, 2, sharex=True)
     axes[0, 0].plot(df.value)
     axes[0, 0].set_title("Original Series")
     plot_acf(df.value, ax=axes[0, 1])
@@ -85,7 +85,7 @@ def _plot_pacf(df: pd.DataFrame) -> None:
     # PACF plot of 1st differenced series
     plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
 
-    fig, axes = plt.subplots(1, 2, sharex=True)
+    _fig, axes = plt.subplots(1, 2, sharex=True)
     axes[0].plot(df.value.diff())
     axes[0].set_title("1st Differencing")
     axes[1].set(ylim=(0, 5))
@@ -96,7 +96,7 @@ def _plot_pacf(df: pd.DataFrame) -> None:
 
 def _plot_acf(df: pd.DataFrame) -> None:
     plt.rcParams.update({"figure.figsize": (9, 3), "figure.dpi": 120})
-    fig, axes = plt.subplots(1, 2, sharex=True)
+    _fig, axes = plt.subplots(1, 2, sharex=True)
     axes[0].plot(df.value.diff())
     axes[0].set_title("1st Differencing")
     axes[1].set(ylim=(0, 1.2))
@@ -107,7 +107,7 @@ def _plot_acf(df: pd.DataFrame) -> None:
 
 def _plot_residuals(fit: ARIMAResultsWrapper) -> None:
     residuals = pd.DataFrame(fit.resid)
-    fig, ax = plt.subplots(1, 2)
+    _fig, ax = plt.subplots(1, 2)
     residuals.plot(title="Residuals", ax=ax[0])
     residuals.plot(kind="kde", title="Density", ax=ax[1])
     plt.show()

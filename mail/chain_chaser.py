@@ -23,7 +23,7 @@ def fetch_emails_by_msg_id(client: IMAP4_SSL, msg_id: str) -> Generator[EmailMes
     assert "OK" == status, status
     assert data
     for num in data[0].split():
-        result, data = client.fetch(num, "(RFC822)")
+        _result, data = client.fetch(num, "(RFC822)")
         assert "OK" == status, status
         print(data)
         pair, _ = data

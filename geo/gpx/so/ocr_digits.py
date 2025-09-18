@@ -18,7 +18,7 @@ def apply_tesseract(image_path: Path, psm: int) -> tuple[NDArray[Any], str]:
     image = cv2.imread(f"{image_path}")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     assert np.max(image) <= 255
-    h, w = image.shape
+    h, _w = image.shape
     both = np.concatenate((_get_hello(h), image), axis=1)
     text = pytesseract.image_to_string(both, config=f"--psm {psm} digits")
     return image, text
@@ -45,7 +45,7 @@ def display_images_with_text(images: list[NDArray[Any]], texts: list[str]) -> No
     num_rows = min(3, num_images)
     num_cols = (num_images + num_rows - 1) // num_rows
 
-    fig, axes = plt.subplots(
+    _fig, axes = plt.subplots(
         num_rows, num_cols, figsize=(12, 8), subplot_kw={"xticks": [], "yticks": []}
     )
 

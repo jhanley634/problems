@@ -87,7 +87,7 @@ def learn_a_balancing_policy(
     progress = tqdm(range(num_episodes), desc="training progress")
 
     for episode in progress:
-        state, info = env.reset()
+        state, _info = env.reset()
         state = np.array(_discretize_state(state, bins), dtype=np.int64)
         cum_reward = 0
         done = False
