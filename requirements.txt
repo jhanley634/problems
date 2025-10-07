@@ -119,4 +119,5 @@ uv
 watchdog
 xlsx2csv
 yahoofinancials
+ydata-profiling
 yfinance[nospam]
