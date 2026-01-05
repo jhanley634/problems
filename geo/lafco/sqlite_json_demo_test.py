@@ -47,8 +47,8 @@ class Demo:
             )
             sess.commit()
             row = sess.get(JsonDemo, st_city)
-            assert row
-            return row
+        assert row
+        return row
 
 
 class JsonDemoTest(unittest.TestCase):

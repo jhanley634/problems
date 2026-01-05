@@ -34,9 +34,13 @@ class Geocoder:
     def __init__(self) -> None:
         # self.geolocator = NominatimCached()
         self.geolocator = ArcGIS()
-        self.engine = sa.create_engine("sqlite:////tmp/geocode.db")
+        db_url = "sqlite:////tmp/geocode.db"
+        eng = sa.create_engine(db_url)
         metadata = sa.MetaData()
-        metadata.create_all(self.engine, tables=[Location.__table__])
+        with eng.begin() as conn:
+            metadata.create_all(eng, tables=[Location.__table__])
+        eng.dispose()
+        self.engine = sa.create_engine(db_url)
 
     @staticmethod
     def round5(n: float) -> float:
