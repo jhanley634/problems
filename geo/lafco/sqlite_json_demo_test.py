@@ -1,8 +1,9 @@
 # Copyright 2024 John Hanley. MIT licensed.
+
 import unittest
 
 from sqlalchemy import JSON, Text, text
-from sqlalchemy.orm import Session, declarative_base, mapped_column
+from sqlalchemy.orm import Session, declarative_base, mapped_column, sessionmaker
 import requests
 import sqlalchemy as sa
 
@@ -20,14 +21,15 @@ class Demo:
     def __init__(self) -> None:
         self.engine = sa.create_engine("sqlite:////tmp/json_demo.db")
         metadata = sa.MetaData()
-        metadata.create_all(self.engine, tables=[JsonDemo.__table__])
+        with self.engine.begin() as conn:
+            metadata.create_all(conn, tables=[JsonDemo.__table__])
         self.base_url = "https://api.zippopotam.us"
 
     def fetch_and_store_city(self, st_city: str = "ca/belmont") -> JsonDemo:
         st_city = st_city.upper()
         url = self.base_url + "/us/" + st_city
         resp = requests.get(url)
-        with Session(self.engine) as sess:
+        with sessionmaker(bind=self.engine)() as sess:
             existing = sess.get(JsonDemo, st_city)
             if existing:
                 sess.delete(existing)
