@@ -38,9 +38,12 @@ class NominatimQuery(Base):  # type: ignore [misc, valid-type]
     json_result = mapped_column(JSON)
 
 
+TEMP = Path("/tmp/k")
+
+
 class NominatimCached:
 
-    lafco_dir = Path("/tmp/k/lafco").expanduser()
+    lafco_dir = TEMP / "lafco"
     lafco_dir.mkdir(exist_ok=True)
     db_cache_file = lafco_dir / "nominatim.db"
     UA = "SMClafco"
