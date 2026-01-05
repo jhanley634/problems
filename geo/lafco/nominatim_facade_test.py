@@ -17,6 +17,11 @@ class NominatimFacadeTest(unittest.TestCase):
         self.assertTrue(self.geo.db_cache_file.exists())
         self.assertEqual(TEMP / "lafco/nominatim.db", self.geo.db_cache_file)
 
+    def tearDown(self) -> None:
+        assert isinstance(self.geo, NominatimCached)
+        self.geo.engine.dispose()
+        super().tearDown()
+
     def test_query(self) -> None:
         self.get_random_test_addr()
 

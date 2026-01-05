@@ -52,10 +52,15 @@ class NominatimCached:
         assert self.lafco_dir.is_dir()
         self.queried_at = time()
         self.query_count = 0  # cumulative number of API requests
-        self.engine = sa.create_engine(f"sqlite:///{self.db_cache_file}")
         self._geolocator = Nominatim(user_agent=user_agent)
+
+        db_url = f"sqlite:///{self.db_cache_file}"
+        eng = sa.create_engine(db_url)
         metadata = sa.MetaData()
-        metadata.create_all(self.engine, tables=[NominatimQuery.__table__])
+        with eng.begin() as conn:
+            metadata.create_all(conn, tables=[NominatimQuery.__table__])
+        eng.dispose()
+        self.engine = sa.create_engine(db_url)
 
     @staticmethod
     def canonical(addr: str) -> str:

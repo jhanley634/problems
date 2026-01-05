@@ -19,17 +19,23 @@ class JsonDemo(Base):  # type: ignore [misc, valid-type]
 
 class Demo:
     def __init__(self) -> None:
-        self.engine = sa.create_engine("sqlite:////tmp/json_demo.db")
+        db_url = "sqlite:////tmp/json_demo.db"
         metadata = sa.MetaData()
-        with self.engine.begin() as conn:
+        eng = sa.create_engine(db_url)
+        with eng.begin() as conn:
             metadata.create_all(conn, tables=[JsonDemo.__table__])
+        eng.dispose()
+        self.engine = sa.create_engine(db_url)
         self.base_url = "https://api.zippopotam.us"
+
+    def get_session(self) -> Session:
+        return sessionmaker(bind=self.engine)()
 
     def fetch_and_store_city(self, st_city: str = "ca/belmont") -> JsonDemo:
         st_city = st_city.upper()
         url = self.base_url + "/us/" + st_city
         resp = requests.get(url)
-        with sessionmaker(bind=self.engine)() as sess:
+        with self.get_session() as sess:
             existing = sess.get(JsonDemo, st_city)
             if existing:
                 sess.delete(existing)
@@ -48,6 +54,11 @@ class Demo:
 class JsonDemoTest(unittest.TestCase):
     def setUp(self) -> None:
         self.demo = Demo()
+
+    def tearDown(self) -> None:
+        assert isinstance(self.demo, Demo)
+        self.demo.engine.dispose()
+        super().tearDown()
 
     def test_city_data(self) -> None:
         r = self.demo.fetch_and_store_city()
