@@ -64,7 +64,7 @@ pyaudioanalysis
 pydantic
 pydeck
 pydub
-pygame
+pygame-ce
 pylint
 pynisher
 pypandoc

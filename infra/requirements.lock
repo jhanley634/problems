@@ -925,9 +925,9 @@ pyee==13.0.0
 pyflakes==3.4.0
     # via flake8
 pygame==2.6.1
-    # via
-    #   -r requirements.txt
-    #   gymnasium
+    # via gymnasium
+pygame-ce==2.5.6
+    # via -r requirements.txt
 pygments==2.19.2
     # via
     #   enum-tools
