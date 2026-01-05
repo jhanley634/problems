@@ -56,6 +56,7 @@ class GeocodeTest(unittest.TestCase):
             "325 OAK CT, MENLO PARK CA 94025 (37.45911, -122.14843)",
             str(loc),
         )
+        g.engine.dispose()
 
     def test_round5(self) -> None:
         self.assertEqual(3.14159, Geocoder.round5(math.pi))
@@ -68,6 +69,7 @@ class GeocodeTest(unittest.TestCase):
                 "063-090-070 1423 BAY RD, EAST PALO ALTO",
                 repr(aa),
             )
+        engine.dispose()
 
     def unused_test_owner(self) -> None:
         self.assertEqual("063-492-490", _with_dashes("063492490"))
@@ -79,3 +81,4 @@ class GeocodeTest(unittest.TestCase):
                 "063-090-070  ARCHDIOCESE OF S F PARISH:  1423 BAY RD, SAN FRANCISCO CA 94109",
                 repr(owner),
             )
+        engine.dispose()
