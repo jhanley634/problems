@@ -9,7 +9,7 @@ from typing import TextIO
 from spacy.language import Language
 from spacy.tokens.token import Token
 import spacy
-import spacy.tokens
+import spacy.cli
 import typer
 
 punctuation = str.maketrans(
@@ -31,6 +31,9 @@ def get_simple_words(line: str) -> Generator[str]:
 
 def _get_spacy_tokens(nlp: Language, line: str) -> Generator[Token]:
     yield from (word for word in nlp(line.strip()) if word.is_alpha)
+
+
+assert spacy.__version__ >= "3.8.11"
 
 
 def spacy_wordlist(
