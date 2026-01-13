@@ -46,7 +46,7 @@ class Zombie(Agent):
         return self.position == other.position
 
     def __hash__(self) -> int:
-        return super().__hash__((self.x, self.y, self.speed))
+        return hash((self.x, self.y, self.speed))
 
 
 WIDTH, HEIGHT = 800, 600
