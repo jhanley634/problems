@@ -26,7 +26,9 @@ import pygame
 win = pygame.display.set_mode((750, 500), RESIZABLE)
 clock = pygame.time.Clock()
 
-WIDTH, HEIGHT = pygame.display.get_surface().get_size()
+_SURFACE = pygame.display.get_surface()
+assert _SURFACE
+WIDTH, HEIGHT = _SURFACE.get_size()
 FONT = None
 LARGE_FONT = None
 
@@ -275,7 +277,8 @@ def _main_loop() -> None:  # noqa C907
                     WIN_CENTER += Vector2(pygame.mouse.get_pos()) - drag_start
                     drag_start = pygame.mouse.get_pos()
             elif event.type == VIDEORESIZE:
-                WIDTH, HEIGHT = pygame.display.get_surface().get_size()
+                assert _SURFACE
+                WIDTH, HEIGHT = _SURFACE.get_size()
 
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[K_UP]:
