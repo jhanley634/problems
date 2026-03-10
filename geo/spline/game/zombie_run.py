@@ -7,6 +7,7 @@ where a uniform distribution of dozens of zombies are just waking up.
 When they notice the jogger they first head toward the highway,
 and then make a 90-degree turn to head north, pursuing the jogger.
 """
+
 from dataclasses import dataclass
 from functools import partial
 import math

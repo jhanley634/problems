@@ -3,6 +3,7 @@
 """
 Investigates the circumstances in which isort can move a shebang around.
 """
+
 from pathlib import Path
 from random import shuffle
 from subprocess import check_call

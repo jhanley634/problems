@@ -60,14 +60,12 @@ def create_engine() -> Engine:
 
 
 def create_table() -> None:
-    ddl = text(
-        """
+    ddl = text("""
         CREATE TABLE  IF NOT EXISTS  word (
             id INTEGER PRIMARY KEY,
             category TEXT,
             word TEXT
-        )"""
-    )
+        )""")
     with Session(engine) as sess:
         sess.execute(ddl)
 

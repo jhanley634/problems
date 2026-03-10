@@ -3,6 +3,7 @@
 """
 Shows recent CR changes.
 """
+
 from collections.abc import Generator
 from typing import NamedTuple
 

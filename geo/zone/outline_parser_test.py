@@ -44,8 +44,7 @@ class TestOutlineParser(unittest.TestCase):
         ]
 
     def test_parse_parens(self) -> None:
-        lines = cleandoc(
-            """
+        lines = cleandoc("""
         2. section
             (a) apple
                 (1) Autumn
@@ -59,8 +58,7 @@ class TestOutlineParser(unittest.TestCase):
                     (A) Noble
                     (B) Sweet
             (b) banana
-        """
-        ).splitlines()
+        """).splitlines()
         self.assertEqual(
             [
                 (),
@@ -82,13 +80,11 @@ class TestOutlineParser(unittest.TestCase):
         self.assertEqual(13, len(list(OutlineParser(lines))))
 
     def test_non_sequential(self) -> None:
-        lines = cleandoc(
-            """
+        lines = cleandoc("""
         2. section
             (a) apple
             (b) banana
             (d) cherry
-        """
-        ).splitlines()
+        """).splitlines()
         with self.assertRaises(ValueError):
             self._levels_summary(lines)

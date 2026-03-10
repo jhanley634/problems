@@ -4,6 +4,7 @@ This module is a facade for the Nominatim geocoder, enforcing some pre-condition
 1. Cache results, that is, never send the geocoder the same address twice.
 2. Rate limit requests to one per second, to avoid being banned.
 """
+
 from pathlib import Path
 from time import sleep, time
 from typing import TYPE_CHECKING

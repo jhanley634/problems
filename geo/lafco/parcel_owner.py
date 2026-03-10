@@ -6,6 +6,7 @@ The excel file has 4273 parcels listed.
 There are fewer owners.
 Can you parse out the succinct number of owners?
 """
+
 import pandas as pd
 
 from geo.lafco.lafco_util import LAFCO_DIR, clean_column_names

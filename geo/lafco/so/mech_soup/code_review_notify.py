@@ -3,6 +3,7 @@
 """
 Pops up a TK window when there are recent CR changes.
 """
+
 from pathlib import Path
 from random import randrange
 from time import sleep

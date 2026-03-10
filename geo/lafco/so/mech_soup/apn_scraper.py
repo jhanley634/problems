@@ -6,7 +6,6 @@ Downloads 4-digit APN prefixes from San Mateo County's assessor website.
 This gives us an APN --> address mapping.
 """
 
-
 import mechanicalsoup
 
 PROPERTY_MAPS_PORTAL = "https://gis.smcgov.org/Html5Viewer/?viewer=raster"

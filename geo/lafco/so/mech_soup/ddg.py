@@ -3,6 +3,7 @@
 """
 Obtains Mechanical Soup resources from a popular search engine.
 """
+
 from collections.abc import Generator
 from typing import NamedTuple
 

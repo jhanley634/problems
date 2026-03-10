@@ -4,6 +4,7 @@
 Downloads 4-digit APN prefixes from San Mateo County's assessor website.
 This gives us an APN --> address mapping.
 """
+
 from time import time
 
 from selenium import webdriver

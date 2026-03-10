@@ -200,7 +200,7 @@ def everything_function(in_file: str = "/tmp/foo.docx") -> None:
                 print(f"Removed {f}")
 
 
-@app.route("/")  # type:ignore [misc]
+@app.route("/")  # type: ignore [misc]
 def main() -> None:
     everything_function()
 

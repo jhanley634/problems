@@ -125,8 +125,7 @@ class TidyClimate:
     @staticmethod
     def _get_create(elt: str) -> TextClause:
         """Arrange for a compound primary key."""
-        return sa.text(
-            f"""
+        return sa.text(f"""
             CREATE TABLE {elt} (
                 state   TEXT      NOT NULL,
                 county  TEXT      NOT NULL,
@@ -134,8 +133,7 @@ class TidyClimate:
                 {elt}   REAL      NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
-        """
-        )
+        """)
 
 
 class PastAndRecentClimate:
@@ -189,8 +187,7 @@ class PastAndRecentClimate:
 
     @staticmethod
     def _get_create_temperatures() -> TextClause:
-        return sa.text(
-            """
+        return sa.text("""
             CREATE TABLE IF NOT EXISTS temperatures (
                 state   TEXT       NOT NULL,
                 county  TEXT       NOT NULL,
@@ -200,8 +197,7 @@ class PastAndRecentClimate:
                 tmaxcy  REAL       NOT NULL,
                 PRIMARY KEY (state, county, stamp)
             )
-        """
-        )
+        """)
 
 
 if __name__ == "__main__":
