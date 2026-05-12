@@ -4,7 +4,7 @@ version = "0.1.1"
 edition = "2021"
 
 [dependencies]
-arrow = "53.3.0"
-parquet = "53.3.0"
+arrow = ">= 53.3.0"
+parquet = ">= 53.3.0"
 time = ">= 0.3.37"
-timeit = "0.1.2"
+timeit = ">= 0.1.2"
