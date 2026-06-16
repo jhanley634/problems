@@ -29,5 +29,4 @@ vision/loadtxt/pythran_lib/build/
 vision/loadtxt/pythran_lib/dist/
 vision/loadtxt/pythran_lib/hello.egg-info/
 vision/loadtxt/pythran_lib/hello/hello.cpp
-vision/loadtxt/rust_lib/Cargo.lock
 vision/loadtxt/rust_lib/target
