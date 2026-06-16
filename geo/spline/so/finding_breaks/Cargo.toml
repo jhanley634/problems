@@ -6,6 +6,5 @@ edition = "2021"
 [dependencies]
 arrow = ">= 58.3.0"
 parquet = ">= 58.3.0"
-thrift = ">= 0.17.0"
 time = ">= 0.3.47"
 timeit = ">= 0.1.2"
