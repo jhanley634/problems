@@ -9,4 +9,4 @@ name = "median_test"
 path = "src/median.rs"
 
 [dependencies]
-itertools = "0.10.5"
+itertools = ">= 0.15.0"
