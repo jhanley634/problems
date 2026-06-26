@@ -23,7 +23,7 @@ class TokenizerSimpleTest(unittest.TestCase):
 
         w = list(get_words("https://codereview.stackexchange.com/"))[:7]
         self.assertEqual(
-            ["doctype", "html", "responsive", "en", "review", "stack", "shortcut"],
+            ["doctype", "html", "responsive", "en", "review", "stack", "https"],
             w,
         )
 
