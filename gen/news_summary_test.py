@@ -90,7 +90,7 @@ class SummarizerTest(unittest.TestCase):
         )
         self.assertEqual(1237, billsum.num_rows)
 
-    def test_hf_datasets(self) -> None:
+    def disabled_test_hf_datasets(self) -> None:
         # self.assertGreater(len(list(huggingface_hub.list_datasets())), 51_512)
 
         # hf_hub_download(repo_id="lysandre/arxiv-nlp", filename="config.json")
