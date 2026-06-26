@@ -11,7 +11,7 @@ from geo.lafco.geocode import Geocoder
 
 
 def _get_house_num(s: str) -> int:
-    return int(s.split()[0])
+    return int(s.split(maxsplit=1)[0])
 
 
 def _get_street(s: str) -> str:
