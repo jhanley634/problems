@@ -37,8 +37,7 @@ class Geocoder:
         db_url = "sqlite:////tmp/geocode.db"
         eng = sa.create_engine(db_url)
         metadata = sa.MetaData()
-        with eng.begin() as conn:
-            metadata.create_all(eng, tables=[Location.__table__])
+        metadata.create_all(eng, tables=[Location.__table__])
         eng.dispose()
         self.engine = sa.create_engine(db_url)
 
