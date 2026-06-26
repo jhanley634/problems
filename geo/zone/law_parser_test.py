@@ -51,7 +51,7 @@ class TestLawParser(unittest.TestCase):
         )
         # print("\n".join(map(str.rstrip, diffs)))
 
-        self.assertEqual(7, len(list(diffs)))
+        self.assertEqual(14, len(list(diffs)))
 
     def test_download(self) -> None:
         # Relies on giant cookie, same as justia above.

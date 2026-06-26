@@ -37,7 +37,7 @@ jupyter:
 COVERAGE = --cov --cov-report=term-missing --import-mode=importlib
 test:
 	$(ACTIVATE) && pytest $(COVERAGE)  geo/
-	$(ACTIVATE) && env PYGAME_HIDE_SUPPORT_PROMPT=1 python -m unittest  $$(find . -name '*_test.py' | egrep -v /.venv/ | sort) ; isort . ; black -S geo/
+	$(ACTIVATE) && env PYGAME_HIDE_SUPPORT_PROMPT=1 python -m unittest  $$(find . -name '*_test.py' | egrep -v /.venv/ | sort) ; isort . ; black -S --target-version to py313 geo/
 
 lint:
 	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-uw-z]*/
