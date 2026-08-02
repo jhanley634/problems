@@ -4,6 +4,7 @@
 from pprint import pp
 import re
 
+import numpy as np
 import regex
 import unidecode
 

@@ -32,7 +32,7 @@ class OriginalClimate:
     )
     FILE_VERSION = "v1.0.0-20230406"
 
-    MONTHS = (dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13))
+    MONTHS = [dt.date(2023, i, 1).strftime("%b").lower() for i in range(1, 13)]
 
     def __init__(self, temp_dir: Path = TEMP_DIR) -> None:
         self.folder = temp_dir
@@ -64,7 +64,8 @@ class OriginalClimate:
         names = ["id"] + self.MONTHS
         preserve = {0: str}  # ID starts with state code; preserve leading "0".
         csv = self._fetch(url)  # Neither a .CSV nor a .TSV, but close enough.
-        df = pd.read_csv(csv, names=names, converters=preserve, delim_whitespace=True)
+        df = pd.read_csv(csv, names=names, converters=preserve)
+        # , delim_whitespace=True)
 
         # 1st column is numeric state code (contiguous US, not FIPS)
         # 2nd column is FIPS county code

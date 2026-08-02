@@ -1,6 +1,8 @@
 #! /usr/bin/env streamlit run --server.runOnSave true
 # Copyright 2021 John Hanley. MIT licensed.
+
 from palettable.colorbrewer import qualitative
+import numpy as np
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
@@ -21,9 +23,8 @@ def _get_points(only_show_favorites: bool = False) -> pd.DataFrame:
         df = df[df.osm_id.isin(favorite_roads)]
 
     colors = qualitative.Paired_12.colors
-    # Argument 1 to "hash_array" has incompatible type "Series[Any]";
-    # expected "ExtensionArray | ndarray[Any, Any]"  [arg-type]
-    df["road_hash"] = pd.util.hash_array(df.osm_id.apply(str)) % len(colors)
+    osm = np.array(df.osm_id.apply(str))
+    df["road_hash"] = pd.util.hash_array(osm) % len(colors)
 
     # In https://discuss.streamlit.io/t/tooltip-and-labels-in-pydeck-chart/1727
     # godot63 suggests we may need an annoying 3 (r,g,b) color columns.

@@ -30,7 +30,6 @@ def _train_and_test(ground_truth: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFr
     test = ground_truth.copy()
     test = test[test.index % 2 == 1]
     test["osm_id"] = nan
-    test.osm_id = nan
 
     return train, test
 
