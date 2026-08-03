@@ -85,7 +85,7 @@ def main(
     df["y"] = rfftfreq(len(amplitudes), 1 / sound.frame_rate)
     print(df.dtypes)
     ax = sns.scatterplot(df)
-    ax.set_xlim([0, 1040])
+    ax.set_xlim((0, 1040))
     plt.show()
 
 
