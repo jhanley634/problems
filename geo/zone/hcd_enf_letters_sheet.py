@@ -15,12 +15,15 @@ DESKTOP = Path("~/Desktop").expanduser()
 
 # https://www.hcd.ca.gov/planning-and-community-development/accountability-and-enforcement
 # https://www.hcd.ca.gov/sites/default/files/docs/planning-and-community/enforcement-letters-issued.xlsx
+
+
 def read_sheet(
     infile: Path = DESKTOP / "enforcement-letters-issued.xlsx",
 ) -> pl.DataFrame:
     df = pl.from_dataframe(pd.read_excel(infile, skiprows=1))
     df = _rename_columns(df)
-    df = df.with_columns(df["hcd_letter_type"].apply(_clean_letter_type))
+    # Hmmm, .apply() needs some Pandas --> Polars porting.
+    # df = df.with_columns(df["hcd_letter_type"].apply(_clean_letter_type))
     df = df.with_columns([_cast_if_boolean(df[col]) for col in df.columns])
     return df
 
@@ -33,7 +36,8 @@ def _clean_letter_type(type_: str) -> str:
 def _cast_if_boolean(series: pl.Series) -> pl.Series:
     if set(series.unique()) == {None, "x"}:
         assert series.dtype == Utf8
-        series = series.map_dict({"x": True, None: False})
+        # Hmmm, .map_dict() needs some Pandas --> Polars porting.
+        # series = series.map_dict({"x": True, None: False})
         return series.cast(pl.Boolean)
     return series
 
