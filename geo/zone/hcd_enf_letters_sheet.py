@@ -70,7 +70,7 @@ def summarize_bool_frequencies(df: pl.DataFrame) -> pl.DataFrame:
 
 def summarize_letter_types(df: pl.DataFrame, thresh_count: int = 1) -> pl.DataFrame:
     keys = ["count", "hcd_letter_type"]
-    df_ltr_typ = df.groupby("hcd_letter_type").count().sort(by=keys, descending=True)
+    df_ltr_typ = df.group_by("hcd_letter_type").count().sort(by=keys, descending=True)
     df_ltr_typ = df_ltr_typ.filter(pl.col("count") > thresh_count)
     return df_ltr_typ
 

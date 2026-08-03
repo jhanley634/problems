@@ -55,7 +55,7 @@ def remember_multiple_points() -> None:
             point = value["x"], value["y"]
             if point not in st.session_state["points"]:
                 st.session_state["points"].add(point)
-                st.experimental_rerun()
+                st.rerun()
 
 
 if __name__ == "__main__":
