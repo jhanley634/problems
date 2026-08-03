@@ -126,7 +126,7 @@ def vehicle_timeseries(agency: str = "SC", polling_delay_sec: float = 20.0) -> N
     for _ in range(10):
         zone = timezone("US/Pacific")
         now = dt.datetime.now(zone).isoformat()
-        for msg in query_vehicle(agency, polling_delay_sec):
+        for msg in query_vehicle(agency):
             route = msg.split()[0]
             lat, lng = msg.replace(",", " ").split()[-2:]
             with open(route_folder / f"{route}.csv", "a") as fout:

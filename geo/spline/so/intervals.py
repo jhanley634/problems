@@ -33,7 +33,7 @@ class Interval:
         return False
 
     def __hash__(self) -> int:
-        return super().__hash__((self.start, self.end))
+        return hash((self.start, self.end))
 
 
 @dataclass
