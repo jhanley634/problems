@@ -41,8 +41,9 @@ test:
 	$(ACTIVATE) && isort .
 	$(ACTIVATE) && black --target-version py313 geo/
 
+OMIT = geo/zone/so/sorted_median_merged.py
 lint:
-	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-fs]*
+	$(ACTIVATE) && echo && mypy --no-namespace-packages --ignore-missing-imports --exclude=$(OMIT) cluster/ [abd-fs]* geo/zone/
 	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-uw-z]*/
 
 SHELL = bash -o pipefail

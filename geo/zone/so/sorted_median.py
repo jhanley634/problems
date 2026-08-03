@@ -1,13 +1,19 @@
 # Copyright 2023 John Hanley. MIT licensed.
 
+"""
+Computes median of two sorted input vectors,
+in better than O(N log N) time.
+"""
+
 from itertools import pairwise
 
 from beartype import beartype
 import numpy as np
+import numpy.typing as npt
 
 
 @beartype
-def _monotonic(a: np.ndarray[int, np.dtype[np.int_]]) -> bool:
+def _monotonic(a: npt.NDArray[np.int_]) -> bool:
     return bool(np.all(np.diff(a) >= 0))
 
 
@@ -132,8 +138,8 @@ def kth_idx(a: SlicedList, b: SlicedList, k: int) -> tuple[int, int]:  # noqa PL
     return kth_idx(a, b.slice(0, ib), k)
 
 
-def median_idx_of_sorted_lists(a_in: list[float], b_in: list[float]) -> float:
-    """Given two sorted lists of numbers, return (list_id, idx) in O(log n) time.
+# def median_idx_of_sorted_lists(a_in: list[float], b_in: list[float]) -> float:
+doc = """Given two sorted lists of numbers, return (list_id, idx) in O(log n) time.
 
     list_id: 0 for a, 1 for b, according to which contains the median value
     idx: index of the median in either list a or b

@@ -61,9 +61,9 @@ class LawParser:
             dots = ". . " * len(levels)
             levels1 = str(levels).replace(",)", ")")
             return f"{hashes} {levels1}\n{dots} {text}\n"
-        return None
+        return ""
 
-    def format_html(self) -> None:
+    def format_html(self) -> str:
         style = "font-family: sans-serif; line-height: 1.4; max-width: 50em; text-align: justify;"
         html = [
             "<!DOCTYPE html><head><title>outline</title></head>"
