@@ -93,7 +93,8 @@ class MapDataGen:
         array: NDArray[np.uint8],
     ) -> tuple[NDArray[np.uint8], NDArray[np.int32]]:
         # Available in numpy 2, but spacy is holding us back.
-        return np.unique(array, return_counts=True, equal_nan=False)
+        uniq, counts = np.unique(array, return_counts=True, equal_nan=False)
+        return np.array(uniq, dtype=np.uint8), np.array(counts, dtype=np.int32)
 
     def check_tile(self, index: tuple[int, int]) -> None:
         """
