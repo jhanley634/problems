@@ -56,14 +56,18 @@ def _extract_drugs_from_prescription_text(prescription_text: str) -> list[Drug]:
     # if they start at the same point, first one is removed
     matched_drugs_without_substring = []
     for match in matched_drugs:
-        if [
-            m
-            for m in matched_drugs
-            if m.start <= match.start <= m.stop and len(match.name) < len(m.name)
-        ]:
-            pass
-        else:
-            matched_drugs_without_substring.append(match)
+        if match.start is not None:
+            if [
+                m
+                for m in matched_drugs
+                if m.start is not None
+                and m.stop is not None
+                and m.start <= match.start <= m.stop
+                and len(match.name) < len(m.name)
+            ]:
+                pass
+            else:
+                matched_drugs_without_substring.append(match)
 
     # remove duplicates
     return list(set(matched_drugs_without_substring))
