@@ -35,7 +35,7 @@ def generate_sorted_numpy_array(
     return np.sort(xs)
 
 
-def _sum_int(xs: npt.NDArray[np.int_]) -> int:
+def _sum_int(xs: npt.NDArray[np.signedinteger]) -> int:
     return sum(map(int, xs))
 
 
