@@ -1,23 +1,21 @@
 #! /usr/bin/env python
 # Copyright 2024 John Hanley. MIT licensed.
-from pyrate_limiter import Duration, Limiter, RequestRate
+
+from pyrate_limiter import Duration, Limiter, Rate
 from requests import Session
 from requests_cache import CacheMixin, SQLiteCache
-from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
 import typer
 import yfinance as yf
 
 
-class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
+class CachedLimiterSession(CacheMixin, Session):
     pass
 
 
 session = CachedLimiterSession(
-    limiter=Limiter(
-        RequestRate(2, Duration.SECOND * 5)
-    ),  # max 2 requests per 5 seconds
-    bucket_class=MemoryQueueBucket,
+    limiter=Limiter(Rate(2, Duration.SECOND * 5)),  # max 2 requests per 5 seconds
     backend=SQLiteCache("/tmp/yfinance.cache"),
+    # bucket_class=MemoryQueueBucket,
 )
 
 
