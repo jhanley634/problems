@@ -42,6 +42,7 @@ test:
 	$(ACTIVATE) && black --target-version py313 geo/
 
 lint:
+	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-f]* geo/spline/
 	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-uw-z]*/
 
 SHELL = bash -o pipefail
