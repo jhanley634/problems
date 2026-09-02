@@ -43,7 +43,7 @@ test:
 
 OMIT = geo/zone/so/sorted_median_merged.py
 lint:
-	$(ACTIVATE) && echo && mypy --no-namespace-packages --ignore-missing-imports --exclude=$(OMIT) cluster/ [abd-fs]* geo/zone/
+	$(ACTIVATE) && echo && mypy --no-namespace-packages --ignore-missing-imports --exclude=$(OMIT) cluster/ [abd-fs]* geo/[lz]*
 	$(ACTIVATE) && mypy --no-namespace-packages --ignore-missing-imports cluster/ [abd-uw-z]*/
 
 SHELL = bash -o pipefail
