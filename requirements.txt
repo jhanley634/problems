@@ -114,7 +114,7 @@ types-seaborn
 types-tabulate
 types-tqdm
 unidecode
-urllib3 >= 2.6.3
+urllib3 >= 2.8.0
 uszipcode
 uv
 watchdog
